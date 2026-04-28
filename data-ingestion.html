@@ -1,0 +1,4959 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AiMY QA — Data Ingestion</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --ai: linear-gradient(104deg, #0066ff 0%, #61adf1 47%, #6fdfe2 100%);
+        /* Richer navy-tinted dark palette matching V1 */
+        --d950: #080b10;
+        --d900: #0d1117;
+        --d850: #141b24;
+        --d800: #1c2630;
+        --d750: #233040;
+        --d700: #2e3d50;
+        --d600: #4a5b6e;
+        --d500: #637280;
+        --d400: #8b9aaa;
+        --d300: #b0bcca;
+        --d100: #d8e0e8;
+        --d50: #eef2f6;
+        --brand: #3369ff;
+        --brand-dim: rgba(51, 105, 255, 0.15);
+        /* QA product accent — TEMPORARY PLACEHOLDER (#8b4ff4 is Talent's purple).
+       Must be swapped to QA-specific magenta from Figma logo before v2 ships. */
+        --qa-accent: #8b4ff4;
+        --qa-accent-rgb: 139, 79, 244;
+        --qa-accent-dim: rgba(139, 79, 244, 0.15);
+        --teal: #6fdfe2;
+        --purple: #8b4ff4;
+        --ok: #17b26a;
+        --warn: #f79009;
+        --err: #f04438;
+        --ok-bg: rgba(23, 178, 106, 0.12);
+        --warn-bg: rgba(247, 144, 9, 0.12);
+        --err-bg: rgba(240, 68, 56, 0.12);
+
+        /* Motion tokens — only two durations allowed. Longer motion
+       (chart animation, skeleton shimmer) defines its own keyframe. */
+        --transition-fast: 150ms;
+        --transition-base: 200ms;
+        --motion-hover-lift-sm: translateY(-1px);
+        --motion-hover-lift-md: translateY(-2px);
+        /* Card surface with blue tint */
+        --card-bg: #141b24;
+        --card-border: rgba(255, 255, 255, 0.07);
+        --card-border-hover: rgba(255, 255, 255, 0.14);
+
+        /* Layout Variables */
+        --sidebar-width: 220px;
+        --topbar-height: 60px;
+      }
+
+      /* ── Accessibility: global focus-visible.
+     Uses brand blue (not QA accent) because focus rings are a permanent
+     part of the system, not a product-theme element. QA accent is also
+     currently a placeholder hex — using it here would ripple when it changes. */
+      *:focus {
+        outline: none;
+      }
+      button:focus-visible,
+      [role="button"]:focus-visible,
+      a:focus-visible,
+      input:not(.aimy-float-input):focus-visible,
+      select:focus-visible,
+      textarea:not(.overlay-input):focus-visible,
+      .v2-chip:focus-visible,
+      .filter-select:focus-visible,
+      .nav-item:focus-visible,
+      .range-tab:focus-visible,
+      .state-alt:focus-visible,
+      .state-detected-pill:focus-visible,
+      .passing-toggle:focus-visible,
+      .bcard:focus-visible,
+      .kpi-brief:focus-visible,
+      .feed-item:focus-visible {
+        outline: 2px solid var(--brand);
+        outline-offset: 2px;
+        border-radius: 8px;
+      }
+
+      body {
+        font-family: "Urbanist", sans-serif;
+        background: #171a1c;
+        color: var(--d50);
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* ── Ellipse layer: sits directly on top of #171A1C body bg,
+     below all shell components. z-index: 0 keeps it under z-index:1+ content. */
+      #appEllipse {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+      }
+      #appEllipse::before {
+        content: "";
+        position: absolute;
+        top: 42%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 1300px;
+        height: 1050px;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(0, 102, 255, 0.24) 0%,
+          rgba(97, 173, 241, 0.15) 28%,
+          rgba(111, 223, 226, 0.09) 52%,
+          transparent 70%
+        );
+      }
+      #appEllipse::after {
+        content: "";
+        position: absolute;
+        bottom: -8%;
+        right: -4%;
+        width: 750px;
+        height: 650px;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(111, 223, 226, 0.11) 0%,
+          rgba(139, 79, 244, 0.08) 38%,
+          transparent 66%
+        );
+      }
+      /* Ellipse rendered as a real DOM element — see #appEllipse in HTML */
+
+      /* ══ APP SHELL (TOPNAV + SIDEBAR + MAIN) ══════════════════════════════ */
+
+      /* Global top navbar — full width, transparent, sits above the bg ellipse */
+      .app-topnav {
+        height: var(--topbar-height);
+        background: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        display: flex;
+        align-items: center;
+        padding: 0 20px 0 24px;
+        gap: 0;
+        flex-shrink: 0;
+        position: relative;
+        z-index: 100;
+      }
+
+      /* Remove old gradient pseudo — transparent now */
+      .app-topnav::before {
+        display: none;
+      }
+
+      /* Logo section in topnav */
+      .topnav-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+        padding-right: 20px;
+        margin-right: 4px;
+      }
+      .topnav-logo-mark {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      /* Calls button */
+      .topnav-calls {
+        margin-right: 16px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+      }
+      .topnav-calls svg,
+      .topnav-calls img {
+        display: block;
+      }
+
+      /* Product tabs — pill container matching the SVG reference */
+      .topnav-tabs {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        flex: 1;
+        justify-content: center;
+      }
+      .topnav-tabs-inner {
+        display: flex;
+        align-items: center;
+        border: 0.75px solid #5b6771;
+        border-radius: 24px;
+        padding: 3px;
+        gap: 2px;
+      }
+      .topnav-tab {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--d400);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        border: 1px solid transparent;
+        white-space: nowrap;
+      }
+      .topnav-tab:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--d200, #e8edf2);
+      }
+      .topnav-tab.active {
+        /* background: rgba(var(--qa-accent-rgb), 0.12); */
+        color: var(--qa-accent);
+        /* border-color: rgba(var(--qa-accent-rgb), 0.22); */
+      }
+      .topnav-tab svg {
+        width: 13px;
+        height: 14px;
+        flex-shrink: 0;
+      }
+
+      /* Right side of topnav */
+      .topnav-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+      }
+
+      /* Notification bell */
+      .topnav-bell {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        color: var(--d400);
+        position: relative;
+      }
+      .topnav-bell:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--d200, #e8edf2);
+      }
+      .topnav-bell svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+      .bell-dot {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--err);
+        border: 1.5px solid #171a1c;
+      }
+
+      /* User pill */
+      .topnav-user {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 12px 4px 4px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+      .topnav-user:hover {
+        border-color: rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.07);
+      }
+      .topnav-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #7c3aed, #3369ff);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .topnav-user-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+      .topnav-user-name {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--d50);
+        line-height: 1;
+      }
+      .topnav-user-role {
+        font-size: 10px;
+        color: var(--d400);
+        line-height: 1;
+      }
+      .topnav-user svg {
+        width: 12px;
+        height: 12px;
+        color: var(--d400);
+      }
+
+      /* Below topnav: sidebar + main content side by side */
+      .app-body {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        position: relative;
+        z-index: 1;
+        background: transparent;
+      }
+
+      .app-sidebar {
+        width: var(--sidebar-width);
+        background: transparent;
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+      }
+      /* No logo in sidebar anymore — it lives in topnav */
+      .sidebar-nav {
+        padding: 24px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        overflow-y: auto;
+        flex: 1;
+        min-height: 0;
+      }
+      .sidebar-nav::-webkit-scrollbar {
+        width: 4px;
+      }
+      .sidebar-nav::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .sidebar-nav::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 2px;
+      }
+      .sidebar-section-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--d600);
+        padding: 4px 16px 6px;
+        margin-top: 16px;
+      }
+      .sidebar-section-label:first-child {
+        margin-top: 0;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 16px;
+        border-radius: 8px;
+        color: var(--d400);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-base);
+        border: 1px solid transparent;
+        text-decoration: none;
+      }
+      .nav-item:hover {
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--d300);
+        border-color: rgba(255, 255, 255, 0.05);
+      }
+      .nav-item.active {
+        background: var(--qa-accent-dim);
+        color: var(--qa-accent);
+        border-color: rgba(var(--qa-accent-rgb), 0.28);
+        box-shadow: 0 0 20px rgba(var(--qa-accent-rgb), 0.08);
+      }
+      /* AI Chat & Canvas — subtle AI gradient border to mark it as the primary surface */
+      .nav-item.primary-surface {
+        position: relative;
+      }
+      .nav-item.primary-surface::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 2px;
+        height: 18px;
+        border-radius: 2px;
+        background: var(--ai);
+        opacity: 0.6;
+      }
+      .nav-item.primary-surface .ai-sparkle {
+        margin-left: auto;
+        opacity: 0.7;
+      }
+      .nav-item.primary-surface .ai-sparkle svg {
+        width: 12px;
+        height: 12px;
+      }
+      .nav-item.active.primary-surface::before {
+        opacity: 1;
+      }
+      .nav-item svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+      }
+
+      .app-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        position: relative;
+        background: transparent;
+      }
+
+      .header-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--d50);
+        letter-spacing: -0.01em;
+      }
+
+      /* ══ DASHBOARD FILTERS & LAYOUT ══════════════════════════════ */
+      .dashboard-scroll {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px 32px 100px;
+        background: transparent;
+      }
+
+      .filter-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .filter-select {
+        background: var(--d800);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--d100);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        font-family: "Urbanist", sans-serif;
+      }
+      .filter-select:hover {
+        background: var(--d750);
+        border-color: rgba(255, 255, 255, 0.18);
+        color: var(--d50);
+      }
+      .filter-select svg {
+        width: 11px;
+        height: 11px;
+        color: var(--d400);
+      }
+      .export-btn {
+        margin-left: auto;
+        background: var(--qa-accent);
+        color: #fff;
+        border: none;
+        padding: 9px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: "Urbanist", sans-serif;
+        box-shadow: 0 2px 8px rgba(var(--qa-accent-rgb), 0.25);
+        transition: all var(--transition-base);
+      }
+      .export-btn:hover {
+        box-shadow: 0 4px 16px rgba(var(--qa-accent-rgb), 0.35);
+        transform: translateY(-1px);
+      }
+
+      /* ── GRID OPTION A (Asymmetrical Split) ── */
+      .tier-1-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      .tier-2-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 16px;
+        align-items: start; /* Prevents cards from stretching vertically */
+      }
+      .layout-column {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      /* ══ MERGED COMPONENT CSS (Unaltered from V2B files) ══════════════════════════════ */
+
+      /* 1. Briefing Cards (kpi-card-v2b) */
+      .bcard {
+        background: var(--card-bg);
+        border-radius: 16px;
+        border: 1px solid var(--card-border);
+        cursor: pointer;
+        transition:
+          transform var(--transition-base),
+          border-color var(--transition-base),
+          box-shadow var(--transition-base);
+        position: relative;
+        overflow: hidden;
+      }
+      .bcard::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.03) 0%,
+          transparent 50%
+        );
+        pointer-events: none;
+      }
+      .bcard:hover {
+        transform: translateY(-2px);
+        border-color: var(--card-border-hover);
+        box-shadow:
+          0 8px 32px rgba(0, 0, 0, 0.3),
+          0 0 0 1px rgba(255, 255, 255, 0.05);
+      }
+      .bcard.p1 {
+        border-color: rgba(240, 68, 56, 0.18);
+      }
+      .bcard.p2 {
+        border-color: rgba(247, 144, 9, 0.18);
+      }
+      .bcard.p3 {
+        border-color: rgba(23, 178, 106, 0.15);
+      }
+      /* Tier-primary elevation — applied to the single most-urgent briefing
+     card so the eye lands there first. Only one card per dashboard. */
+      .bcard.tier-primary {
+        box-shadow:
+          0 12px 40px rgba(0, 0, 0, 0.45),
+          0 0 0 1px rgba(var(--qa-accent-rgb), 0.2);
+        transform: translateY(-1px);
+      }
+      .bcard.tier-primary:hover {
+        transform: translateY(-3px);
+        box-shadow:
+          0 18px 48px rgba(0, 0, 0, 0.5),
+          0 0 0 1px rgba(var(--qa-accent-rgb), 0.3);
+      }
+      .bcard-body {
+        padding: 20px;
+      }
+      /* Card meta: icon-badge (left anchor) → type-label (category) → priority-badge (right status) */
+      .bcard-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .type-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--d400);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        flex: 1; /* pushes priority badge to the far right */
+      }
+      .priority-badge {
+        font-size: 9px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 20px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        flex-shrink: 0;
+      }
+      .p1 .priority-badge {
+        background: var(--err-bg);
+        color: var(--err);
+        border: 1px solid rgba(240, 68, 56, 0.2);
+      }
+      .p2 .priority-badge {
+        background: var(--warn-bg);
+        color: var(--warn);
+        border: 1px solid rgba(247, 144, 9, 0.2);
+      }
+      .p3 .priority-badge {
+        background: var(--ok-bg);
+        color: var(--ok);
+        border: 1px solid rgba(23, 178, 106, 0.2);
+      }
+      .ai .priority-badge {
+        background: rgba(0, 102, 255, 0.1);
+        color: #61adf1;
+        border: 1px solid rgba(0, 102, 255, 0.2);
+      }
+      .aimy-badge {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 9px;
+        font-weight: 700;
+        color: var(--teal);
+        opacity: 0.7;
+      }
+      .aimy-badge svg {
+        width: 10px;
+        height: 10px;
+      }
+      .bcard-conclusion {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--d50);
+        line-height: 1.5;
+        margin-bottom: 12px;
+        letter-spacing: -0.005em;
+      }
+      .evidence-row {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      .evidence-pill {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 20px;
+        padding: 4px 10px;
+        font-size: 11px;
+        color: var(--d300);
+        font-weight: 500;
+      }
+      .evidence-pill .ev-value {
+        font-weight: 700;
+        color: #ffffff;
+      }
+      .evidence-pill .ev-delta {
+        font-size: 10px;
+        font-weight: 600;
+      }
+      .ev-delta.up {
+        color: var(--ok);
+      }
+      .ev-delta.dn {
+        color: var(--err);
+      }
+      .ev-delta.warn {
+        color: var(--warn);
+      }
+      .bcard-divider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.07);
+        margin: 0 -20px 16px;
+      }
+      .bcard-action {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0;
+      }
+      .action-btn {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        transition: all var(--transition-fast);
+        flex-shrink: 0;
+      }
+      .action-btn svg {
+        width: 13px;
+        height: 13px;
+      }
+      .p1 .action-btn {
+        background: var(--err-bg);
+        color: var(--err);
+        border: 1px solid rgba(240, 68, 56, 0.25);
+      }
+      .p1 .action-btn:hover {
+        background: rgba(240, 68, 56, 0.18);
+      }
+      .p2 .action-btn {
+        background: var(--warn-bg);
+        color: var(--warn);
+        border: 1px solid rgba(247, 144, 9, 0.25);
+      }
+      .p2 .action-btn:hover {
+        background: rgba(247, 144, 9, 0.18);
+      }
+      .p3 .action-btn {
+        background: var(--ok-bg);
+        color: var(--ok);
+        border: 1px solid rgba(23, 178, 106, 0.25);
+      }
+      .p3 .action-btn:hover {
+        background: rgba(23, 178, 106, 0.18);
+      }
+      .expand-toggle {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d400);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 5px 8px;
+        border-radius: 8px;
+        transition:
+          color var(--transition-fast),
+          background var(--transition-fast);
+        background: none;
+        border: none;
+        font-family: "Urbanist", sans-serif;
+        margin: 0 -2px;
+      }
+      .expand-toggle:hover {
+        color: var(--d300);
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .expand-toggle svg {
+        width: 12px;
+        height: 12px;
+        transition: transform var(--transition-base);
+      }
+      .expand-toggle.open svg {
+        transform: rotate(180deg);
+      }
+      .bcard-data {
+        display: none;
+        padding: 16px 20px;
+        background: rgba(0, 0, 0, 0.2);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .bcard-data.open {
+        display: block;
+      }
+      .data-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      .data-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .dc-label {
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--d400);
+      }
+      .dc-val {
+        font-size: 14px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: -0.02em;
+      }
+      .dc-sub {
+        font-size: 10px;
+        color: var(--d300);
+      }
+
+      /* 2. Narrative Card (quality-kpi-v2b) */
+      .narrative-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        border: 1px solid var(--card-border);
+        margin-bottom: 12px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+      }
+      /* .narrative-accent { height: 3px; background: var(--ai); border-radius: 16px 16px 0 0; } */
+      .narrative-body {
+        padding: 20px 24px;
+      }
+      .narrative-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .narrative-type {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d300);
+        letter-spacing: 0.04em;
+      }
+      .narrative-text {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--d50);
+        line-height: 1.7;
+        margin-bottom: 16px;
+        max-width: 680px;
+      }
+      .narrative-text strong {
+        color: var(--d50);
+        font-weight: 700;
+      }
+      .narrative-text .highlight-warn {
+        color: var(--warn);
+        font-weight: 700;
+      }
+      .narrative-text .highlight-err {
+        color: var(--err);
+        font-weight: 700;
+      }
+      .narrative-text .highlight-ok {
+        color: var(--ok);
+        font-weight: 700;
+      }
+      .findings-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .finding-item {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        border-left: 2px solid transparent;
+      }
+      .finding-item.err-f {
+        border-left-color: var(--err);
+        background: color-mix(in srgb, var(--err) 4%, var(--card-bg));
+      }
+      .finding-item.warn-f {
+        border-left-color: var(--warn);
+        background: color-mix(in srgb, var(--warn) 4%, var(--card-bg));
+      }
+      .finding-item.ok-f {
+        border-left-color: var(--ok);
+        background: color-mix(in srgb, var(--ok) 3%, var(--card-bg));
+      }
+      .finding-icon {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 1px;
+        font-size: 11px;
+      }
+      .finding-icon.err-f {
+        background: var(--err-bg);
+        color: var(--err);
+      }
+      .finding-icon.warn-f {
+        background: var(--warn-bg);
+        color: var(--warn);
+      }
+      .finding-icon.ok-f {
+        background: var(--ok-bg);
+        color: var(--ok);
+      }
+      .finding-content {
+        flex: 1;
+        min-width: 0;
+      }
+      .finding-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 2px;
+      }
+      .finding-sub {
+        font-size: 11px;
+        color: var(--d50);
+        line-height: 1.4;
+        opacity: 0.8;
+      }
+      .finding-action {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        flex-shrink: 0;
+        margin-top: 2px;
+        transition: all var(--transition-fast);
+      }
+      .finding-action.err-f {
+        background: var(--err-bg);
+        color: var(--err);
+      }
+      .finding-action.warn-f {
+        background: var(--warn-bg);
+        color: var(--warn);
+      }
+      .finding-action.ok-f {
+        background: var(--ok-bg);
+        color: var(--ok);
+      }
+      .chart-expand-trigger {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--d600);
+        cursor: pointer;
+        padding: 8px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        background: none;
+        border: none;
+        width: 100%;
+        font-family: "Urbanist", sans-serif;
+        transition: color var(--transition-fast);
+      }
+      .chart-expand-trigger:hover {
+        color: var(--d300);
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 8px;
+      }
+      .chart-expand-trigger svg {
+        width: 12px;
+        height: 12px;
+        transition: transform var(--transition-base);
+      }
+      .chart-expand-trigger.open svg {
+        transform: rotate(180deg);
+      }
+      .chart-area {
+        display: none;
+        padding: 16px 0 0;
+        margin-top: 10px;
+      }
+      .chart-area.open {
+        display: block;
+      }
+      .chart-area svg {
+        width: 100%;
+        height: 140px;
+        overflow: visible;
+      }
+
+      /* 3. KPI Feed (quality-kpi-v2b) */
+      .kpi-feed {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .kpi-brief {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 13px 16px;
+        background: var(--card-bg);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        transition: all var(--transition-fast);
+        cursor: pointer;
+      }
+      .kpi-brief:hover {
+        background: rgba(30, 40, 54, 0.9);
+        border-color: rgba(255, 255, 255, 0.12);
+        transform: translateX(2px);
+      }
+      /* .kpi-brief.kf-err  { border-left-color:var(--err);  } */
+      /* .kpi-brief.kf-warn { border-left-color:var(--warn); } */
+      /* .kpi-brief.kf-ok   { border-left-color:var(--ok);   } */
+      .kf-rank {
+        font-size: 9px;
+        font-weight: 700;
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .kf-err .kf-rank {
+        background: var(--err-bg);
+        color: var(--err);
+      }
+      .kf-warn .kf-rank {
+        background: var(--warn-bg);
+        color: var(--warn);
+      }
+      .kf-ok .kf-rank {
+        background: var(--ok-bg);
+        color: var(--ok);
+      }
+      .kf-body {
+        flex: 1;
+        min-width: 0;
+      }
+      .kf-conclusion {
+        font-size: 12px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 3px;
+        line-height: 1.4;
+      }
+      .kf-evidence {
+        font-size: 11px;
+        color: var(--d300);
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .kf-ev-item {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+      }
+      .kf-ev-item .v {
+        font-weight: 700;
+        color: var(--d50);
+      }
+      .kf-ev-item .trend-up {
+        color: var(--ok);
+        font-weight: 700;
+      }
+      .kf-ev-item .trend-dn {
+        color: var(--err);
+        font-weight: 700;
+      }
+      .kf-ev-item .trend-warn {
+        color: var(--warn);
+        font-weight: 700;
+      }
+      .kf-score-err {
+        color: var(--err);
+        font-weight: 700;
+      }
+      .kf-score-warn {
+        color: var(--warn);
+        font-weight: 700;
+      }
+      .kf-score-ok {
+        color: var(--ok);
+        font-weight: 700;
+      }
+      .kf-action {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        flex-shrink: 0;
+        align-self: center;
+        transition: all var(--transition-fast);
+      }
+      .kf-err .kf-action {
+        background: var(--err-bg);
+        color: var(--err);
+      }
+      .kf-warn .kf-action {
+        background: var(--warn-bg);
+        color: var(--warn);
+      }
+      .kf-ok .kf-action {
+        background: var(--ok-bg);
+        color: var(--ok);
+      }
+      .passing-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        font-family: "Urbanist", sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--d400);
+        background: none;
+        border: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 0;
+        padding: 16px 4px 12px;
+        margin-top: 12px;
+        cursor: pointer;
+        transition: color var(--transition-fast);
+      }
+      .passing-toggle:hover {
+        color: var(--d300);
+        background: none;
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+      .passing-toggle .passing-toggle-label {
+        flex: 1;
+        text-align: left;
+      }
+      .passing-toggle svg {
+        width: 12px;
+        height: 12px;
+        transition: transform var(--transition-base);
+        opacity: 0.7;
+      }
+      .passing-section {
+        display: none;
+      }
+      .passing-section.open {
+        display: block;
+        margin-top: 4px;
+      }
+
+      /* 4. Friction Feed (sentiment-friction-v2b) */
+      .friction-feed {
+        display: flex;
+        flex-direction: column;
+      }
+      .signal-card {
+        background: color-mix(in srgb, var(--err) 4%, var(--card-bg));
+        border-radius: 16px 16px 0 0;
+        border: 1px solid rgba(240, 68, 56, 0.3);
+        border-bottom: none;
+      }
+      /* .signal-accent { height: 3px; background: var(--err); border-radius: 16px 16px 0 0; position: relative; overflow: hidden; }
+  .signal-accent::after { content: ''; position: absolute; top: 0; left: 0; height: 3px; width: 40%; background: linear-gradient(90deg, transparent, rgba(255,120,100,0.7), transparent); animation: sweep 2s ease-in-out infinite; } */
+      .signal-body {
+        padding: 20px;
+      }
+      .signal-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+      .signal-badge {
+        font-size: 9px;
+        font-weight: 700;
+        padding: 3px 9px;
+        border-radius: 20px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        background: var(--err-bg);
+        color: var(--err);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex-shrink: 0;
+      }
+      .signal-badge-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--err);
+        animation: blink 1.2s ease-in-out infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.25;
+        }
+      }
+      .signal-type {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d300);
+        letter-spacing: 0.04em;
+      }
+      .signal-time {
+        font-size: 10px;
+        color: var(--d400);
+        margin-left: auto;
+      }
+      .signal-statement {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--d50);
+        line-height: 1.52;
+        letter-spacing: -0.01em;
+        margin-bottom: 16px;
+      }
+      .hl-err {
+        color: var(--err);
+      }
+      .hl-warn {
+        color: var(--warn);
+      }
+      .raw-data-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        background: none;
+        border: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 10px 20px;
+        margin: 0 -20px;
+        width: calc(100% + 40px);
+        font-family: "Urbanist", sans-serif;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--d400);
+        cursor: pointer;
+        text-align: left;
+        transition:
+          color var(--transition-fast),
+          background var(--transition-fast);
+        border-radius: 0;
+      }
+      .raw-data-toggle:hover {
+        color: var(--d300);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .toggle-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: background var(--transition-fast);
+      }
+      .raw-data-toggle:hover .toggle-icon {
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .toggle-icon svg {
+        width: 9px;
+        height: 9px;
+        color: var(--d400);
+        transition: transform var(--transition-base);
+      }
+      .raw-data-toggle.open .toggle-icon svg {
+        transform: rotate(180deg);
+      }
+      .toggle-label {
+        flex: 1;
+      }
+      .toggle-hint {
+        font-size: 10px;
+        color: var(--d700);
+        font-weight: 500;
+      }
+      .collapsible-section {
+        display: none;
+      }
+      .collapsible-section.open {
+        display: block;
+      }
+      .spike-chart-wrap {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        padding: 12px 16px 10px;
+        margin: 12px 0 0;
+      }
+      .spike-chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .spike-chart-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--d400);
+      }
+      .spike-chart-legend {
+        display: flex;
+        gap: 12px;
+      }
+      .spike-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 9px;
+        color: var(--d300);
+      }
+      .spike-legend-line {
+        width: 14px;
+        height: 1.5px;
+        border-radius: 1px;
+      }
+      .spike-chart-area {
+        position: relative;
+        height: 72px;
+      }
+      .spike-chart-area svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      .spike-annotation {
+        position: absolute;
+        background: var(--d750);
+        border: 1px solid rgba(240, 68, 56, 0.35);
+        border-radius: 8px;
+        padding: 5px 9px;
+        font-size: 10px;
+        color: var(--d300);
+        pointer-events: none;
+        white-space: nowrap;
+        line-height: 1.4;
+        top: -4px;
+        right: 0;
+        z-index: 2;
+      }
+      .spike-annotation strong {
+        color: var(--err);
+        font-weight: 700;
+      }
+      .spike-annotation::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid var(--d700);
+      }
+      .spike-x-labels {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0 0;
+        font-size: 9px;
+        color: var(--d400);
+      }
+      .driver-section {
+        margin: 10px 0 0;
+      }
+      .driver-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--d400);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .driver-label::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .driver-bars {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .driver-bar-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .driver-bar-name {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--d50);
+        width: 140px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .driver-icon {
+        font-size: 12px;
+      }
+      .primary-driver-badge {
+        font-size: 8px;
+        font-weight: 700;
+        padding: 1px 5px;
+        border-radius: 8px;
+        background: var(--err-bg);
+        color: var(--err);
+        flex-shrink: 0;
+      }
+      .driver-bar-track {
+        flex: 1;
+        height: 7px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .driver-bar-fill {
+        height: 100%;
+        border-radius: 4px;
+      }
+      .driver-bar-fill.primary {
+        background: linear-gradient(90deg, #f04438, #fb7067);
+        box-shadow: 0 0 8px rgba(240, 68, 56, 0.4);
+        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) both;
+      }
+      .driver-bar-fill.secondary {
+        background: rgba(240, 68, 56, 0.35);
+        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
+      }
+      .driver-bar-fill.minor {
+        background: rgba(240, 68, 56, 0.38);
+        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+      }
+      .driver-bar-fill.neutral {
+        background: rgba(23, 178, 106, 0.3);
+        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.25s both;
+      }
+      @keyframes grow {
+        from {
+          width: 0;
+        }
+      }
+      .driver-bar-stat {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--d50);
+        width: 36px;
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .driver-bar-stat.primary-stat {
+        color: var(--err);
+      }
+      .signal-action-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding-top: 16px;
+        padding-bottom: 4px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        flex-wrap: wrap;
+      }
+      .primary-action-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--err-bg);
+        border: 1px solid rgba(240, 68, 56, 0.3);
+        border-radius: 8px;
+        padding: 9px 16px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--err);
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        transition: all var(--transition-fast);
+        white-space: nowrap;
+      }
+      .primary-action-btn:hover {
+        background: rgba(240, 68, 56, 0.18);
+        border-color: rgba(240, 68, 56, 0.5);
+      }
+      .primary-action-btn svg {
+        width: 13px;
+        height: 13px;
+        flex-shrink: 0;
+      }
+      .secondary-actions {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .sec-btn {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d400);
+        padding: 6px 11px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        background: rgba(255, 255, 255, 0.02);
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        transition: all var(--transition-fast);
+        white-space: nowrap;
+      }
+      .sec-btn:hover {
+        color: var(--d300);
+        border-color: rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .feed-items {
+        background: var(--card-bg);
+        border-radius: 0 0 16px 16px;
+        border: 1px solid rgba(240, 68, 56, 0.15);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+      }
+      .feed-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 16px;
+        background: rgba(0, 0, 0, 0.12);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .feed-header-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--d400);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .feed-count {
+        background: var(--err-bg);
+        color: var(--err);
+        font-size: 9px;
+        font-weight: 700;
+        padding: 1px 6px;
+        border-radius: 8px;
+      }
+      .feed-view-all {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d400);
+        cursor: pointer;
+        transition: color var(--transition-fast);
+      }
+      .feed-view-all:hover {
+        color: var(--d50);
+      }
+      .feed-item {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        transition: background var(--transition-fast);
+        cursor: pointer;
+      }
+      .feed-item:last-child {
+        border-bottom: none;
+      }
+      .feed-item:hover {
+        background: rgba(255, 255, 255, 0.025);
+      }
+      .sentiment-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 14px;
+        margin-top: 1px;
+      }
+      .sentiment-icon.neg {
+        background: var(--err-bg);
+      }
+      .sentiment-icon.warn {
+        background: var(--warn-bg);
+      }
+      .sentiment-icon.pos {
+        background: var(--ok-bg);
+      }
+      .feed-body {
+        flex: 1;
+        min-width: 0;
+      }
+      .feed-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 3px;
+        line-height: 1.35;
+      }
+      .feed-detail {
+        font-size: 10px;
+        color: var(--d50);
+        line-height: 1.4;
+        opacity: 0.75;
+      }
+      .feed-detail .category {
+        color: var(--d50);
+        font-weight: 600;
+      }
+      .feed-right {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+      .feed-delta {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 8px;
+      }
+      .feed-delta.neg {
+        background: var(--err-bg);
+        color: var(--err);
+      }
+      .feed-delta.warn {
+        background: var(--warn-bg);
+        color: var(--warn);
+      }
+      .feed-delta.pos {
+        background: var(--ok-bg);
+        color: var(--ok);
+      }
+      .feed-agents {
+        font-size: 9px;
+        color: var(--d400);
+      }
+      .feed-spark svg {
+        width: 72px;
+        height: 16px;
+        overflow: visible;
+        display: block;
+      }
+      @keyframes pulse-ring {
+        0% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        100% {
+          transform: scale(1.8);
+          opacity: 0;
+        }
+      }
+      .sparkle {
+        fill: url(#sg);
+      }
+
+      /* Severity dot — replaces ornamental icon badge.
+     Sits inline at the left anchor of the meta row. Color matches priority. */
+      .severity-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
+      }
+      .p1 .severity-dot {
+        background: var(--err);
+      }
+      .p2 .severity-dot {
+        background: var(--warn);
+      }
+      .p3 .severity-dot {
+        background: var(--ok);
+      }
+
+      /* ── Knowledge-First Quality Score Chart (from dashboardqa2) ─ */
+      /* AiMY signal bar — knowledge-first lead */
+      .kf-signal-action {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--warn);
+        background: rgba(247, 144, 9, 0.1);
+        border: 1px solid rgba(247, 144, 9, 0.2);
+        border-radius: 8px;
+        padding: 5px 11px;
+        cursor: pointer;
+        white-space: nowrap;
+        font-family: "Urbanist", sans-serif;
+        transition: all var(--transition-fast);
+        align-self: center;
+        flex-shrink: 0;
+      }
+      .kf-signal-action:hover {
+        background: rgba(247, 144, 9, 0.18);
+      }
+
+      /* Chart component */
+      .chart-v2 {
+        background: var(--card-bg);
+        border-radius: 16px;
+        border: 1px solid var(--card-border);
+        padding: 24px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+      }
+      /* Quality Score header — 2-row layout for breathing room */
+      .v2-header {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .v2-header-row1 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .v2-header-left {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .v2-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--d50);
+        line-height: 1.2;
+        letter-spacing: -0.01em;
+      }
+      .v2-subtitle {
+        font-size: 11px;
+        color: var(--d400);
+        white-space: nowrap;
+      }
+      /* Row 2: controls toolbar — range tabs left, secondary actions right */
+      .v2-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: nowrap;
+        padding: 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        padding-top: 10px;
+      }
+      /* AI query input moves to its own row above controls */
+      .v2-query-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: -4px;
+      }
+     .v2-ai-input-full {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 7px 12px;
+  transition: border-color var(--transition-base);
+}
+
+/* This keeps the focus on the container */
+.v2-ai-input-full:focus-within {
+  border-color: rgba(0, 102, 255, 0.4);
+}
+
+.v2-ai-input-full svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.v2-ai-input-full input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--d50);
+  font-family: inherit;
+  font-size: 11px;
+  width: 100%;
+}
+
+/* Add this block to remove the inner focus ring */
+.v2-ai-input-full input:focus,
+.v2-ai-input-full input:focus-visible {
+  outline: none;
+  box-shadow: none; 
+}
+      .v2-ai-input {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--d600);
+        border-radius: 20px;
+        padding: 6px 12px;
+        width: 180px;
+        transition: border-color var(--transition-base);
+      }
+      .v2-ai-input:focus-within {
+        border-color: rgba(0, 102, 255, 0.4);
+      }
+      .v2-ai-input svg {
+        width: 12px;
+        height: 12px;
+        flex-shrink: 0;
+      }
+      .v2-ai-input input {
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--d50);
+        font-family: inherit;
+        font-size: 11px;
+        width: 100%;
+      }
+      .range-tabs {
+        display: flex;
+        background: rgba(0, 0, 0, 0.25);
+        border-radius: 8px;
+        padding: 3px;
+        gap: 2px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .range-tab {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d400);
+        padding: 5px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-family: "Urbanist", sans-serif;
+        transition: all var(--transition-fast);
+      }
+      .range-tab:hover {
+        color: var(--d300);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .range-tab.active {
+        background: var(--d700);
+        color: var(--d50);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+      }
+      .compare-toggle {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d300);
+        cursor: pointer;
+        padding: 5px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.03);
+        font-family: "Urbanist", sans-serif;
+        transition: all var(--transition-fast);
+      }
+      .compare-toggle:hover {
+        color: var(--d50);
+        border-color: rgba(255, 255, 255, 0.18);
+      }
+      .compare-toggle.active {
+        border-color: rgba(0, 102, 255, 0.4);
+        color: #61adf1;
+        background: rgba(0, 102, 255, 0.06);
+      }
+      .compare-toggle svg {
+        width: 12px;
+        height: 12px;
+      }
+      .ai-insight-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--teal);
+        padding: 5px 10px;
+        border: 1px solid rgba(111, 223, 226, 0.3);
+        border-radius: 8px;
+        background: rgba(111, 223, 226, 0.06);
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        transition: all var(--transition-fast);
+      }
+      .ai-insight-btn:hover {
+        background: rgba(111, 223, 226, 0.12);
+        border-color: rgba(111, 223, 226, 0.5);
+      }
+      .ai-insight-btn svg {
+        width: 12px;
+        height: 12px;
+      }
+      .v2-stats-row {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        flex-wrap: wrap;
+        align-items: flex-start;
+      }
+      .v2-stat {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .v2-stat-label {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--d400);
+      }
+      .v2-stat-value {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--d50);
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+      .v2-stat-delta {
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .v2-stat-delta.up {
+        color: var(--ok);
+      }
+      .v2-stat-delta.down {
+        color: var(--err);
+      }
+      .v2-stat-divider {
+        width: 1px;
+        background: rgba(255, 255, 255, 0.07);
+        align-self: stretch;
+        margin: 0 8px;
+      }
+      .v2-legend {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        margin-left: auto;
+        flex-wrap: wrap;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 10px;
+        color: var(--d400);
+        font-weight: 500;
+      }
+      .legend-line {
+        width: 18px;
+        height: 2px;
+        border-radius: 2px;
+      }
+      .v2-chart-area {
+        position: relative;
+        height: 220px;
+      }
+      .v2-chart-area svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      .chart-tooltip {
+        position: absolute;
+        background: var(--d800);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        padding: 8px 12px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.1s;
+        z-index: 30;
+        min-width: 120px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+      .chart-tooltip.visible {
+        opacity: 1;
+      }
+      .tooltip-month {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--d400);
+        margin-bottom: 5px;
+      }
+      .tooltip-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+      .tooltip-label {
+        font-size: 11px;
+        color: var(--d400);
+      }
+      .tooltip-value {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--d50);
+      }
+      .tooltip-value.prev {
+        color: var(--d600);
+      }
+      .ai-insight-panel {
+        background: rgba(0, 102, 255, 0.07);
+        border: 1px solid rgba(0, 102, 255, 0.22);
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-top: 12px;
+        display: none;
+      }
+      .ai-insight-panel.visible {
+        display: block;
+      }
+      .ai-insight-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .ai-insight-header span {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #61adf1;
+      }
+      /* Memory cue — signals continuity across sessions. Surfaces when AiMY
+     is picking up a thread the user was already working on. */
+      .memory-cue {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--d400);
+        padding: 3px 8px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 20px;
+        margin-left: auto;
+      }
+      .memory-cue svg {
+        width: 9px;
+        height: 9px;
+        opacity: 0.7;
+      }
+
+      .ai-insight-text {
+        font-size: 13px;
+        color: var(--d300);
+        line-height: 1.6;
+      }
+      .ai-insight-text strong {
+        color: var(--d50);
+        font-weight: 600;
+      }
+      .anno-card {
+        position: absolute;
+        background: var(--d700);
+        border: 1px solid rgba(240, 68, 56, 0.3);
+        border-radius: 8px;
+        padding: 10px 12px;
+        width: 170px;
+        max-width: calc(100vw - 80px);
+        bottom: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        z-index: 20;
+      }
+      @media (max-width: 768px) {
+        .chart-annotation .anno-card,
+        .chart-annotation .peak-card {
+          left: auto;
+          right: 0;
+          transform: none;
+        }
+      }
+      .anno-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 4px;
+      }
+      .anno-header strong {
+        font-size: 12px;
+        color: var(--err);
+        line-height: 1;
+      }
+      .anno-score {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--d50);
+      }
+      .anno-card p {
+        font-size: 11px;
+        color: var(--d300);
+        line-height: 1.4;
+        margin-bottom: 8px;
+      }
+      .anno-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--err);
+        background: var(--err-bg);
+        border: none;
+        border-radius: 8px;
+        padding: 4px 8px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all var(--transition-fast);
+      }
+      .anno-btn:hover {
+        background: rgba(240, 68, 56, 0.18);
+      }
+      .anno-btn svg {
+        width: 10px;
+        height: 10px;
+      }
+      .peak-card {
+        position: absolute;
+        background: var(--d700);
+        border: 1px solid rgba(23, 178, 106, 0.3);
+        border-radius: 8px;
+        padding: 7px 10px;
+        font-size: 11px;
+        color: var(--d400);
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        z-index: 20;
+        line-height: 1.4;
+      }
+      .peak-card span {
+        color: var(--ok);
+        font-weight: 700;
+      }
+      .anno-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--d400);
+        border: 2px solid var(--d800);
+        margin: 0 auto;
+      }
+      .peak .anno-dot {
+        background: var(--ok);
+      }
+      .anomaly .anno-dot {
+        background: var(--err);
+        box-shadow: 0 0 0 4px rgba(240, 68, 56, 0.15);
+      }
+      .chart-annotation {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+      }
+      .chart-annotation:hover .anno-card,
+      .chart-annotation:hover .peak-card {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-2px);
+      }
+
+      /* ── Skeleton loading states ──────────────────────────────
+     Rendered by default before data hydrates. Build agent binds
+     state logic to swap skeletons for live content. */
+      @keyframes skeleton-shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          var(--card-bg) 0%,
+          rgba(255, 255, 255, 0.04) 50%,
+          var(--card-bg) 100%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-shimmer 1.8s linear infinite;
+        border-radius: 8px;
+        border: 1px solid var(--card-border);
+      }
+      .skeleton-card {
+        height: 180px;
+        border-radius: 16px;
+      }
+      .skeleton-row {
+        height: 48px;
+        margin-bottom: 8px;
+      }
+      .skeleton-chart {
+        height: 280px;
+        border-radius: 16px;
+      }
+      .skeleton-text {
+        height: 12px;
+        border-radius: 4px;
+        border: none;
+        margin-bottom: 8px;
+      }
+      .skeleton-text.short {
+        width: 40%;
+      }
+      .skeleton-text.medium {
+        width: 70%;
+      }
+
+      /* ══ FLOATING AIMY INPUT ════════════════════════════════════════
+     Fixed to the bottom of .app-main, pill shape matching screenshot. */
+
+      .aimy-float-wrap {
+        position: absolute;
+        bottom: 20px;
+        left: 24px;
+        right: 24px;
+        z-index: 200;
+        display: flex;
+        justify-content: center;
+        pointer-events: none;
+      }
+
+      .aimy-float-bar {
+        pointer-events: all;
+        width: 100%;
+        max-width: 760px;
+        background: #1e2428;
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 40px;
+        box-shadow:
+          0 8px 32px rgba(0, 0, 0, 0.55),
+          0 0 0 1px rgba(0, 0, 0, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 8px 8px 8px;
+        transition:
+          border-color var(--transition-base),
+          box-shadow var(--transition-base),
+          transform var(--transition-base);
+      }
+
+      .aimy-float-bar:focus-within {
+        border-color: rgba(var(--qa-accent-rgb), 0.55);
+        box-shadow:
+          0 12px 40px rgba(0, 0, 0, 0.6),
+          0 0 0 3px rgba(var(--qa-accent-rgb), 0.18),
+          0 0 24px rgba(var(--qa-accent-rgb), 0.12),
+          inset 0 1px 0 rgba(255, 255, 255, 0.07);
+        outline: none;
+      }
+
+      .aimy-float-bar.hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(8px);
+      }
+
+      /* AI bubble icon on the left — the small AiMY logo in a circle */
+      .aimy-float-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          #3d1f6b 0%,
+          #1a3a6e 50%,
+          #163b5e 100%
+        );
+        border: 1px solid rgba(139, 79, 244, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 0 12px rgba(100, 60, 200, 0.25);
+      }
+      .aimy-float-icon svg {
+        width: 18px;
+        height: 20px;
+      }
+
+      .aimy-float-input {
+        flex: 1;
+        background: none;
+        border: none;
+        outline: none !important;
+        box-shadow: none !important;
+        -webkit-appearance: none;
+        font-family: "Urbanist", sans-serif;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: var(--d50);
+        caret-color: var(--qa-accent);
+        line-height: 1.4;
+        padding: 0 4px;
+      }
+      .aimy-float-input:focus,
+      .aimy-float-input:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+      }
+      .aimy-float-input::placeholder {
+        color: var(--d500);
+        font-weight: 400;
+      }
+
+      .aimy-float-hint {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--d500);
+        letter-spacing: 0.01em;
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding-right: 6px;
+        pointer-events: none;
+        transition: opacity var(--transition-base);
+      }
+
+      .aimy-float-send {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--qa-accent);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all var(--transition-fast);
+        box-shadow: 0 2px 10px rgba(var(--qa-accent-rgb), 0.4);
+      }
+      .aimy-float-send:hover {
+        box-shadow: 0 4px 18px rgba(var(--qa-accent-rgb), 0.55);
+        transform: translateY(-1px);
+      }
+      .aimy-float-send:active {
+        transform: translateY(0);
+      }
+      .aimy-float-send svg {
+        width: 14px;
+        height: 14px;
+        stroke: #fff;
+      }
+
+      /* "Thinking" state — spinner replaces send arrow */
+      .aimy-float-send.thinking {
+        background: rgba(var(--qa-accent-rgb), 0.25);
+        cursor: default;
+        box-shadow: none;
+        transform: none;
+      }
+      .aimy-float-send.thinking .send-icon {
+        display: none;
+      }
+      .aimy-float-send .think-spinner {
+        display: none;
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(var(--qa-accent-rgb), 0.3);
+        border-top-color: var(--qa-accent);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+      .aimy-float-send.thinking .think-spinner {
+        display: block;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Filter-applied flash — brief glow on the bar */
+      @keyframes filterFlash {
+        0% {
+          border-color: rgba(var(--qa-accent-rgb), 0.7);
+          box-shadow: 0 0 0 4px rgba(var(--qa-accent-rgb), 0.15);
+        }
+        100% {
+          border-color: rgba(255, 255, 255, 0.1);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+        }
+      }
+      .aimy-float-bar.filter-applied {
+        animation: filterFlash 600ms ease-out forwards;
+      }
+
+      /* ══ CHAT OVERLAY ════════════════════════════════════════════════
+     Full-screen frosted glass layer. Pure blur + transparency,
+     no solid dim. */
+
+      .aimy-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 500;
+        /* Frosted glass: blur the underlying content, no dark dim */
+        backdrop-filter: blur(28px) saturate(1.4) brightness(0.85);
+        -webkit-backdrop-filter: blur(28px) saturate(1.4) brightness(0.85);
+        background: rgba(20, 27, 34, 0.30);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 0 28px;
+        /* Entry / exit animation */
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 280ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .aimy-overlay.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      /* Close button — top right corner */
+      .overlay-close {
+        position: absolute;
+        top: 24px;
+        right: 28px;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all var(--transition-fast);
+        color: var(--d300);
+      }
+      .overlay-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.18);
+        color: var(--d50);
+      }
+      .overlay-close svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        stroke-width: 2;
+      }
+
+      /* Overlay header badge — "AiMY Chat" label */
+      .overlay-badge {
+        position: absolute;
+        top: 28px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--d400);
+        padding: 5px 12px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+      }
+      .overlay-badge svg {
+        width: 11px;
+        height: 11px;
+      }
+
+      /* Conversation thread area */
+      .overlay-thread {
+        width: 100%;
+        max-width: 720px;
+        flex: 1;
+        overflow-y: auto;
+        padding: 80px 0 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        /* Fade in from below on open */
+        transform: translateY(16px);
+        transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .aimy-overlay.open .overlay-thread {
+        transform: translateY(0);
+      }
+
+      .overlay-thread::-webkit-scrollbar {
+        width: 4px;
+      }
+      .overlay-thread::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .overlay-thread::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 2px;
+      }
+
+      /* Message bubbles */
+      .chat-msg {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 0 4px;
+      }
+      .chat-msg.user {
+        flex-direction: row-reverse;
+      }
+
+      .msg-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .msg-avatar.aimy-av {
+        background: rgba(70, 40, 140, 0.35);
+        border: 1px solid rgba(139, 79, 244, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .msg-avatar.aimy-av svg {
+        width: 14px;
+        height: 16px;
+      }
+      .msg-avatar.user-av {
+        background: linear-gradient(135deg, #7c3aed, #3369ff);
+        color: #fff;
+        font-size: 9px;
+      }
+
+      .msg-bubble {
+        max-width: 540px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.6;
+        color: var(--d50);
+      }
+      .chat-msg.aimy .msg-bubble {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 4px 12px 12px 12px;
+      }
+      .chat-msg.user .msg-bubble {
+        background: rgba(var(--qa-accent-rgb), 0.14);
+        border: 1px solid rgba(var(--qa-accent-rgb), 0.22);
+        border-radius: 12px 4px 12px 12px;
+        color: var(--d100);
+      }
+
+      /* AiMY typing indicator */
+      .typing-dots {
+        display: flex;
+        gap: 4px;
+        padding: 6px 4px;
+        align-items: center;
+      }
+      .typing-dots span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--d500);
+        animation: typingBounce 1.2s ease-in-out infinite;
+      }
+      .typing-dots span:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+      .typing-dots span:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      @keyframes typingBounce {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.4;
+        }
+        30% {
+          transform: translateY(-5px);
+          opacity: 1;
+        }
+      }
+
+      /* Overlay input bar — mirrors the floating bar but full-width */
+      .overlay-input-wrap {
+        width: 100%;
+        max-width: 720px;
+        flex-shrink: 0;
+        /* Slides up on overlay open */
+        transform: translateY(12px);
+        opacity: 0;
+        transition:
+          transform 300ms 80ms cubic-bezier(0.22, 1, 0.36, 1),
+          opacity 300ms 80ms ease;
+      }
+      .aimy-overlay.open .overlay-input-wrap {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .overlay-input-bar {
+        background: rgba(20, 27, 36, 0.72);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 40px;
+        box-shadow:
+          0 8px 32px rgba(0, 0, 0, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 12px 12px 16px;
+        transition:
+          border-color var(--transition-base),
+          box-shadow var(--transition-base);
+      }
+      .overlay-input-bar:focus-within {
+        border-color: rgba(var(--qa-accent-rgb), 0.45);
+        box-shadow:
+          0 12px 40px rgba(0, 0, 0, 0.5),
+          0 0 0 3px rgba(var(--qa-accent-rgb), 0.1),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
+
+      .overlay-input {
+        flex: 1;
+        background: none;
+        border: none;
+        outline: none;
+        font-family: "Urbanist", sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--d50);
+        caret-color: var(--qa-accent);
+        line-height: 1.4;
+        resize: none;
+        min-height: 24px;
+        max-height: 120px;
+        overflow-y: auto;
+      }
+      .overlay-input::placeholder {
+        color: var(--d500);
+        font-weight: 400;
+      }
+
+      .overlay-send {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--qa-accent);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all var(--transition-fast);
+        box-shadow: 0 2px 10px rgba(var(--qa-accent-rgb), 0.4);
+      }
+      .overlay-send:hover {
+        box-shadow: 0 4px 20px rgba(var(--qa-accent-rgb), 0.55);
+        transform: translateY(-1px);
+      }
+      .overlay-send svg {
+        width: 15px;
+        height: 15px;
+        stroke: #fff;
+      }
+
+      /* Overlay suggested prompts — shown when thread is empty */
+      .overlay-suggestions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        padding: 0 4px;
+        justify-content: center;
+        /* Fades out once user starts chatting */
+        transition:
+          opacity 200ms,
+          transform 200ms;
+      }
+      .overlay-suggestions.hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(6px);
+      }
+      .overlay-sugg-chip {
+        font-family: "Urbanist", sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--d300);
+        padding: 7px 14px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        white-space: nowrap;
+      }
+      .overlay-sugg-chip:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.16);
+        color: var(--d50);
+      }
+
+      /* Styled scrollbar */
+      .dashboard-scroll::-webkit-scrollbar {
+        width: 6px;
+      }
+      .dashboard-scroll::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .dashboard-scroll::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+      }
+      .dashboard-scroll::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      /* ── Chips component ─────────────────────────────────────── */
+      .v2-chips-header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .v2-chips-suggested {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .v2-chips-suggested span {
+        color: #61adf1;
+      }
+      .v2-chips-suggested svg {
+        width: 12px;
+        height: 12px;
+      }
+      .v2-chips-context {
+        font-size: 12px;
+        color: var(--d400);
+        font-style: italic;
+      }
+      .v2-refresh-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d400);
+        padding: 4px 10px;
+        border: 1px solid var(--d700);
+        border-radius: 8px;
+        background: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all var(--transition-fast);
+      }
+      .v2-refresh-btn:hover {
+        color: var(--d300);
+        border-color: var(--d600);
+      }
+      .v2-refresh-btn svg {
+        width: 11px;
+        height: 11px;
+      }
+      .v2-chips {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .v2-chip {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 16px 16px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.03);
+        cursor: pointer;
+        transition: all var(--transition-base);
+        min-width: 180px;
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+      }
+      .v2-chip::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        opacity: 0;
+        transition: opacity var(--transition-base);
+      }
+      .v2-chip:hover {
+        background: rgba(255, 255, 255, 0.06);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      }
+      .v2-chip:hover::before {
+        opacity: 1;
+      }
+      .v2-chip.urgent {
+        border-color: rgba(240, 68, 56, 0.3);
+        background: rgba(240, 68, 56, 0.04);
+      }
+      .v2-chip.urgent::before {
+        background: var(--err);
+      }
+      .v2-chip.caution {
+        border-color: rgba(247, 144, 9, 0.3);
+        background: rgba(247, 144, 9, 0.04);
+      }
+      .v2-chip.caution::before {
+        background: var(--warn);
+      }
+      .v2-chip.explore {
+        border-color: rgba(0, 102, 255, 0.25);
+        background: rgba(0, 102, 255, 0.04);
+      }
+      .v2-chip.explore::before {
+        background: var(--ai);
+      }
+      .v2-chip.dismissed {
+        opacity: 0;
+        transform: scale(0.95);
+        pointer-events: none;
+        transition: all var(--transition-base);
+      }
+      .v2-chip-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .v2-chip-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--d50);
+        line-height: 1.4;
+      }
+      .v2-chip-badge {
+        font-size: 9px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 20px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        letter-spacing: 0.04em;
+      }
+      .v2-chip-badge.urgent-badge {
+        background: var(--err-bg);
+        color: var(--err);
+      }
+      .v2-chip-badge.caution-badge {
+        background: var(--warn-bg);
+        color: var(--warn);
+      }
+      .v2-chip-badge.explore-badge {
+        background: rgba(0, 102, 255, 0.1);
+        color: #61adf1;
+      }
+      .v2-chip-sub {
+        font-size: 11px;
+        color: var(--d300);
+        line-height: 1.45;
+      }
+      .v2-chip-sub strong {
+        color: var(--d50);
+        font-weight: 600;
+      }
+      .v2-chip-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 2px;
+      }
+      .v2-chip-action {
+        font-size: 11px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .v2-chip-action svg {
+        width: 10px;
+        height: 10px;
+      }
+      .urgent-action {
+        color: var(--err);
+      }
+      .caution-action {
+        color: var(--warn);
+      }
+      .explore-action {
+        color: #61adf1;
+      }
+      .v2-chip-dismiss {
+        font-size: 11px;
+        color: var(--d600);
+        cursor: pointer;
+        padding: 2px 4px;
+        border-radius: 4px;
+        transition: color var(--transition-fast);
+        line-height: 1;
+      }
+      .v2-chip-dismiss:hover {
+        color: var(--d400);
+      }
+
+      /* ── AiMY Toast — trust-recovery pattern for destructive actions ─────────
+     Surfaces after a chip is dismissed, offering a 5-second undo window
+     and a light signal that the dismissal updates AiMY's suggestions. */
+      .aimy-toast {
+        position: fixed;
+        bottom: 90px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px) scale(0.97);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 10px 10px 14px;
+        /* Layered glass surface */
+        background: rgba(22, 30, 42, 0.82);
+        backdrop-filter: blur(24px) saturate(1.8);
+        -webkit-backdrop-filter: blur(24px) saturate(1.8);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 14px;
+        box-shadow:
+          0 20px 60px rgba(0, 0, 0, 0.55),
+          0 0 0 1px rgba(0, 0, 0, 0.25),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        font-family: "Urbanist", sans-serif;
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          opacity 220ms cubic-bezier(0.22, 1, 0.36, 1),
+          transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+          visibility 220ms;
+        z-index: 1000;
+        min-width: 300px;
+        max-width: calc(100vw - 48px);
+        overflow: hidden;
+      }
+      /* AI gradient left-edge accent */
+      /* .aimy-toast::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 12%; bottom: 12%;
+    width: 2px;
+    border-radius: 0 2px 2px 0;
+    background: var(--ai);
+    opacity: 0.9;
+  } */
+      .aimy-toast.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0) scale(1);
+      }
+      .aimy-toast-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
+        background: rgba(var(--qa-accent-rgb), 0.1);
+        border: 1px solid rgba(var(--qa-accent-rgb), 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .aimy-toast-icon svg {
+        width: 13px;
+        height: 13px;
+      }
+      .aimy-toast-body {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        flex: 1;
+        min-width: 0;
+      }
+      .aimy-toast-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--d50);
+        line-height: 1.3;
+        letter-spacing: -0.005em;
+      }
+      .aimy-toast-sub {
+        font-size: 11px;
+        font-weight: 400;
+        color: var(--d400);
+        line-height: 1.4;
+      }
+      /* Divider between body and undo */
+      .aimy-toast-divider {
+        width: 1px;
+        height: 28px;
+        background: rgba(255, 255, 255, 0.08);
+        flex-shrink: 0;
+      }
+      .aimy-toast-undo {
+        font-family: "Urbanist", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        color: #61adf1;
+        background: none;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition:
+          background var(--transition-fast),
+          color var(--transition-fast);
+        flex-shrink: 0;
+        letter-spacing: -0.01em;
+      }
+      .aimy-toast-undo:hover {
+        background: rgba(97, 173, 241, 0.1);
+        color: #93caff;
+      }
+      /* Progress bar — runs along the very bottom edge */
+      .aimy-toast-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 1.5px;
+        background: linear-gradient(90deg, #0066ff, #61adf1, #6fdfe2);
+        border-radius: 0 0 14px 14px;
+        width: 100%;
+        transform-origin: left;
+        animation: toast-countdown 5s linear forwards;
+      }
+      @keyframes toast-countdown {
+        from {
+          transform: scaleX(1);
+        }
+        to {
+          transform: scaleX(0);
+        }
+      }
+
+      /* ── AiMY Context Panel ────────────────────────────────────
+     Two-zone card: state detection (top) + AI suggestions (bottom).
+     Linked by the AiMY detection — the detected state drives the chips.
+     Alt states always visible so the user sees what AiMY is choosing between. */
+      .aimy-context-panel {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        margin-bottom: 12px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+      .context-zone {
+        padding: 16px 20px;
+      }
+      .context-zone--state {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        background: rgba(255, 255, 255, 0.015);
+      }
+      .context-zone-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+      .context-zone--suggestions .context-zone-header {
+        justify-content: space-between;
+      }
+      /* The suggestions zone doesn't need the extra bottom margin when chips follow directly */
+      .context-zone--suggestions {
+        padding-bottom: 20px;
+      }
+
+      /* Shared label style used by both zone headers */
+      .state-bar-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--d400);
+        flex-shrink: 0;
+      }
+      .state-bar-label svg {
+        width: 11px;
+        height: 11px;
+      }
+      .state-bar-label .label-text {
+        color: #61adf1;
+      }
+
+      /* Detected state pill — marks the currently-selected AiMY detection */
+      .state-detected-pill {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 12px 5px 10px;
+        background: rgba(var(--qa-accent-rgb), 0.1);
+        border: 1px solid rgba(var(--qa-accent-rgb), 0.28);
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--d50);
+        transition:
+          background var(--transition-fast),
+          border-color var(--transition-fast);
+      }
+      .state-detected-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--qa-accent);
+        box-shadow: 0 0 0 2px rgba(var(--qa-accent-rgb), 0.2);
+        flex-shrink: 0;
+      }
+      .state-confidence {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        color: var(--d400);
+        padding: 2px 6px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        margin-left: 2px;
+      }
+
+      /* Always-visible alt-states row. Each alt is a clickable state-filter
+     that swaps the detected state + chips beneath. */
+      .state-alts {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .state-alts-label {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--d600);
+        flex-shrink: 0;
+      }
+      .state-alts-list {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .state-alt {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d400);
+        padding: 4px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        background: none;
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        transition: all var(--transition-fast);
+      }
+      .state-alt:hover {
+        color: var(--d300);
+        border-color: rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      /* Quick actions bar */
+      .quick-actions-bar {
+        display: flex;
+        gap: 10px;
+        padding: 16px 32px;
+        background: var(--d950);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        flex-shrink: 0;
+      }
+      .quick-action-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        font-family: "Urbanist", sans-serif;
+        cursor: pointer;
+        transition: all var(--transition-base);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--d300);
+      }
+      .quick-action-btn:hover {
+        background: rgba(51, 105, 255, 0.1);
+        border-color: rgba(51, 105, 255, 0.3);
+        color: #61adf1;
+        box-shadow: 0 0 20px rgba(51, 105, 255, 0.15);
+        transform: translateY(-1px);
+      }
+      .quick-action-btn svg {
+        width: 12px;
+        height: 12px;
+      }
+
+      /* ══ MERGED: Evaluation & Friction Panel ═══════════════════ */
+      .eval-panel {
+        background: var(--card-bg);
+        border-radius: 16px;
+        border: 1px solid var(--card-border);
+        overflow: hidden;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+      }
+
+      /* ── Panel header ────────────────────────────────────────── */
+      .eval-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 20px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .eval-header-left {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .eval-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--d50);
+        letter-spacing: -0.01em;
+      }
+      .eval-subtitle {
+        font-size: 11px;
+        color: var(--d400);
+      }
+      /* Default calm state — shows "Updated N min ago" style info.
+     Red-pulse state only activates when an actual live anomaly is detected
+     (apply .spike modifier class via backend state). */
+      .eval-live-badge {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        background: rgba(51, 105, 255, 0.08);
+        color: #61adf1;
+        border: 1px solid rgba(51, 105, 255, 0.2);
+        padding: 4px 8px;
+        border-radius: 20px;
+        flex-shrink: 0;
+        align-self: flex-start;
+      }
+      .eval-live-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #61adf1;
+      }
+      /* Spike state — only when a real anomaly is detected */
+      .eval-live-badge.spike {
+        background: var(--err-bg);
+        color: var(--err);
+        border-color: rgba(240, 68, 56, 0.25);
+      }
+      .eval-live-badge.spike .eval-live-dot {
+        background: var(--err);
+        animation: blink 1.2s ease-in-out infinite;
+      }
+
+      /* ── Donut + bars section ────────────────────────────────── */
+      .eval-chart-section {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 16px 20px 16px;
+        position: relative; /* anchor for floating causes panel */
+      }
+
+      /* Donut */
+      .donut-wrap {
+        position: relative;
+        flex-shrink: 0;
+        width: 100px;
+        height: 100px;
+      }
+      .donut-wrap svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+      }
+      .donut-center {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+      }
+      .donut-pct {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--d50);
+        letter-spacing: -0.03em;
+        line-height: 1;
+        transition: all var(--transition-base);
+      }
+      .donut-label {
+        font-size: 9px;
+        font-weight: 600;
+        color: var(--d400);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-top: 2px;
+        transition: all var(--transition-base);
+      }
+
+      /* Segment arcs */
+      .donut-arc {
+        fill: none;
+        stroke-width: 10;
+        stroke-linecap: butt;
+        pointer-events: none; /* hit rings handle interaction — no gap flicker */
+        transition:
+          stroke-width var(--transition-base),
+          filter var(--transition-base),
+          opacity var(--transition-base);
+      }
+      /* Active states applied by JS, not :hover */
+      .donut-arc.active-pass {
+        stroke-width: 13;
+        filter: drop-shadow(0 0 7px rgba(23, 178, 106, 0.7));
+      }
+      .donut-arc.active-border {
+        stroke-width: 13;
+        filter: drop-shadow(0 0 7px rgba(247, 144, 9, 0.7));
+      }
+      .donut-arc.active-fail {
+        stroke-width: 13;
+        filter: drop-shadow(0 0 7px rgba(240, 68, 56, 0.7));
+      }
+      .donut-arc.dimmed {
+        opacity: 0.25;
+      }
+      /* Invisible fat hit rings — no gaps, full donut band coverage */
+      .donut-hit {
+        fill: none;
+        stroke: transparent;
+        stroke-width: 28;
+        cursor: pointer;
+        stroke-linecap: butt;
+      }
+
+      /* Bar rows on the right of donut */
+      .eval-bars {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .eval-bar-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        cursor: pointer;
+        border-radius: 8px;
+        padding: 4px 6px;
+        transition: background var(--transition-fast);
+      }
+      .eval-bar-row:hover {
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .eval-bar-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+      }
+      .eval-bar-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--d300);
+      }
+      .eval-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .eval-bar-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--d50);
+      }
+      .eval-bar-pct {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d400);
+      }
+      .eval-bar-track {
+        height: 4px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.07);
+        overflow: hidden;
+      }
+      .eval-bar-fill {
+        height: 100%;
+        border-radius: 2px;
+        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Floating causes tooltip — absolutely positioned, no layout shift */
+      .eval-causes-float {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 220px;
+        background: var(--d800);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        padding: 10px 12px;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+        z-index: 10;
+        pointer-events: none;
+        /* hidden by default */
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          opacity var(--transition-fast),
+          visibility var(--transition-fast);
+      }
+      .eval-causes-float.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+      .eval-causes-float-title {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--d400);
+        margin-bottom: 7px;
+      }
+      .eval-causes-float-list {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .eval-cause-item {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+        font-size: 11px;
+        color: var(--d300);
+        line-height: 1.4;
+      }
+      .eval-cause-item::before {
+        content: "·";
+        font-size: 13px;
+        flex-shrink: 0;
+        color: var(--d600);
+      }
+      .eval-cause-item .cause-kpi {
+        font-weight: 600;
+        color: var(--d50);
+        flex: 1;
+      }
+      .eval-cause-item .cause-val {
+        font-weight: 700;
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
+      .cause-val.good {
+        color: var(--ok);
+      }
+      .cause-val.warn {
+        color: var(--warn);
+      }
+      .cause-val.bad {
+        color: var(--err);
+      }
+
+      /* ── Trend strip ─────────────────────────────────────────── */
+      .eval-trend-strip {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 20px 16px;
+        flex-wrap: wrap;
+      }
+      .eval-trend-ok {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--ok);
+      }
+      .eval-trend-ok svg {
+        width: 11px;
+        height: 11px;
+      }
+      .eval-borderline-badge {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 9px;
+        border-radius: 20px;
+        background: var(--warn-bg);
+        color: var(--warn);
+        border: 1px solid rgba(247, 144, 9, 0.2);
+        cursor: pointer;
+        transition: background var(--transition-fast);
+      }
+      .eval-borderline-badge:hover {
+        background: rgba(247, 144, 9, 0.2);
+      }
+
+      /* ── AiMY unified insight ────────────────────────────────── */
+      .eval-insight {
+        margin: 0 20px 16px;
+        background: rgba(0, 102, 255, 0.06);
+        border: 1px solid rgba(0, 102, 255, 0.18);
+        border-left: 3px solid var(--brand);
+        border-radius: 0 8px 8px 0;
+        padding: 10px 16px;
+      }
+      .eval-insight-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 6px;
+      }
+      .eval-insight-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: #61adf1;
+      }
+      .eval-insight-text {
+        font-size: 12px;
+        color: var(--d300);
+        line-height: 1.55;
+      }
+      .eval-insight-text strong {
+        color: var(--d50);
+        font-weight: 600;
+      }
+      .eval-insight-text .hl-warn {
+        color: var(--warn);
+        font-weight: 700;
+      }
+      .eval-insight-text .hl-err {
+        color: var(--err);
+        font-weight: 700;
+      }
+
+      /* ── Action row ──────────────────────────────────────────── */
+      .eval-action-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 20px 16px;
+        flex-wrap: wrap;
+      }
+      .eval-primary-btn {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--err-bg);
+        border: 1px solid rgba(240, 68, 56, 0.3);
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--err);
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        transition: all var(--transition-fast);
+        flex-shrink: 0;
+      }
+      .eval-primary-btn:hover {
+        background: rgba(240, 68, 56, 0.18);
+      }
+      .eval-primary-btn svg {
+        width: 12px;
+        height: 12px;
+      }
+      .eval-sec-btn {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d400);
+        padding: 6px 11px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.02);
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        transition: all var(--transition-fast);
+        white-space: nowrap;
+      }
+      .eval-sec-btn:hover {
+        color: var(--d300);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      /* ── Friction feed (bottom section) ─────────────────────── */
+      .eval-feed {
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+      }
+      .eval-feed-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        background: rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .eval-feed-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--d400);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .eval-feed-count {
+        background: var(--err-bg);
+        color: var(--err);
+        font-size: 9px;
+        font-weight: 700;
+        padding: 1px 6px;
+        border-radius: 8px;
+      }
+      .eval-view-all {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d400);
+        cursor: pointer;
+        transition: color var(--transition-fast);
+      }
+      .eval-view-all:hover {
+        color: var(--d50);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ── Ellipse glow layer: #171A1C bg → ellipse → components on top ── -->
+    <div id="appEllipse" aria-hidden="true"></div>
+
+    <svg width="0" height="0" style="position: absolute">
+      <defs>
+        <!-- globalAiGrad: used by AiMY sparkle icons -->
+        <linearGradient id="globalAiGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#0066FF" />
+          <stop offset="50%" stop-color="#61ADF1" />
+          <stop offset="100%" stop-color="#6FDFE2" />
+        </linearGradient>
+        <!-- Main_AiMY_Logo_small symbol — reused in float bar, overlay badge, chat avatars -->
+        <symbol id="aimy-logo-small" viewBox="0 0 18 20">
+          <path
+            d="M11.6944 4.30651C12.421 3.98311 12.9002 3.64422 13.013 3.33792C13.0625 3.20343 13.013 2.89716 13.013 2.89716C13.013 2.89716 13.2142 3.57126 13.6811 3.80924C14.0687 4.00676 15.0074 3.91183 15.2013 4.01191C15.3673 4.06527 14.8077 6.8165 14.3905 6.84948C14.1827 6.86591 13.9299 4.56506 13.3771 4.41728C12.82 4.26836 12.1091 4.45728 11.6944 4.30651Z"
+            fill="url(#als0)"
+          />
+          <path
+            d="M15.1323 7.15345C15.7385 7.66835 16.2515 7.95349 16.5764 7.92246C16.719 7.90883 16.9737 7.73156 16.9737 7.73156C16.9737 7.73156 16.7336 8.04908 16.7213 8.57303C16.7112 9.0079 17.6397 10.1791 17.6334 10.3972C17.6572 10.57 14.7024 10.5563 14.4919 10.1945C14.3871 10.0143 15.6115 9.1353 15.5052 8.57303C15.3982 8.00637 15.176 7.59253 15.1323 7.15345Z"
+            fill="url(#als1)"
+          />
+          <path
+            d="M10.2949 1.6544C9.79919 2.2764 9.53022 2.79806 9.57139 3.12184C9.58947 3.264 9.7746 3.51296 9.7746 3.51296C9.7746 3.51296 9.44974 3.28293 8.92566 3.28704C8.49068 3.29045 7.34904 4.25511 7.13086 4.25569C6.95894 4.28488 5.42138 1.70048 5.77641 1.47885C5.95323 1.36846 8.32899 2.19529 8.88767 2.07154C9.45071 1.94683 9.8574 1.71181 10.2949 1.6544Z"
+            fill="url(#als2)"
+          />
+          <path
+            d="M15.9232 14.5438C15.7954 15.1648 15.6111 15.7454 15.277 16.2919C14.4845 17.6103 13.1914 18.5512 11.6931 18.8997C10.1993 19.2563 8.65974 19.0041 7.42524 18.0432C7.06585 17.7635 6.71207 17.3497 6.44156 16.9846C5.92905 16.2929 5.6899 15.6086 4.90973 15.1421C4.53768 14.9235 4.11934 14.7958 3.68867 14.7693C3.42755 14.7526 3.15935 14.7559 2.89881 14.7257C2.42712 14.6715 1.97314 14.5141 1.56914 14.2646C0.813945 13.8019 0.276602 13.0549 0.0780563 12.1918C-0.155475 11.1684 0.142571 10.0962 0.870758 9.34006C1.13084 9.06506 1.40368 8.89452 1.60595 8.5626C2.01342 7.89381 1.82806 7.31649 1.65943 6.62346C1.39406 5.52968 1.58291 4.39571 2.19286 3.44819C3.23871 1.82361 5.40257 0.735931 7.1893 1.91243C8.37939 2.69606 9.19969 3.92667 9.51304 5.30518C10.3366 5.13904 11.3091 5.15601 12.033 5.63214C12.4075 5.87839 12.6909 6.26047 12.7818 6.703C13.0064 7.79706 11.945 8.82274 12.1231 9.47566C12.1718 9.65406 12.2932 9.76992 12.3943 9.91685C12.5329 10.0023 12.7819 10.1519 12.9261 10.2288C12.9964 10.187 13.1019 10.0102 13.1679 9.94249C13.7957 9.2982 14.8053 8.96036 15.6989 9.12851C16.4381 9.26296 17.0928 9.68791 17.5165 10.3084C17.9628 10.9713 18.0857 11.6061 17.9444 12.3912C17.7594 13.4188 16.9519 14.3157 15.9232 14.5438Z"
+            fill="url(#als3)"
+          />
+          <path
+            d="M9.51296 5.30435C10.3365 5.13821 11.309 5.15518 12.0329 5.63131C12.4074 5.87756 12.6908 6.25964 12.7817 6.70217C13.0063 7.79623 11.9449 8.82191 12.1231 9.47483C12.1717 9.65323 12.2932 9.76908 12.3942 9.91602C11.7657 9.64458 11.1758 9.30567 10.4406 9.50301C10.2262 9.56057 10.0124 9.70817 9.8807 9.88678C9.12273 10.9148 10.0575 12.3534 9.4507 13.4349C9.28846 13.724 8.99806 13.9721 8.67652 14.0572C8.19074 14.1857 7.63773 13.9842 7.2186 13.7344C6.52498 13.3209 5.93622 12.5756 5.56829 11.864C5.42179 11.5807 5.28737 11.1922 5.20625 10.8885C4.92698 9.84275 5.10672 8.87125 5.65579 7.94771C5.76031 7.7719 5.88356 7.56868 6.01371 7.41021C6.67907 6.60003 7.63669 5.92338 8.62038 5.56327C8.92236 5.45271 9.2048 5.38412 9.51296 5.30435Z"
+            fill="#B200FF"
+          />
+          <path
+            d="M12.9261 10.2281C12.9965 10.1863 13.1019 10.0095 13.1679 9.94181C13.7958 9.29752 14.8053 8.95968 15.6989 9.12784C16.4382 9.26228 17.0928 9.68724 17.5165 10.3078C17.9628 10.9706 18.0858 11.6054 17.9444 12.3905C17.7594 13.4181 16.9519 14.315 15.9232 14.5431C15.8591 14.5589 15.7945 14.573 15.7297 14.5855C13.2908 15.0516 11.4718 12.3541 12.9299 10.2455Z"
+            fill="#925EFF"
+          />
+          <path
+            d="M15.0583 4.02303C15.409 3.967 15.9654 4.14781 16.2525 4.34749C16.8361 4.75654 17.2769 5.38517 17.4178 6.08714C17.6026 7.00855 17.2195 8.10515 16.2031 8.29949C15.7267 8.36236 15.2561 8.15399 14.8819 7.86933C14.2886 7.42456 13.8984 6.79544 13.8013 6.05735C13.7092 5.35798 13.9523 4.52021 14.5993 4.1557C14.7437 4.07433 14.895 4.04302 15.0583 4.02304Z"
+            fill="#D000FF"
+          />
+          <path
+            d="M11.4184 0.943318C11.7589 0.883883 12.2904 1.02415 12.5519 1.26015C13.5366 2.14871 13.3211 3.93326 12.1317 4.558C11.854 4.7039 11.6271 4.76143 11.3104 4.7806C10.3971 4.78719 9.64378 4.0739 9.54183 3.19961C9.47363 2.65993 9.62933 2.11599 9.97397 1.68989C10.3162 1.27034 10.8781 1.00202 11.4184 0.943318Z"
+            fill="#8400FF"
+          />
+          <path
+            d="M5.54811 2.16057C5.92645 2.09488 6.51695 2.24992 6.80752 2.51076C7.9016 3.49285 7.66216 5.46524 6.34066 6.15575C6.03211 6.31701 5.77996 6.38059 5.42813 6.40178C4.41331 6.40906 3.57628 5.62069 3.46301 4.65437C3.38723 4.05788 3.56023 3.45669 3.94317 2.98573C4.32343 2.52202 4.94771 2.22545 5.54811 2.16057Z"
+            fill="#00EFFF"
+          />
+          <linearGradient
+            id="als0"
+            x1="12.67"
+            y1="4.11"
+            x2="14.39"
+            y2="4.52"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stop-color="#A16DFA" stop-opacity="0.78" />
+            <stop offset="1" stop-color="#B68BFF" stop-opacity="0" />
+          </linearGradient>
+          <linearGradient
+            id="als1"
+            x1="15.73"
+            y1="7.95"
+            x2="16.11"
+            y2="9.68"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stop-color="#A16DFA" stop-opacity="0.78" />
+            <stop offset="1" stop-color="#B68BFF" stop-opacity="0" />
+          </linearGradient>
+          <linearGradient
+            id="als2"
+            x1="9.52"
+            y1="2.27"
+            x2="7.8"
+            y2="2.71"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stop-color="#A16DFA" stop-opacity="0.78" />
+            <stop offset="1" stop-color="#B68BFF" stop-opacity="0" />
+          </linearGradient>
+          <linearGradient
+            id="als3"
+            x1="0.58"
+            y1="6.48"
+            x2="16.1"
+            y2="14.65"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stop-color="#335EFB" />
+            <stop offset="0.5" stop-color="#3C3CFD" />
+            <stop offset="1" stop-color="#451AFF" />
+          </linearGradient>
+        </symbol>
+        <!-- v2fill: chart area fill gradient -->
+        <linearGradient id="v2fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#8B4FF4" stop-opacity="0.22" />
+          <stop offset="100%" stop-color="#8B4FF4" stop-opacity="0" />
+        </linearGradient>
+        <linearGradient id="anomalyFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#F04438" stop-opacity="0.15" />
+          <stop offset="100%" stop-color="#F04438" stop-opacity="0" />
+        </linearGradient>
+        <linearGradient id="prevFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#5B6771" stop-opacity="0.12" />
+          <stop offset="100%" stop-color="#5B6771" stop-opacity="0" />
+        </linearGradient>
+        <clipPath id="chartClip">
+          <rect x="40" y="0" width="760" height="210" />
+        </clipPath>
+
+        <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#0066FF" />
+          <stop offset="100%" stop-color="#6FDFE2" />
+        </linearGradient>
+        <linearGradient id="negFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#F04438" stop-opacity="0.25" />
+          <stop offset="100%" stop-color="#F04438" stop-opacity="0" />
+        </linearGradient>
+        <linearGradient id="cf2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#3369FF" stop-opacity="0.18" />
+          <stop offset="100%" stop-color="#3369FF" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <div class="app-topnav">
+      <!-- Logo -->
+      <div class="topnav-logo">
+        <div class="topnav-logo-mark">
+          <svg
+            width="140"
+            height="43"
+            viewBox="0 0 140 43"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style="height: 32px; width: auto"
+          >
+            <path
+              d="M25.964 9.56226C27.5774 8.84423 28.6413 8.09182 28.8916 7.41178C29.0015 7.11318 28.8916 6.43318 28.8916 6.43318C28.8916 6.43318 29.3383 7.92983 30.375 8.4582C31.2355 8.89674 33.3197 8.68599 33.7501 8.90818C34.1187 9.02666 32.8764 15.135 31.95 15.2082C31.4887 15.2447 30.9275 10.1363 29.7001 9.8082C28.4632 9.47756 26.8847 9.89699 25.964 9.56226Z"
+              fill="url(#tnpaint0)"
+            />
+            <path
+              d="M33.5968 15.8817C34.9427 17.025 36.0817 17.658 36.8031 17.5891C37.1198 17.5589 37.6851 17.1653 37.6851 17.1653C37.6851 17.1653 37.1521 17.8703 37.1249 19.0335C37.1023 19.9991 39.1638 22.5994 39.15 23.0836C39.2028 23.4672 32.6423 23.4368 32.1751 22.6336C31.9424 22.2336 34.6608 20.2819 34.4249 19.0335C34.1872 17.7754 33.6939 16.8566 33.5968 15.8817Z"
+              fill="url(#tnpaint1)"
+            />
+            <path
+              d="M22.8572 3.67314C21.7566 5.05413 21.1594 6.21232 21.2508 6.93118C21.2909 7.24683 21.702 7.79956 21.702 7.79956C21.702 7.79956 20.9807 7.28885 19.8171 7.29797C18.8514 7.30554 16.3167 9.44731 15.8323 9.44859C15.4506 9.5134 12.0368 3.77545 12.8251 3.28337C13.2177 3.03829 18.4924 4.87403 19.7328 4.59929C20.9829 4.3224 21.8858 3.80061 22.8572 3.67314Z"
+              fill="url(#tnpaint2)"
+            />
+            <path
+              d="M35.353 32.2897C35.0693 33.6685 34.6602 34.9577 33.9185 36.171C32.1588 39.0981 29.2879 41.1871 25.9614 41.9609C22.6447 42.7526 19.2266 42.1926 16.4857 40.0593C15.6878 39.4383 14.9023 38.5196 14.3017 37.7089C13.1638 36.1731 12.6329 34.6538 10.9007 33.6182C10.0747 33.1329 9.14586 32.8493 8.18968 32.7905C7.60994 32.7534 7.01448 32.7608 6.43601 32.6937C5.38875 32.5733 4.38082 32.2238 3.48384 31.67C1.80714 30.6426 0.614118 28.9841 0.173303 27.0678C-0.34519 24.7955 0.316539 22.415 1.93328 20.7363C2.51072 20.1257 3.11648 19.7471 3.56557 19.0101C4.47025 17.5253 4.05871 16.2435 3.68432 14.7048C3.09513 12.2764 3.51443 9.75872 4.86865 7.655C7.19066 4.04807 11.9949 1.63318 15.9619 4.24527C18.6041 5.98512 20.4254 8.71736 21.1211 11.778C22.9496 11.4091 25.1088 11.4468 26.716 12.5039C27.5474 13.0506 28.1767 13.8989 28.3784 14.8814C28.8772 17.3105 26.5206 19.5877 26.9161 21.0374C27.0242 21.4335 27.2938 21.6907 27.5182 22.0169C27.8259 22.2067 28.3787 22.5388 28.6989 22.7095C28.855 22.6167 29.0892 22.2242 29.2357 22.0738C30.6297 20.6434 32.8711 19.8933 34.855 20.2666C36.4964 20.5651 37.9498 21.5086 38.8906 22.8863C39.8815 24.358 40.1544 25.7673 39.8406 27.5105C39.4298 29.792 37.637 31.7834 35.353 32.2897Z"
+              fill="url(#tnpaint3)"
+            />
+            <g filter="url(#tnf0)">
+              <path
+                d="M21.1209 11.7781C22.9494 11.4093 25.1086 11.4469 26.7158 12.5041C27.5472 13.0508 28.1765 13.8991 28.3783 14.8816C28.877 17.3107 26.5205 19.5879 26.916 21.0375C27.024 21.4336 27.2936 21.6909 27.518 22.0171C26.1225 21.4144 24.8128 20.662 23.1806 21.1001C22.7044 21.2279 22.2298 21.5556 21.9374 21.9522C20.2545 24.2347 22.33 27.4287 20.9827 29.8298C20.6225 30.4718 19.9777 31.0226 19.2638 31.2114C18.1853 31.4967 16.9575 31.0493 16.0269 30.4946C14.487 29.5767 13.1798 27.922 12.3629 26.3422C12.0376 25.7131 11.7392 24.8505 11.5591 24.1762C10.939 21.8544 11.3381 19.6975 12.5572 17.647C12.7892 17.2567 13.0629 16.8055 13.3518 16.4536C14.8291 14.6548 16.9552 13.1525 19.1392 12.353C19.8097 12.1075 20.4368 11.9553 21.1209 11.7781Z"
+                fill="#B200FF"
+              />
+            </g>
+            <g filter="url(#tnf1)">
+              <path
+                d="M28.6988 22.709C28.855 22.6162 29.0891 22.2236 29.2357 22.0733C30.6296 20.6428 32.871 19.8927 34.855 20.2661C36.4963 20.5646 37.9497 21.5081 38.8905 22.8858C39.8814 24.3575 40.1544 25.7668 39.8405 27.5099C39.4298 29.7914 37.6369 31.7829 35.3529 32.2891C35.2105 32.3243 35.0673 32.3557 34.9233 32.3833C29.5084 33.4182 25.4698 27.4291 28.7071 22.7476Z"
+                fill="#925EFF"
+              />
+            </g>
+            <path
+              d="M33.4328 8.93115C34.2114 8.80675 35.4467 9.20819 36.0841 9.65153C37.3799 10.5597 38.3586 11.9554 38.6713 13.5139C39.0817 15.5597 38.2312 17.9944 35.9744 18.4259C34.9167 18.5655 33.8718 18.1028 33.0412 17.4708C31.7237 16.4833 30.8576 15.0865 30.6418 13.4478C30.4374 11.895 30.977 10.035 32.4136 9.22571C32.7343 9.04504 33.0702 8.97552 33.4328 8.93116Z"
+              fill="#D000FF"
+            />
+            <path
+              d="M25.3512 2.09374C26.1072 1.96178 27.2872 2.27321 27.8678 2.79718C30.054 4.76998 29.5755 8.73209 26.9349 10.1192C26.3184 10.4431 25.8145 10.5708 25.1115 10.6134C23.0837 10.628 21.4111 9.04433 21.1848 7.10322C21.0334 5.905 21.379 4.69734 22.1442 3.75129C22.9041 2.81981 24.1515 2.22407 25.3512 2.09374Z"
+              fill="#8400FF"
+            />
+            <g filter="url(#tnf2)">
+              <path
+                d="M12.3181 4.79712C13.1581 4.65127 14.4691 4.99549 15.1142 5.57461C17.5433 7.75507 17.0117 12.1342 14.0777 13.6673C13.3926 14.0253 12.8328 14.1665 12.0517 14.2136C9.79854 14.2297 7.94014 12.4794 7.68865 10.3339C7.5204 9.00957 7.90451 7.67479 8.75471 6.62915C9.59897 5.59962 10.985 4.94117 12.3181 4.79712Z"
+                fill="#00EFFF"
+              />
+            </g>
+            <!-- AiMY wordmark with gradient -->
+            <path
+              d="M62.9308 29.5953H53.4045L51.8692 34.2012H45.364L54.6098 8.10156H61.8083L71.0541 34.2012H64.4666L62.9308 29.5953ZM61.3293 24.686L58.1596 15.1199L55.0227 24.6688H61.3293V24.686Z"
+              fill="url(#tnpaint4)"
+            />
+            <path
+              d="M80.0677 19.9121V34.2018H73.8435V19.9121H80.0677Z"
+              fill="url(#tnpaint5)"
+            />
+            <path
+              d="M113.501 8.10156V34.2012H107.276V18.5447L101.564 34.2012H96.5445L90.7989 18.511V34.2012H84.5747V8.10156H91.9218L99.087 26.1704L106.186 8.10156H113.501Z"
+              fill="url(#tnpaint6)"
+            />
+            <path
+              d="M139.864 8.10156L131.031 25.5797V34.2012H124.806V25.5797L115.973 8.10156H123.023L127.977 19.0339L132.88 8.10156H139.864Z"
+              fill="url(#tnpaint7)"
+            />
+            <path
+              d="M76.952 9.14746C74.9376 9.14746 73.3032 10.8181 73.3032 12.8763C73.3032 14.9344 74.9376 16.6046 76.952 16.6046C78.9664 16.6046 80.6008 14.9344 80.6008 12.8763C80.617 10.8347 78.9664 9.14746 76.952 9.14746Z"
+              fill="url(#tnpaint8)"
+            />
+            <defs>
+              <filter
+                id="tnf0"
+                x="9.92"
+                y="11.57"
+                width="18.53"
+                height="20.63"
+                filterUnits="userSpaceOnUse"
+                color-interpolation-filters="sRGB"
+              >
+                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                <feColorMatrix
+                  in="SourceAlpha"
+                  type="matrix"
+                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                  result="hardAlpha"
+                />
+                <feOffset dx="-0.9" dy="0.45" />
+                <feGaussianBlur stdDeviation="0.225" />
+                <feComposite in2="hardAlpha" operator="out" />
+                <feColorMatrix
+                  type="matrix"
+                  values="0 0 0 0 0.167 0 0 0 0 0.167 0 0 0 0 0.167 0 0 0 0.2 0"
+                />
+                <feBlend
+                  mode="normal"
+                  in2="BackgroundImageFix"
+                  result="effect1"
+                />
+                <feBlend
+                  mode="normal"
+                  in="SourceGraphic"
+                  in2="effect1"
+                  result="shape"
+                />
+              </filter>
+              <filter
+                id="tnf1"
+                x="26.2"
+                y="20.17"
+                width="13.76"
+                height="13.23"
+                filterUnits="userSpaceOnUse"
+                color-interpolation-filters="sRGB"
+              >
+                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                <feColorMatrix
+                  in="SourceAlpha"
+                  type="matrix"
+                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                  result="hardAlpha"
+                />
+                <feOffset dx="-0.9" dy="0.45" />
+                <feGaussianBlur stdDeviation="0.225" />
+                <feComposite in2="hardAlpha" operator="out" />
+                <feColorMatrix
+                  type="matrix"
+                  values="0 0 0 0 0.167 0 0 0 0 0.167 0 0 0 0 0.167 0 0 0 0.2 0"
+                />
+                <feBlend
+                  mode="normal"
+                  in2="BackgroundImageFix"
+                  result="effect1"
+                />
+                <feBlend
+                  mode="normal"
+                  in="SourceGraphic"
+                  in2="effect1"
+                  result="shape"
+                />
+              </filter>
+              <filter
+                id="tnf2"
+                x="6.3"
+                y="4.76"
+                width="10.35"
+                height="10.35"
+                filterUnits="userSpaceOnUse"
+                color-interpolation-filters="sRGB"
+              >
+                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                <feColorMatrix
+                  in="SourceAlpha"
+                  type="matrix"
+                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                  result="hardAlpha"
+                />
+                <feOffset dx="-0.9" dy="0.45" />
+                <feGaussianBlur stdDeviation="0.225" />
+                <feComposite in2="hardAlpha" operator="out" />
+                <feColorMatrix
+                  type="matrix"
+                  values="0 0 0 0 0.167 0 0 0 0 0.167 0 0 0 0 0.167 0 0 0 0.2 0"
+                />
+                <feBlend
+                  mode="normal"
+                  in2="BackgroundImageFix"
+                  result="effect1"
+                />
+                <feBlend
+                  mode="normal"
+                  in="SourceGraphic"
+                  in2="effect1"
+                  result="shape"
+                />
+              </filter>
+              <linearGradient
+                id="tnpaint0"
+                x1="28.13"
+                y1="9.13"
+                x2="31.95"
+                y2="10.03"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stop-color="#A16DFA" stop-opacity="0.78" />
+                <stop offset="1" stop-color="#B68BFF" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient
+                id="tnpaint1"
+                x1="34.92"
+                y1="17.64"
+                x2="35.76"
+                y2="21.48"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stop-color="#A16DFA" stop-opacity="0.78" />
+                <stop offset="1" stop-color="#B68BFF" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient
+                id="tnpaint2"
+                x1="21.14"
+                y1="5.05"
+                x2="17.33"
+                y2="6.01"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stop-color="#A16DFA" stop-opacity="0.78" />
+                <stop offset="1" stop-color="#B68BFF" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient
+                id="tnpaint3"
+                x1="1.29"
+                y1="14.38"
+                x2="35.75"
+                y2="32.52"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stop-color="#335EFB" />
+                <stop offset="0.5" stop-color="#3C3CFD" />
+                <stop offset="1" stop-color="#451AFF" />
+              </linearGradient>
+              <linearGradient
+                id="tnpaint4"
+                x1="23.44"
+                y1="17.38"
+                x2="179.98"
+                y2="36.15"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stop-color="#8C4FF4" />
+                <stop offset="0.136" stop-color="#8650F5" />
+                <stop offset="0.325" stop-color="#7453F6" />
+                <stop offset="0.544" stop-color="#5658F8" />
+                <stop offset="0.785" stop-color="#2E5FFC" />
+                <stop offset="1" stop-color="#0366FF" />
+              </linearGradient>
+              <linearGradient
+                id="tnpaint5"
+                x1="18.18"
+                y1="19.69"
+                x2="167.23"
+                y2="37.57"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stop-color="#8C4FF4" />
+                <stop offset="0.163" stop-color="#7C52F5" />
+                <stop offset="0.48" stop-color="#5359F9" />
+                <stop offset="0.916" stop-color="#1164FE" />
+                <stop offset="1" stop-color="#0366FF" />
+              </linearGradient>
+              <linearGradient
+                id="tnpaint6"
+                x1="16.06"
+                y1="10.76"
+                x2="172.59"
+                y2="29.53"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stop-color="#8C4FF4" />
+                <stop offset="0.133" stop-color="#8550F5" />
+                <stop offset="0.333" stop-color="#7054F6" />
+                <stop offset="0.573" stop-color="#4F59F9" />
+                <stop offset="0.844" stop-color="#2161FD" />
+                <stop offset="1" stop-color="#0366FF" />
+              </linearGradient>
+              <linearGradient
+                id="tnpaint7"
+                x1="16.54"
+                y1="6.65"
+                x2="173.08"
+                y2="25.42"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stop-color="#8C4FF4" />
+                <stop offset="0.133" stop-color="#8450F5" />
+                <stop offset="0.337" stop-color="#6F54F6" />
+                <stop offset="0.587" stop-color="#4C5AF9" />
+                <stop offset="0.87" stop-color="#1C62FD" />
+                <stop offset="1" stop-color="#0366FF" />
+              </linearGradient>
+              <linearGradient
+                id="tnpaint8"
+                x1="62.83"
+                y1="9.23"
+                x2="93.59"
+                y2="16.84"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stop-color="#8C4FF4" />
+                <stop offset="0.134" stop-color="#8351F5" />
+                <stop offset="0.354" stop-color="#6A55F7" />
+                <stop offset="0.632" stop-color="#425BFA" />
+                <stop offset="0.955" stop-color="#0B65FE" />
+                <stop offset="1" stop-color="#0366FF" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Calls button -->
+      <div class="topnav-calls">
+        <svg
+          width="84"
+          height="36"
+          viewBox="0 0 84 44"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0 22C0 9.84974 9.84974 0 22 0H62C74.1503 0 84 9.84974 84 22C84 34.1503 74.1503 44 62 44H22C9.84974 44 0 34.1503 0 22Z"
+            fill="#2E3439"
+          />
+          <path
+            d="M0 22C0 9.84974 9.84974 0 22 0C34.1503 0 44 9.84974 44 22C44 34.1503 34.1503 44 22 44C9.84974 44 0 34.1503 0 22Z"
+            fill="#444D55"
+          />
+          <path
+            d="M23.7081 17.0003C24.5221 17.1591 25.2701 17.5572 25.8565 18.1436C26.4429 18.73 26.841 19.478 26.9998 20.292M23.7081 13.667C25.3992 13.8549 26.9761 14.6121 28.18 15.8145C29.3839 17.0169 30.1431 18.5928 30.3331 20.2837M20.5223 23.5529C19.521 22.5516 18.7303 21.4194 18.1503 20.2113C18.1004 20.1074 18.0755 20.0555 18.0563 19.9897C17.9882 19.7561 18.0371 19.4692 18.1788 19.2714C18.2187 19.2157 18.2663 19.1681 18.3616 19.0728C18.6529 18.7815 18.7986 18.6358 18.8938 18.4893C19.253 17.9369 19.253 17.2248 18.8938 16.6724C18.7986 16.5259 18.6529 16.3802 18.3616 16.0889L18.1992 15.9265C17.7563 15.4836 17.5349 15.2622 17.2971 15.1419C16.8241 14.9027 16.2655 14.9027 15.7926 15.1419C15.5547 15.2622 15.3333 15.4836 14.8904 15.9265L14.7591 16.0578C14.3177 16.4992 14.0971 16.7199 13.9285 17.0199C13.7415 17.3528 13.607 17.8699 13.6082 18.2517C13.6092 18.5959 13.6759 18.831 13.8094 19.3014C14.5269 21.8292 15.8806 24.2145 17.8706 26.2045C19.8606 28.1945 22.2459 29.5482 24.7737 30.2657C25.2441 30.3992 25.4793 30.466 25.8234 30.467C26.2053 30.4681 26.7224 30.3337 27.0553 30.1467C27.3553 29.9781 27.576 29.7574 28.0173 29.3161L28.1487 29.1847C28.5916 28.7419 28.813 28.5204 28.9333 28.2826C29.1725 27.8096 29.1725 27.2511 28.9333 26.7781C28.813 26.5403 28.5916 26.3189 28.1487 25.876L27.9863 25.7136C27.695 25.4223 27.5493 25.2766 27.4028 25.1814C26.8504 24.8222 26.1383 24.8222 25.5858 25.1814C25.4394 25.2766 25.2937 25.4223 25.0024 25.7136C24.9071 25.8089 24.8595 25.8565 24.8038 25.8964C24.6059 26.038 24.319 26.087 24.0854 26.0189C24.0197 25.9997 23.9677 25.9747 23.8638 25.9249C22.6558 25.3449 21.5236 24.5542 20.5223 23.5529Z"
+            stroke="white"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M70 19L64 25L58 19"
+            stroke="white"
+            stroke-width="1.66667"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+
+      <!-- Product tabs -->
+      <div class="topnav-tabs">
+        <div class="topnav-tabs-inner">
+          <div class="topnav-tab">Connect</div>
+          <div class="topnav-tab">Knowledge</div>
+          <div class="topnav-tab">Analytics</div>
+          <div class="topnav-tab">Talent</div>
+          <div class="topnav-tab active">
+            <svg
+              width="18"
+              height="20"
+              viewBox="0 0 18 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M11.6944 4.30651C12.421 3.98311 12.9002 3.64422 13.013 3.33792C13.0625 3.20343 13.013 2.89716 13.013 2.89716C13.013 2.89716 13.2142 3.57126 13.6811 3.80924C14.0687 4.00676 15.0074 3.91183 15.2013 4.01191C15.3673 4.06527 14.8077 6.8165 14.3905 6.84948C14.1827 6.86591 13.9299 4.56506 13.3771 4.41728C12.82 4.26836 12.1091 4.45728 11.6944 4.30651Z"
+                fill="url(#qatab0)"
+              />
+              <path
+                d="M15.1323 7.15345C15.7385 7.66835 16.2515 7.95349 16.5764 7.92246C16.719 7.90883 16.9737 7.73156 16.9737 7.73156C16.9737 7.73156 16.7336 8.04908 16.7213 8.57303C16.7112 9.0079 17.6397 10.1791 17.6334 10.3972C17.6572 10.57 14.7024 10.5563 14.4919 10.1945C14.3871 10.0143 15.6115 9.1353 15.5052 8.57303C15.3982 8.00637 15.176 7.59253 15.1323 7.15345Z"
+                fill="url(#qatab1)"
+              />
+              <path
+                d="M10.2949 1.6544C9.79919 2.2764 9.53022 2.79806 9.57139 3.12184C9.58947 3.264 9.7746 3.51296 9.7746 3.51296C9.7746 3.51296 9.44974 3.28293 8.92566 3.28704C8.49068 3.29045 7.34904 4.25511 7.13086 4.25569C6.95894 4.28488 5.42138 1.70048 5.77641 1.47885C5.95323 1.36846 8.32899 2.19529 8.88767 2.07154C9.45071 1.94683 9.8574 1.71181 10.2949 1.6544Z"
+                fill="url(#qatab2)"
+              />
+              <path
+                d="M15.9232 14.5438C15.7954 15.1648 15.6111 15.7454 15.277 16.2919C14.4845 17.6103 13.1914 18.5512 11.6931 18.8997C10.1993 19.2563 8.65974 19.0041 7.42524 18.0432C7.06585 17.7635 6.71207 17.3497 6.44156 16.9846C5.92905 16.2929 5.6899 15.6086 4.90973 15.1421C4.53768 14.9235 4.11934 14.7958 3.68867 14.7693C3.42755 14.7526 3.15935 14.7559 2.89881 14.7257C2.42712 14.6715 1.97314 14.5141 1.56914 14.2646C0.813945 13.8019 0.276602 13.0549 0.0780563 12.1918C-0.155475 11.1684 0.142571 10.0962 0.870758 9.34006C1.13084 9.06506 1.40368 8.89452 1.60595 8.5626C2.01342 7.89381 1.82806 7.31649 1.65943 6.62346C1.39406 5.52968 1.58291 4.39571 2.19286 3.44819C3.23871 1.82361 5.40257 0.735931 7.1893 1.91243C8.37939 2.69606 9.19969 3.92667 9.51304 5.30518C10.3366 5.13904 11.3091 5.15601 12.033 5.63214C12.4075 5.87839 12.6909 6.26047 12.7818 6.703C13.0064 7.79706 11.945 8.82274 12.1231 9.47566C12.1718 9.65406 12.2932 9.76992 12.3943 9.91685C12.5329 10.0023 12.7819 10.1519 12.9261 10.2288C12.9964 10.187 13.1019 10.0102 13.1679 9.94249C13.7957 9.2982 14.8053 8.96036 15.6989 9.12851C16.4381 9.26296 17.0928 9.68791 17.5165 10.3084C17.9628 10.9713 18.0857 11.6061 17.9444 12.3912C17.7594 13.4188 16.9519 14.3157 15.9232 14.5438Z"
+                fill="#B7C5F9"
+              />
+              <path
+                d="M9.51296 5.30435C10.3365 5.13821 11.309 5.15518 12.0329 5.63131C12.4074 5.87756 12.6908 6.25964 12.7817 6.70217C13.0063 7.79623 11.9449 8.82191 12.1231 9.47483C12.1717 9.65323 12.2932 9.76908 12.3942 9.91602C11.7657 9.64458 11.1758 9.30567 10.4406 9.50301C10.2262 9.56057 10.0124 9.70817 9.8807 9.88678C9.12273 10.9148 10.0575 12.3534 9.4507 13.4349C9.28846 13.724 8.99806 13.9721 8.67652 14.0572C8.19074 14.1857 7.63773 13.9842 7.2186 13.7344C6.52498 13.3209 5.93622 12.5756 5.56829 11.864C5.42179 11.5807 5.28737 11.1922 5.20625 10.8885C4.92698 9.84275 5.10672 8.87125 5.65579 7.94771C5.76031 7.7719 5.88356 7.56868 6.01371 7.41021C6.67907 6.60003 7.63669 5.92338 8.62038 5.56327C8.92236 5.45271 9.2048 5.38412 9.51296 5.30435Z"
+                fill="#B200FF"
+              />
+              <path
+                d="M12.9261 10.2281C12.9965 10.1863 13.1019 10.0095 13.1679 9.94181C13.7958 9.29752 14.8053 8.95968 15.6989 9.12784C16.4382 9.26228 17.0928 9.68724 17.5165 10.3078C17.9628 10.9706 18.0858 11.6054 17.9444 12.3905C17.7594 13.4181 16.9519 14.315 15.9232 14.5431C15.8591 14.5589 15.7945 14.573 15.7297 14.5855C13.2908 15.0516 11.4718 12.3541 12.9299 10.2455Z"
+                fill="#B7C5F9"
+              />
+              <path
+                d="M15.0583 4.02303C15.409 3.967 15.9654 4.14781 16.2525 4.34749C16.8361 4.75654 17.2769 5.38517 17.4178 6.08714C17.6026 7.00855 17.2195 8.10515 16.2031 8.29949C15.7267 8.36236 15.2561 8.15399 14.8819 7.86933C14.2886 7.42456 13.8984 6.79544 13.8013 6.05735C13.7092 5.35798 13.9523 4.52021 14.5993 4.1557C14.7437 4.07433 14.895 4.04302 15.0583 4.02304Z"
+                fill="#B7C5F9"
+              />
+              <path
+                d="M11.4184 0.943318C11.7589 0.883883 12.2904 1.02415 12.5519 1.26015C13.5366 2.14871 13.3211 3.93326 12.1317 4.558C11.854 4.7039 11.6271 4.76143 11.3104 4.7806C10.3971 4.78719 9.64378 4.0739 9.54183 3.19961C9.47363 2.65993 9.62933 2.11599 9.97397 1.68989C10.3162 1.27034 10.8781 1.00202 11.4184 0.943318Z"
+                fill="#B7C5F9"
+              />
+              <path
+                d="M5.54811 2.16057C5.92645 2.09488 6.51695 2.24992 6.80752 2.51076C7.9016 3.49285 7.66216 5.46524 6.34066 6.15575C6.03211 6.31701 5.77996 6.38059 5.42813 6.40178C4.41331 6.40906 3.57628 5.62069 3.46301 4.65437C3.38723 4.05788 3.56023 3.45669 3.94317 2.98573C4.32343 2.52202 4.94771 2.22545 5.54811 2.16057Z"
+                fill="#B7C5F9"
+              />
+              <defs>
+                <linearGradient
+                  id="qatab0"
+                  x1="12.6677"
+                  y1="4.11326"
+                  x2="14.3905"
+                  y2="4.51863"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stop-color="#EDEDED" stop-opacity="0.78" />
+                  <stop offset="1" stop-color="#B68BFF" stop-opacity="0" />
+                </linearGradient>
+                <linearGradient
+                  id="qatab1"
+                  x1="15.728"
+                  y1="7.94701"
+                  x2="16.1088"
+                  y2="9.67541"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stop-color="#D0D0D0" stop-opacity="0.78" />
+                  <stop offset="1" stop-color="#EDEDED" stop-opacity="0" />
+                </linearGradient>
+                <linearGradient
+                  id="qatab2"
+                  x1="9.52035"
+                  y1="2.27458"
+                  x2="7.8047"
+                  y2="2.70917"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stop-color="#EDEDED" stop-opacity="0.78" />
+                  <stop offset="1" stop-color="#B68BFF" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+            </svg>
+            QA
+          </div>
+          <div class="topnav-tab">Sales</div>
+        </div>
+      </div>
+
+      <!-- Right side -->
+      <div class="topnav-right">
+        <div class="topnav-bell">
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <div class="bell-dot"></div>
+        </div>
+        <div class="topnav-user">
+          <div class="topnav-avatar">NW</div>
+          <div class="topnav-user-info">
+            <span class="topnav-user-name">Nour Wael</span>
+            <span class="topnav-user-role">Product Design</span>
+          </div>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-body">
+      <div class="app-sidebar">
+        <div class="sidebar-nav">
+          <div class="sidebar-section-label">Primary</div>
+
+          <a class="nav-item" href="index.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            Dashboard
+          </a>
+
+          <a class="nav-item" href="agent-scorecards.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 7h-9"></path>
+              <path d="M14 17H5"></path>
+              <circle cx="17" cy="17" r="3"></circle>
+              <circle cx="7" cy="7" r="3"></circle>
+            </svg>
+            Agent Scorecards
+          </a>
+
+          <a class="nav-item" href="evaluation-results.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11l3 3L22 4"></path>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+            </svg>
+            Evaluation Results
+          </a>
+
+          <a class="nav-item" href="alerts-coaching.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            Alerts &amp; Coaching
+          </a>
+
+          <a class="nav-item" href="disputes.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Disputes
+          </a>
+
+          <a class="nav-item" href="kpi-browser.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+              <line x1="9" y1="4" x2="9" y2="20"></line>
+            </svg>
+            KPI Browser
+          </a>
+
+          <a class="nav-item" href="reports.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            Reports
+          </a>
+
+          <div class="sidebar-section-label">Configure</div>
+
+          <a class="nav-item" href="kpi-governance.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            KPI Governance
+          </a>
+
+          <a class="nav-item active" href="data-ingestion.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+            </svg>
+            Data Ingestion
+          </a>
+        </div>
+      </div>
+
+      <div class="app-main">
+        <div class="coming-soon-wrap">
+          <div class="coming-soon-inner">
+            <svg class="coming-soon-svg" viewBox="0 0 240 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g opacity="0.18">
+                <circle cx="20" cy="20" r="1.5" fill="#8b9aaa"/><circle cx="60" cy="20" r="1.5" fill="#8b9aaa"/><circle cx="100" cy="20" r="1.5" fill="#8b9aaa"/><circle cx="140" cy="20" r="1.5" fill="#8b9aaa"/><circle cx="180" cy="20" r="1.5" fill="#8b9aaa"/><circle cx="220" cy="20" r="1.5" fill="#8b9aaa"/>
+                <circle cx="20" cy="60" r="1.5" fill="#8b9aaa"/><circle cx="60" cy="60" r="1.5" fill="#8b9aaa"/><circle cx="100" cy="60" r="1.5" fill="#8b9aaa"/><circle cx="140" cy="60" r="1.5" fill="#8b9aaa"/><circle cx="180" cy="60" r="1.5" fill="#8b9aaa"/><circle cx="220" cy="60" r="1.5" fill="#8b9aaa"/>
+                <circle cx="20" cy="100" r="1.5" fill="#8b9aaa"/><circle cx="60" cy="100" r="1.5" fill="#8b9aaa"/><circle cx="100" cy="100" r="1.5" fill="#8b9aaa"/><circle cx="140" cy="100" r="1.5" fill="#8b9aaa"/><circle cx="180" cy="100" r="1.5" fill="#8b9aaa"/><circle cx="220" cy="100" r="1.5" fill="#8b9aaa"/>
+                <circle cx="20" cy="140" r="1.5" fill="#8b9aaa"/><circle cx="60" cy="140" r="1.5" fill="#8b9aaa"/><circle cx="100" cy="140" r="1.5" fill="#8b9aaa"/><circle cx="140" cy="140" r="1.5" fill="#8b9aaa"/><circle cx="180" cy="140" r="1.5" fill="#8b9aaa"/><circle cx="220" cy="140" r="1.5" fill="#8b9aaa"/>
+                <circle cx="20" cy="180" r="1.5" fill="#8b9aaa"/><circle cx="60" cy="180" r="1.5" fill="#8b9aaa"/><circle cx="100" cy="180" r="1.5" fill="#8b9aaa"/><circle cx="140" cy="180" r="1.5" fill="#8b9aaa"/><circle cx="180" cy="180" r="1.5" fill="#8b9aaa"/><circle cx="220" cy="180" r="1.5" fill="#8b9aaa"/>
+              </g>
+              <rect x="55" y="55" width="130" height="90" rx="12" stroke="rgba(139,79,244,0.35)" stroke-width="1.5" fill="rgba(20,27,36,0.6)" stroke-dasharray="6 4"/>
+              <rect x="72" y="78" width="60" height="8" rx="4" fill="rgba(255,255,255,0.06)"/>
+              <rect x="72" y="94" width="96" height="6" rx="3" fill="rgba(255,255,255,0.04)"/>
+              <rect x="72" y="108" width="80" height="6" rx="3" fill="rgba(255,255,255,0.04)"/>
+              <rect x="72" y="122" width="48" height="6" rx="3" fill="rgba(255,255,255,0.03)"/>
+              <g transform="translate(107, 34)">
+                <circle cx="13" cy="13" r="13" fill="rgba(139,79,244,0.12)" stroke="rgba(139,79,244,0.3)" stroke-width="1"/>
+                <path d="M13 7.5L14.5 11.5L18.5 13L14.5 14.5L13 18.5L11.5 14.5L7.5 13L11.5 11.5Z" fill="none" stroke="url(#cs-grad)" stroke-width="1.5" stroke-linejoin="round"/>
+              </g>
+              <circle cx="55" cy="55" r="3" fill="rgba(139,79,244,0.5)"/>
+              <circle cx="185" cy="55" r="3" fill="rgba(111,223,226,0.4)"/>
+              <circle cx="55" cy="145" r="3" fill="rgba(51,105,255,0.4)"/>
+              <circle cx="185" cy="145" r="3" fill="rgba(139,79,244,0.3)"/>
+              <defs>
+                <linearGradient id="cs-grad" x1="7.5" y1="7.5" x2="18.5" y2="18.5" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#0066FF"/><stop offset="0.5" stop-color="#61ADF1"/><stop offset="1" stop-color="#6FDFE2"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <p class="coming-soon-label">Coming Soon</p>
+            <h2 class="coming-soon-title">Data Ingestion</h2>
+            <p class="coming-soon-desc">Monitor and manage data pipeline health — track ingestion sources, sync status, and data freshness.</p>
+            <div class="coming-soon-jira">RD-1516</div>
+          </div>
+        </div>
+
+        <!-- ════ FLOATING AIMY INPUT BAR (scoped to app-main) ══════════ -->
+        <div class="aimy-float-wrap" id="aimyFloatWrap">
+          <div class="aimy-float-bar" id="aimyFloatBar">
+            <div class="aimy-float-icon" style="width: 32px; height: 32px">
+              <svg width="18" height="20" viewBox="0 0 18 20">
+                <use href="#aimy-logo-small" />
+              </svg>
+            </div>
+            <input
+              class="aimy-float-input"
+              id="aimyFloatInput"
+              type="text"
+              placeholder="Ask AiMY anything, or describe what you&#8217;d like to filter&hellip;"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <span class="aimy-float-hint" id="aimyFloatHint"
+              >Enter to send</span
+            >
+            <button
+              class="aimy-float-send"
+              id="aimyFloatSend"
+              aria-label="Send to AiMY"
+            >
+              <svg
+                class="send-icon"
+                viewBox="0 0 14 14"
+                fill="none"
+                width="14"
+                height="14"
+              >
+                <path
+                  d="M6.12464 7.8751L12.2496 1.7501M6.19906 8.06647L7.73213 12.0086C7.86718 12.3559 7.93471 12.5296 8.03201 12.5803C8.11636 12.6242 8.21684 12.6243 8.30124 12.5804C8.3986 12.5298 8.46633 12.3563 8.6018 12.0092L12.4462 2.15797C12.5684 1.84461 12.6296 1.68793 12.5961 1.58782C12.5671 1.50087 12.4989 1.43264 12.4119 1.40359C12.3118 1.37015 12.1551 1.43129 11.8418 1.55358L1.99059 5.39794C1.64346 5.53341 1.4699 5.60114 1.41932 5.6985C1.37547 5.7829 1.37553 5.88338 1.41948 5.96773C1.47017 6.06503 1.64381 6.13256 1.9911 6.26761L5.93327 7.80068C6.00376 7.82809 6.03901 7.8418 6.06869 7.86297C6.095 7.88174 6.118 7.90474 6.13677 7.93105C6.15794 7.96073 6.17165 7.99598 6.19906 8.06647Z"
+                  stroke="white"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <div class="think-spinner"></div>
+            </button>
+          </div>
+        </div>
+
+        <!-- ════ AIMY CHAT OVERLAY (scoped to app-main) ══════════════════
+       Absolute-positioned so it covers only the main content area —
+       sidebar and topbar remain fully visible and interactive.
+       Closes on Escape or close button. -->
+        <div
+          class="aimy-overlay"
+          id="aimyOverlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="AiMY Canvas"
+        >
+          <!-- Top label -->
+          <div class="overlay-badge">
+            <svg width="14" height="16" viewBox="0 0 18 20">
+              <use href="#aimy-logo-small" />
+            </svg>
+            AiMY Canvas
+          </div>
+
+          <!-- Close button -->
+          <button
+            class="overlay-close"
+            id="overlayClose"
+            aria-label="Close AiMY Canvas"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+
+          <!-- Conversation thread -->
+          <div class="overlay-thread" id="overlayThread" aria-live="polite">
+            <!-- Suggested prompts — visible when thread is empty -->
+            <div class="overlay-suggestions" id="overlaySuggestions">
+              <button
+                class="overlay-sugg-chip"
+                onclick="overlaySuggestion(this)"
+              >
+                Show me SLA breaches this week
+              </button>
+              <button
+                class="overlay-sugg-chip"
+                onclick="overlaySuggestion(this)"
+              >
+                Which agents are below target?
+              </button>
+              <button
+                class="overlay-sugg-chip"
+                onclick="overlaySuggestion(this)"
+              >
+                Summarise today&rsquo;s quality score
+              </button>
+              <button
+                class="overlay-sugg-chip"
+                onclick="overlaySuggestion(this)"
+              >
+                What&rsquo;s driving the empathy drop?
+              </button>
+            </div>
+          </div>
+
+          <!-- Input bar inside overlay -->
+          <div class="overlay-input-wrap" id="overlayInputWrap">
+            <div class="overlay-input-bar">
+              <div class="aimy-float-icon" style="width: 32px; height: 32px">
+                <svg width="18" height="20" viewBox="0 0 18 20">
+                  <use href="#aimy-logo-small" />
+                </svg>
+              </div>
+              <textarea
+                class="overlay-input"
+                id="overlayInput"
+                rows="1"
+                placeholder="Ask AiMY anything&hellip;"
+                spellcheck="false"
+                autocomplete="off"
+              ></textarea>
+              <button class="overlay-send" id="overlaySend" aria-label="Send">
+                <svg
+                class="send-icon"
+                viewBox="0 0 14 14"
+                fill="none"
+                width="14"
+                height="14"
+              >
+                <path
+                  d="M6.12464 7.8751L12.2496 1.7501M6.19906 8.06647L7.73213 12.0086C7.86718 12.3559 7.93471 12.5296 8.03201 12.5803C8.11636 12.6242 8.21684 12.6243 8.30124 12.5804C8.3986 12.5298 8.46633 12.3563 8.6018 12.0092L12.4462 2.15797C12.5684 1.84461 12.6296 1.68793 12.5961 1.58782C12.5671 1.50087 12.4989 1.43264 12.4119 1.40359C12.3118 1.37015 12.1551 1.43129 11.8418 1.55358L1.99059 5.39794C1.64346 5.53341 1.4699 5.60114 1.41932 5.6985C1.37547 5.7829 1.37553 5.88338 1.41948 5.96773C1.47017 6.06503 1.64381 6.13256 1.9911 6.26761L5.93327 7.80068C6.00376 7.82809 6.03901 7.8418 6.06869 7.86297C6.095 7.88174 6.118 7.90474 6.13677 7.93105C6.15794 7.96073 6.17165 7.99598 6.19906 8.06647Z"
+                  stroke="white"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- /aimy-overlay -->
+      </div>
+      <!-- /app-main -->
+    </div>
+    <!-- /app-body -->
+    <style>
+      .coming-soon-wrap {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 32px 120px;
+      }
+      .coming-soon-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        text-align: center;
+        max-width: 420px;
+      }
+      .coming-soon-svg {
+        width: 240px;
+        height: 200px;
+        flex-shrink: 0;
+        margin-bottom: 8px;
+      }
+      .coming-soon-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--qa-accent);
+        opacity: 0.8;
+        margin: 0;
+      }
+      .coming-soon-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--d50);
+        letter-spacing: -0.02em;
+        margin: 0;
+        line-height: 1.2;
+      }
+      .coming-soon-desc {
+        font-size: 13px;
+        color: var(--d400);
+        line-height: 1.65;
+        margin: 0;
+        font-weight: 400;
+      }
+      .coming-soon-jira {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--d600);
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 20px;
+        padding: 4px 12px;
+        letter-spacing: 0.05em;
+        margin-top: 4px;
+      }
+    </style>
+    <script>
+      (function () {
+        "use strict";
+
+        /* ── DOM refs ─────────────────────────────── */
+        const floatBar = document.getElementById("aimyFloatBar");
+        const floatInput = document.getElementById("aimyFloatInput");
+        const floatSend = document.getElementById("aimyFloatSend");
+        const floatHint = document.getElementById("aimyFloatHint");
+        const overlay = document.getElementById("aimyOverlay");
+        const overlayClose = document.getElementById("overlayClose");
+        const thread = document.getElementById("overlayThread");
+        const suggestions = document.getElementById("overlaySuggestions");
+        const overlayInput = document.getElementById("overlayInput");
+        const overlaySend = document.getElementById("overlaySend");
+
+        /* ── State ────────────────────────────────── */
+        let overlayOpen = false;
+        let msgCount = 0;
+        let isTyping = false;
+
+        /* ── Intent detection ─────────────────────────────────────────────
+     Keywords that suggest a filter / dashboard-mutation intent.
+     Anything else is treated as a conversational chat intent.
+     Replace with a real classifier or pre-screen LLM call in prod.  */
+        const FILTER_KWS = [
+          "filter",
+          "show only",
+          "show me",
+          "hide",
+          "only",
+          "last week",
+          "this week",
+          "last month",
+          "today",
+          "this month",
+          "last quarter",
+          "this quarter",
+          "this year",
+          "last year",
+          "past",
+          "previous",
+          "all agents",
+          "by team",
+          "by product",
+          "by company",
+          "sort",
+          "group",
+          "compare",
+          "date",
+          "time period",
+          "period",
+        ];
+
+        function detectIntent(text) {
+          const lo = text.toLowerCase().trim();
+          for (const kw of FILTER_KWS) {
+            if (lo.includes(kw)) return "filter";
+          }
+          return "chat";
+        }
+
+        /* ── Floating bar: hint visibility ──────── */
+        floatInput.addEventListener("input", () => {
+          floatHint.style.opacity = floatInput.value.length ? "0" : "1";
+        });
+
+        /* ── Floating bar: Enter / Send ──────────── */
+        function handleFloatSubmit() {
+          const text = floatInput.value.trim();
+          if (!text) return;
+
+          const intent = detectIntent(text);
+
+          if (intent === "filter") {
+            applyFilter(text);
+          } else {
+            openOverlay(text);
+          }
+        }
+
+        floatInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            handleFloatSubmit();
+          }
+        });
+        floatSend.addEventListener("click", handleFloatSubmit);
+
+        /* ── Filter simulation ────────────────────────────────────────────
+     In production dispatch a CustomEvent the agent layer subscribes to. */
+        function applyFilter(text) {
+          floatSend.classList.add("thinking");
+          floatInput.disabled = true;
+
+          setTimeout(() => {
+            floatSend.classList.remove("thinking");
+            floatInput.disabled = false;
+            floatInput.value = "";
+            floatHint.style.opacity = "1";
+
+            // Restart flash animation
+            floatBar.classList.remove("filter-applied");
+            void floatBar.offsetWidth;
+            floatBar.classList.add("filter-applied");
+
+            window.dispatchEvent(
+              new CustomEvent("aimy:filter-applied", {
+                detail: { query: text, timestamp: Date.now() },
+              }),
+            );
+
+            showToast({
+              title: "Filters updated",
+              sub:
+                "\u201C" +
+                text.slice(0, 50) +
+                (text.length > 50 ? "\u2026" : "") +
+                "\u201D",
+            });
+
+            floatInput.focus();
+          }, 900);
+        }
+
+        /* ── Open overlay ─────────────────────────────────────────────── */
+        function openOverlay(initialText) {
+          overlayOpen = true;
+          overlay.classList.add("open");
+          floatBar.classList.add("hidden");
+
+          if (initialText) {
+            setTimeout(() => {
+              appendUserMsg(initialText);
+              floatInput.value = "";
+              floatHint.style.opacity = "1";
+              simulateAiResponse(initialText);
+            }, 80);
+          }
+
+          setTimeout(() => overlayInput.focus(), 220);
+        }
+
+        /* ── Close overlay ───────────────────────────────────────────── */
+        function closeOverlay() {
+          overlay.classList.remove("open");
+          floatBar.classList.remove("hidden");
+          overlayOpen = false;
+          setTimeout(() => floatInput.focus(), 160);
+        }
+
+        overlayClose.addEventListener("click", closeOverlay);
+        overlay.addEventListener("click", (e) => {
+          // Close if clicking the bare frosted glass (not the inner content)
+          if (e.target === overlay) closeOverlay();
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && overlayOpen) closeOverlay();
+        });
+
+        /* ── Append messages to the thread ───────────────────────────── */
+        function appendUserMsg(text) {
+          // Hide suggestions once user has sent anything
+          suggestions.classList.add("hidden");
+          msgCount++;
+
+          const wrap = document.createElement("div");
+          wrap.className = "chat-msg user";
+          wrap.innerHTML =
+            '<div class="msg-avatar user-av">NW</div>' +
+            '<div class="msg-bubble">' +
+            escHtml(text) +
+            "</div>";
+          thread.appendChild(wrap);
+          scrollThread();
+        }
+
+        function appendAiMsg(text) {
+          // Remove typing indicator if present
+          const typing = document.getElementById("aimyTyping");
+          if (typing) typing.remove();
+
+          const wrap = document.createElement("div");
+          wrap.className = "chat-msg aimy";
+          wrap.innerHTML =
+            '<div class="msg-avatar aimy-av">' +
+            '<svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>' +
+            "</div>" +
+            '<div class="msg-bubble">' +
+            text +
+            "</div>";
+          thread.appendChild(wrap);
+          scrollThread();
+          isTyping = false;
+        }
+
+        function showTypingIndicator() {
+          const existing = document.getElementById("aimyTyping");
+          if (existing) return;
+          const wrap = document.createElement("div");
+          wrap.className = "chat-msg aimy";
+          wrap.id = "aimyTyping";
+          wrap.innerHTML =
+            '<div class="msg-avatar aimy-av">' +
+            '<svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>' +
+            "</div>" +
+            '<div class="msg-bubble" style="padding:10px 14px;">' +
+            '<div class="typing-dots"><span></span><span></span><span></span></div>' +
+            "</div>";
+          thread.appendChild(wrap);
+          scrollThread();
+        }
+
+        function scrollThread() {
+          thread.scrollTop = thread.scrollHeight;
+        }
+
+        function escHtml(str) {
+          return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+        }
+
+        /* ── Simulated AiMY responses ─────────────────────────────────────
+     In production replace with a real API call dispatched to the
+     AiMY agent layer. The responses here are illustrative stubs.     */
+        const STUB_RESPONSES = [
+          "I&rsquo;ve looked across this period&rsquo;s data. The primary driver is empathy on escalation calls, which dropped <strong>8%</strong> week-over-week. I&rsquo;d suggest starting a targeted coaching session for the 3 flagged agents.",
+          "Based on current audit data: <strong>5 agents</strong> are below the 80% quality threshold. Omar A., Sara M., and Khaled R. show the steepest declines&mdash;all in the Customer Support queue.",
+          "This week&rsquo;s SLA breach count is <strong>23</strong>, up from 14 last week. The spike correlates with a surge in billing tickets on Wednesday. Do you want me to pull the affected tickets?",
+          "Quality score today sits at <strong>87.3%</strong>, which is 2.7 points below the 90% target. The improvement trajectory is positive&mdash;at current rate you&rsquo;d hit the target in approximately <strong>3 weeks</strong>.",
+          "I&rsquo;m tracking <strong>484 failing interactions</strong> this period. The top failure reason is missing follow-up confirmation (38% of fails), followed by survey promotion (27%). Want me to generate a coaching plan?",
+        ];
+        let stubIdx = 0;
+
+        function simulateAiResponse(userText) {
+          if (isTyping) return;
+          isTyping = true;
+          showTypingIndicator();
+
+          const delay = 900 + Math.random() * 600;
+          setTimeout(() => {
+            const response = STUB_RESPONSES[stubIdx % STUB_RESPONSES.length];
+            stubIdx++;
+            appendAiMsg(response);
+          }, delay);
+        }
+
+        /* ── Overlay input: Enter to send (Shift+Enter = newline) ────── */
+        function handleOverlaySend() {
+          const text = overlayInput.value.trim();
+          if (!text || isTyping) return;
+          appendUserMsg(text);
+          overlayInput.value = "";
+          autoResizeTextarea();
+          simulateAiResponse(text);
+        }
+
+        overlayInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            handleOverlaySend();
+          }
+        });
+        overlaySend.addEventListener("click", handleOverlaySend);
+
+        /* ── Auto-resize textarea as user types ─────────────────────── */
+        function autoResizeTextarea() {
+          overlayInput.style.height = "auto";
+          overlayInput.style.height =
+            Math.min(overlayInput.scrollHeight, 120) + "px";
+        }
+        overlayInput.addEventListener("input", autoResizeTextarea);
+
+        /* ── Suggestion chips inside overlay ────────────────────────── */
+        window.overlaySuggestion = function (btn) {
+          const text = btn.textContent.trim();
+          overlayInput.value = text;
+          autoResizeTextarea();
+          handleOverlaySend();
+        };
+      })();
+    </script>
+  </body>
+</html>
