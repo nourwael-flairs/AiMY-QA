@@ -467,61 +467,225 @@
         background: transparent;
       }
 
-      .filter-bar {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 20px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      /* ── Filter glass keyframes — shimmer only, no pulse ─────────────── */
+      @keyframes glassShimmer {
+        0%   { background-position: -200% center; }
+        100% { background-position:  200% center; }
       }
-      .filter-select {
-        background: var(--d800);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: var(--d100);
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        cursor: pointer;
-        transition: all var(--transition-fast);
-        font-family: "Urbanist", sans-serif;
+      @keyframes afsEntrance {
+        from { opacity: 0; transform: translateY(-3px); }
+        to   { opacity: 1; transform: translateY(0);    }
       }
-      .filter-select:hover {
-        background: var(--d750);
-        border-color: rgba(255, 255, 255, 0.18);
-        color: var(--d50);
-      }
-      .filter-select svg {
-        width: 11px;
-        height: 11px;
-        color: var(--d400);
-      }
-      .export-btn {
-        margin-left: auto;
-        background: var(--qa-accent);
-        color: #fff;
-        border: none;
-        padding: 9px 16px;
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 700;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-family: "Urbanist", sans-serif;
-        box-shadow: 0 2px 8px rgba(var(--qa-accent-rgb), 0.25);
-        transition: all var(--transition-base);
-      }
-      .export-btn:hover {
-        box-shadow: 0 4px 16px rgba(var(--qa-accent-rgb), 0.35);
-        transform: translateY(-1px);
+      @keyframes chipPop {
+        0%   { transform: scale(0.86); opacity: 0; }
+        65%  { transform: scale(1.04); }
+        100% { transform: scale(1);    opacity: 1; }
       }
 
+      /* ── Active filter strip ─────────────────────────────────────────── */
+      .active-filter-strip {
+        display: none;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 20px;
+        padding: 5px 12px;
+        border-radius: 10px;
+        background: rgba(51, 105, 255, 0.05);
+        border: 1px solid rgba(51, 105, 255, 0.12);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+        min-height: 32px;
+        position: relative;
+        overflow: hidden;
+        animation: afsEntrance 180ms ease both;
+      }
+      .active-filter-strip::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(99, 169, 255, 0.4) 35%,
+          rgba(139, 79, 244, 0.3) 65%,
+          transparent
+        );
+        background-size: 200% 100%;
+        animation: glassShimmer 4s linear infinite;
+      }
+      .active-filter-strip.visible { display: flex; }
+
+      .afs-label {
+        font-size: 9px;
+        font-weight: 700;
+        color: rgba(99, 169, 255, 0.5);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding-right: 8px;
+        border-right: 1px solid rgba(255,255,255,0.07);
+      }
+      .afs-chip {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(99, 169, 255, 0.08);
+        border: 1px solid rgba(99, 169, 255, 0.18);
+        border-radius: 20px;
+        padding: 3px 9px;
+        font-size: 10.5px;
+        font-weight: 600;
+        color: rgba(197, 220, 255, 0.85);
+        font-family: "Urbanist", sans-serif;
+        white-space: nowrap;
+        animation: chipPop 220ms cubic-bezier(0.34,1.56,0.64,1) both;
+      }
+      .afs-chip strong { color: #a8ccff; font-weight: 700; }
+      .afs-chip-x {
+        background: none;
+        border: none;
+        color: rgba(168, 204, 255, 0.35);
+        cursor: pointer;
+        font-size: 13px;
+        line-height: 1;
+        padding: 0 0 0 3px;
+        font-family: "Urbanist", sans-serif;
+        transition: color var(--transition-fast);
+        display: flex;
+        align-items: center;
+      }
+      .afs-chip-x:hover { color: rgba(168, 204, 255, 0.8); }
+      .afs-clear-all {
+        margin-left: auto;
+        background: none;
+        border: none;
+        font-size: 9.5px;
+        font-weight: 600;
+        color: rgba(255,255,255,0.18);
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        letter-spacing: 0.04em;
+        transition: color var(--transition-fast);
+        flex-shrink: 0;
+        padding: 3px 0;
+      }
+      .afs-clear-all:hover { color: rgba(168, 204, 255, 0.6); }
+
+      /* ── Filter tray ─────────────────────────────────────────────────── */
+      .filter-tray {
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        pointer-events: none;
+        opacity: 0;
+        transform: translateY(5px);
+        transition:
+          opacity 160ms ease,
+          transform 160ms cubic-bezier(0.22,1,0.36,1);
+      }
+      .filter-tray.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: all;
+      }
+      .filter-tray-inner {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(14, 20, 30, 0.75);
+        border: 1px solid rgba(99, 169, 255, 0.10);
+        border-radius: 12px;
+        padding: 6px 10px;
+        backdrop-filter: blur(24px) saturate(1.5);
+        -webkit-backdrop-filter: blur(24px) saturate(1.5);
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.06),
+          0 4px 20px rgba(0,0,0,0.35),
+          0 0 24px rgba(51,105,255,0.06);
+        max-width: 760px;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+      .filter-tray-inner::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(99,169,255,0.35) 30%,
+          rgba(139,79,244,0.25) 60%,
+          transparent
+        );
+        background-size: 200% 100%;
+        animation: glassShimmer 3.5s linear infinite;
+      }
+      .filter-tray-inner::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 55%);
+        pointer-events: none;
+      }
+      .filter-tray-label {
+        font-size: 9px;
+        font-weight: 700;
+        color: rgba(99,169,255,0.45);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        padding-right: 7px;
+        border-right: 1px solid rgba(255,255,255,0.07);
+        margin-right: 1px;
+        flex-shrink: 0;
+        position: relative;
+        z-index: 1;
+      }
+      .filter-chip {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 10.5px;
+        font-weight: 600;
+        color: rgba(255,255,255,0.55);
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        white-space: nowrap;
+        position: relative;
+        z-index: 1;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+        transition:
+          background   150ms ease,
+          border-color 150ms ease,
+          color        150ms ease,
+          box-shadow   150ms ease,
+          transform    150ms cubic-bezier(0.34,1.56,0.64,1);
+      }
+      .filter-chip:hover {
+        background: rgba(51,105,255,0.10);
+        border-color: rgba(99,169,255,0.28);
+        color: rgba(197,220,255,0.9);
+        transform: translateY(-1px);
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.10),
+          0 0 10px rgba(51,105,255,0.12);
+      }
+      .filter-chip:active  { transform: translateY(0) scale(0.97); }
+      .filter-chip.pressed {
+        background: rgba(139,79,244,0.10);
+        border-color: rgba(139,79,244,0.28);
+        color: rgba(210,185,255,0.9);
+      }
       /* ── GRID OPTION A (Asymmetrical Split) ── */
       .tier-1-grid {
         display: grid;
@@ -2100,6 +2264,67 @@
         opacity: 0.7;
       }
 
+      .ask-aimy-chart-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: rgba(139, 79, 244, 0.1);
+        border: 1px solid rgba(139, 79, 244, 0.25);
+        color: #c4a0ff;
+        font-size: 11px;
+        font-weight: 600;
+        font-family: "Urbanist", sans-serif;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all var(--transition-fast);
+        flex-shrink: 0;
+      }
+      .ask-aimy-chart-btn:hover {
+        background: rgba(139, 79, 244, 0.18);
+        border-color: rgba(139, 79, 244, 0.4);
+        color: #d8baff;
+        transform: translateY(-1px);
+      }
+      .ask-aimy-chart-btn.injected {
+        background: rgba(51, 105, 255, 0.12);
+        border-color: rgba(51, 105, 255, 0.3);
+        color: #7fa8ff;
+      }
+      .ask-aimy-chart-btn svg {
+        width: 12px;
+        height: 14px;
+        flex-shrink: 0;
+      }
+      .ai-insight-bullets {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .ai-insight-bullets li {
+        font-size: 12px;
+        color: var(--d300);
+        line-height: 1.5;
+        padding-left: 14px;
+        position: relative;
+      }
+      .ai-insight-bullets li::before {
+        content: "·";
+        position: absolute;
+        left: 0;
+        color: var(--qa-accent);
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 1.3;
+      }
+      .ai-insight-bullets li strong {
+        color: var(--d50);
+        font-weight: 600;
+      }
       .ai-insight-text {
         font-size: 13px;
         color: var(--d300);
@@ -4427,114 +4652,48 @@
 
       <div class="app-main">
         <div class="dashboard-scroll">
-          <div class="filter-bar">
-            <div class="filter-select">
-              Company
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-            <div class="filter-select">
-              Product
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-            <div class="filter-select">
-              Agents
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-            <div class="filter-select">
-              Time Period
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-            <div class="filter-select">
-              All
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-
-            <button class="export-btn">
-              <svg
-                viewBox="0 0 24 24"
-                width="14"
-                height="14"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              Export
-            </button>
+          <!-- Active filter strip — only visible when filters are applied -->
+          <div class="active-filter-strip" id="activeFilterStrip">
+            <span class="afs-label">Viewing</span>
+            <!-- Active filter chips injected here by JS -->
+            <button class="afs-clear-all" id="afsClearAll">Clear all</button>
           </div>
 
           <div class="tier-1-grid">
-            <div class="bcard p3" onclick="toggleCard(this)">
+            <div class="bcard p1 tier-primary" onclick="toggleCard(this)">
               <div class="bcard-accent"></div>
               <div class="bcard-body">
                 <div class="bcard-meta">
                   <span class="severity-dot"></span>
-                  <span class="type-label">Ticket Evaluation</span>
-                  <span class="priority-badge">P3 · Good news</span>
+                  <span class="type-label">SLA Breach</span>
+                  <span class="priority-badge">P1 · Critical</span>
                 </div>
                 <p class="bcard-conclusion">
-                  313 borderline tickets could move to pass with one targeted
-                  coaching session — they're close, not broken.
+                  First response SLA compliance collapsed to
+                  <span style="color: var(--err); font-weight: 700">61%</span>
+                  — 29pts below the 90% threshold. 23 breaches this week, up from 14.
                 </p>
                 <div class="evidence-row">
                   <div class="evidence-pill">
-                    <span class="ev-value">72%</span><span>pass rate</span>
+                    <span class="ev-value">61%</span><span>SLA compliance</span>
                   </div>
                   <div class="evidence-pill">
-                    <span class="ev-delta up">↑ +4%</span
-                    ><span>vs last period</span>
+                    <span class="ev-delta dn">↓ −29pts</span
+                    ><span>vs target</span>
                   </div>
                   <div class="evidence-pill">
-                    <span class="ev-value">313</span
-                    ><span>borderline tickets</span>
+                    <span class="ev-value">23</span
+                    ><span>breaches this week</span>
                   </div>
                   <div class="evidence-pill">
-                    <span class="ev-value">484</span
-                    ><span>currently failing</span>
+                    <span class="ev-value">45 min</span
+                    ><span>avg first response</span>
                   </div>
                 </div>
                 <div class="bcard-divider"></div>
                 <div class="bcard-action">
                   <button class="action-btn">
-                    See borderline tickets
+                    View breached tickets
                     <svg viewBox="0 0 13 13" fill="none">
                       <path
                         d="M2 6.5H11M7 2.5L11 6.5L7 10.5"
@@ -4567,106 +4726,19 @@
               <div class="bcard-data">
                 <div class="data-grid">
                   <div class="data-cell">
-                    <span class="dc-label">Pass</span
-                    ><span class="dc-val" style="color: var(--ok)">2,050</span
-                    ><span class="dc-sub">72% of total</span>
+                    <span class="dc-label">Compliance</span
+                    ><span class="dc-val" style="color: var(--err)">61%</span
+                    ><span class="dc-sub">Target: 90%</span>
                   </div>
                   <div class="data-cell">
-                    <span class="dc-label">Borderline</span
-                    ><span class="dc-val" style="color: var(--warn)">313</span
-                    ><span class="dc-sub">11% — actionable</span>
+                    <span class="dc-label">Breaches</span
+                    ><span class="dc-val" style="color: var(--err)">23</span
+                    ><span class="dc-sub">↑ 9 vs last week</span>
                   </div>
                   <div class="data-cell">
-                    <span class="dc-label">Fail</span
-                    ><span class="dc-val" style="color: var(--err)">484</span
-                    ><span class="dc-sub">17% of total</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bcard p2" onclick="toggleCard(this)">
-              <div class="bcard-accent"></div>
-              <div class="bcard-body">
-                <div class="bcard-meta">
-                  <span class="severity-dot"></span>
-                  <span class="type-label">Quality Score</span>
-                  <span class="priority-badge">P2 · Watch</span>
-                </div>
-                <p class="bcard-conclusion">
-                  Quality is at
-                  <span style="color: var(--warn); font-weight: 700"
-                    >87.3%</span
-                  >
-                  — 2.7% below the 90% SLA target and improving, but the 3
-                  failing KPIs are the primary drag preventing target from being
-                  reached this quarter.
-                </p>
-                <div class="evidence-row">
-                  <div class="evidence-pill">
-                    <span class="ev-delta up">↑ +5.2%</span
-                    ><span>vs last period</span>
-                  </div>
-                  <div class="evidence-pill">
-                    <span class="ev-value">−2.7%</span><span>gap to SLA</span>
-                  </div>
-                  <div class="evidence-pill">
-                    <span class="ev-value">3</span><span>KPIs failing</span>
-                  </div>
-                  <div class="evidence-pill">
-                    <span class="ev-value">2,847</span
-                    ><span>audits this period</span>
-                  </div>
-                </div>
-                <div class="bcard-divider"></div>
-                <div class="bcard-action">
-                  <button class="action-btn">
-                    See what's blocking target
-                    <svg viewBox="0 0 13 13" fill="none">
-                      <path
-                        d="M2 6.5H11M7 2.5L11 6.5L7 10.5"
-                        stroke="currentColor"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    class="expand-toggle"
-                    onclick="
-                      event.stopPropagation();
-                      toggleData(this);
-                    "
-                  >
-                    Metric Breakdown
-                    <svg viewBox="0 0 12 12" fill="none">
-                      <path
-                        d="M3 4.5L6 7.5L9 4.5"
-                        stroke="currentColor"
-                        stroke-width="1.3"
-                        stroke-linecap="round"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-              <div class="bcard-data">
-                <div class="data-grid">
-                  <div class="data-cell">
-                    <span class="dc-label">Current avg</span
-                    ><span class="dc-val">87.3%</span
-                    ><span class="dc-sub">+5.2% this period</span>
-                  </div>
-                  <div class="data-cell">
-                    <span class="dc-label">SLA target</span
-                    ><span class="dc-val" style="color: var(--warn)">90%</span
-                    ><span class="dc-sub">threshold</span>
-                  </div>
-                  <div class="data-cell">
-                    <span class="dc-label">Gap to close</span
-                    ><span class="dc-val" style="color: var(--warn)">−2.7%</span
-                    ><span class="dc-sub">≈ 77 more passes needed</span>
+                    <span class="dc-label">Avg First Response</span
+                    ><span class="dc-val" style="color: var(--warn)">45 min</span
+                    ><span class="dc-sub">Target: 15 min</span>
                   </div>
                 </div>
               </div>
@@ -4943,6 +5015,93 @@
                 </div>
               </div>
             </div>
+            <div class="bcard p2" onclick="toggleCard(this)">
+              <div class="bcard-accent"></div>
+              <div class="bcard-body">
+                <div class="bcard-meta">
+                  <span class="severity-dot"></span>
+                  <span class="type-label">Quality Score</span>
+                  <span class="priority-badge">P2 · Watch</span>
+                </div>
+                <p class="bcard-conclusion">
+                  Quality is at
+                  <span style="color: var(--warn); font-weight: 700"
+                    >87.3%</span
+                  >
+                  — 2.7% below the 90% SLA target and improving, but the 3
+                  failing KPIs are the primary drag preventing target from being
+                  reached this quarter.
+                </p>
+                <div class="evidence-row">
+                  <div class="evidence-pill">
+                    <span class="ev-delta up">↑ +5.2%</span
+                    ><span>vs last period</span>
+                  </div>
+                  <div class="evidence-pill">
+                    <span class="ev-value">−2.7%</span><span>gap to SLA</span>
+                  </div>
+                  <div class="evidence-pill">
+                    <span class="ev-value">3</span><span>KPIs failing</span>
+                  </div>
+                  <div class="evidence-pill">
+                    <span class="ev-value">2,847</span
+                    ><span>audits this period</span>
+                  </div>
+                </div>
+                <div class="bcard-divider"></div>
+                <div class="bcard-action">
+                  <button class="action-btn">
+                    See what's blocking target
+                    <svg viewBox="0 0 13 13" fill="none">
+                      <path
+                        d="M2 6.5H11M7 2.5L11 6.5L7 10.5"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    class="expand-toggle"
+                    onclick="
+                      event.stopPropagation();
+                      toggleData(this);
+                    "
+                  >
+                    Metric Breakdown
+                    <svg viewBox="0 0 12 12" fill="none">
+                      <path
+                        d="M3 4.5L6 7.5L9 4.5"
+                        stroke="currentColor"
+                        stroke-width="1.3"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="bcard-data">
+                <div class="data-grid">
+                  <div class="data-cell">
+                    <span class="dc-label">Current avg</span
+                    ><span class="dc-val">87.3%</span
+                    ><span class="dc-sub">+5.2% this period</span>
+                  </div>
+                  <div class="data-cell">
+                    <span class="dc-label">SLA target</span
+                    ><span class="dc-val" style="color: var(--warn)">90%</span
+                    ><span class="dc-sub">threshold</span>
+                  </div>
+                  <div class="data-cell">
+                    <span class="dc-label">Gap to close</span
+                    ><span class="dc-val" style="color: var(--warn)">−2.7%</span
+                    ><span class="dc-sub">≈ 77 more passes needed</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
 
           <!-- AiMY Context Panel: state detection (top zone) + suggestions (bottom zone).
@@ -5067,19 +5226,14 @@
                         Picked up from yesterday
                       </span>
                     </div>
-                    <p class="ai-insight-text">
-                      Quality score has been
-                      <strong>trending upward since June</strong> (+8.4 pts) but
-                      remains <strong>2.7% below the 90% SLA target</strong>.
-                      The <strong>November dip to 74.2%</strong> coincided with
-                      a spike in ticket volume during the product launch &mdash;
-                      3 agents were handling 40% above their average load.
-                      Recovery in December confirms the issue was
-                      <strong>volume-related, not skill-related</strong>.
-                      Recommended action:
-                      <strong>review staffing thresholds</strong> before the
-                      next product release.
-                    </p>
+                    <p class="ai-insight-text" style="display:none"></p>
+                    <ul class="ai-insight-bullets">
+                      <li>Trending <strong>upward since June</strong> (+8.4 pts) — recovery is real, not a spike.</li>
+                      <li>Still <strong>2.7% below the 90% SLA target</strong> — 3 failing KPIs are the primary drag.</li>
+                      <li>November dip to <strong>74.2%</strong> was volume-driven — 3 agents handled 40% above average load during product launch.</li>
+                      <li>December recovery confirms the issue was <strong>workload, not skill</strong>.</li>
+                      <li>Recommended: <strong>review staffing thresholds</strong> before the next product release.</li>
+                    </ul>
                     <div style="margin-top: 10px">
                       <button
                         class="kf-signal-action"
@@ -5133,19 +5287,18 @@
                         flex-shrink: 0;
                       "
                     ></div>
-                    <!-- Query input lives in the toolbar, stretches to fill remaining space -->
-                    <div
-                      class="v2-ai-input-full"
-                      style="flex: 1; width: auto; border-radius: 8px"
+                    <!-- Ask AiMY button — injects a pre-filled prompt into the main canvas input -->
+                    <button
+                      class="ask-aimy-chart-btn"
+                      id="askAimyChartBtn"
+                      onclick="injectChartPrompt()"
+                      title="Pre-fill a chart question in AiMY Canvas"
                     >
-                      <svg width="18" height="20" viewBox="0 0 18 20">
+                      <svg width="14" height="16" viewBox="0 0 18 20">
                         <use href="#aimy-logo-small" />
                       </svg>
-                      <input
-                        type="text"
-                        placeholder="Ask AiMY about this chart…"
-                      />
-                    </div>
+                      Ask AiMY about this chart
+                    </button>
                   </div>
                 </div>
 
@@ -6273,6 +6426,19 @@
 
         <!-- ════ FLOATING AIMY INPUT BAR (scoped to app-main) ══════════ -->
         <div class="aimy-float-wrap" id="aimyFloatWrap">
+
+          <!-- Filter tray — appears above the bar on input focus -->
+          <div class="filter-tray" id="filterTray" role="toolbar" aria-label="Filter by dimension">
+            <div class="filter-tray-inner">
+              <span class="filter-tray-label">Filter via AiMY</span>
+              <button class="filter-chip" data-filter="Company">Company</button>
+              <button class="filter-chip" data-filter="Product">Product</button>
+              <button class="filter-chip" data-filter="Agents">Agents</button>
+              <button class="filter-chip" data-filter="Time Period">Time Period</button>
+              <button class="filter-chip" data-filter="All">Reset all</button>
+            </div>
+          </div>
+
           <div class="aimy-float-bar" id="aimyFloatBar">
             <div class="aimy-float-icon" style="width: 32px; height: 32px">
               <svg width="18" height="20" viewBox="0 0 18 20">
@@ -6601,30 +6767,30 @@
           context: "· based on 3 failing KPIs and Nov quality dip",
           chips: [
             {
-              type: "urgent",
-              badge: "urgent-badge",
-              badgeText: "Urgent",
-              label: "Coach agents on empathy & escalation",
-              sub: "<strong>32% empathy score</strong> — dropped 8% this period. 184 failed interactions need review.",
-              action: "Start coaching plan →",
-              actionClass: "urgent-action",
-            },
-            {
-              type: "urgent",
-              badge: "urgent-badge",
-              badgeText: "Urgent",
-              label: "Investigate November quality dip",
-              sub: "Score dropped to <strong>74.2%</strong> on Nov 3 — unresolved for 14 days. Root cause unconfirmed.",
-              action: "View anomaly detail →",
-              actionClass: "urgent-action",
-            },
-            {
               type: "caution",
               badge: "caution-badge",
               badgeText: "Watch",
               label: "Review 313 borderline tickets",
               sub: "<strong>11% of total</strong> evaluated as borderline this period. Small coaching changes could move them to pass.",
               action: "See borderline tickets →",
+              actionClass: "caution-action",
+            },
+            {
+              type: "caution",
+              badge: "caution-badge",
+              badgeText: "Watch",
+              label: "Survey promotion slipping — monitor before it becomes a failure",
+              sub: "Survey promo sits at <strong>49%</strong>, just below the 50% threshold. Trending up +3% but not yet stable.",
+              action: "Track KPI trend →",
+              actionClass: "caution-action",
+            },
+            {
+              type: "caution",
+              badge: "caution-badge",
+              badgeText: "Watch",
+              label: "Response SLA drifting — 4pts below target",
+              sub: "SLA compliance at <strong>71%</strong> — down 2pts from last period. Not yet critical but trajectory needs monitoring.",
+              action: "Monitor trend →",
               actionClass: "caution-action",
             },
             {
@@ -7193,6 +7359,13 @@
             floatInput.value = "";
             floatHint.style.opacity = "1";
 
+            // Update active filter strip
+            const parsed = parseFilterFromText(text);
+            if (parsed) {
+              activeFilters[parsed.key] = parsed.value;
+              renderActiveStrip();
+            }
+
             // Restart flash animation
             floatBar.classList.remove("filter-applied");
             void floatBar.offsetWidth;
@@ -7375,6 +7548,156 @@
           autoResizeTextarea();
           handleOverlaySend();
         };
+        /* ── Filter tray — show/hide on float bar focus ─────────────────
+       The tray lives above the float bar and is only revealed when
+       the user focuses the input. It hides on blur (with a short
+       delay so clicks on chips register before the tray disappears). */
+        const filterTray = document.getElementById("filterTray");
+        const activeFilterStrip = document.getElementById("activeFilterStrip");
+        const afsClearAll = document.getElementById("afsClearAll");
+        let trayHideTimer = null;
+        let activeFilters = {}; // { Company: "Upland", "Time Period": "This week", … }
+
+        function showTray() {
+          clearTimeout(trayHideTimer);
+          filterTray.classList.add("visible");
+        }
+
+        function hideTray() {
+          trayHideTimer = setTimeout(() => {
+            filterTray.classList.remove("visible");
+          }, 160);
+        }
+
+        floatInput.addEventListener("focus", showTray);
+        floatInput.addEventListener("blur", hideTray);
+
+        // Keep tray open while interacting with it
+        filterTray.addEventListener("mousedown", (e) => e.preventDefault()); // prevent input blur
+        filterTray.addEventListener("focusin", showTray);
+        filterTray.addEventListener("focusout", hideTray);
+
+        /* ── Filter chip click — inject dimension prompt into input ────
+       Injects "Filter by Company: " with cursor at end so user can
+       type the value (e.g. "Upland") then press Enter.              */
+        const FILTER_PREFIXES = {
+          "Company":     "Filter by Company: ",
+          "Product":     "Filter by Product: ",
+          "Agents":      "Filter by Agents: ",
+          "Time Period":  "Filter by Time Period: ",
+          "All":         "Reset all filters",
+        };
+
+        filterTray.querySelectorAll(".filter-chip").forEach(chip => {
+          chip.addEventListener("click", () => {
+            const key = chip.dataset.filter;
+            const prefix = FILTER_PREFIXES[key] || `Filter by ${key}: `;
+
+            if (key === "All") {
+              // Reset — clear input and active filters
+              floatInput.value = "";
+              floatInput.dispatchEvent(new Event("input"));
+              clearAllFilters();
+              floatInput.focus();
+              return;
+            }
+
+            floatInput.value = prefix;
+            floatInput.dispatchEvent(new Event("input"));
+            floatInput.focus();
+            // Position cursor at end
+            const len = prefix.length;
+            floatInput.setSelectionRange(len, len);
+
+            // Brief press state on chip
+            chip.classList.add("pressed");
+            setTimeout(() => chip.classList.remove("pressed"), 400);
+          });
+        });
+
+        /* ── Active filter strip management ────────────────────────────
+       When a filter is *sent* (applyFilter called), parse the text
+       to extract the dimension + value and show an active chip.     */
+        function parseFilterFromText(text) {
+          // Matches "Filter by Company: Upland" → { key: "Company", value: "Upland" }
+          const match = text.match(/Filter by ([^:]+):\s*(.+)/i);
+          if (match) return { key: match[1].trim(), value: match[2].trim() };
+          return null;
+        }
+
+        function renderActiveStrip() {
+          // Remove all chips (keep the label and clear-all button)
+          activeFilterStrip.querySelectorAll(".afs-chip").forEach(c => c.remove());
+          const entries = Object.entries(activeFilters);
+          if (entries.length === 0) {
+            activeFilterStrip.classList.remove("visible");
+            return;
+          }
+          const label = activeFilterStrip.querySelector(".afs-label");
+          entries.forEach(([key, value]) => {
+            const chip = document.createElement("div");
+            chip.className = "afs-chip";
+            chip.innerHTML =
+              `<span>${key}: <strong>${value}</strong></span>` +
+              `<button class="afs-chip-x" data-key="${key}" aria-label="Remove ${key} filter">×</button>`;
+            label.insertAdjacentElement("afterend", chip);
+          });
+          activeFilterStrip.classList.add("visible");
+
+          // Wire up individual remove buttons
+          activeFilterStrip.querySelectorAll(".afs-chip-x").forEach(btn => {
+            btn.addEventListener("click", () => {
+              delete activeFilters[btn.dataset.key];
+              renderActiveStrip();
+            });
+          });
+        }
+
+        function clearAllFilters() {
+          activeFilters = {};
+          renderActiveStrip();
+        }
+
+        afsClearAll.addEventListener("click", clearAllFilters);
+
+        /* ── Filter tray — show on injectChartPrompt too ───────────────
+       Chart prompt focuses the input, which fires the focus handler,
+       so no extra wiring needed. Active strip update hooks into
+       applyFilter (below) which is the final send path.             */
+
+        /* ── Filter trigger buttons → Canvas injection ─────────────────
+           (Legacy global kept for any external callers)               */
+        window.injectFilter = function (filterKey) {
+          const prefix = FILTER_PREFIXES[filterKey] || `Filter by ${filterKey}: `;
+          floatInput.value = prefix;
+          floatInput.dispatchEvent(new Event("input"));
+          floatInput.focus();
+          const len = prefix.length;
+          floatInput.setSelectionRange(len, len);
+        };
+
+        /* ── Chart → Canvas injection ──────────────────────────────────
+       "Ask AiMY about this chart" writes a pre-filled prompt into the
+       main float bar input and highlights it so the user can review
+       and send (or edit) before dispatching to the canvas.          */
+        window.injectChartPrompt = function () {
+          const prompt = "Explain what's driving the Quality Score trend — why did we dip in November and are we on track to hit the 90% SLA target?";
+          const input = document.getElementById("aimyFloatInput");
+          const btn = document.getElementById("askAimyChartBtn");
+          if (!input) return;
+          input.value = prompt;
+          input.dispatchEvent(new Event("input")); // triggers hint hide
+          input.focus();
+          // Brief visual feedback on the button
+          btn.classList.add("injected");
+          btn.textContent = "";
+          btn.insertAdjacentHTML("beforeend", '<svg width="12" height="14" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg> Prompt ready — press Enter to send');
+          setTimeout(() => {
+            btn.classList.remove("injected");
+            btn.innerHTML = '<svg width="14" height="16" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg> Ask AiMY about this chart';
+          }, 4000);
+        };
+
       })();
     </script>
   </body>
