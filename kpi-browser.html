@@ -346,7 +346,6 @@
       .app-sidebar {
         width: var(--sidebar-width);
         background: transparent;
-        border-right: 1px solid rgba(255, 255, 255, 0.06);
         display: flex;
         flex-direction: column;
         flex-shrink: 0;
@@ -4336,9 +4335,8 @@
 
     <div class="app-body">
       <div class="app-sidebar">
-        <div class="sidebar-nav">
+                <div class="sidebar-nav">
           <div class="sidebar-section-label">Primary</div>
-
           <a class="nav-item" href="index.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="3" width="7" height="7"></rect>
@@ -4348,7 +4346,6 @@
             </svg>
             Dashboard
           </a>
-
           <a class="nav-item" href="agent-scorecards.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20 7h-9"></path>
@@ -4356,26 +4353,8 @@
               <circle cx="17" cy="17" r="3"></circle>
               <circle cx="7" cy="7" r="3"></circle>
             </svg>
-            Agent Scorecards
+            Reviews
           </a>
-
-          <a class="nav-item" href="evaluation-results.html">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 11l3 3L22 4"></path>
-              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-            </svg>
-            Evaluation Results
-          </a>
-
-          <a class="nav-item" href="alerts-coaching.html">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-            Alerts &amp; Coaching
-          </a>
-
           <a class="nav-item" href="disputes.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
@@ -4384,43 +4363,22 @@
             </svg>
             Disputes
           </a>
-
+          <div class="sidebar-section-label">Configure</div>
           <a class="nav-item active" href="kpi-browser.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="4" width="18" height="16" rx="2"></rect>
               <line x1="3" y1="10" x2="21" y2="10"></line>
               <line x1="9" y1="4" x2="9" y2="20"></line>
             </svg>
-            KPI Browser
+            KPI Hub
           </a>
-
-          <a class="nav-item" href="reports.html">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-            </svg>
-            Reports
-          </a>
-
-          <div class="sidebar-section-label">Configure</div>
-
-          <a class="nav-item" href="kpi-governance.html">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-            KPI Governance
-          </a>
-
           <a class="nav-item" href="data-ingestion.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
               <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
               <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
             </svg>
-            Data Ingestion
+            Data
           </a>
         </div>
       </div>
@@ -4456,9 +4414,9 @@
               </defs>
             </svg>
             <p class="coming-soon-label">Coming Soon</p>
-            <h2 class="coming-soon-title">KPI Browser</h2>
-            <p class="coming-soon-desc">Browse and apply KPI evaluation templates across teams and products. The template library for all quality criteria.</p>
-            <div class="coming-soon-jira">RD-1513</div>
+            <h2 class="coming-soon-title">KPI Hub</h2>
+            <p class="coming-soon-desc">Combined KPI surface — browse and activate templates (RD-1513) and govern platform-level metric definitions (RD-1515) in one unified configuration space.</p>
+            <div class="coming-soon-jira">RD-1513 · RD-1515</div>
           </div>
         </div>
 

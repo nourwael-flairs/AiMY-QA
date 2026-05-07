@@ -346,7 +346,6 @@
       .app-sidebar {
         width: var(--sidebar-width);
         background: transparent;
-        border-right: 1px solid rgba(255, 255, 255, 0.06);
         display: flex;
         flex-direction: column;
         flex-shrink: 0;
@@ -4609,9 +4608,8 @@
 
     <div class="app-body">
       <div class="app-sidebar">
-        <div class="sidebar-nav">
+                <div class="sidebar-nav">
           <div class="sidebar-section-label">Primary</div>
-
           <a class="nav-item" href="index.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="3" width="7" height="7"></rect>
@@ -4621,7 +4619,6 @@
             </svg>
             Dashboard
           </a>
-
           <a class="nav-item active" href="agent-scorecards.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20 7h-9"></path>
@@ -4629,26 +4626,8 @@
               <circle cx="17" cy="17" r="3"></circle>
               <circle cx="7" cy="7" r="3"></circle>
             </svg>
-            Agent Scorecards
+            Reviews
           </a>
-
-          <a class="nav-item" href="evaluation-results.html">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 11l3 3L22 4"></path>
-              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-            </svg>
-            Evaluation Results
-          </a>
-
-          <a class="nav-item" href="alerts-coaching.html">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-            Alerts &amp; Coaching
-          </a>
-
           <a class="nav-item" href="disputes.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
@@ -4657,43 +4636,22 @@
             </svg>
             Disputes
           </a>
-
+          <div class="sidebar-section-label">Configure</div>
           <a class="nav-item" href="kpi-browser.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="4" width="18" height="16" rx="2"></rect>
               <line x1="3" y1="10" x2="21" y2="10"></line>
               <line x1="9" y1="4" x2="9" y2="20"></line>
             </svg>
-            KPI Browser
+            KPI Hub
           </a>
-
-          <a class="nav-item" href="reports.html">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-            </svg>
-            Reports
-          </a>
-
-          <div class="sidebar-section-label">Configure</div>
-
-          <a class="nav-item" href="kpi-governance.html">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-            KPI Governance
-          </a>
-
           <a class="nav-item" href="data-ingestion.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
               <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
               <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
             </svg>
-            Data Ingestion
+            Data
           </a>
         </div>
       </div>
@@ -7057,7 +7015,8 @@
         <!-- ════ FLOATING AIMY INPUT BAR (scoped to app-main) ══════════ -->
         <div class="aimy-float-wrap" id="aimyFloatWrap">
           <div class="aimy-float-bar" id="aimyFloatBar">
-            <div class="aimy-float-icon" style="width: 32px; height: 32px">
+            <div class="aimy-float-icon" style="width: 32px; height: 32px; position:relative;">
+              <span class="float-badge" id="floatBadge" aria-label="3 unread alerts">3</span>
               <svg width="18" height="20" viewBox="0 0 18 20">
                 <use href="#aimy-logo-small" />
               </svg>
@@ -10112,7 +10071,450 @@
           grid-template-columns: repeat(2, 1fr);
         }
       }
-    </style>
+    
+      /* ══ V2 ADDITIONS: Coaching Cards, Message Types, Alert Controls ══ */
+
+      /* ── Notification badge on float bar icon ─────────────────────── */
+      .float-badge {
+        position: absolute;
+        top: -3px;
+        right: -3px;
+        min-width: 16px;
+        height: 16px;
+        border-radius: 20px;
+        background: var(--err);
+        border: 2px solid #171a1c;
+        font-size: 9px;
+        font-weight: 700;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 3px;
+        pointer-events: none;
+        opacity: 0;
+        transform: scale(0.7);
+        transition: opacity 200ms ease, transform 200ms cubic-bezier(0.34,1.56,0.64,1);
+      }
+      .float-badge.visible {
+        opacity: 1;
+        transform: scale(1);
+      }
+      .aimy-float-icon { position: relative; }
+
+      /* ── Alert acknowledgment row on bcard ────────────────────────── */
+      .bcard-ack-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding-top: 10px;
+        margin-top: 10px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+      }
+      .bcard-ack-btn {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d400);
+        padding: 4px 10px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.08);
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        transition: all var(--transition-fast);
+        white-space: nowrap;
+      }
+      .bcard-ack-btn:hover { background: rgba(255,255,255,0.07); color: var(--d200, #e8edf2); border-color: rgba(255,255,255,0.14); }
+      .bcard-ack-btn.dismiss { color: var(--d600); }
+      .bcard-ack-btn.dismiss:hover { color: var(--d400); }
+      .bcard-ack-btn.acknowledged {
+        color: var(--ok); border-color: rgba(23,178,106,0.22); background: var(--ok-bg);
+        cursor: default; pointer-events: none;
+      }
+
+      
+
+      /* ── Chat message types ────────────────────────────────────────── */
+
+      /* Type 2: Inline data reference link within a bubble */
+      .msg-data-ref {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--qa-accent);
+        font-weight: 600;
+        text-decoration: underline;
+        text-decoration-color: rgba(var(--qa-accent-rgb),0.35);
+        text-underline-offset: 2px;
+        cursor: pointer;
+        transition: opacity var(--transition-fast);
+      }
+      .msg-data-ref:hover { opacity: 0.8; }
+      .msg-data-ref svg { width: 11px; height: 11px; stroke: currentColor; fill: none; }
+
+      /* Type 4: Take Action link */
+      .msg-action-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 10px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: rgba(var(--qa-accent-rgb),0.1);
+        border: 1px solid rgba(var(--qa-accent-rgb),0.22);
+        color: var(--qa-accent);
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        transition: all var(--transition-fast);
+        text-decoration: none;
+      }
+      .msg-action-link:hover { background: rgba(var(--qa-accent-rgb),0.18); border-color: rgba(var(--qa-accent-rgb),0.4); }
+      .msg-action-link svg { width: 12px; height: 12px; stroke: currentColor; fill: none; }
+      /* Triggered state */
+      .msg-action-link.triggered {
+        background: var(--ok-bg); border-color: rgba(23,178,106,0.3); color: var(--ok); pointer-events: none; cursor: default;
+      }
+      /* Confirm modal */
+      .action-confirm-wrap {
+        margin-top: 8px;
+        padding: 10px 14px;
+        background: rgba(var(--qa-accent-rgb),0.06);
+        border: 1px solid rgba(var(--qa-accent-rgb),0.18);
+        border-radius: 10px;
+      }
+      .action-confirm-title { font-size: 12px; font-weight: 700; color: var(--d50); margin-bottom: 4px; }
+      .action-confirm-sub { font-size: 11px; color: var(--d300); margin-bottom: 10px; line-height: 1.4; }
+      .action-confirm-btns { display: flex; gap: 8px; }
+      .action-confirm-yes {
+        font-size: 11px; font-weight: 700; padding: 5px 14px; border-radius: 8px;
+        background: var(--qa-accent); color: #fff; border: none; cursor: pointer; font-family: "Urbanist", sans-serif;
+        transition: opacity var(--transition-fast);
+      }
+      .action-confirm-yes:hover { opacity: .85; }
+      .action-confirm-no {
+        font-size: 11px; font-weight: 600; padding: 5px 14px; border-radius: 8px;
+        background: rgba(255,255,255,0.04); color: var(--d400); border: 1px solid rgba(255,255,255,0.08); cursor: pointer; font-family: "Urbanist", sans-serif;
+        transition: all var(--transition-fast);
+      }
+      .action-confirm-no:hover { background: rgba(255,255,255,0.08); color: var(--d200, #e8edf2); }
+
+      /* Type 5: System message */
+      .msg-system {
+        text-align: center;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--d600);
+        padding: 4px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+      .msg-system::before,
+      .msg-system::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+
+      /* Error message (AI fallback) */
+      .msg-error-bubble {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 10px 14px;
+        background: var(--err-bg);
+        border: 1px solid rgba(240,68,56,0.2);
+        border-radius: 4px 12px 12px 12px;
+        font-size: 13px;
+        color: var(--d300);
+        line-height: 1.5;
+      }
+      .msg-error-bubble svg { width: 14px; height: 14px; stroke: var(--err); fill: none; flex-shrink: 0; margin-top: 1px; }
+
+      /* Type 3: Coaching recommendation card in thread */
+      .coaching-card {
+        background: rgba(20,27,36,0.65);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        overflow: hidden;
+        max-width: 540px;
+        backdrop-filter: blur(8px);
+      }
+      .coaching-card-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 14px 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .coaching-card-type {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+        color: var(--d600);
+        flex: 1;
+      }
+      .coaching-confidence {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--teal);
+        padding: 2px 8px;
+        background: rgba(111,223,226,0.07);
+        border: 1px solid rgba(111,223,226,0.2);
+        border-radius: 20px;
+      }
+      .coaching-confidence svg { width: 9px; height: 9px; fill: var(--teal); }
+      .coaching-card-body { padding: 12px 14px; }
+      .coaching-agent-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .coaching-agent-av {
+        width: 24px; height: 24px; border-radius: 50%;
+        background: linear-gradient(135deg, #7c3aed, #3369ff);
+        color: #fff; font-size: 9px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      }
+      .coaching-agent-name { font-size: 12px; font-weight: 700; color: var(--d50); }
+      .coaching-agent-link { font-size: 10px; color: var(--qa-accent); text-decoration: underline; text-decoration-color: rgba(var(--qa-accent-rgb),.35); cursor: pointer; margin-left: auto; }
+      .coaching-what {
+        font-size: 13px; font-weight: 600; color: var(--d50); line-height: 1.45; margin-bottom: 6px;
+      }
+      .coaching-why {
+        font-size: 11px; color: var(--d400); line-height: 1.5; margin-bottom: 12px;
+        padding: 8px 10px;
+        background: rgba(255,255,255,0.03);
+        border-left: 2px solid rgba(255,255,255,0.1);
+        border-radius: 0 6px 6px 0;
+      }
+      .coaching-why strong { color: var(--d200, #e8edf2); }
+      .coaching-card-actions {
+        display: flex;
+        gap: 6px;
+        padding: 10px 14px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        background: rgba(0,0,0,0.12);
+      }
+      .coach-btn {
+        font-size: 11px; font-weight: 700; padding: 6px 14px; border-radius: 8px;
+        cursor: pointer; font-family: "Urbanist", sans-serif; transition: all var(--transition-fast);
+        border: 1px solid transparent; flex-shrink: 0;
+      }
+      .coach-btn.accept {
+        background: rgba(23,178,106,0.12); color: var(--ok); border-color: rgba(23,178,106,0.25);
+      }
+      .coach-btn.accept:hover { background: rgba(23,178,106,0.22); }
+      .coach-btn.defer {
+        background: rgba(var(--qa-accent-rgb),0.08); color: var(--qa-accent); border-color: rgba(var(--qa-accent-rgb),0.2);
+      }
+      .coach-btn.defer:hover { background: rgba(var(--qa-accent-rgb),0.16); }
+      .coach-btn.dismiss-coaching {
+        background: rgba(255,255,255,0.03); color: var(--d500); border-color: rgba(255,255,255,0.07);
+        margin-left: auto;
+      }
+      .coach-btn.dismiss-coaching:hover { background: rgba(255,255,255,0.07); color: var(--d300); }
+      /* Accepted / deferred states */
+      .coaching-card.state-accepted .coaching-card-actions { display: none; }
+      .coaching-card.state-accepted .coaching-card-header { background: rgba(23,178,106,0.06); }
+      .coaching-state-pill {
+        display: none;
+        align-items: center;
+        gap: 5px;
+        padding: 8px 14px;
+        font-size: 11px;
+        font-weight: 600;
+        border-top: 1px solid rgba(255,255,255,0.06);
+      }
+      .coaching-card.state-accepted .coaching-state-pill { display: flex; color: var(--ok); }
+      .coaching-card.state-deferred .coaching-state-pill { display: flex; color: var(--warn); }
+      .coaching-state-pill svg { width: 12px; height: 12px; stroke: currentColor; fill: none; }
+
+      /* Defer snooze picker */
+      .defer-picker {
+        display: none;
+        flex-direction: column;
+        gap: 6px;
+        padding: 10px 14px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        background: rgba(0,0,0,0.1);
+      }
+      .defer-picker.open { display: flex; }
+      .defer-picker-label { font-size: 10px; font-weight: 700; letter-spacing:.05em; text-transform: uppercase; color: var(--d500); }
+      .defer-options { display: flex; gap: 6px; flex-wrap: wrap; }
+      .defer-opt {
+        font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px;
+        background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+        color: var(--d300); cursor: pointer; font-family: "Urbanist", sans-serif;
+        transition: all var(--transition-fast);
+      }
+      .defer-opt:hover { background: rgba(var(--qa-accent-rgb),0.1); border-color: rgba(var(--qa-accent-rgb),0.25); color: var(--qa-accent); }
+
+      /* ══ V2.1 ══ */
+      .dismiss-reason-picker,.notif-dismiss-picker{display:none;flex-direction:column;gap:6px;padding:10px 14px;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.1);}
+      .dismiss-reason-picker.open,.notif-dismiss-picker.open{display:flex;}
+      .dismiss-reason-label{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--d500);}
+      .dismiss-reason-select{font-family:"Urbanist",sans-serif;font-size:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:var(--d50);padding:6px 10px;width:100%;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;}
+      .dismiss-reason-select option{background:#1e2428;color:var(--d50);}
+      .dismiss-reason-actions{display:flex;gap:6px;}
+      .dismiss-reason-confirm{font-size:11px;font-weight:700;padding:5px 14px;border-radius:8px;background:rgba(240,68,56,.1);color:var(--err);border:1px solid rgba(240,68,56,.22);cursor:pointer;font-family:"Urbanist",sans-serif;}
+      .dismiss-reason-confirm:hover{background:rgba(240,68,56,.18);}
+      .dismiss-reason-cancel{font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:none;color:var(--d500);border:1px solid rgba(255,255,255,.07);cursor:pointer;font-family:"Urbanist",sans-serif;}
+      .bcard-dismiss-picker{display:none;flex-direction:column;gap:5px;padding:8px 0 2px;}
+      .bcard-dismiss-picker.open{display:flex;}
+      .bcard-dismiss-select{font-family:"Urbanist",sans-serif;font-size:11px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--d50);padding:5px 9px;cursor:pointer;outline:none;appearance:none;}
+      .bcard-dismiss-select option{background:#1e2428;}
+      .bcard-dismiss-btns{display:flex;gap:6px;}
+      .bcard-dismiss-confirm{font-size:10px;font-weight:700;padding:4px 12px;border-radius:8px;background:rgba(240,68,56,.1);color:var(--err);border:1px solid rgba(240,68,56,.2);cursor:pointer;font-family:"Urbanist",sans-serif;}
+      .bcard-dismiss-cancel{font-size:10px;font-weight:500;padding:4px 8px;border-radius:8px;background:none;color:var(--d500);border:none;cursor:pointer;font-family:"Urbanist",sans-serif;}
+      .notif-alert-card{background:rgba(20,27,36,.6);border:1px solid rgba(255,255,255,.09);border-radius:12px;overflow:hidden;max-width:540px;}
+      .notif-alert-card.p1{border-color:rgba(240,68,56,.22);} .notif-alert-card.p2{border-color:rgba(247,144,9,.18);}
+      .notif-alert-header{display:flex;align-items:center;gap:8px;padding:10px 14px 8px;border-bottom:1px solid rgba(255,255,255,.06);}
+      .notif-severity-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+      .p1 .notif-severity-dot{background:var(--err);} .p2 .notif-severity-dot{background:var(--warn);}
+      .notif-type-label{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;flex:1;}
+      .p1 .notif-type-label{color:var(--err);} .p2 .notif-type-label{color:var(--warn);}
+      .notif-priority-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:.04em;text-transform:uppercase;}
+      .p1 .notif-priority-badge{background:var(--err-bg);color:var(--err);border:1px solid rgba(240,68,56,.2);}
+      .p2 .notif-priority-badge{background:var(--warn-bg);color:var(--warn);border:1px solid rgba(247,144,9,.2);}
+      .notif-alert-body{padding:10px 14px;}
+      .notif-alert-summary{font-size:13px;font-weight:600;color:var(--d50);line-height:1.45;margin-bottom:6px;}
+      .notif-evidence-row{display:flex;gap:6px;flex-wrap:wrap;}
+      .notif-ev-pill{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:3px 9px;font-size:10px;color:var(--d300);font-weight:500;}
+      .notif-ev-pill .ev-val{font-weight:700;color:#fff;}
+      .notif-alert-actions{display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;border-top:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.1);}
+      .notif-cta{font-size:11px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;font-family:"Urbanist",sans-serif;transition:all var(--transition-fast);border:1px solid transparent;}
+      .notif-cta.primary-p1{background:var(--err-bg);color:var(--err);border-color:rgba(240,68,56,.25);}
+      .notif-cta.primary-p1:hover{background:rgba(240,68,56,.18);}
+      .notif-cta.primary-p2{background:var(--warn-bg);color:var(--warn);border-color:rgba(247,144,9,.25);}
+      .notif-cta.secondary{background:rgba(255,255,255,.03);color:var(--d400);border-color:rgba(255,255,255,.07);}
+      .notif-cta.secondary:hover{background:rgba(255,255,255,.07);color:var(--d200,#e8edf2);}
+      .notif-cta.acknowledged{background:var(--ok-bg);color:var(--ok);border-color:rgba(23,178,106,.2);pointer-events:none;}
+      .history-card{background:rgba(20,27,36,.6);border:1px solid rgba(255,255,255,.09);border-radius:12px;overflow:hidden;max-width:540px;}
+      .history-card-header{display:flex;align-items:center;gap:8px;padding:10px 14px 8px;border-bottom:1px solid rgba(255,255,255,.06);}
+      .history-card-title{font-size:12px;font-weight:700;color:var(--d50);flex:1;}
+      .history-card-agent{font-size:10px;color:var(--d400);}
+      .history-entry{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;}
+      .history-entry:last-child{border-bottom:none;}
+      .history-status-pill{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.04em;text-transform:uppercase;flex-shrink:0;}
+      .hs-accepted{background:var(--ok-bg);color:var(--ok);border:1px solid rgba(23,178,106,.2);}
+      .hs-dismissed{background:var(--err-bg);color:var(--err);border:1px solid rgba(240,68,56,.2);}
+      .hs-deferred{background:var(--warn-bg);color:var(--warn);border:1px solid rgba(247,144,9,.2);}
+      .history-entry-desc{flex:1;color:var(--d300);line-height:1.4;}
+      .history-entry-date{font-size:10px;color:var(--d600);flex-shrink:0;}
+
+      /* ── Agent scorecard canvas card ─────────────────────────────── */
+      .scorecard-card {
+        background: rgba(20,27,36,0.6);
+        border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 12px; overflow: hidden; max-width: 540px;
+      }
+      .scorecard-header {
+        display: flex; align-items: center; gap: 12px;
+        padding: 14px 16px 12px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .scorecard-av {
+        width: 36px; height: 36px; border-radius: 50%;
+        background: linear-gradient(135deg, #7c3aed, #3369ff);
+        color: #fff; font-size: 13px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      }
+      .scorecard-agent-info { flex: 1; }
+      .scorecard-agent-name { font-size: 14px; font-weight: 700; color: var(--d50); display: block; }
+      .scorecard-agent-role { font-size: 11px; color: var(--d400); margin-top: 1px; display: block; }
+      .scorecard-overall {
+        text-align: right;
+      }
+      .scorecard-overall-val {
+        font-size: 22px; font-weight: 700; color: var(--warn); display: block; line-height: 1;
+      }
+      .scorecard-overall-lbl { font-size: 10px; color: var(--d500); margin-top: 2px; display: block; }
+      .scorecard-metrics {
+        display: grid; grid-template-columns: 1fr 1fr 1fr;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .scorecard-metric {
+        padding: 10px 14px; border-right: 1px solid rgba(255,255,255,0.06);
+      }
+      .scorecard-metric:last-child { border-right: none; }
+      .scorecard-metric-val { font-size: 15px; font-weight: 700; color: var(--d50); display: block; }
+      .scorecard-metric-lbl { font-size: 10px; color: var(--d500); margin-top: 2px; display: block; }
+      .scorecard-kpis { padding: 10px 14px 12px; }
+      .scorecard-kpi-row {
+        display: flex; align-items: center; gap: 8px;
+        padding: 5px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+      }
+      .scorecard-kpi-row:last-child { border-bottom: none; }
+      .scorecard-kpi-name { font-size: 11px; color: var(--d300); flex: 1; }
+      .scorecard-kpi-bar-wrap {
+        width: 80px; height: 5px; background: rgba(255,255,255,0.07);
+        border-radius: 20px; overflow: hidden; flex-shrink: 0;
+      }
+      .scorecard-kpi-bar { height: 100%; border-radius: 20px; }
+      .scorecard-kpi-val { font-size: 11px; font-weight: 600; color: var(--d50); width: 32px; text-align: right; flex-shrink: 0; }
+      .scorecard-footer {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 8px 14px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        background: rgba(0,0,0,0.1);
+      }
+      .scorecard-footer-note { font-size: 10px; color: var(--d600); }
+      .scorecard-full-link {
+        font-size: 11px; font-weight: 600; color: var(--qa-accent);
+        cursor: pointer; text-decoration: underline;
+        text-decoration-color: rgba(var(--qa-accent-rgb),0.35);
+      }
+
+      /* ── Alert detail canvas cards ─────────────────────────────────── */
+      .alert-detail-card {
+        background: rgba(20,27,36,0.6); border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 12px; overflow: hidden; max-width: 540px;
+      }
+      .alert-detail-card.p1 { border-color: rgba(240,68,56,0.22); }
+      .alert-detail-card.p2 { border-color: rgba(247,144,9,0.18); }
+      .alert-detail-header {
+        display: flex; align-items: center; gap: 10px;
+        padding: 12px 16px 10px; border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .alert-detail-title { font-size: 13px; font-weight: 700; color: var(--d50); flex: 1; }
+      .alert-detail-body { padding: 12px 16px 14px; }
+      .alert-detail-summary { font-size: 13px; color: var(--d200,#c7cdd1); line-height: 1.55; margin-bottom: 12px; }
+      .alert-detail-rows { display: flex; flex-direction: column; gap: 6px; }
+      .alert-detail-row {
+        display: flex; align-items: center; gap: 10px;
+        padding: 7px 10px; border-radius: 8px;
+        background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+      }
+      .adr-label { font-size: 12px; color: var(--d300); flex: 1; }
+      .adr-val   { font-size: 12px; font-weight: 700; color: var(--d50); }
+      .adr-badge {
+        font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+        letter-spacing: .04em; text-transform: uppercase;
+      }
+      .adr-badge-err  { background: var(--err-bg);  color: var(--err);  border: 1px solid rgba(240,68,56,.2); }
+      .adr-badge-warn { background: var(--warn-bg); color: var(--warn); border: 1px solid rgba(247,144,9,.2); }
+      .adr-badge-ok   { background: var(--ok-bg);   color: var(--ok);   border: 1px solid rgba(23,178,106,.2); }
+      .alert-detail-footer {
+        display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+        padding: 8px 14px; border-top: 1px solid rgba(255,255,255,0.06);
+        background: rgba(0,0,0,0.1);
+      }
+      .alert-detail-action {
+        font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 8px;
+        cursor: pointer; font-family: "Urbanist",sans-serif;
+        transition: all var(--transition-fast); border: 1px solid transparent;
+      }
+      .ada-primary { background: rgba(var(--qa-accent-rgb),.1); color: var(--qa-accent); border-color: rgba(var(--qa-accent-rgb),.22); }
+      .ada-primary:hover { background: rgba(var(--qa-accent-rgb),.18); }
+      .ada-secondary { background: rgba(255,255,255,.03); color: var(--d400); border-color: rgba(255,255,255,.07); }
+      .ada-secondary:hover { background: rgba(255,255,255,.07); color: var(--d200,#e8edf2); }
+</style>
     <script>
       (function () {
         "use strict";
@@ -10728,6 +11130,715 @@
         document.querySelectorAll(".member-row").forEach((row) => {
           row.addEventListener("click", () => setView("agent"));
         });
+      
+
+        /* ══ V2 ADDITIONS: All coaching, alert, history, badge logic ══ */
+
+        /* ── Badge management ─────────────────────────────────────────── */
+        const floatBadge = document.getElementById('floatBadge');
+        let unreadAlertCount = 3;
+        function updateFloatBadge(n) {
+          unreadAlertCount = n;
+          if (!floatBadge) return;
+          if (n > 0) { floatBadge.textContent = n > 9 ? '9+' : n; floatBadge.classList.add('visible'); }
+          else floatBadge.classList.remove('visible');
+        }
+        updateFloatBadge(unreadAlertCount);
+        document.getElementById('aimyFloatBar')?.addEventListener('click', () => updateFloatBadge(0));
+        const floatIconEl = document.querySelector('.aimy-float-icon');
+        if (floatIconEl) { floatIconEl.style.cursor = 'pointer'; floatIconEl.addEventListener('click', e => { e.stopPropagation(); if (unreadAlertCount > 0) openAlertsInCanvas(); }); }
+
+        /* ── Undo stashes ─────────────────────────────────────────────── */
+        let lastAcknowledgedCard = null;
+        let lastDismissedCard = null;
+        let lastCoachingAction = null;
+
+        /* ── Patch undoToast ─────────────────────────────────────────── */
+        const _origUndoToastAck = window.undoToast;
+        window.undoToast = function() {
+          /* Priority 0: coaching defer/dismiss */
+          if (lastCoachingAction) {
+            const action = lastCoachingAction; lastCoachingAction = null;
+            action.restore();
+            const t = document.getElementById('aimyToast'); if (t) t.classList.remove('visible');
+            if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+            return;
+          }
+          if (lastAcknowledgedCard) {
+            const { card, btn, dismissBtn, prevText } = lastAcknowledgedCard; lastAcknowledgedCard = null;
+            card.style.transition = 'opacity 220ms ease'; card.style.opacity = '1';
+            btn.textContent = prevText; btn.classList.remove('acknowledged'); btn.disabled = false;
+            if (dismissBtn) dismissBtn.style.display = '';
+            unreadAlertCount = Math.min(unreadAlertCount + 1, 9); updateFloatBadge(unreadAlertCount);
+            const t = document.getElementById('aimyToast'); if (t) t.classList.remove('visible');
+            if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+            return;
+          }
+          if (lastDismissedCard) {
+            const { card, parent, nextSibling } = lastDismissedCard; lastDismissedCard = null;
+            card.style.display = ''; card.style.opacity = '0'; card.style.transform = 'translateY(-4px) scale(0.98)';
+            if (nextSibling) parent.insertBefore(card, nextSibling); else parent.appendChild(card);
+            requestAnimationFrame(() => { card.style.transition = 'opacity 220ms ease, transform 220ms ease'; card.style.opacity = '1'; card.style.transform = ''; });
+            unreadAlertCount = Math.min(unreadAlertCount + 1, 9); updateFloatBadge(unreadAlertCount);
+            const t = document.getElementById('aimyToast'); if (t) t.classList.remove('visible');
+            if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+            return;
+          }
+          if (_origUndoToastAck) _origUndoToastAck();
+        };
+
+        /* ── Acknowledge alert ───────────────────────────────────────── */
+        window.acknowledgeAlert = function(btn, alertId) {
+          const card = btn.closest('.bcard');
+          const ackRow = btn.closest('.bcard-ack-row');
+          const dismissBtn = ackRow.querySelector('.dismiss');
+          lastAcknowledgedCard = { card, btn, dismissBtn, prevText: btn.textContent };
+          btn.textContent = '\u2713 Acknowledged'; btn.classList.add('acknowledged'); btn.disabled = true;
+          if (dismissBtn) dismissBtn.style.display = 'none';
+          card.style.transition = 'opacity 400ms ease'; card.style.opacity = '0.6';
+          unreadAlertCount = Math.max(0, unreadAlertCount - 1); updateFloatBadge(unreadAlertCount);
+          showToast({ title: 'Alert acknowledged', sub: 'Moved to alert history' });
+        };
+
+        /* ── Bcard dismiss ─────────────────────────────────────────────── */
+        window.showBcardDismissPicker = function(btn, alertId) {
+          const picker = document.getElementById('bdp-' + alertId);
+          if (!picker) return;
+          if (picker.children.length === 0) {
+            const lbl = document.createElement('span'); lbl.className = 'dismiss-reason-label'; lbl.textContent = 'Reason';
+            const sel = document.createElement('select'); sel.className = 'bcard-dismiss-select'; sel.id = 'bdp-sel-' + alertId;
+            [['','Select a reason\u2026'],['already-handled','Already handled'],['not-relevant','Not relevant right now'],['false-positive','False positive'],['will-monitor','Will monitor manually']].forEach(([v,t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; sel.appendChild(o); });
+            const bbtns = document.createElement('div'); bbtns.className = 'bcard-dismiss-btns';
+            const conf = document.createElement('button'); conf.className = 'bcard-dismiss-confirm'; conf.textContent = 'Dismiss';
+            conf.addEventListener('click', () => confirmBcardDismiss(alertId));
+            const canc = document.createElement('button'); canc.className = 'bcard-dismiss-cancel'; canc.textContent = 'Cancel';
+            canc.addEventListener('click', () => picker.classList.remove('open'));
+            bbtns.appendChild(conf); bbtns.appendChild(canc);
+            picker.appendChild(lbl); picker.appendChild(sel); picker.appendChild(bbtns);
+          }
+          picker.classList.toggle('open');
+        };
+
+        window.confirmBcardDismiss = function(alertId) {
+          const sel = document.getElementById('bdp-sel-' + alertId);
+          const reason = sel ? sel.value : '';
+          if (!reason) { if (sel) sel.focus(); return; }
+          const row = document.getElementById('ack-row-' + alertId);
+          const card = row ? row.closest('.bcard') : null;
+          if (!card) return;
+          lastDismissedCard = { card, parent: card.parentNode, nextSibling: card.nextSibling };
+          card.style.transition = 'opacity 220ms ease, transform 220ms ease';
+          card.style.opacity = '0'; card.style.transform = 'translateY(-4px) scale(0.98)';
+          setTimeout(() => { card.style.display = 'none'; }, 230);
+          unreadAlertCount = Math.max(0, unreadAlertCount - 1); updateFloatBadge(unreadAlertCount);
+          showToast({ title: 'Alert dismissed', sub: 'Reason: ' + (sel.options[sel.selectedIndex]?.text || reason) });
+          document.getElementById('bdp-' + alertId)?.classList.remove('open');
+        };
+
+        /* ── dismissAlert legacy shim (unused by bcards, kept for canvas sync) */
+        window.dismissAlert = function(btn, alertId) { window.showBcardDismissPicker(btn, alertId); };
+
+        /* ── Alert data ───────────────────────────────────────────────── */
+        const ALERT_DATA = [
+          { id:'sla-breach', priority:'p1', type:'SLA Breach', badge:'P1 \u00b7 Critical', summary:'First response SLA compliance at 61% \u2014 29pts below the 90% threshold. 23 breaches this week, up from 14.', evidence:[{label:'SLA compliance',val:'61%',delta:'\u219329pts'},{label:'Breaches this week',val:'23',delta:'\u21919 vs last week'},{label:'Avg first response',val:'45 min',delta:''}], cta:'View breached tickets', ctaClass:'primary-p1' },
+          { id:'kpi-failures', priority:'p1', type:'KPI Failures', badge:'P1 \u00b7 Urgent', summary:'3 KPIs actively failing \u2014 empathy is the biggest gap, down 8% this period.', evidence:[{label:'Empathy score',val:'32%',delta:'\u2193\u22128%'},{label:'Failed interactions',val:'184',delta:''}], cta:'Start coaching plan', ctaClass:'primary-p1', coachingAction:true },
+          { id:'sentiment', priority:'p1', type:'Sentiment', badge:'P1 \u00b7 Urgent', summary:'Negative sentiment rising week over week \u2014 3 agents driving most of it.', evidence:[{label:'Negative interactions',val:'39',delta:'\u2191 rising'},{label:'Agents flagged',val:'3',delta:''}], cta:'Review escalation handling', ctaClass:'primary-p1' },
+          { id:'quality', priority:'p2', type:'Quality Score', badge:'P2 \u00b7 Watch', summary:'Quality at 87.3% \u2014 2.7% below the 90% SLA target. 3 failing KPIs are the primary drag.', evidence:[{label:'Current avg',val:'87.3%',delta:'\u2191+5.2%'},{label:'Gap to SLA',val:'\u22122.7%',delta:''}], cta:"See what's blocking target", ctaClass:'primary-p2' }
+        ];
+
+        /* ── Open canvas with alerts ─────────────────────────────────── */
+        function openAlertsInCanvas() {
+          if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); }
+          updateFloatBadge(0);
+          suggestions.classList.add('hidden');
+          appendSystemMsg('Showing active alerts\u2026');
+          setTimeout(function() {
+            const active = ALERT_DATA.filter(a => { const row = document.getElementById('ack-row-' + a.id); const btn = row?.querySelector('.bcard-ack-btn:not(.dismiss)'); return btn && !btn.classList.contains('acknowledged'); });
+            if (active.length === 0) { const w = document.createElement('div'); w.className = 'chat-msg aimy'; w.innerHTML = '<div class="msg-avatar aimy-av"><svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg></div><div class="msg-bubble">No active alerts \u2014 all caught up.</div>'; thread.appendChild(w); }
+            else active.forEach((a, i) => setTimeout(() => appendNotifAlertCard(a), i * 180));
+            thread.scrollTop = thread.scrollHeight;
+            setTimeout(() => overlayInput.focus(), 300);
+          }, 400);
+        }
+
+        function buildNotifEvidence(ev) {
+          return ev.map(e => `<span class="notif-ev-pill"><span class="ev-val">${e.val}</span>${e.delta ? ' ' + e.delta : ''} ${e.label}</span>`).join('');
+        }
+
+        function appendNotifAlertCard(alert) {
+          const cardId = 'notif-' + alert.id + '-' + Date.now();
+          const wrap = document.createElement('div'); wrap.className = 'chat-msg aimy';
+          const av = document.createElement('div'); av.className = 'msg-avatar aimy-av'; av.innerHTML = '<svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>';
+          const outer = document.createElement('div'); outer.style.maxWidth = '520px';
+          const card = document.createElement('div'); card.className = 'notif-alert-card ' + alert.priority; card.id = cardId;
+          const hdr = document.createElement('div'); hdr.className = 'notif-alert-header';
+          const dot = document.createElement('span'); dot.className = 'notif-severity-dot';
+          const typeLbl = document.createElement('span'); typeLbl.className = 'notif-type-label'; typeLbl.textContent = alert.type;
+          const bdg = document.createElement('span'); bdg.className = 'notif-priority-badge'; bdg.textContent = alert.badge;
+          hdr.appendChild(dot); hdr.appendChild(typeLbl); hdr.appendChild(bdg);
+          const body = document.createElement('div'); body.className = 'notif-alert-body';
+          const sum = document.createElement('div'); sum.className = 'notif-alert-summary'; sum.textContent = alert.summary;
+          const evRow = document.createElement('div'); evRow.className = 'notif-evidence-row'; evRow.innerHTML = buildNotifEvidence(alert.evidence);
+          body.appendChild(sum); body.appendChild(evRow);
+          const acts = document.createElement('div'); acts.className = 'notif-alert-actions';
+          const ctaBtn = document.createElement('button'); ctaBtn.className = 'notif-cta ' + alert.ctaClass; ctaBtn.textContent = alert.cta;
+          ctaBtn.addEventListener('click', () => notifAlertCta(alert.id, alert.coachingAction));
+          const ackBtn = document.createElement('button'); ackBtn.className = 'notif-cta secondary'; ackBtn.textContent = 'Acknowledge';
+          ackBtn.addEventListener('click', () => notifAcknowledge(ackBtn, alert.id, cardId));
+          const dimBtn = document.createElement('button'); dimBtn.className = 'notif-cta secondary'; dimBtn.textContent = 'Dismiss';
+          dimBtn.addEventListener('click', () => showNotifDismissPicker(cardId));
+          acts.appendChild(ctaBtn); acts.appendChild(ackBtn); acts.appendChild(dimBtn);
+          const ndp = document.createElement('div'); ndp.className = 'notif-dismiss-picker'; ndp.id = 'ndp-' + cardId;
+          const ndpLbl = document.createElement('span'); ndpLbl.className = 'dismiss-reason-label'; ndpLbl.textContent = 'Reason for dismissal';
+          const ndpSel = document.createElement('select'); ndpSel.className = 'dismiss-reason-select';
+          [['','Select a reason\u2026'],['already-handled','Already handled'],['not-relevant','Not relevant right now'],['false-positive','False positive'],['will-monitor','Will monitor manually']].forEach(([v,t]) => { const o = document.createElement('option'); o.value=v; o.textContent=t; ndpSel.appendChild(o); });
+          const ndpBtns = document.createElement('div'); ndpBtns.className = 'dismiss-reason-actions';
+          const ndpConf = document.createElement('button'); ndpConf.className = 'dismiss-reason-confirm'; ndpConf.textContent = 'Confirm dismiss';
+          ndpConf.addEventListener('click', () => confirmNotifDismiss(alert.id, cardId, ndpSel));
+          const ndpCanc = document.createElement('button'); ndpCanc.className = 'dismiss-reason-cancel'; ndpCanc.textContent = 'Cancel';
+          ndpCanc.addEventListener('click', () => ndp.classList.remove('open'));
+          ndpBtns.appendChild(ndpConf); ndpBtns.appendChild(ndpCanc);
+          ndp.appendChild(ndpLbl); ndp.appendChild(ndpSel); ndp.appendChild(ndpBtns);
+          card.appendChild(hdr); card.appendChild(body); card.appendChild(acts); card.appendChild(ndp);
+          outer.appendChild(card); wrap.appendChild(av); wrap.appendChild(outer);
+          thread.appendChild(wrap); thread.scrollTop = thread.scrollHeight;
+        }
+
+        function notifAlertCta(alertId, isCoaching) {
+          if (isCoaching) {
+            window.openCanvasWithCoaching('Omar Adel','OA',
+              'Run a targeted empathy coaching session focusing on billing escalation calls.',
+              'Omar has failed the <strong>Empathy during escalations</strong> KPI in 4 of his last 5 evaluated calls.',
+              'High');
+            return;
+          }
+          appendSystemMsg('Loading ' + alertId.replace(/-/g,' ') + ' details…');
+          setTimeout(function() { appendAlertDetailCard(alertId); }, 600);
+        }
+                function notifAcknowledge(btn, alertId, cardId) {
+          btn.textContent = '\u2713 Acknowledged'; btn.classList.add('acknowledged');
+          const card = document.getElementById(cardId);
+          if (card) card.querySelectorAll('.notif-cta:not(.acknowledged)').forEach(b => { b.style.opacity='0.4'; b.style.pointerEvents='none'; });
+          const bcardBtn = document.querySelector('#ack-row-' + alertId + ' .bcard-ack-btn:not(.dismiss)');
+          if (bcardBtn && !bcardBtn.classList.contains('acknowledged')) bcardBtn.click();
+        }
+        function showNotifDismissPicker(cardId) {
+          document.getElementById('ndp-' + cardId)?.classList.toggle('open');
+        }
+        function confirmNotifDismiss(alertId, cardId, sel) {
+          const reason = sel?.value; if (!reason) { sel?.focus(); return; }
+          const card = document.getElementById(cardId);
+          if (card) { card.style.opacity='0.4'; card.style.pointerEvents='none'; }
+          const bdpSel = document.getElementById('bdp-sel-' + alertId);
+          if (bdpSel) { bdpSel.value = reason; window.confirmBcardDismiss(alertId); }
+          else showToast({ title:'Alert dismissed', sub:'Reason: ' + (sel.options[sel.selectedIndex]?.text || reason) });
+          document.getElementById('ndp-' + cardId)?.classList.remove('open');
+        }
+
+        /* ── Coaching card — DOM-based, no innerHTML for buttons ───────── */
+        function buildActionButtons(actionsBar) {
+          actionsBar.innerHTML = '';
+          const a = document.createElement('button'); a.className = 'coach-btn accept'; a.textContent = 'Accept';
+          a.addEventListener('click', () => window.coachAccept(a));
+          const d = document.createElement('button'); d.className = 'coach-btn defer'; d.textContent = 'Defer';
+          d.addEventListener('click', () => window.coachDefer(d));
+          const x = document.createElement('button'); x.className = 'coach-btn dismiss-coaching'; x.textContent = 'Dismiss';
+          x.addEventListener('click', () => window.showCoachDismissPicker(x));
+          actionsBar.appendChild(a); actionsBar.appendChild(d); actionsBar.appendChild(x);
+        }
+
+        window.openCanvasWithCoaching = function(agentName, agentInitials, whatToDo, whyReason, confidence) {
+          if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); updateFloatBadge(0); }
+          suggestions.classList.add('hidden');
+          appendSystemMsg('Loading coaching recommendation for ' + agentName + '\u2026');
+          setTimeout(function() {
+            const typing = document.getElementById('aimyTyping'); if (typing) typing.remove();
+            const cardId = 'coach-' + Date.now();
+            const wrap = document.createElement('div'); wrap.className = 'chat-msg aimy';
+            const av = document.createElement('div'); av.className = 'msg-avatar aimy-av';
+            av.innerHTML = '<svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>';
+            const bw = document.createElement('div');
+            const card = document.createElement('div'); card.className = 'coaching-card'; card.id = cardId; card.style.maxWidth = '520px';
+            /* Header */
+            const hdr = document.createElement('div'); hdr.className = 'coaching-card-header';
+            const ts = document.createElement('span'); ts.className = 'coaching-card-type'; ts.textContent = 'Coaching Recommendation';
+            const cs = document.createElement('span'); cs.className = 'coaching-confidence';
+            cs.innerHTML = '<svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" stroke="none"/></svg>' + confidence + ' confidence';
+            hdr.appendChild(ts); hdr.appendChild(cs);
+            /* Body */
+            const body = document.createElement('div'); body.className = 'coaching-card-body';
+            const agRow = document.createElement('div'); agRow.className = 'coaching-agent-row';
+            const agAv = document.createElement('div'); agAv.className = 'coaching-agent-av'; agAv.textContent = agentInitials;
+            const agNm = document.createElement('span'); agNm.className = 'coaching-agent-name'; agNm.textContent = agentName;
+            const scLnk = document.createElement('span'); scLnk.className = 'coaching-agent-link'; scLnk.textContent = 'View scorecard \u2192'; scLnk.style.cursor = 'pointer';
+            scLnk.addEventListener('click', function() { window.openAgentScorecard(agentName, agentInitials); });
+            const hiLnk = document.createElement('span'); hiLnk.className = 'coaching-agent-link'; hiLnk.style.marginLeft = '6px'; hiLnk.style.opacity = '0.55'; hiLnk.style.cursor = 'pointer'; hiLnk.textContent = 'History \u2192';
+            hiLnk.addEventListener('click', () => window.showCoachingHistory(hiLnk));
+            agRow.appendChild(agAv); agRow.appendChild(agNm); agRow.appendChild(scLnk); agRow.appendChild(hiLnk);
+            const we = document.createElement('div'); we.className = 'coaching-what'; we.textContent = whatToDo;
+            const wy = document.createElement('div'); wy.className = 'coaching-why'; wy.innerHTML = '<strong>Why:</strong> ' + whyReason;
+            body.appendChild(agRow); body.appendChild(we); body.appendChild(wy);
+            /* Defer picker */
+            const dp = document.createElement('div'); dp.className = 'defer-picker'; dp.id = 'defer-' + cardId;
+            const dl = document.createElement('span'); dl.className = 'defer-picker-label'; dl.textContent = 'Resurface when?';
+            const do_ = document.createElement('div'); do_.className = 'defer-options';
+            [['tomorrow','Tomorrow'],['next week','Next week'],['in 2 weeks','In 2 weeks']].forEach(([when, lbl]) => {
+              const ob = document.createElement('button'); ob.className = 'defer-opt'; ob.textContent = lbl; ob.dataset.when = when;
+              ob.addEventListener('click', () => window.coachDeferSelect(ob, when)); do_.appendChild(ob);
+            });
+            dp.appendChild(dl); dp.appendChild(do_);
+            /* Actions */
+            const acts = document.createElement('div'); acts.className = 'coaching-card-actions';
+            buildActionButtons(acts);
+            /* Dismiss picker placeholder */
+            const crp = document.createElement('div'); crp.className = 'dismiss-reason-picker'; crp.id = 'crp-' + cardId;
+            /* State pill */
+            const sp = document.createElement('div'); sp.className = 'coaching-state-pill';
+            card.appendChild(hdr); card.appendChild(body); card.appendChild(dp); card.appendChild(acts); card.appendChild(crp); card.appendChild(sp);
+            bw.appendChild(card); wrap.appendChild(av); wrap.appendChild(bw);
+            thread.appendChild(wrap); thread.scrollTop = thread.scrollHeight;
+            setTimeout(() => overlayInput.focus(), 100);
+          }, 600);
+        };
+
+        window.coachAccept = function(btn) {
+          const card = btn.closest('.coaching-card');
+          const actionsBar = card.querySelector('.coaching-card-actions');
+          const dp = card.querySelector('.defer-picker'); if (dp) dp.classList.remove('open');
+          actionsBar.innerHTML = '';
+          const cw = document.createElement('div'); cw.className = 'action-confirm-wrap';
+          const ct = document.createElement('div'); ct.className = 'action-confirm-title'; ct.textContent = 'Trigger coaching workflow?';
+          const cs_ = document.createElement('div'); cs_.className = 'action-confirm-sub'; cs_.textContent = 'This will create a coaching task and notify the team lead.';
+          const cb = document.createElement('div'); cb.className = 'action-confirm-btns';
+          const yes = document.createElement('button'); yes.className = 'action-confirm-yes'; yes.textContent = 'Yes, trigger it';
+          yes.addEventListener('click', () => window.coachAcceptConfirm(yes));
+          const no = document.createElement('button'); no.className = 'action-confirm-no'; no.textContent = 'Cancel';
+          no.addEventListener('click', () => window.coachAcceptCancel(no));
+          cb.appendChild(yes); cb.appendChild(no); cw.appendChild(ct); cw.appendChild(cs_); cw.appendChild(cb); actionsBar.appendChild(cw);
+        };
+        window.coachAcceptConfirm = function(btn) {
+          const card = btn.closest('.coaching-card');
+          const sp = card.querySelector('.coaching-state-pill');
+          card.classList.add('state-accepted');
+          if (sp) sp.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Coaching workflow triggered — ref #CW-' + Math.floor(Math.random()*9000+1000);
+          lastCoachingAction = null;
+          showToast({ title: 'Workflow triggered', sub: 'Coaching task created and team lead notified' });
+          const undoBtn = document.getElementById('aimyToastUndo');
+          if (undoBtn) { undoBtn.style.display = 'none'; setTimeout(function() { undoBtn.style.display = ''; }, 5200); }
+        };
+                window.coachDefer = function(btn) {
+          const card = btn.closest('.coaching-card');
+          const picker = document.getElementById('defer-' + card.id);
+          if (picker) picker.classList.toggle('open');
+        };
+                window.coachAcceptCancel = function(btn) {
+          const card = btn.closest('.coaching-card');
+          const actionsBar = card.querySelector('.coaching-card-actions');
+          if (actionsBar) buildActionButtons(actionsBar);
+        };
+                window.coachDeferSelect = function(btn, when) {
+          const card = btn.closest('.coaching-card');
+          const picker = document.getElementById('defer-' + card.id);
+          if (picker) picker.classList.remove('open');
+          const actionsBar = card.querySelector('.coaching-card-actions');
+          const sp = card.querySelector('.coaching-state-pill');
+          lastCoachingAction = {
+            type: 'defer', card: card,
+            restore: function() {
+              card.classList.remove('state-deferred');
+              if (actionsBar) { actionsBar.style.display = ''; buildActionButtons(actionsBar); }
+              if (sp) sp.innerHTML = '';
+            }
+          };
+          if (actionsBar) actionsBar.style.display = 'none';
+          card.classList.add('state-deferred');
+          if (sp) sp.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Deferred · Will resurface ' + when;
+          showToast({ title: 'Coaching deferred', sub: 'Will resurface ' + when });
+        };
+                window.showCoachDismissPicker = function(btn) {
+          const card = btn.closest('.coaching-card');
+          const picker = card?.querySelector('.dismiss-reason-picker');
+          if (!picker) return;
+          if (picker.children.length === 0) {
+            const lbl = document.createElement('span'); lbl.className = 'dismiss-reason-label'; lbl.textContent = 'Reason for dismissal';
+            const sel = document.createElement('select'); sel.className = 'dismiss-reason-select';
+            [['','Select a reason\u2026'],['already-planned','Already in coaching plan'],['disagree','Disagree with recommendation'],['not-ready','Agent not ready yet'],['other','Other']].forEach(([v,t]) => { const o = document.createElement('option'); o.value=v; o.textContent=t; sel.appendChild(o); });
+            const ab = document.createElement('div'); ab.className = 'dismiss-reason-actions';
+            const cf = document.createElement('button'); cf.className = 'dismiss-reason-confirm'; cf.textContent = 'Confirm dismiss';
+            cf.addEventListener('click', () => window.confirmCoachDismiss(cf));
+            const ca = document.createElement('button'); ca.className = 'dismiss-reason-cancel'; ca.textContent = 'Cancel';
+            ca.addEventListener('click', () => picker.classList.remove('open'));
+            ab.appendChild(cf); ab.appendChild(ca); picker.appendChild(lbl); picker.appendChild(sel); picker.appendChild(ab);
+          }
+          picker.classList.toggle('open');
+        };
+        window.confirmCoachDismiss = function(btn) {
+          const picker = btn.closest('.dismiss-reason-picker');
+          const sel = picker?.querySelector('select');
+          const reason = sel?.value; if (!reason) { sel?.focus(); return; }
+          const card = btn.closest('.coaching-card');
+          if (!card) return;
+          const parent = card.parentNode;
+          const nextSibling = card.nextSibling;
+          /* Stash for undo — hide, don't remove */
+          lastCoachingAction = {
+            type: 'dismiss', card,
+            restore: function() {
+              card.style.display = '';
+              card.style.opacity = '0';
+              card.style.transform = 'translateY(-4px) scale(0.98)';
+              if (nextSibling) parent.insertBefore(card, nextSibling);
+              else parent.appendChild(card);
+              requestAnimationFrame(() => {
+                card.style.transition = 'opacity 220ms ease, transform 220ms ease';
+                card.style.opacity = '1';
+                card.style.transform = '';
+              });
+            }
+          };
+          card.style.transition = 'opacity 220ms ease, transform 220ms ease';
+          card.style.opacity = '0'; card.style.transform = 'translateY(-4px) scale(0.98)';
+          setTimeout(() => { card.style.display = 'none'; }, 230);
+          showToast({ title: 'Recommendation dismissed', sub: 'Reason: ' + (sel.options[sel.selectedIndex]?.text || reason) });
+          picker.classList.remove('open');
+        };
+
+        /* ── Coaching history in canvas ──────────────────────────────── */
+        window.showCoachingHistory = function(btn) {
+          const card = btn.closest('.coaching-card');
+          const agentName = card?.querySelector('.coaching-agent-name')?.textContent || 'Agent';
+          if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); }
+          suggestions.classList.add('hidden');
+          appendSystemMsg('Loading coaching history for ' + agentName + '\u2026');
+          setTimeout(function() {
+            const entries = [
+              { status:'accepted',  desc:'Empathy coaching session \u2014 billing calls', date:'2 days ago', meta:'\u00b7 ref WF-48821' },
+              { status:'deferred',  desc:'Follow-up clarity \u2014 end-of-call summary',  date:'5 days ago', meta:'\u00b7 resurfaces next week' },
+              { status:'dismissed', desc:'Survey promotion script refresher',              date:'1 week ago', meta:'\u00b7 Already in coaching plan' },
+            ];
+            const statusMap = { accepted:{cls:'hs-accepted',label:'Accepted'}, deferred:{cls:'hs-deferred',label:'Deferred'}, dismissed:{cls:'hs-dismissed',label:'Dismissed'} };
+            const hc = document.createElement('div'); hc.className = 'history-card';
+            const hhdr = document.createElement('div'); hhdr.className = 'history-card-header';
+            const htitle = document.createElement('span'); htitle.className = 'history-card-title'; htitle.textContent = 'Coaching history';
+            const hagent = document.createElement('span'); hagent.className = 'history-card-agent'; hagent.textContent = agentName;
+            hhdr.appendChild(htitle); hhdr.appendChild(hagent); hc.appendChild(hhdr);
+            entries.forEach(e => {
+              const row = document.createElement('div'); row.className = 'history-entry';
+              const pill = document.createElement('span'); pill.className = 'history-status-pill ' + statusMap[e.status].cls; pill.textContent = statusMap[e.status].label;
+              const desc = document.createElement('span'); desc.className = 'history-entry-desc'; desc.textContent = e.desc + ' ' + e.meta;
+              const date = document.createElement('span'); date.className = 'history-entry-date'; date.textContent = e.date;
+              row.appendChild(pill); row.appendChild(desc); row.appendChild(date); hc.appendChild(row);
+            });
+            const outer = document.createElement('div'); outer.style.maxWidth = '520px'; outer.appendChild(hc);
+            const hwrap = document.createElement('div'); hwrap.className = 'chat-msg aimy';
+            const hav = document.createElement('div'); hav.className = 'msg-avatar aimy-av'; hav.innerHTML = '<svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>';
+            hwrap.appendChild(hav); hwrap.appendChild(outer);
+            thread.appendChild(hwrap); thread.scrollTop = thread.scrollHeight;
+          }, 500);
+        };
+
+        /* ── appendSystemMsg global exposure ────────────────────────── */
+        function appendSystemMsg(text) {
+          const el = document.createElement('div'); el.className = 'msg-system'; el.textContent = text;
+          thread.appendChild(el); thread.scrollTop = thread.scrollHeight;
+        }
+        window.appendSystemMsg = appendSystemMsg;
+
+        /* ── Take Action → n8n ───────────────────────────────────────── */
+        window.triggerAction = function(btn, actionLabel, workflowId) {
+          const wfId = workflowId || ('n8n-' + Math.floor(Math.random()*9000+1000));
+          const wrap = document.createElement('div'); wrap.className = 'action-confirm-wrap'; wrap.style.marginTop = '8px';
+          const title = document.createElement('div'); title.className = 'action-confirm-title'; title.textContent = 'Trigger: ' + actionLabel;
+          const sub = document.createElement('div'); sub.className = 'action-confirm-sub'; sub.textContent = 'This will run workflow ' + wfId + '. This action cannot be undone.';
+          const btns = document.createElement('div'); btns.className = 'action-confirm-btns';
+          const yes = document.createElement('button'); yes.className = 'action-confirm-yes'; yes.textContent = 'Confirm';
+          yes.addEventListener('click', () => window.triggerActionConfirm(yes, actionLabel, wfId));
+          const no = document.createElement('button'); no.className = 'action-confirm-no'; no.textContent = 'Cancel';
+          no.addEventListener('click', () => { wrap.remove(); btn.style.display = ''; });
+          btns.appendChild(yes); btns.appendChild(no); wrap.appendChild(title); wrap.appendChild(sub); wrap.appendChild(btns);
+          btn.insertAdjacentElement('afterend', wrap); btn.style.display = 'none';
+        };
+        window.triggerActionConfirm = function(btn, label, workflowId) {
+          const wrap = btn.closest('.action-confirm-wrap');
+          const refId = 'WF-' + Math.floor(Math.random()*90000+10000);
+          wrap.innerHTML = '<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ok);font-weight:600;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Triggered \u00b7 Ref: ' + refId + '</div>';
+          showToast({ title:'Workflow triggered', sub:'Ref: ' + refId });
+        };
+
+        /* ── Wire bcard "Start coaching plan" CTA ─────────────────────── */
+        document.querySelectorAll('.action-btn').forEach(btn => {
+          const label = btn.textContent.trim();
+          if (label.startsWith('Start coaching')) {
+            btn.addEventListener('click', e => { e.stopPropagation();
+              window.openCanvasWithCoaching('Omar Adel','OA','Run a targeted empathy coaching session focusing on billing escalation calls.','Omar has failed the <strong>Empathy during escalations</strong> KPI in 4 of his last 5 evaluated calls. His score has dropped from 68\u0025 to 32\u0025 over 3 weeks.','High');
+            });
+          }
+          if (label.startsWith('View breached tickets')) {
+            btn.addEventListener('click', function(e) { e.stopPropagation();
+              if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); }
+              suggestions.classList.add('hidden');
+              appendSystemMsg('Loading breached SLA tickets…');
+              setTimeout(function() { appendAlertDetailCard('sla-breach'); }, 600);
+            });
+          }
+          if (label.startsWith('Review escalation handling')) {
+            btn.addEventListener('click', function(e) { e.stopPropagation();
+              if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); }
+              suggestions.classList.add('hidden');
+              appendSystemMsg('Loading escalation handling details…');
+              setTimeout(function() { appendAlertDetailCard('sentiment'); }, 600);
+            });
+          }
+          if (label.startsWith("See what's blocking target")) {
+            btn.addEventListener('click', function(e) { e.stopPropagation();
+              if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); }
+              suggestions.classList.add('hidden');
+              appendSystemMsg('Loading quality target analysis…');
+              setTimeout(function() { appendAlertDetailCard('quality'); }, 600);
+            });
+          }
+        });
+
+        /* ── Rich stub response with Take Action ─────────────────────── */
+        STUB_RESPONSES.push(
+          "I&#8217;ve confirmed the root cause: billing escalation handling is creating a " +
+          "<span class='msg-data-ref'>\uD83D\uDCCA 17% fail rate</span> this period." +
+          "<br><br>Recommended next step:<br>" +
+          "<button class='msg-action-link' id='empathy-action-btn'>\u2708 Send coaching brief to team lead</button>"
+        );
+        document.addEventListener('click', e => {
+          if (e.target?.id === 'empathy-action-btn') window.triggerAction(e.target, 'Send coaching brief to team lead', 'n8n-empathy-brief');
+        });
+
+        /* ── Error state ─────────────────────────────────────────────── */
+        window.showAiError = function() {
+          const w = document.createElement('div'); w.className = 'chat-msg aimy';
+          w.innerHTML = '<div class="msg-avatar aimy-av"><svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg></div><div class="msg-bubble" style="padding:0;background:none;border:none;"><div class="msg-error-bubble"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>I couldn\u2019t retrieve that data right now \u2014 try again in a moment or rephrase your question.</div></div>';
+          thread.appendChild(w); thread.scrollTop = thread.scrollHeight;
+        };
+
+
+        window.openAgentScorecard = function(agentName, agentInitials) {
+          if (!overlayOpen) {
+            overlayOpen = true;
+            overlay.classList.add('open');
+            floatBar.classList.add('hidden');
+          }
+          suggestions.classList.add('hidden');
+          appendSystemMsg('Loading scorecard for ' + agentName + '…');
+
+          setTimeout(function() {
+            /* Scorecard data — stub matching Omar Adel's known KPI state */
+            const kpis = [
+              { name: 'Empathy during escalations', pct: 32,  color: 'var(--err)' },
+              { name: 'Follow-up clarity',           pct: 48,  color: 'var(--warn)' },
+              { name: 'Survey promotion',             pct: 49,  color: 'var(--warn)' },
+              { name: 'Response time SLA',            pct: 71,  color: 'var(--warn)' },
+              { name: 'Script adherence',             pct: 84,  color: 'var(--ok)' },
+              { name: 'Identity verification',        pct: 88,  color: 'var(--ok)' },
+            ];
+
+            const card = document.createElement('div');
+            card.className = 'scorecard-card';
+
+            /* Header */
+            const hdr = document.createElement('div');
+            hdr.className = 'scorecard-header';
+            const av = document.createElement('div');
+            av.className = 'scorecard-av';
+            av.textContent = agentInitials;
+            const info = document.createElement('div');
+            info.className = 'scorecard-agent-info';
+            const nameEl = document.createElement('span');
+            nameEl.className = 'scorecard-agent-name';
+            nameEl.textContent = agentName;
+            const roleEl = document.createElement('span');
+            roleEl.className = 'scorecard-agent-role';
+            roleEl.textContent = 'Customer Support Agent · Team Cairo';
+            info.appendChild(nameEl); info.appendChild(roleEl);
+            const overall = document.createElement('div');
+            overall.className = 'scorecard-overall';
+            const overallVal = document.createElement('span');
+            overallVal.className = 'scorecard-overall-val';
+            overallVal.textContent = '61%';
+            const overallLbl = document.createElement('span');
+            overallLbl.className = 'scorecard-overall-lbl';
+            overallLbl.textContent = 'Quality score';
+            overall.appendChild(overallVal); overall.appendChild(overallLbl);
+            hdr.appendChild(av); hdr.appendChild(info); hdr.appendChild(overall);
+
+            /* Metrics row */
+            const metrics = document.createElement('div');
+            metrics.className = 'scorecard-metrics';
+            [
+              { val: '47',  lbl: 'Evals this month' },
+              { val: '3',   lbl: 'KPIs failing' },
+              { val: '−8%', lbl: 'vs last period' },
+            ].forEach(function(m) {
+              const cell = document.createElement('div');
+              cell.className = 'scorecard-metric';
+              const v = document.createElement('span');
+              v.className = 'scorecard-metric-val'; v.textContent = m.val;
+              const l = document.createElement('span');
+              l.className = 'scorecard-metric-lbl'; l.textContent = m.lbl;
+              cell.appendChild(v); cell.appendChild(l);
+              metrics.appendChild(cell);
+            });
+
+            /* KPI bars */
+            const kpisEl = document.createElement('div');
+            kpisEl.className = 'scorecard-kpis';
+            kpis.forEach(function(k) {
+              const row = document.createElement('div');
+              row.className = 'scorecard-kpi-row';
+              const nm = document.createElement('span');
+              nm.className = 'scorecard-kpi-name'; nm.textContent = k.name;
+              const barWrap = document.createElement('div');
+              barWrap.className = 'scorecard-kpi-bar-wrap';
+              const bar = document.createElement('div');
+              bar.className = 'scorecard-kpi-bar';
+              bar.style.width = k.pct + '%';
+              bar.style.background = k.color;
+              barWrap.appendChild(bar);
+              const val = document.createElement('span');
+              val.className = 'scorecard-kpi-val'; val.textContent = k.pct + '%';
+              row.appendChild(nm); row.appendChild(barWrap); row.appendChild(val);
+              kpisEl.appendChild(row);
+            });
+
+            /* Footer */
+            const footer = document.createElement('div');
+            footer.className = 'scorecard-footer';
+            const note = document.createElement('span');
+            note.className = 'scorecard-footer-note';
+            note.textContent = 'Last evaluated 2 days ago · 47 interactions this month';
+            const fullLink = document.createElement('span');
+            fullLink.className = 'scorecard-full-link';
+            fullLink.textContent = 'Open full scorecard in Reviews →';
+            fullLink.title = 'Opens in Reviews (coming in v2)';
+            fullLink.addEventListener('click', function() {
+              appendSystemMsg('Reviews surface coming in v2 — full scorecard drill-down will open here.');
+            });
+            footer.appendChild(note); footer.appendChild(fullLink);
+
+            card.appendChild(hdr);
+            card.appendChild(metrics);
+            card.appendChild(kpisEl);
+            card.appendChild(footer);
+
+            const outer = document.createElement('div');
+            outer.style.maxWidth = '520px';
+            outer.appendChild(card);
+
+            const wrap = document.createElement('div');
+            wrap.className = 'chat-msg aimy';
+            const msgAv = document.createElement('div');
+            msgAv.className = 'msg-avatar aimy-av';
+            msgAv.innerHTML = '<svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>';
+            wrap.appendChild(msgAv);
+            wrap.appendChild(outer);
+            thread.appendChild(wrap);
+            thread.scrollTop = thread.scrollHeight;
+          }, 500);
+        };
+
+
+        /* ── Alert detail cards in canvas ──────────────────────────────── */
+        const ALERT_DETAIL_DATA = {
+          'sla-breach': {
+            priority: 'p1', title: 'SLA Breach Analysis',
+            badge: 'P1 · Critical',
+            summary: '23 tickets breached first response SLA this week. The primary driver is billing escalation tickets arriving Wednesday afternoons when staffing dips below threshold.',
+            rows: [
+              { label: 'Tickets breached this week', val: '23', badge: 'adr-badge-err', badgeText: '↑14 last week' },
+              { label: 'Avg first response time', val: '45 min', badge: 'adr-badge-err', badgeText: 'target: 15 min' },
+              { label: 'SLA compliance rate', val: '61%', badge: 'adr-badge-err', badgeText: '↑29pts vs target' },
+              { label: 'Worst performing team', val: 'Team Cairo', badge: 'adr-badge-warn', badgeText: '58% compliance' },
+              { label: 'Peak breach window', val: 'Wed 2–5 PM', badge: null, badgeText: null },
+            ],
+            actions: [{ label: 'View all breached tickets', cls: 'ada-primary' }, { label: 'Trigger SLA recovery plan', cls: 'ada-secondary' }]
+          },
+          'sentiment': {
+            priority: 'p1', title: 'Negative Sentiment Analysis',
+            badge: 'P1 · Urgent',
+            summary: '3 agents account for 71% of all negative sentiment this week. The pattern correlates with billing escalation calls and after-hour shifts.',
+            rows: [
+              { label: 'Total negative interactions', val: '39', badge: 'adr-badge-err', badgeText: '↑ rising trend' },
+              { label: 'Primary driver', val: 'Billing escalations', badge: 'adr-badge-warn', badgeText: '62% of cases' },
+              { label: 'Agent 1 — Omar Adel', val: '14 neg interactions', badge: 'adr-badge-err', badgeText: '36% of total' },
+              { label: 'Agent 2 — Sara Hassan', val: '9 neg interactions', badge: 'adr-badge-warn', badgeText: '23% of total' },
+              { label: 'Agent 3 — Karim Nour', val: '5 neg interactions', badge: 'adr-badge-warn', badgeText: '13% of total' },
+            ],
+            actions: [{ label: 'Open escalation review', cls: 'ada-primary' }, { label: 'Start coaching for flagged agents', cls: 'ada-secondary' }]
+          },
+          'quality': {
+            priority: 'p2', title: 'Quality Target Gap Analysis',
+            badge: 'P2 · Watch',
+            summary: 'Quality is 2.7% below the 90% SLA target. 3 failing KPIs account for the entire gap. If empathy scoring recovers to 70%, quality crosses the threshold.',
+            rows: [
+              { label: 'Current quality score', val: '87.3%', badge: 'adr-badge-warn', badgeText: '↑+5.2% this period' },
+              { label: 'Gap to close', val: '−2.7%', badge: 'adr-badge-warn', badgeText: '≈77 more passes needed' },
+              { label: 'Empathy during escalations', val: '32%', badge: 'adr-badge-err', badgeText: 'threshold: 70%' },
+              { label: 'Follow-up clarity', val: '48%', badge: 'adr-badge-warn', badgeText: 'threshold: 65%' },
+              { label: 'Survey promotion', val: '49%', badge: 'adr-badge-warn', badgeText: 'threshold: 60%' },
+            ],
+            actions: [{ label: 'Open KPI breakdown', cls: 'ada-primary' }, { label: 'Create improvement plan', cls: 'ada-secondary' }]
+          }
+        };
+
+        function appendAlertDetailCard(alertId) {
+          const data = ALERT_DETAIL_DATA[alertId];
+          if (!data) return;
+
+          const outer = document.createElement('div'); outer.style.maxWidth = '540px';
+          const card = document.createElement('div');
+          card.className = 'alert-detail-card ' + data.priority;
+
+          /* Header */
+          const hdr = document.createElement('div'); hdr.className = 'alert-detail-header';
+          const dot = document.createElement('span'); dot.className = 'notif-severity-dot';
+          const titleEl = document.createElement('span'); titleEl.className = 'alert-detail-title'; titleEl.textContent = data.title;
+          const bdg = document.createElement('span'); bdg.className = 'notif-priority-badge'; bdg.textContent = data.badge;
+          hdr.appendChild(dot); hdr.appendChild(titleEl); hdr.appendChild(bdg);
+
+          /* Body */
+          const body = document.createElement('div'); body.className = 'alert-detail-body';
+          const summary = document.createElement('div'); summary.className = 'alert-detail-summary'; summary.textContent = data.summary;
+          const rows = document.createElement('div'); rows.className = 'alert-detail-rows';
+          data.rows.forEach(function(r) {
+            const row = document.createElement('div'); row.className = 'alert-detail-row';
+            const lbl = document.createElement('span'); lbl.className = 'adr-label'; lbl.textContent = r.label;
+            const val = document.createElement('span'); val.className = 'adr-val'; val.textContent = r.val;
+            row.appendChild(lbl); row.appendChild(val);
+            if (r.badge) {
+              const b = document.createElement('span'); b.className = 'adr-badge ' + r.badge; b.textContent = r.badgeText;
+              row.appendChild(b);
+            }
+            rows.appendChild(row);
+          });
+          body.appendChild(summary); body.appendChild(rows);
+
+          /* Footer actions */
+          const footer = document.createElement('div'); footer.className = 'alert-detail-footer';
+          data.actions.forEach(function(a) {
+            const btn = document.createElement('button');
+            btn.className = 'alert-detail-action ' + a.cls; btn.textContent = a.label;
+            btn.addEventListener('click', function() { appendSystemMsg('Action triggered: ' + a.label + '…'); });
+            footer.appendChild(btn);
+          });
+
+          card.appendChild(hdr); card.appendChild(body); card.appendChild(footer);
+          outer.appendChild(card);
+
+          const wrap = document.createElement('div'); wrap.className = 'chat-msg aimy';
+          const av = document.createElement('div'); av.className = 'msg-avatar aimy-av';
+          av.innerHTML = '<svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>';
+          wrap.appendChild(av); wrap.appendChild(outer);
+          thread.appendChild(wrap); thread.scrollTop = thread.scrollHeight;
+        }
+
+
+
       })();
     </script>
   </body>
