@@ -762,14 +762,14 @@
           0 0 0 1px rgba(var(--qa-accent-rgb), 0.3);
       }
       .bcard-body {
-        padding: 20px;
+        padding: 16px;
       }
       /* Card meta: icon-badge (left anchor) → type-label (category) → priority-badge (right status) */
       .bcard-meta {
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-bottom: 16px;
+        margin-bottom: 10px;
       }
       .type-label {
         font-size: 10px;
@@ -823,28 +823,28 @@
         height: 10px;
       }
       .bcard-conclusion {
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 600;
         color: var(--d50);
-        line-height: 1.5;
-        margin-bottom: 12px;
+        line-height: 1.45;
+        margin-bottom: 10px;
         letter-spacing: -0.005em;
       }
       .evidence-row {
         display: flex;
-        gap: 6px;
+        gap: 5px;
         flex-wrap: wrap;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
       }
       .evidence-pill {
         display: flex;
         align-items: center;
-        gap: 5px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.09);
+        gap: 4px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 20px;
-        padding: 4px 10px;
-        font-size: 11px;
+        padding: 3px 8px;
+        font-size: 10px;
         color: var(--d300);
         font-weight: 500;
       }
@@ -1012,11 +1012,11 @@
         letter-spacing: 0.04em;
       }
       .narrative-text {
-        font-size: 15px;
+        font-size: 13px;
         font-weight: 500;
         color: var(--d50);
-        line-height: 1.7;
-        margin-bottom: 16px;
+        line-height: 1.6;
+        margin-bottom: 14px;
         max-width: 680px;
       }
       .narrative-text strong {
@@ -1090,13 +1090,13 @@
         min-width: 0;
       }
       .finding-title {
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
         color: #ffffff;
         margin-bottom: 2px;
       }
       .finding-sub {
-        font-size: 11px;
+        font-size: 10px;
         color: var(--d50);
         line-height: 1.4;
         opacity: 0.8;
@@ -1176,9 +1176,9 @@
       }
       .kpi-brief {
         display: flex;
-        gap: 12px;
+        gap: 10px;
         align-items: flex-start;
-        padding: 13px 16px;
+        padding: 10px 14px;
         background: var(--card-bg);
         border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.06);
@@ -1222,17 +1222,17 @@
         min-width: 0;
       }
       .kf-conclusion {
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
         color: #ffffff;
-        margin-bottom: 3px;
+        margin-bottom: 2px;
         line-height: 1.4;
       }
       .kf-evidence {
-        font-size: 11px;
+        font-size: 10px;
         color: var(--d300);
         display: flex;
-        gap: 10px;
+        gap: 8px;
         flex-wrap: wrap;
       }
       .kf-ev-item {
@@ -4029,6 +4029,19 @@
         color: var(--ok); border-color: rgba(23,178,106,0.22); background: var(--ok-bg);
         cursor: default; pointer-events: none;
       }
+      /* Acknowledged bcard — dimmed, pushed to end of grid */
+      .bcard.is-acknowledged {
+        order: 99;
+        opacity: 0.45;
+        transform: none !important;
+        filter: saturate(0.4);
+        pointer-events: none;
+        transition: opacity 400ms ease, filter 400ms ease, order 0ms;
+      }
+      .bcard.is-acknowledged:hover {
+        transform: none !important;
+        box-shadow: none !important;
+      }
 
       
 
@@ -4262,13 +4275,17 @@
       .dismiss-reason-confirm{font-size:11px;font-weight:700;padding:5px 14px;border-radius:8px;background:rgba(240,68,56,.1);color:var(--err);border:1px solid rgba(240,68,56,.22);cursor:pointer;font-family:"Urbanist",sans-serif;}
       .dismiss-reason-confirm:hover{background:rgba(240,68,56,.18);}
       .dismiss-reason-cancel{font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:none;color:var(--d500);border:1px solid rgba(255,255,255,.07);cursor:pointer;font-family:"Urbanist",sans-serif;}
-      .bcard-dismiss-picker{display:none;flex-direction:column;gap:5px;padding:8px 0 2px;}
-      .bcard-dismiss-picker.open{display:flex;}
-      .bcard-dismiss-select{font-family:"Urbanist",sans-serif;font-size:11px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--d50);padding:5px 9px;cursor:pointer;outline:none;appearance:none;}
-      .bcard-dismiss-select option{background:#1e2428;}
-      .bcard-dismiss-btns{display:flex;gap:6px;}
-      .bcard-dismiss-confirm{font-size:10px;font-weight:700;padding:4px 12px;border-radius:8px;background:rgba(240,68,56,.1);color:var(--err);border:1px solid rgba(240,68,56,.2);cursor:pointer;font-family:"Urbanist",sans-serif;}
-      .bcard-dismiss-cancel{font-size:10px;font-weight:500;padding:4px 8px;border-radius:8px;background:none;color:var(--d500);border:none;cursor:pointer;font-family:"Urbanist",sans-serif;}
+      .bcard-dismiss-picker{display:none;}
+      /* New dismiss injection hint — shown briefly on the card before input gets focus */
+      .bcard-dismiss-hint {
+        display: none;
+        font-size: 10px;
+        color: var(--d400);
+        padding: 6px 0 0;
+        line-height: 1.4;
+        animation: afsEntrance 150ms ease forwards;
+      }
+      .bcard-dismiss-hint.visible { display: block; }
       .notif-alert-card{background:rgba(20,27,36,.6);border:1px solid rgba(255,255,255,.09);border-radius:12px;overflow:hidden;max-width:540px;}
       .notif-alert-card.p1{border-color:rgba(240,68,56,.22);} .notif-alert-card.p2{border-color:rgba(247,144,9,.18);}
       .notif-alert-header{display:flex;align-items:center;gap:8px;padding:10px 14px 8px;border-bottom:1px solid rgba(255,255,255,.06);}
@@ -7751,6 +7768,16 @@
           const text = floatInput.value.trim();
           if (!text) return;
 
+          // Check if this is a pending dismiss message
+          const pendingAlertId = floatInput.dataset.pendingDismissId;
+          if (pendingAlertId && text.startsWith('Dismiss "')) {
+            delete floatInput.dataset.pendingDismissId;
+            floatInput.value = '';
+            if (floatHint) floatHint.style.opacity = '1';
+            _executeDismissWithReason(pendingAlertId, text);
+            return;
+          }
+
           const intent = detectIntent(text);
 
           if (intent === "filter") {
@@ -7758,6 +7785,45 @@
           } else {
             openOverlay(text);
           }
+        }
+
+        /* ── Execute dismiss with user-typed reason ──────────────────── */
+        function _executeDismissWithReason(alertId, fullText) {
+          // Extract reason (everything after "— ")
+          const reasonPart = fullText.replace(/^Dismiss\s+"[^"]*"\s+alert\s+[—-]\s*/i, '').trim();
+          const reason = reasonPart || 'No reason given';
+
+          // Find and hide the card
+          const row = document.getElementById('ack-row-' + alertId);
+          const card = row ? row.closest('.bcard') : null;
+          if (card) {
+            lastDismissedCard = { card, parent: card.parentNode, nextSibling: card.nextSibling };
+            card.style.transition = 'opacity 220ms ease, transform 220ms ease';
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(-4px) scale(0.98)';
+            setTimeout(() => { card.style.display = 'none'; }, 230);
+          }
+          unreadAlertCount = Math.max(0, unreadAlertCount - 1); updateFloatBadge(unreadAlertCount);
+
+          // Open the canvas overlay and show the AI confirmation
+          if (!overlayOpen) {
+            overlayOpen = true;
+            overlay.classList.add('open');
+            floatBar.classList.add('hidden');
+          }
+          suggestions.classList.add('hidden');
+
+          // Show the user's message in the thread
+          appendUserMsg(fullText);
+
+          // Show AI confirmation after a brief delay
+          isTyping = true;
+          showTypingIndicator();
+          setTimeout(() => {
+            const alertMeta = (typeof ALERT_DATA !== 'undefined' ? ALERT_DATA : []).find(a => a.id === alertId);
+            const alertLabel = alertMeta ? alertMeta.type : alertId.replace(/-/g,' ');
+            appendAiMsg('Got it — the <strong>' + alertLabel + '</strong> alert has been dismissed. I\u2019ve logged your reason: \u201C' + reason + '\u201D. I won\u2019t resurface this alert unless the situation worsens significantly.');
+          }, 900);
         }
 
         floatInput.addEventListener("keydown", (e) => {
@@ -8185,44 +8251,58 @@
           lastAcknowledgedCard = { card, btn, dismissBtn, prevText: btn.textContent };
           btn.textContent = '\u2713 Acknowledged'; btn.classList.add('acknowledged'); btn.disabled = true;
           if (dismissBtn) dismissBtn.style.display = 'none';
-          card.style.transition = 'opacity 400ms ease'; card.style.opacity = '0.6';
+          // Move to far right in grid + fade
+          card.classList.add('is-acknowledged');
           unreadAlertCount = Math.max(0, unreadAlertCount - 1); updateFloatBadge(unreadAlertCount);
           showToast({ title: 'Alert acknowledged', sub: 'Moved to alert history' });
         };
 
-        /* ── Bcard dismiss ─────────────────────────────────────────────── */
+        /* ── Bcard dismiss — injects prefilled text into float bar ─────── */
         window.showBcardDismissPicker = function(btn, alertId) {
-          const picker = document.getElementById('bdp-' + alertId);
-          if (!picker) return;
-          if (picker.children.length === 0) {
-            const lbl = document.createElement('span'); lbl.className = 'dismiss-reason-label'; lbl.textContent = 'Reason';
-            const sel = document.createElement('select'); sel.className = 'bcard-dismiss-select'; sel.id = 'bdp-sel-' + alertId;
-            [['','Select a reason\u2026'],['already-handled','Already handled'],['not-relevant','Not relevant right now'],['false-positive','False positive'],['will-monitor','Will monitor manually']].forEach(([v,t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; sel.appendChild(o); });
-            const bbtns = document.createElement('div'); bbtns.className = 'bcard-dismiss-btns';
-            const conf = document.createElement('button'); conf.className = 'bcard-dismiss-confirm'; conf.textContent = 'Dismiss';
-            conf.addEventListener('click', () => confirmBcardDismiss(alertId));
-            const canc = document.createElement('button'); canc.className = 'bcard-dismiss-cancel'; canc.textContent = 'Cancel';
-            canc.addEventListener('click', () => picker.classList.remove('open'));
-            bbtns.appendChild(conf); bbtns.appendChild(canc);
-            picker.appendChild(lbl); picker.appendChild(sel); picker.appendChild(bbtns);
+          // Find the alert label from ALERT_DATA
+          const alertMeta = (typeof ALERT_DATA !== 'undefined' ? ALERT_DATA : []).find(a => a.id === alertId);
+          const alertLabel = alertMeta ? alertMeta.type : alertId.replace(/-/g,' ');
+
+          // Build the pre-filled dismissal text
+          const injectedText = 'Dismiss "' + alertLabel + '" alert — ';
+
+          // Get the float bar input
+          const floatInput = document.getElementById('aimyFloatInput');
+          const floatHint = document.getElementById('aimyFloatHint');
+          const floatBar = document.getElementById('aimyFloatBar');
+          if (!floatInput) return;
+
+          // Store alertId on the input for later confirmation
+          floatInput.dataset.pendingDismissId = alertId;
+
+          // Inject text and move cursor to end
+          floatInput.value = injectedText;
+          if (floatHint) floatHint.style.opacity = '0';
+          floatInput.focus();
+          floatInput.setSelectionRange(injectedText.length, injectedText.length);
+
+          // Flash the float bar to draw attention
+          floatBar.classList.remove('filter-applied');
+          void floatBar.offsetWidth;
+          floatBar.classList.add('filter-applied');
+
+          // Show a brief hint on the card
+          const row = document.getElementById('ack-row-' + alertId);
+          if (row) {
+            let hint = row.querySelector('.bcard-dismiss-hint');
+            if (!hint) {
+              hint = document.createElement('div');
+              hint.className = 'bcard-dismiss-hint';
+              hint.textContent = 'Type your reason in the input bar below ↓';
+              row.appendChild(hint);
+            }
+            hint.classList.add('visible');
+            setTimeout(() => hint.classList.remove('visible'), 4000);
           }
-          picker.classList.toggle('open');
         };
 
         window.confirmBcardDismiss = function(alertId) {
-          const sel = document.getElementById('bdp-sel-' + alertId);
-          const reason = sel ? sel.value : '';
-          if (!reason) { if (sel) sel.focus(); return; }
-          const row = document.getElementById('ack-row-' + alertId);
-          const card = row ? row.closest('.bcard') : null;
-          if (!card) return;
-          lastDismissedCard = { card, parent: card.parentNode, nextSibling: card.nextSibling };
-          card.style.transition = 'opacity 220ms ease, transform 220ms ease';
-          card.style.opacity = '0'; card.style.transform = 'translateY(-4px) scale(0.98)';
-          setTimeout(() => { card.style.display = 'none'; }, 230);
-          unreadAlertCount = Math.max(0, unreadAlertCount - 1); updateFloatBadge(unreadAlertCount);
-          showToast({ title: 'Alert dismissed', sub: 'Reason: ' + (sel.options[sel.selectedIndex]?.text || reason) });
-          document.getElementById('bdp-' + alertId)?.classList.remove('open');
+          // Legacy: no-op — dismiss now handled via float bar text injection
         };
 
         /* ── dismissAlert legacy shim (unused by bcards, kept for canvas sync) */
@@ -8319,9 +8399,16 @@
           const reason = sel?.value; if (!reason) { sel?.focus(); return; }
           const card = document.getElementById(cardId);
           if (card) { card.style.opacity='0.4'; card.style.pointerEvents='none'; }
-          const bdpSel = document.getElementById('bdp-sel-' + alertId);
-          if (bdpSel) { bdpSel.value = reason; window.confirmBcardDismiss(alertId); }
-          else showToast({ title:'Alert dismissed', sub:'Reason: ' + (sel.options[sel.selectedIndex]?.text || reason) });
+          // Also dismiss the bcard on dashboard
+          const row = document.getElementById('ack-row-' + alertId);
+          const bcard = row ? row.closest('.bcard') : null;
+          if (bcard) {
+            bcard.style.transition = 'opacity 220ms ease, transform 220ms ease';
+            bcard.style.opacity = '0'; bcard.style.transform = 'translateY(-4px) scale(0.98)';
+            setTimeout(() => { bcard.style.display = 'none'; }, 230);
+          }
+          unreadAlertCount = Math.max(0, unreadAlertCount - 1); updateFloatBadge(unreadAlertCount);
+          showToast({ title:'Alert dismissed', sub:'Reason: ' + (sel.options[sel.selectedIndex]?.text || reason) });
           document.getElementById('ndp-' + cardId)?.classList.remove('open');
         }
 
