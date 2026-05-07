@@ -4369,6 +4369,50 @@
         cursor: pointer; text-decoration: underline;
         text-decoration-color: rgba(var(--qa-accent-rgb),0.35);
       }
+
+      /* ── Alert detail canvas cards ─────────────────────────────────── */
+      .alert-detail-card {
+        background: rgba(20,27,36,0.6); border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 12px; overflow: hidden; max-width: 540px;
+      }
+      .alert-detail-card.p1 { border-color: rgba(240,68,56,0.22); }
+      .alert-detail-card.p2 { border-color: rgba(247,144,9,0.18); }
+      .alert-detail-header {
+        display: flex; align-items: center; gap: 10px;
+        padding: 12px 16px 10px; border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .alert-detail-title { font-size: 13px; font-weight: 700; color: var(--d50); flex: 1; }
+      .alert-detail-body { padding: 12px 16px 14px; }
+      .alert-detail-summary { font-size: 13px; color: var(--d200,#c7cdd1); line-height: 1.55; margin-bottom: 12px; }
+      .alert-detail-rows { display: flex; flex-direction: column; gap: 6px; }
+      .alert-detail-row {
+        display: flex; align-items: center; gap: 10px;
+        padding: 7px 10px; border-radius: 8px;
+        background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+      }
+      .adr-label { font-size: 12px; color: var(--d300); flex: 1; }
+      .adr-val   { font-size: 12px; font-weight: 700; color: var(--d50); }
+      .adr-badge {
+        font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+        letter-spacing: .04em; text-transform: uppercase;
+      }
+      .adr-badge-err  { background: var(--err-bg);  color: var(--err);  border: 1px solid rgba(240,68,56,.2); }
+      .adr-badge-warn { background: var(--warn-bg); color: var(--warn); border: 1px solid rgba(247,144,9,.2); }
+      .adr-badge-ok   { background: var(--ok-bg);   color: var(--ok);   border: 1px solid rgba(23,178,106,.2); }
+      .alert-detail-footer {
+        display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+        padding: 8px 14px; border-top: 1px solid rgba(255,255,255,0.06);
+        background: rgba(0,0,0,0.1);
+      }
+      .alert-detail-action {
+        font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 8px;
+        cursor: pointer; font-family: "Urbanist",sans-serif;
+        transition: all var(--transition-fast); border: 1px solid transparent;
+      }
+      .ada-primary { background: rgba(var(--qa-accent-rgb),.1); color: var(--qa-accent); border-color: rgba(var(--qa-accent-rgb),.22); }
+      .ada-primary:hover { background: rgba(var(--qa-accent-rgb),.18); }
+      .ada-secondary { background: rgba(255,255,255,.03); color: var(--d400); border-color: rgba(255,255,255,.07); }
+      .ada-secondary:hover { background: rgba(255,255,255,.07); color: var(--d200,#e8edf2); }
 </style>
   </head>
   <body>
@@ -8293,10 +8337,17 @@
         }
 
         function notifAlertCta(alertId, isCoaching) {
-          if (isCoaching) window.openCanvasWithCoaching('Omar Adel','OA','Run a targeted empathy coaching session focusing on billing escalation calls.','Omar has failed the <strong>Empathy during escalations</strong> KPI in 4 of his last 5 evaluated calls.','High');
-          else appendSystemMsg('Loading ' + alertId.replace('-',' ') + ' details\u2026');
+          if (isCoaching) {
+            window.openCanvasWithCoaching('Omar Adel','OA',
+              'Run a targeted empathy coaching session focusing on billing escalation calls.',
+              'Omar has failed the <strong>Empathy during escalations</strong> KPI in 4 of his last 5 evaluated calls.',
+              'High');
+            return;
+          }
+          appendSystemMsg('Loading ' + alertId.replace(/-/g,' ') + ' details…');
+          setTimeout(function() { appendAlertDetailCard(alertId); }, 600);
         }
-        function notifAcknowledge(btn, alertId, cardId) {
+                function notifAcknowledge(btn, alertId, cardId) {
           btn.textContent = '\u2713 Acknowledged'; btn.classList.add('acknowledged');
           const card = document.getElementById(cardId);
           if (card) card.querySelectorAll('.notif-cta:not(.acknowledged)').forEach(b => { b.style.opacity='0.4'; b.style.pointerEvents='none'; });
@@ -8555,18 +8606,27 @@
             });
           }
           if (label.startsWith('View breached tickets')) {
-            btn.addEventListener('click', e => { e.stopPropagation();
-              openOverlay('Show me the breached SLA tickets this week');
+            btn.addEventListener('click', function(e) { e.stopPropagation();
+              if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); }
+              suggestions.classList.add('hidden');
+              appendSystemMsg('Loading breached SLA tickets…');
+              setTimeout(function() { appendAlertDetailCard('sla-breach'); }, 600);
             });
           }
           if (label.startsWith('Review escalation handling')) {
-            btn.addEventListener('click', e => { e.stopPropagation();
-              openOverlay('Which agents are driving the negative sentiment spike?');
+            btn.addEventListener('click', function(e) { e.stopPropagation();
+              if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); }
+              suggestions.classList.add('hidden');
+              appendSystemMsg('Loading escalation handling details…');
+              setTimeout(function() { appendAlertDetailCard('sentiment'); }, 600);
             });
           }
           if (label.startsWith("See what's blocking target")) {
-            btn.addEventListener('click', e => { e.stopPropagation();
-              openOverlay('What are the 3 failing KPIs blocking the 90% quality target?');
+            btn.addEventListener('click', function(e) { e.stopPropagation();
+              if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); }
+              suggestions.classList.add('hidden');
+              appendSystemMsg('Loading quality target analysis…');
+              setTimeout(function() { appendAlertDetailCard('quality'); }, 600);
             });
           }
         });
@@ -8713,6 +8773,101 @@
             thread.scrollTop = thread.scrollHeight;
           }, 500);
         };
+
+
+        /* ── Alert detail cards in canvas ──────────────────────────────── */
+        const ALERT_DETAIL_DATA = {
+          'sla-breach': {
+            priority: 'p1', title: 'SLA Breach Analysis',
+            badge: 'P1 · Critical',
+            summary: '23 tickets breached first response SLA this week. The primary driver is billing escalation tickets arriving Wednesday afternoons when staffing dips below threshold.',
+            rows: [
+              { label: 'Tickets breached this week', val: '23', badge: 'adr-badge-err', badgeText: '↑14 last week' },
+              { label: 'Avg first response time', val: '45 min', badge: 'adr-badge-err', badgeText: 'target: 15 min' },
+              { label: 'SLA compliance rate', val: '61%', badge: 'adr-badge-err', badgeText: '↑29pts vs target' },
+              { label: 'Worst performing team', val: 'Team Cairo', badge: 'adr-badge-warn', badgeText: '58% compliance' },
+              { label: 'Peak breach window', val: 'Wed 2–5 PM', badge: null, badgeText: null },
+            ],
+            actions: [{ label: 'View all breached tickets', cls: 'ada-primary' }, { label: 'Trigger SLA recovery plan', cls: 'ada-secondary' }]
+          },
+          'sentiment': {
+            priority: 'p1', title: 'Negative Sentiment Analysis',
+            badge: 'P1 · Urgent',
+            summary: '3 agents account for 71% of all negative sentiment this week. The pattern correlates with billing escalation calls and after-hour shifts.',
+            rows: [
+              { label: 'Total negative interactions', val: '39', badge: 'adr-badge-err', badgeText: '↑ rising trend' },
+              { label: 'Primary driver', val: 'Billing escalations', badge: 'adr-badge-warn', badgeText: '62% of cases' },
+              { label: 'Agent 1 — Omar Adel', val: '14 neg interactions', badge: 'adr-badge-err', badgeText: '36% of total' },
+              { label: 'Agent 2 — Sara Hassan', val: '9 neg interactions', badge: 'adr-badge-warn', badgeText: '23% of total' },
+              { label: 'Agent 3 — Karim Nour', val: '5 neg interactions', badge: 'adr-badge-warn', badgeText: '13% of total' },
+            ],
+            actions: [{ label: 'Open escalation review', cls: 'ada-primary' }, { label: 'Start coaching for flagged agents', cls: 'ada-secondary' }]
+          },
+          'quality': {
+            priority: 'p2', title: 'Quality Target Gap Analysis',
+            badge: 'P2 · Watch',
+            summary: 'Quality is 2.7% below the 90% SLA target. 3 failing KPIs account for the entire gap. If empathy scoring recovers to 70%, quality crosses the threshold.',
+            rows: [
+              { label: 'Current quality score', val: '87.3%', badge: 'adr-badge-warn', badgeText: '↑+5.2% this period' },
+              { label: 'Gap to close', val: '−2.7%', badge: 'adr-badge-warn', badgeText: '≈77 more passes needed' },
+              { label: 'Empathy during escalations', val: '32%', badge: 'adr-badge-err', badgeText: 'threshold: 70%' },
+              { label: 'Follow-up clarity', val: '48%', badge: 'adr-badge-warn', badgeText: 'threshold: 65%' },
+              { label: 'Survey promotion', val: '49%', badge: 'adr-badge-warn', badgeText: 'threshold: 60%' },
+            ],
+            actions: [{ label: 'Open KPI breakdown', cls: 'ada-primary' }, { label: 'Create improvement plan', cls: 'ada-secondary' }]
+          }
+        };
+
+        function appendAlertDetailCard(alertId) {
+          const data = ALERT_DETAIL_DATA[alertId];
+          if (!data) return;
+
+          const outer = document.createElement('div'); outer.style.maxWidth = '540px';
+          const card = document.createElement('div');
+          card.className = 'alert-detail-card ' + data.priority;
+
+          /* Header */
+          const hdr = document.createElement('div'); hdr.className = 'alert-detail-header';
+          const dot = document.createElement('span'); dot.className = 'notif-severity-dot';
+          const titleEl = document.createElement('span'); titleEl.className = 'alert-detail-title'; titleEl.textContent = data.title;
+          const bdg = document.createElement('span'); bdg.className = 'notif-priority-badge'; bdg.textContent = data.badge;
+          hdr.appendChild(dot); hdr.appendChild(titleEl); hdr.appendChild(bdg);
+
+          /* Body */
+          const body = document.createElement('div'); body.className = 'alert-detail-body';
+          const summary = document.createElement('div'); summary.className = 'alert-detail-summary'; summary.textContent = data.summary;
+          const rows = document.createElement('div'); rows.className = 'alert-detail-rows';
+          data.rows.forEach(function(r) {
+            const row = document.createElement('div'); row.className = 'alert-detail-row';
+            const lbl = document.createElement('span'); lbl.className = 'adr-label'; lbl.textContent = r.label;
+            const val = document.createElement('span'); val.className = 'adr-val'; val.textContent = r.val;
+            row.appendChild(lbl); row.appendChild(val);
+            if (r.badge) {
+              const b = document.createElement('span'); b.className = 'adr-badge ' + r.badge; b.textContent = r.badgeText;
+              row.appendChild(b);
+            }
+            rows.appendChild(row);
+          });
+          body.appendChild(summary); body.appendChild(rows);
+
+          /* Footer actions */
+          const footer = document.createElement('div'); footer.className = 'alert-detail-footer';
+          data.actions.forEach(function(a) {
+            const btn = document.createElement('button');
+            btn.className = 'alert-detail-action ' + a.cls; btn.textContent = a.label;
+            btn.addEventListener('click', function() { appendSystemMsg('Action triggered: ' + a.label + '…'); });
+            footer.appendChild(btn);
+          });
+
+          card.appendChild(hdr); card.appendChild(body); card.appendChild(footer);
+          outer.appendChild(card);
+
+          const wrap = document.createElement('div'); wrap.className = 'chat-msg aimy';
+          const av = document.createElement('div'); av.className = 'msg-avatar aimy-av';
+          av.innerHTML = '<svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>';
+          wrap.appendChild(av); wrap.appendChild(outer);
+          thread.appendChild(wrap); thread.scrollTop = thread.scrollHeight;
+        }
 
       })();
     
