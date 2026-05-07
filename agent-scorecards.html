@@ -466,59 +466,224 @@
         background: transparent;
       }
 
-      .filter-bar {
-        display: flex;
+      /* ── Filter glass keyframes — shimmer only, no pulse ─────────────── */
+      @keyframes glassShimmer {
+        0%   { background-position: -200% center; }
+        100% { background-position:  200% center; }
+      }
+      @keyframes afsEntrance {
+        from { opacity: 0; transform: translateY(-3px); }
+        to   { opacity: 1; transform: translateY(0);    }
+      }
+      @keyframes chipPop {
+        0%   { transform: scale(0.86); opacity: 0; }
+        65%  { transform: scale(1.04); }
+        100% { transform: scale(1);    opacity: 1; }
+      }
+
+      /* ── Active filter strip ─────────────────────────────────────────── */
+      .active-filter-strip {
+        display: none;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         margin-bottom: 20px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 5px 12px;
+        border-radius: 10px;
+        background: rgba(51, 105, 255, 0.05);
+        border: 1px solid rgba(51, 105, 255, 0.12);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+        min-height: 32px;
+        position: relative;
+        overflow: hidden;
+        animation: afsEntrance 180ms ease both;
       }
-      .filter-select {
-        background: var(--d800);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: var(--d100);
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        cursor: pointer;
-        transition: all var(--transition-fast);
-        font-family: "Urbanist", sans-serif;
+      .active-filter-strip::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(99, 169, 255, 0.4) 35%,
+          rgba(139, 79, 244, 0.3) 65%,
+          transparent
+        );
+        background-size: 200% 100%;
+        animation: glassShimmer 4s linear infinite;
       }
-      .filter-select:hover {
-        background: var(--d750);
-        border-color: rgba(255, 255, 255, 0.18);
-        color: var(--d50);
-      }
-      .filter-select svg {
-        width: 11px;
-        height: 11px;
-        color: var(--d400);
-      }
-      .export-btn {
-        margin-left: auto;
-        background: var(--qa-accent);
-        color: #fff;
-        border: none;
-        padding: 9px 16px;
-        border-radius: 8px;
-        font-size: 12px;
+      .active-filter-strip.visible { display: flex; }
+
+      .afs-label {
+        font-size: 9px;
         font-weight: 700;
-        cursor: pointer;
+        color: rgba(99, 169, 255, 0.5);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding-right: 8px;
+        border-right: 1px solid rgba(255,255,255,0.07);
+      }
+      .afs-chip {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
+        background: rgba(99, 169, 255, 0.08);
+        border: 1px solid rgba(99, 169, 255, 0.18);
+        border-radius: 20px;
+        padding: 3px 9px;
+        font-size: 10.5px;
+        font-weight: 600;
+        color: rgba(197, 220, 255, 0.85);
         font-family: "Urbanist", sans-serif;
-        box-shadow: 0 2px 8px rgba(var(--qa-accent-rgb), 0.25);
-        transition: all var(--transition-base);
+        white-space: nowrap;
+        animation: chipPop 220ms cubic-bezier(0.34,1.56,0.64,1) both;
       }
-      .export-btn:hover {
-        box-shadow: 0 4px 16px rgba(var(--qa-accent-rgb), 0.35);
+      .afs-chip strong { color: #a8ccff; font-weight: 700; }
+      .afs-chip-x {
+        background: none;
+        border: none;
+        color: rgba(168, 204, 255, 0.35);
+        cursor: pointer;
+        font-size: 13px;
+        line-height: 1;
+        padding: 0 0 0 3px;
+        font-family: "Urbanist", sans-serif;
+        transition: color var(--transition-fast);
+        display: flex;
+        align-items: center;
+      }
+      .afs-chip-x:hover { color: rgba(168, 204, 255, 0.8); }
+      .afs-clear-all {
+        margin-left: auto;
+        background: none;
+        border: none;
+        font-size: 9.5px;
+        font-weight: 600;
+        color: rgba(255,255,255,0.18);
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        letter-spacing: 0.04em;
+        transition: color var(--transition-fast);
+        flex-shrink: 0;
+        padding: 3px 0;
+      }
+      .afs-clear-all:hover { color: rgba(168, 204, 255, 0.6); }
+
+      /* ── Filter tray ─────────────────────────────────────────────────── */
+      .filter-tray {
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        pointer-events: none;
+        opacity: 0;
+        transform: translateY(5px);
+        transition:
+          opacity 160ms ease,
+          transform 160ms cubic-bezier(0.22,1,0.36,1);
+      }
+      .filter-tray.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: all;
+      }
+      .filter-tray-inner {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(14, 20, 30, 0.75);
+        border: 1px solid rgba(99, 169, 255, 0.10);
+        border-radius: 12px;
+        padding: 6px 10px;
+        backdrop-filter: blur(24px) saturate(1.5);
+        -webkit-backdrop-filter: blur(24px) saturate(1.5);
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.06),
+          0 4px 20px rgba(0,0,0,0.35),
+          0 0 24px rgba(51,105,255,0.06);
+        max-width: 760px;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+      .filter-tray-inner::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(99,169,255,0.35) 30%,
+          rgba(139,79,244,0.25) 60%,
+          transparent
+        );
+        background-size: 200% 100%;
+        animation: glassShimmer 3.5s linear infinite;
+      }
+      .filter-tray-inner::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 55%);
+        pointer-events: none;
+      }
+      .filter-tray-label {
+        font-size: 9px;
+        font-weight: 700;
+        color: rgba(99,169,255,0.45);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        padding-right: 7px;
+        border-right: 1px solid rgba(255,255,255,0.07);
+        margin-right: 1px;
+        flex-shrink: 0;
+        position: relative;
+        z-index: 1;
+      }
+      .filter-chip {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 10.5px;
+        font-weight: 600;
+        color: rgba(255,255,255,0.55);
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        white-space: nowrap;
+        position: relative;
+        z-index: 1;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+        transition:
+          background   150ms ease,
+          border-color 150ms ease,
+          color        150ms ease,
+          box-shadow   150ms ease,
+          transform    150ms cubic-bezier(0.34,1.56,0.64,1);
+      }
+      .filter-chip:hover {
+        background: rgba(51,105,255,0.10);
+        border-color: rgba(99,169,255,0.28);
+        color: rgba(197,220,255,0.9);
         transform: translateY(-1px);
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.10),
+          0 0 10px rgba(51,105,255,0.12);
+      }
+      .filter-chip:active  { transform: translateY(0) scale(0.97); }
+      .filter-chip.pressed {
+        background: rgba(139,79,244,0.10);
+        border-color: rgba(139,79,244,0.28);
+        color: rgba(210,185,255,0.9);
       }
 
       /* ── GRID OPTION A (Asymmetrical Split) ── */
@@ -4666,34 +4831,13 @@
                 Performance, KPI compliance, and coaching recommendations across <strong>12 agents</strong> on Product Support team
               </div>
             </div>
-            <button class="export-btn" type="button" aria-label="Export team report">
-              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
-                <path d="M11.667 9v1.5A1.167 1.167 0 0 1 10.5 11.667h-7A1.167 1.167 0 0 1 2.333 10.5V9"/>
-                <polyline points="9.333 5.833 7 8.167 4.667 5.833"/>
-                <line x1="7" y1="8.167" x2="7" y2="2.333"/>
-              </svg>
-              Export team report
-            </button>
           </div>
 
-          <!-- ══ FILTER BAR ═════════════════════════════════════════ -->
-          <div class="filter-bar">
-            <button class="filter-select" type="button">
-              Product Support
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <button class="filter-select" type="button">
-              Last 30 days
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <button class="filter-select" type="button">
-              All channels
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <button class="filter-select" type="button">
-              All risk levels
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
+          <!-- Active filter strip — only visible when filters are applied -->
+          <div class="active-filter-strip" id="activeFilterStrip">
+            <span class="afs-label">Viewing</span>
+            <!-- Active filter chips injected here by JS -->
+            <button class="afs-clear-all" id="afsClearAll">Clear all</button>
           </div>
 
           <!-- ══ VIEW TOGGLE — TEAM ⇄ AGENT ════════════════════════ -->
@@ -7014,6 +7158,20 @@
 
         <!-- ════ FLOATING AIMY INPUT BAR (scoped to app-main) ══════════ -->
         <div class="aimy-float-wrap" id="aimyFloatWrap">
+
+          <!-- Filter tray — appears above the bar on input focus -->
+          <div class="filter-tray" id="filterTray" role="toolbar" aria-label="Filter scorecards">
+            <div class="filter-tray-inner">
+              <span class="filter-tray-label">Filter via AiMY</span>
+              <button class="filter-chip" data-filter="Agent">Agent</button>
+              <button class="filter-chip" data-filter="Team">Team</button>
+              <button class="filter-chip" data-filter="KPI">KPI</button>
+              <button class="filter-chip" data-filter="Score Range">Score Range</button>
+              <button class="filter-chip" data-filter="Risk Level">Risk Level</button>
+              <button class="filter-chip" data-filter="All">Reset all</button>
+            </div>
+          </div>
+
           <div class="aimy-float-bar" id="aimyFloatBar">
             <div class="aimy-float-icon" style="width: 32px; height: 32px; position:relative;">
               <span class="float-badge" id="floatBadge" aria-label="3 unread alerts">3</span>
@@ -10931,8 +11089,9 @@
 
         /* ── Simulated AiMY canvas responses ─────────────────────────────
      Each response demonstrates a different canvas render type:
-     scorecard, table, or chart. In production replace with real API.  */
-        const STUB_RESPONSES = [
+     scorecard, table, or chart. In production replace with real API.
+     Exposed on window so the V2 IIFE can push additional responses.  */
+        const STUB_RESPONSES = window.STUB_RESPONSES = [
           /* 1 — Scorecard render type */
           `<div class="canvas-render">
             <div class="canvas-type-label"><svg viewBox="0 0 10 10" fill="currentColor"><path d="M5 1L5.8 3.5H8.5L6.4 5.1L7.2 7.6L5 6L2.8 7.6L3.6 5.1L1.5 3.5H4.2L5 1Z"/></svg>Scorecard · Omar Abdallah</div>
@@ -11148,6 +11307,108 @@
         const floatIconEl = document.querySelector('.aimy-float-icon');
         if (floatIconEl) { floatIconEl.style.cursor = 'pointer'; floatIconEl.addEventListener('click', e => { e.stopPropagation(); if (unreadAlertCount > 0) openAlertsInCanvas(); }); }
 
+        /* ── Filter tray ─────────────────────────────────────────────── */
+        const filterTray = document.getElementById('filterTray');
+        const activeFilterStrip = document.getElementById('activeFilterStrip');
+        const afsClearAll = document.getElementById('afsClearAll');
+        /* Re-resolve float bar elements (declared with const in sibling script) */
+        const _floatInput = document.getElementById('aimyFloatInput');
+        let trayHideTimer = null;
+        let activeFilters = {};
+
+        function showTray() {
+          clearTimeout(trayHideTimer);
+          filterTray.classList.add('visible');
+        }
+        function hideTray() {
+          trayHideTimer = setTimeout(() => filterTray.classList.remove('visible'), 160);
+        }
+
+        _floatInput.addEventListener('focus', showTray);
+        _floatInput.addEventListener('blur', hideTray);
+        filterTray.addEventListener('mousedown', (e) => e.preventDefault());
+        filterTray.addEventListener('focusin', showTray);
+        filterTray.addEventListener('focusout', hideTray);
+
+        const FILTER_PREFIXES = {
+          'Agent':       'Filter by Agent: ',
+          'Team':        'Filter by Team: ',
+          'KPI':         'Filter by KPI: ',
+          'Score Range': 'Filter by Score Range: ',
+          'Risk Level':  'Filter by Risk Level: ',
+          'All':         'Reset all filters',
+        };
+
+        filterTray.querySelectorAll('.filter-chip').forEach(chip => {
+          chip.addEventListener('click', () => {
+            const key = chip.dataset.filter;
+            const prefix = FILTER_PREFIXES[key] || `Filter by ${key}: `;
+            if (key === 'All') {
+              _floatInput.value = '';
+              _floatInput.dispatchEvent(new Event('input'));
+              clearAllFilters();
+              _floatInput.focus();
+              return;
+            }
+            _floatInput.value = prefix;
+            _floatInput.dispatchEvent(new Event('input'));
+            _floatInput.focus();
+            _floatInput.setSelectionRange(prefix.length, prefix.length);
+            chip.classList.add('pressed');
+            setTimeout(() => chip.classList.remove('pressed'), 400);
+          });
+        });
+
+        function parseFilterFromText(text) {
+          const match = text.match(/Filter by ([^:]+):\s*(.+)/i);
+          if (match) return { key: match[1].trim(), value: match[2].trim() };
+          return null;
+        }
+
+        function renderActiveStrip() {
+          activeFilterStrip.querySelectorAll('.afs-chip').forEach(c => c.remove());
+          const entries = Object.entries(activeFilters);
+          if (entries.length === 0) { activeFilterStrip.classList.remove('visible'); return; }
+          const label = activeFilterStrip.querySelector('.afs-label');
+          entries.forEach(([key, value]) => {
+            const chip = document.createElement('div');
+            chip.className = 'afs-chip';
+            chip.innerHTML = `<span>${key}: <strong>${value}</strong></span>` +
+              `<button class="afs-chip-x" data-key="${key}" aria-label="Remove ${key} filter">×</button>`;
+            label.insertAdjacentElement('afterend', chip);
+          });
+          activeFilterStrip.classList.add('visible');
+          activeFilterStrip.querySelectorAll('.afs-chip-x').forEach(btn => {
+            btn.addEventListener('click', () => {
+              delete activeFilters[btn.dataset.key];
+              renderActiveStrip();
+            });
+          });
+        }
+
+        function clearAllFilters() {
+          activeFilters = {};
+          renderActiveStrip();
+        }
+
+        afsClearAll.addEventListener('click', clearAllFilters);
+
+        /* Hook into applyFilter to capture active filters */
+        const _origApplyFilter = window.applyFilter;
+        const _patchApplyFilter = function(text) {
+          const parsed = parseFilterFromText(text);
+          if (parsed && parsed.value) {
+            activeFilters[parsed.key] = parsed.value;
+            renderActiveStrip();
+          } else if (text.toLowerCase().includes('reset all')) {
+            clearAllFilters();
+          }
+        };
+        // Patch via event listener on aimy:filter-applied
+        window.addEventListener('aimy:filter-applied', (e) => {
+          _patchApplyFilter(e.detail.query || '');
+        });
+
         /* ── Undo stashes ─────────────────────────────────────────────── */
         let lastAcknowledgedCard = null;
         let lastDismissedCard = null;
@@ -11240,10 +11501,10 @@
 
         /* ── Alert data ───────────────────────────────────────────────── */
         const ALERT_DATA = [
-          { id:'sla-breach', priority:'p1', type:'SLA Breach', badge:'P1 \u00b7 Critical', summary:'First response SLA compliance at 61% \u2014 29pts below the 90% threshold. 23 breaches this week, up from 14.', evidence:[{label:'SLA compliance',val:'61%',delta:'\u219329pts'},{label:'Breaches this week',val:'23',delta:'\u21919 vs last week'},{label:'Avg first response',val:'45 min',delta:''}], cta:'View breached tickets', ctaClass:'primary-p1' },
-          { id:'kpi-failures', priority:'p1', type:'KPI Failures', badge:'P1 \u00b7 Urgent', summary:'3 KPIs actively failing \u2014 empathy is the biggest gap, down 8% this period.', evidence:[{label:'Empathy score',val:'32%',delta:'\u2193\u22128%'},{label:'Failed interactions',val:'184',delta:''}], cta:'Start coaching plan', ctaClass:'primary-p1', coachingAction:true },
-          { id:'sentiment', priority:'p1', type:'Sentiment', badge:'P1 \u00b7 Urgent', summary:'Negative sentiment rising week over week \u2014 3 agents driving most of it.', evidence:[{label:'Negative interactions',val:'39',delta:'\u2191 rising'},{label:'Agents flagged',val:'3',delta:''}], cta:'Review escalation handling', ctaClass:'primary-p1' },
-          { id:'quality', priority:'p2', type:'Quality Score', badge:'P2 \u00b7 Watch', summary:'Quality at 87.3% \u2014 2.7% below the 90% SLA target. 3 failing KPIs are the primary drag.', evidence:[{label:'Current avg',val:'87.3%',delta:'\u2191+5.2%'},{label:'Gap to SLA',val:'\u22122.7%',delta:''}], cta:"See what's blocking target", ctaClass:'primary-p2' }
+          { id:'score-drop', priority:'p1', type:'Score Drop', badge:'P1 · Critical', summary:'4 agents dropped below the 80% quality threshold this week — largest single-week decline in 60 days.', evidence:[{label:'Agents below threshold',val:'4',delta:'↑2 vs last week'},{label:'Avg score (affected)',val:'73.2%',delta:'↓7.1pts'},{label:'Team avg impact',val:'−2.4pts',delta:''}], cta:'Review affected agents', ctaClass:'primary-p1' },
+          { id:'kpi-compliance', priority:'p1', type:'KPI Compliance', badge:'P1 · Urgent', summary:'Empathy and active listening KPIs are failing across 6 agents — both down more than 10% this period.', evidence:[{label:'Empathy compliance',val:'31%',delta:'↓−11%'},{label:'Active listening',val:'44%',delta:'↓−8%'},{label:'Agents flagged',val:'6',delta:''}], cta:'Start coaching plan', ctaClass:'primary-p1', coachingAction:true },
+          { id:'coaching-overdue', priority:'p2', type:'Coaching Overdue', badge:'P2 · Watch', summary:'3 agents have open coaching actions with no follow-up logged in over 14 days.', evidence:[{label:'Overdue actions',val:'3',delta:''},{label:'Longest overdue',val:'19 days',delta:''},{label:'At-risk agents',val:'Hassan · Mona · Kareem',delta:''}], cta:'Open coaching tracker', ctaClass:'primary-p2' },
+          { id:'dispute-spike', priority:'p2', type:'Dispute Spike', badge:'P2 · Watch', summary:'Dispute submissions up 40% this week — mostly tied to interaction scoring on chat channel.', evidence:[{label:'New disputes',val:'11',delta:'↑40%'},{label:'Accepted disputes',val:'3',delta:''},{label:'Channel',val:'Chat',delta:''}], cta:'Review disputed scores', ctaClass:'primary-p2' }
         ];
 
         /* ── Open canvas with alerts ─────────────────────────────────── */
@@ -11600,7 +11861,7 @@
         });
 
         /* ── Rich stub response with Take Action ─────────────────────── */
-        STUB_RESPONSES.push(
+        window.STUB_RESPONSES && window.STUB_RESPONSES.push(
           "I&#8217;ve confirmed the root cause: billing escalation handling is creating a " +
           "<span class='msg-data-ref'>\uD83D\uDCCA 17% fail rate</span> this period." +
           "<br><br>Recommended next step:<br>" +
