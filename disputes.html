@@ -4418,6 +4418,12 @@
             </div>
             <p class="page-subtitle">Quality evaluation disputes — all agents, all auditors. Immutable audit trail required.</p>
           </div>
+          <div class="page-header-right">
+            <button class="new-dispute-btn" onclick="openCreateDisputeModal()">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>
+              New dispute
+            </button>
+          </div>
         </div>
 
         <!-- Active filter strip — only visible when filters are applied -->
@@ -4482,6 +4488,7 @@
                 <div class="disp-row-body">
                   <div class="disp-row-agent">Omar Ashraf <span class="disp-eval-id">#EVL-4821</span></div>
                   <div class="disp-row-kpis">Empathy · Follow-up Confirmation</div>
+                  <div class="disp-row-auditor">Layla Ibrahim</div>
                 </div>
               </div>
               <div class="disp-row-right">
@@ -4495,6 +4502,7 @@
                 <div class="disp-row-body">
                   <div class="disp-row-agent">Sara Mostafa <span class="disp-eval-id">#EVL-4799</span></div>
                   <div class="disp-row-kpis">Survey Promotion</div>
+                  <div class="disp-row-auditor">Unassigned</div>
                 </div>
               </div>
               <div class="disp-row-right">
@@ -4864,6 +4872,29 @@
                   </button>
                 </div>
 
+                <!-- Overturn score panel (hidden by default) -->
+                <div class="overturn-panel" id="overturnPanel-d1" style="display:none">
+                  <div class="partial-panel-label">Set corrected overall score</div>
+                  <div class="overturn-score-row">
+                    <div class="overturn-score-col">
+                      <span class="sp-label">Original</span>
+                      <span class="sp-val before">64%</span>
+                    </div>
+                    <svg class="sp-arrow" viewBox="0 0 24 8" fill="none"><path d="M0 4h20M16 1l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    <div class="overturn-score-col">
+                      <span class="sp-label">Corrected score</span>
+                      <div class="overturn-input-wrap">
+                        <input type="number" class="overturn-score-input" id="overturnInput-d1" min="0" max="100" value="80" oninput="updateOverturnPreview('d1')">
+                        <span class="overturn-pct">%</span>
+                      </div>
+                    </div>
+                    <div class="overturn-score-col delta-col">
+                      <span class="sp-label">Delta</span>
+                      <span class="sp-val delta" id="overturnDelta-d1">+16%</span>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- Partial adjust KPI selectors (shown by default since 'partial' is active) -->
                 <div class="partial-adjust-panel" id="partialPanel-d1">
                   <div class="partial-panel-label">Adjust contested KPIs</div>
@@ -5179,6 +5210,8 @@
                     <span class="workspace-score-pill">Score: <strong id="generic-score">72%</strong></span>
                   </div>
                   <div class="workspace-panel-body">
+                    <div class="eval-summary-row" id="generic-score-summary"></div>
+                    <div class="kpi-breakdown-label">KPI Breakdown</div>
                     <div class="kpi-list" id="generic-kpi-list"></div>
                     <div class="ai-rationale-block">
                       <div class="ai-rationale-header"><svg width="12" height="12" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg><span>AiMY Evaluation Rationale</span><span class="ai-confidence-pill" id="generic-confidence">80% confidence</span></div>
@@ -5227,6 +5260,27 @@
                     Partial Adjust <span class="decision-tab-sub">Adjust selected KPIs</span>
                   </button>
                 </div>
+                <div class="overturn-panel" id="overturnPanel-generic" style="display:none">
+                  <div class="partial-panel-label">Set corrected overall score</div>
+                  <div class="overturn-score-row">
+                    <div class="overturn-score-col">
+                      <span class="sp-label">Original</span>
+                      <span class="sp-val before" id="overturnBefore-generic">—</span>
+                    </div>
+                    <svg class="sp-arrow" viewBox="0 0 24 8" fill="none"><path d="M0 4h20M16 1l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    <div class="overturn-score-col">
+                      <span class="sp-label">Corrected score</span>
+                      <div class="overturn-input-wrap">
+                        <input type="number" class="overturn-score-input" id="overturnInput-generic" min="0" max="100" value="80" oninput="updateOverturnPreview('generic')">
+                        <span class="overturn-pct">%</span>
+                      </div>
+                    </div>
+                    <div class="overturn-score-col delta-col">
+                      <span class="sp-label">Delta</span>
+                      <span class="sp-val delta" id="overturnDelta-generic">—</span>
+                    </div>
+                  </div>
+                </div>
                 <div class="partial-adjust-panel" id="partialPanel-generic">
                   <div class="partial-panel-label">Adjust contested KPIs</div>
                   <div class="kpi-adjuster-list" id="generic-adjuster-list"></div>
@@ -5266,10 +5320,19 @@
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="7" width="10" height="8" rx="1"/><path d="M5 7V5a3 3 0 016 0v2"/></svg>
                 Immutable
               </span>
+              <span class="audit-trail-scope" id="auditTrailScope">All disputes · last 7 days</span>
+            </div>
+            <div class="audit-trail-filters">
+              <button class="audit-filter-btn active" data-filter="all" onclick="setAuditFilter('all',this)">All</button>
+              <button class="audit-filter-btn" data-filter="decision" onclick="setAuditFilter('decision',this)">Decisions</button>
+              <button class="audit-filter-btn" data-filter="sla" onclick="setAuditFilter('sla',this)">
+                <span class="sla-dot-inline"></span>SLA
+              </button>
+              <button class="audit-filter-btn" data-filter="submission" onclick="setAuditFilter('submission',this)">Submissions</button>
             </div>
           </div>
-          <div class="audit-timeline">
-            <div class="audit-event">
+          <div class="audit-timeline" id="auditTimeline">
+            <div class="audit-event" data-event-type="decision">
               <div class="audit-event-dot decision"></div>
               <div class="audit-event-content">
                 <div class="audit-event-top">
@@ -5280,7 +5343,7 @@
                 <p class="audit-event-detail">EVL-4760 · Lina Saad · Original score 72% upheld. No adjustment made.</p>
               </div>
             </div>
-            <div class="audit-event">
+            <div class="audit-event" data-event-type="review">
               <div class="audit-event-dot review"></div>
               <div class="audit-event-content">
                 <div class="audit-event-top">
@@ -5291,7 +5354,18 @@
                 <p class="audit-event-detail">EVL-4760 · Lina Saad assigned to Ahmed Salah.</p>
               </div>
             </div>
-            <div class="audit-event">
+            <div class="audit-event" data-event-type="escalation">
+              <div class="audit-event-dot escalation"></div>
+              <div class="audit-event-content">
+                <div class="audit-event-top">
+                  <span class="audit-actor">System <span class="audit-role">Auto</span></span>
+                  <span class="audit-action audit-action-warn">Escalation triggered</span>
+                  <span class="audit-time">3 days ago · 10:30</span>
+                </div>
+                <p class="audit-event-detail">EVL-4821 · Omar Ashraf · Dispute exceeded 48h SLA — automatically escalated to admin queue. Auditor Layla Ibrahim flagged.</p>
+              </div>
+            </div>
+            <div class="audit-event" data-event-type="sla">
               <div class="audit-event-dot sla-event"></div>
               <div class="audit-event-content">
                 <div class="audit-event-top">
@@ -5299,10 +5373,10 @@
                   <span class="audit-action audit-action-err">SLA Breach — +48h</span>
                   <span class="audit-time">3 days ago · 09:00</span>
                 </div>
-                <p class="audit-event-detail">EVL-4821 · Omar Ashraf · Dispute open beyond 48h SLA threshold. Escalation triggered.</p>
+                <p class="audit-event-detail">EVL-4821 · Omar Ashraf · Dispute open beyond 48h SLA threshold. Escalation queued.</p>
               </div>
             </div>
-            <div class="audit-event">
+            <div class="audit-event" data-event-type="decision">
               <div class="audit-event-dot decision"></div>
               <div class="audit-event-content">
                 <div class="audit-event-top">
@@ -5313,7 +5387,18 @@
                 <p class="audit-event-detail">EVL-4748 · Karim Bassem · Score adjusted 58% → 82%. Script version mismatch confirmed.</p>
               </div>
             </div>
-            <div class="audit-event">
+            <div class="audit-event" data-event-type="decision">
+              <div class="audit-event-dot decision"></div>
+              <div class="audit-event-content">
+                <div class="audit-event-top">
+                  <span class="audit-actor">Nadia Fathy <span class="audit-role">Auditor</span></span>
+                  <span class="audit-action">Decision: Partial Adjust</span>
+                  <span class="audit-time">5 days ago · 11:14</span>
+                </div>
+                <p class="audit-event-detail">EVL-4741 · Nadia Fawzy · Follow-up Confirmation adjusted 45% → 78%. Overall score revised 61% → 74%.</p>
+              </div>
+            </div>
+            <div class="audit-event" data-event-type="submission">
               <div class="audit-event-dot submission"></div>
               <div class="audit-event-content">
                 <div class="audit-event-top">
@@ -5322,6 +5407,17 @@
                   <span class="audit-time">3 days ago · 08:14</span>
                 </div>
                 <p class="audit-event-detail">EVL-4821 · Empathy &amp; Active Listening, Follow-up Confirmation contested.</p>
+              </div>
+            </div>
+            <div class="audit-event" data-event-type="submission">
+              <div class="audit-event-dot submission"></div>
+              <div class="audit-event-content">
+                <div class="audit-event-top">
+                  <span class="audit-actor">Lina Saad <span class="audit-role">Agent</span></span>
+                  <span class="audit-action">Dispute submitted</span>
+                  <span class="audit-time">4 days ago · 09:42</span>
+                </div>
+                <p class="audit-event-detail">EVL-4760 · Empathy &amp; Tone contested.</p>
               </div>
             </div>
           </div>
@@ -5701,17 +5797,17 @@
         padding: 10px 14px;
         cursor: pointer;
         transition: background var(--transition-fast);
-        border-left: 2px solid transparent;
         margin: 1px 8px;
         border-radius: 8px;
+        border: 1px solid transparent;
       }
       .disp-row:hover { background: rgba(255,255,255,0.04); }
       .disp-row.selected, .disp-row[aria-selected="true"] {
         background: var(--qa-accent-dim);
-        border-left-color: var(--qa-accent);
+        border-color: rgba(var(--qa-accent-rgb),0.22);
       }
-      .sla-row { border-left-color: rgba(240,68,56,0.4); background: rgba(240,68,56,0.03); }
-      .sla-row.selected, .sla-row[aria-selected="true"] { background: rgba(240,68,56,0.08); border-left-color: var(--err); }
+      .sla-row { background: rgba(240,68,56,0.03); border-color: rgba(240,68,56,0.12); }
+      .sla-row.selected, .sla-row[aria-selected="true"] { background: rgba(240,68,56,0.08); border-color: rgba(240,68,56,0.25); }
       .resolved-row { opacity: 0.7; }
       .resolved-row:hover { opacity: 1; }
       .disp-row-left { display: flex; align-items: flex-start; gap: 10px; flex: 1; min-width: 0; }
@@ -5854,7 +5950,7 @@
         background: rgba(255,255,255,0.02);
         border: 1px solid transparent;
       }
-      .kpi-item.kpi-contested { border-color: rgba(var(--qa-accent-rgb),0.15); background: rgba(var(--qa-accent-rgb),0.04); }
+      .kpi-item.kpi-contested { background: rgba(var(--qa-accent-rgb),0.06); outline: 1px solid rgba(var(--qa-accent-rgb),0.18); }
       .kpi-item-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
       .contested-marker { font-size: 8px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: rgba(var(--qa-accent-rgb),0.15); color: var(--qa-accent); flex-shrink: 0; }
       .kpi-name { font-size: 11px; font-weight: 600; color: var(--d100); }
@@ -6521,10 +6617,324 @@
       .cr-btn-sec:hover { background: rgba(255,255,255,0.08); }
 
       .bell-dot.active { animation: blink 1.2s ease-in-out infinite; }
+
+      /* ── Page header right side ─────────────────────────────────── */
+      .page-header { flex-wrap: nowrap; }
+      .page-header-right { flex-shrink: 0; margin-left: auto; padding-left: 16px; }
+      .new-dispute-btn {
+        display: flex; align-items: center; gap: 7px;
+        font-size: 12px; font-weight: 700; padding: 9px 16px;
+        border-radius: 10px; border: none;
+        background: var(--qa-accent); color: #fff;
+        cursor: pointer; font-family: 'Urbanist', sans-serif;
+        box-shadow: 0 4px 14px rgba(var(--qa-accent-rgb),0.3);
+        transition: all var(--transition-base);
+        white-space: nowrap;
+      }
+      .new-dispute-btn svg { width: 13px; height: 13px; }
+      .new-dispute-btn:hover { box-shadow: 0 6px 20px rgba(var(--qa-accent-rgb),0.45); transform: translateY(-1px); }
+
+      /* ── Dispute queue auditor row ───────────────────────────────── */
+      .disp-row-auditor { font-size: 9px; color: var(--d600); margin-top: 1px; }
+
+      /* ── Audit trail scope label + filter buttons ────────────────── */
+      .audit-trail-scope { font-size: 10px; color: var(--d500); padding: 2px 8px; border-radius: 6px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); }
+      .audit-trail-filters { display: flex; gap: 4px; align-items: center; }
+      .audit-filter-btn {
+        font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.02);
+        color: var(--d500); cursor: pointer; font-family: 'Urbanist', sans-serif;
+        display: flex; align-items: center; gap: 4px;
+        transition: all var(--transition-fast);
+      }
+      .audit-filter-btn:hover { background: rgba(255,255,255,0.06); color: var(--d200,#e8edf2); }
+      .audit-filter-btn.active { background: var(--qa-accent-dim); border-color: rgba(var(--qa-accent-rgb),0.25); color: var(--qa-accent); }
+
+      /* ── Escalation event dot ───────────────────────────────────── */
+      .audit-event-dot.escalation { background: var(--warn); box-shadow: 0 0 0 3px rgba(247,144,9,0.15); }
+      .audit-action-warn { color: var(--warn); }
+
+      /* ── Overturn panel ─────────────────────────────────────────── */
+      .overturn-panel { margin-bottom: 16px; }
+      .overturn-score-row {
+        display: flex; align-items: center; gap: 14px;
+        padding: 14px 16px; background: rgba(0,0,0,0.2);
+        border-radius: 10px; border: 1px solid rgba(255,255,255,0.07);
+        flex-wrap: wrap;
+      }
+      .overturn-score-col { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+      .overturn-input-wrap { display: flex; align-items: center; gap: 4px; }
+      .overturn-score-input {
+        width: 60px; background: var(--d850,#141b24);
+        border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
+        padding: 6px 8px; color: var(--d50); font-family: 'Urbanist', sans-serif;
+        font-size: 18px; font-weight: 800; text-align: center;
+        transition: border-color var(--transition-base);
+      }
+      .overturn-score-input:focus { outline: none; border-color: rgba(var(--qa-accent-rgb),0.4); }
+      .overturn-pct { font-size: 16px; font-weight: 700; color: var(--d300); }
+
+      /* ── Create Dispute modal ───────────────────────────────────── */
+      .modal-box--wide { max-width: 560px; }
+      .create-dispute-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+      .modal-subtitle { font-size: 11px; color: var(--d400); margin-top: 3px; }
+      .modal-close-x { background: none; border: none; color: var(--d500); cursor: pointer; padding: 2px; display: flex; align-items: center; justify-content: center; transition: color var(--transition-fast); flex-shrink: 0; }
+      .modal-close-x:hover { color: var(--d100); }
+      .modal-close-x svg { width: 16px; height: 16px; }
+
+      /* Steps indicator */
+      .cd-steps { display: flex; align-items: center; margin-bottom: 20px; }
+      .cd-step { display: flex; align-items: center; gap: 6px; }
+      .cd-step-num {
+        width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+        border: 1.5px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04);
+        color: var(--d500); font-size: 10px; font-weight: 800;
+        display: flex; align-items: center; justify-content: center;
+        transition: all var(--transition-base);
+      }
+      .cd-step-label { font-size: 11px; font-weight: 600; color: var(--d500); white-space: nowrap; transition: color var(--transition-base); }
+      .cd-step.active .cd-step-num { background: var(--qa-accent); border-color: var(--qa-accent); color: #fff; }
+      .cd-step.active .cd-step-label { color: var(--d100); }
+      .cd-step.done .cd-step-num { background: var(--ok); border-color: var(--ok); color: #fff; }
+      .cd-step.done .cd-step-label { color: var(--ok); }
+      .cd-step-line { flex: 1; height: 1px; background: rgba(255,255,255,0.08); margin: 0 10px; }
+
+      /* Form fields */
+      .cd-field-label { display: block; font-size: 11px; font-weight: 700; color: var(--d300); margin-bottom: 8px; }
+      .cd-field-hint { font-size: 11px; color: var(--d500); margin-bottom: 10px; line-height: 1.55; }
+      .cd-optional { font-weight: 400; color: var(--d600); font-size: 10px; }
+
+      /* Agent search */
+      .cd-search-wrap {
+        display: flex; align-items: center; gap: 8px;
+        background: var(--d850,#141b24); border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 10px; padding: 8px 12px; margin-bottom: 8px;
+        transition: border-color var(--transition-base);
+      }
+      .cd-search-wrap:focus-within { border-color: rgba(var(--qa-accent-rgb),0.35); }
+      .cd-search-wrap svg { width: 14px; height: 14px; color: var(--d500); flex-shrink: 0; }
+      .cd-search-input { flex: 1; background: none; border: none; outline: none; color: var(--d50); font-family: 'Urbanist',sans-serif; font-size: 13px; }
+      .cd-search-input::placeholder { color: var(--d600); }
+      .cd-agent-list { display: flex; flex-direction: column; gap: 3px; max-height: 220px; overflow-y: auto; }
+      .cd-agent-row {
+        display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+        border-radius: 8px; border: 1px solid transparent;
+        background: rgba(255,255,255,0.02); cursor: pointer;
+        text-align: left; font-family: 'Urbanist',sans-serif;
+        transition: all var(--transition-fast); width: 100%;
+      }
+      .cd-agent-row:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.09); }
+      .cd-agent-row.selected { background: var(--qa-accent-dim); border-color: rgba(var(--qa-accent-rgb),0.3); }
+      .cd-agent-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+      .cd-agent-name { font-size: 12px; font-weight: 700; color: var(--d100); }
+      .cd-agent-meta { font-size: 10px; color: var(--d500); }
+
+      /* Selected eval row */
+      .cd-selected-eval { margin-top: 10px; padding: 10px 14px; background: rgba(var(--qa-accent-rgb),0.06); border: 1px solid rgba(var(--qa-accent-rgb),0.2); border-radius: 10px; }
+      .cd-sel-label { font-size: 9px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--qa-accent); margin-bottom: 6px; }
+      .cd-sel-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+      .cd-sel-agent { font-size: 13px; font-weight: 700; color: var(--d50); }
+      .cd-sel-id { font-size: 11px; color: var(--brand); }
+      .cd-sel-score { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px; background: rgba(240,68,56,0.1); color: var(--err); border: 1px solid rgba(240,68,56,0.2); }
+      .cd-sel-clear { margin-left: auto; font-size: 10px; font-weight: 700; color: var(--d500); background: none; border: none; cursor: pointer; font-family: 'Urbanist',sans-serif; transition: color var(--transition-fast); }
+      .cd-sel-clear:hover { color: var(--d200,#e8edf2); }
+
+      /* KPI checkboxes */
+      .cd-kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+      .cd-kpi-check {
+        display: flex; align-items: center; gap: 8px;
+        padding: 9px 12px; border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.02);
+        cursor: pointer; font-size: 12px; font-weight: 600; color: var(--d200,#e8edf2);
+        transition: all var(--transition-fast);
+      }
+      .cd-kpi-check:hover { background: rgba(255,255,255,0.06); }
+      .cd-kpi-check input { accent-color: var(--qa-accent); width: 14px; height: 14px; cursor: pointer; flex-shrink: 0; }
+      .cd-kpi-check:has(input:checked) { background: rgba(var(--qa-accent-rgb),0.08); border-color: rgba(var(--qa-accent-rgb),0.25); color: var(--d50); }
+      .cd-kpi-none { font-size: 11px; color: var(--warn); margin-top: 4px; }
+
+      /* File upload */
+      .cd-upload-zone {
+        display: flex; flex-direction: column; align-items: center; gap: 5px;
+        padding: 16px; border-radius: 10px;
+        border: 1.5px dashed rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.02); cursor: pointer;
+        color: var(--d400); font-size: 12px; font-weight: 600;
+        text-align: center; transition: all var(--transition-base);
+      }
+      .cd-upload-zone:hover { border-color: rgba(var(--qa-accent-rgb),0.3); background: rgba(var(--qa-accent-rgb),0.04); color: var(--d200,#e8edf2); }
+      .cd-upload-zone svg { width: 20px; height: 20px; color: var(--d500); }
+      .cd-upload-hint { font-size: 10px; color: var(--d600); font-weight: 400; }
+      .cd-file-attached { display: flex; align-items: center; gap: 8px; margin-top: 8px; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); font-size: 11px; color: var(--d300); }
+      .cd-file-attached svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+      /* Footer */
+      .cd-footer { display: flex; align-items: center; gap: 8px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.07); }
+
+      /* Success */
+      .cd-success-icon {
+        width: 48px; height: 48px; border-radius: 50%; margin: 0 auto;
+        background: var(--ok-bg); border: 1px solid rgba(23,178,106,0.25);
+        display: flex; align-items: center; justify-content: center;
+      }
+      .cd-success-icon svg { width: 22px; height: 22px; stroke: var(--ok); }
     </style>
 
 
     <!-- Modals HTML -->
+
+    <!-- ── Create Dispute modal ─────────────────────────────────────── -->
+    <div class="modal-overlay" id="createDisputeModal">
+      <div class="modal-box modal-box--wide">
+        <div class="create-dispute-header">
+          <div>
+            <div class="modal-title">New Dispute</div>
+            <p class="modal-subtitle">Submit a quality evaluation dispute on behalf of an agent or from a review finding.</p>
+          </div>
+          <button class="modal-close-x" onclick="closeModal('createDisputeModal')" aria-label="Close">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>
+          </button>
+        </div>
+
+        <!-- Step indicator -->
+        <div class="cd-steps">
+          <div class="cd-step active" id="cdStep1">
+            <span class="cd-step-num">1</span>
+            <span class="cd-step-label">Select evaluation</span>
+          </div>
+          <div class="cd-step-line"></div>
+          <div class="cd-step" id="cdStep2">
+            <span class="cd-step-num">2</span>
+            <span class="cd-step-label">Select KPIs</span>
+          </div>
+          <div class="cd-step-line"></div>
+          <div class="cd-step" id="cdStep3">
+            <span class="cd-step-num">3</span>
+            <span class="cd-step-label">Write rationale</span>
+          </div>
+        </div>
+
+        <!-- Step 1: Select evaluation -->
+        <div class="cd-panel" id="cdPanel1">
+          <label class="cd-field-label">Agent</label>
+          <div class="cd-search-wrap">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="7" cy="7" r="4"/><path d="M10.5 10.5L14 14"/></svg>
+            <input type="text" class="cd-search-input" id="cdAgentSearch" placeholder="Search agent name…" oninput="filterCdAgents(this.value)" autocomplete="off">
+          </div>
+          <div class="cd-agent-list" id="cdAgentList">
+            <button class="cd-agent-row" onclick="selectCdAgent('Omar Ashraf','EVL-4821','64%',this)">
+              <div class="agent-avatar" style="width:28px;height:28px;font-size:9px">OA</div>
+              <div class="cd-agent-info">
+                <span class="cd-agent-name">Omar Ashraf</span>
+                <span class="cd-agent-meta">Latest eval: #EVL-4821 · Score 64% · 3 days ago</span>
+              </div>
+            </button>
+            <button class="cd-agent-row" onclick="selectCdAgent('Mona Hassan','EVL-4812','70%',this)">
+              <div class="agent-avatar" style="width:28px;height:28px;font-size:9px;background:linear-gradient(135deg,#17b26a,#3369ff)">MH</div>
+              <div class="cd-agent-info">
+                <span class="cd-agent-name">Mona Hassan</span>
+                <span class="cd-agent-meta">Latest eval: #EVL-4812 · Score 70% · 1 day ago</span>
+              </div>
+            </button>
+            <button class="cd-agent-row" onclick="selectCdAgent('Tarek Nabil','EVL-4808','74%',this)">
+              <div class="agent-avatar" style="width:28px;height:28px;font-size:9px;background:linear-gradient(135deg,#f79009,#e11d48)">TN</div>
+              <div class="cd-agent-info">
+                <span class="cd-agent-name">Tarek Nabil</span>
+                <span class="cd-agent-meta">Latest eval: #EVL-4808 · Score 74% · 1 day ago</span>
+              </div>
+            </button>
+            <button class="cd-agent-row" onclick="selectCdAgent('Rasha Kamel','EVL-4797','62%',this)">
+              <div class="agent-avatar" style="width:28px;height:28px;font-size:9px;background:linear-gradient(135deg,#0066ff,#6fdfe2)">RK</div>
+              <div class="cd-agent-info">
+                <span class="cd-agent-name">Rasha Kamel</span>
+                <span class="cd-agent-meta">Latest eval: #EVL-4797 · Score 62% · 22h ago</span>
+              </div>
+            </button>
+            <button class="cd-agent-row" onclick="selectCdAgent('Ali Mahmoud','EVL-4792','60%',this)">
+              <div class="agent-avatar" style="width:28px;height:28px;font-size:9px;background:linear-gradient(135deg,#8b4ff4,#3369ff)">AM</div>
+              <div class="cd-agent-info">
+                <span class="cd-agent-name">Ali Mahmoud</span>
+                <span class="cd-agent-meta">Latest eval: #EVL-4792 · Score 60% · 18h ago</span>
+              </div>
+            </button>
+          </div>
+          <div class="cd-selected-eval" id="cdSelectedEval" style="display:none">
+            <div class="cd-sel-label">Selected evaluation</div>
+            <div class="cd-sel-row">
+              <span class="cd-sel-agent" id="cdSelAgentName">—</span>
+              <span class="cd-sel-id" id="cdSelEvalId">—</span>
+              <span class="cd-sel-score" id="cdSelScore">—</span>
+              <button class="cd-sel-clear" onclick="clearCdSelection()">Change</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Select KPIs -->
+        <div class="cd-panel" id="cdPanel2" style="display:none">
+          <label class="cd-field-label">Which KPIs are being contested? <span class="required-star">*</span></label>
+          <p class="cd-field-hint">Select all KPIs that you believe were scored incorrectly in the evaluation.</p>
+          <div class="cd-kpi-grid" id="cdKpiGrid">
+            <label class="cd-kpi-check"><input type="checkbox" value="Empathy & Active Listening"><span>Empathy &amp; Active Listening</span></label>
+            <label class="cd-kpi-check"><input type="checkbox" value="Tone & Professionalism"><span>Tone &amp; Professionalism</span></label>
+            <label class="cd-kpi-check"><input type="checkbox" value="Script Adherence"><span>Script Adherence</span></label>
+            <label class="cd-kpi-check"><input type="checkbox" value="Follow-up Confirmation"><span>Follow-up Confirmation</span></label>
+            <label class="cd-kpi-check"><input type="checkbox" value="Issue Resolution"><span>Issue Resolution</span></label>
+            <label class="cd-kpi-check"><input type="checkbox" value="Product Promotion"><span>Product Promotion</span></label>
+            <label class="cd-kpi-check"><input type="checkbox" value="Survey Promotion"><span>Survey Promotion</span></label>
+            <label class="cd-kpi-check"><input type="checkbox" value="Closure"><span>Closure</span></label>
+          </div>
+          <p class="cd-kpi-none" id="cdKpiNone" style="display:none">Select at least one KPI to continue.</p>
+        </div>
+
+        <!-- Step 3: Write rationale -->
+        <div class="cd-panel" id="cdPanel3" style="display:none">
+          <label class="cd-field-label" for="cdRationale">Written rationale <span class="required-star">*</span></label>
+          <p class="cd-field-hint">Explain why the selected KPI scores are incorrect. Reference timestamps, specific interactions, or policy clauses where relevant.</p>
+          <textarea class="rationale-textarea" id="cdRationale" placeholder="Describe why the evaluation is inaccurate. For example: 'At 02:14 I used the approved empathy phrase twice. The AI may have scored based on the escalation itself rather than my response…'" rows="5" oninput="updateCdCharCount()"></textarea>
+          <div class="rationale-meta-row">
+            <span class="rationale-char-count" id="cdCharCount">0 / 80 min characters</span>
+            <span class="rationale-hint">Required before submitting</span>
+          </div>
+          <label class="cd-field-label" style="margin-top:14px">Supporting evidence <span class="cd-optional">(optional)</span></label>
+          <div class="cd-upload-zone" id="cdUploadZone" onclick="document.getElementById('cdFileInput').click()">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2M8 2v8M5 5l3-3 3 3"/></svg>
+            <span>Upload transcript, screenshot, or supporting file</span>
+            <span class="cd-upload-hint">PDF, PNG, JPG — max 10MB</span>
+          </div>
+          <input type="file" id="cdFileInput" style="display:none" accept=".pdf,.png,.jpg,.jpeg" onchange="handleCdFileSelect(this)">
+          <div class="cd-file-attached" id="cdFileAttached" style="display:none">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2z"/><polyline points="9,2 9,6 14,6"/></svg>
+            <span id="cdFileName">—</span>
+            <span class="evidence-tag">Attached</span>
+            <button class="cd-sel-clear" onclick="removeCdFile()">Remove</button>
+          </div>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="cd-footer">
+          <button class="modal-cancel" id="cdBackBtn" onclick="cdBack()" style="display:none">Back</button>
+          <button class="modal-cancel" onclick="closeModal('createDisputeModal')">Cancel</button>
+          <button class="modal-confirm" id="cdNextBtn" onclick="cdNext()" disabled>Select an evaluation</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Create Dispute success state ────────────────────────────── -->
+    <div class="modal-overlay" id="createDisputeSuccessModal">
+      <div class="modal-box">
+        <div class="cd-success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="5,12 10,17 19,7"/></svg>
+        </div>
+        <div class="modal-title" style="text-align:center;margin-top:12px">Dispute submitted</div>
+        <div class="modal-body" style="text-align:center">
+          Dispute for <strong id="successAgentName">—</strong> has been submitted and added to the auditor queue. The agent will be notified when a decision is reached.
+        </div>
+        <div class="modal-actions" style="justify-content:center">
+          <button class="modal-confirm" onclick="closeModal('createDisputeSuccessModal');closeModal('createDisputeModal')">Done</button>
+        </div>
+      </div>
+    </div>
+
     <div class="modal-overlay" id="confirmModal">
       <div class="modal-box">
         <div class="modal-title">Confirm Decision</div>
@@ -6987,16 +7397,16 @@
       'use strict';
 
       var DISPUTES = {
-        d2: { agent:'Sara Mostafa', evalId:'EVL-4799', status:'pending', sla:'+26h overdue', kpis:['Survey Promotion'], score:68, time:'2 days ago', rationale:'The survey promotion was attempted twice at the beginning of the call. The AI may not have captured the second attempt at 04:22 which was explicit and followed the approved script.', aiRationale:'No survey promotion language detected within the first 5 minutes of the call. Standard practice requires promotion within the opening 3 minutes.', confidence:'79%' },
-        d3: { agent:'Khaled Riad', evalId:'EVL-4780', status:'in_review', sla:'+12h overdue', kpis:['Product Promotion','Script Adherence','Closure'], score:55, time:'2 days ago', rationale:'Multiple scores appear to be evaluated against the incorrect interaction type. This was a follow-up call, not an initial contact, and the script differs significantly. Product promotion is not required on follow-up calls per Policy v3.2.', aiRationale:'Agent failed to adhere to the standard opening script and did not promote products or confirm issue closure within the required timeframe.', confidence:'72%' },
-        d4: { agent:'Mona Hassan', evalId:'EVL-4812', status:'in_review', sla:null, kpis:['Empathy','Tone'], score:70, time:'1 day ago', rationale:'The empathy and tone scores do not reflect the full conversation. The customer became very emotional at the end and I responded with empathy phrases throughout the final 4 minutes, which the AI appears to have not captured.', aiRationale:'Tone shifted to transactional during customer distress moments. Empathy language absent in minutes 3 to 7 of the call.', confidence:'81%' },
-        d5: { agent:'Tarek Nabil', evalId:'EVL-4808', status:'in_review', sla:null, kpis:['Follow-up Confirmation'], score:74, time:'1 day ago', rationale:'I sent a follow-up confirmation email within 2 hours of the chat closing. The evaluation appears to have only assessed the in-chat interaction and did not account for the post-chat email confirmation.', aiRationale:'No follow-up confirmation phrase detected in the chat interaction transcript.', confidence:'85%' },
-        d6: { agent:'Rasha Kamel', evalId:'EVL-4797', status:'in_review', sla:null, kpis:['Script Adherence'], score:62, time:'22 hours ago', rationale:'The script I was using was the updated version from Feb 2026. The evaluation appears to be using the old script as a reference. The updated script has different opening and closing requirements.', aiRationale:'Opening greeting did not match the approved script template. Standard deviation detected in 3 required phrases.', confidence:'76%' },
-        d7: { agent:'Ali Mahmoud', evalId:'EVL-4792', status:'in_review', sla:null, kpis:['Closure','Product Promotion'], score:60, time:'18 hours ago', rationale:'The customer ended the call abruptly before I could complete the standard closure. For product promotion, the customer explicitly stated they did not want any offers, and promoting in this case would have been against the opt-out policy.', aiRationale:'Call closure script not completed. Product promotion not recorded during the interaction.', confidence:'77%' },
-        d8: { agent:'Hana Youssef', evalId:'EVL-4831', status:'pending', sla:null, kpis:['Empathy'], score:65, time:'8 hours ago', rationale:'The empathy score is too low. I acknowledged the customer\u2019s situation multiple times and the customer thanked me at the end of the interaction. The AI may have missed the verbal acknowledgments in the call.', aiRationale:'Empathy indicators not detected at expected frequency during customer frustration moments.', confidence:'80%' },
-        d9: { agent:'Faris Adel', evalId:'EVL-4829', status:'pending', sla:null, kpis:['Survey Promotion','Follow-up Confirmation'], score:58, time:'5 hours ago', rationale:'Survey was promoted at 01:45. Follow-up confirmation was given both verbally and I left a note in the ticket. The AI evaluation may not have access to the ticket notes.', aiRationale:'Survey promotion not detected in transcript. Follow-up confirmation absent from interaction.', confidence:'83%' },
-        d10: { agent:'Dina Fouad', evalId:'EVL-4827', status:'pending', sla:null, kpis:['Script Adherence'], score:66, time:'3 hours ago', rationale:'I was on a coached escalation call. My supervisor was listening. The script was followed as trained. I can provide the supervisor\u2019s notes confirming adherence if needed.', aiRationale:'Script deviation detected in the middle section of the interaction. Standard phrases not found.', confidence:'74%' },
-        d11: { agent:'Samy Gamal', evalId:'EVL-4825', status:'pending', sla:null, kpis:['Tone','Closure'], score:63, time:'1 hour ago', rationale:'The customer was very hostile throughout the call. I remained professional despite provocation. Tone should be evaluated relative to the context of the interaction, not in isolation.', aiRationale:'Tone flagged as substandard in 2 segments. Closure phrase not confirmed before call end.', confidence:'78%' }
+        d2: { agent:'Sara Mostafa', evalId:'EVL-4799', status:'pending', sla:'+26h overdue', kpis:['Survey Promotion'], score:68, time:'2 days ago', auditor:'Unassigned', rationale:'The survey promotion was attempted twice at the beginning of the call. The AI may not have captured the second attempt at 04:22 which was explicit and followed the approved script.', aiRationale:'No survey promotion language detected within the first 5 minutes of the call. Standard practice requires promotion within the opening 3 minutes.', confidence:'79%' },
+        d3: { agent:'Khaled Riad', evalId:'EVL-4780', status:'in_review', sla:'+12h overdue', kpis:['Product Promotion','Script Adherence','Closure'], score:55, time:'2 days ago', auditor:'Ahmed Salah', rationale:'Multiple scores appear to be evaluated against the incorrect interaction type. This was a follow-up call, not an initial contact, and the script differs significantly. Product promotion is not required on follow-up calls per Policy v3.2.', aiRationale:'Agent failed to adhere to the standard opening script and did not promote products or confirm issue closure within the required timeframe.', confidence:'72%' },
+        d4: { agent:'Mona Hassan', evalId:'EVL-4812', status:'in_review', sla:null, kpis:['Empathy','Tone'], score:70, time:'1 day ago', auditor:'Layla Ibrahim', rationale:'The empathy and tone scores do not reflect the full conversation. The customer became very emotional at the end and I responded with empathy phrases throughout the final 4 minutes, which the AI appears to have not captured.', aiRationale:'Tone shifted to transactional during customer distress moments. Empathy language absent in minutes 3 to 7 of the call.', confidence:'81%' },
+        d5: { agent:'Tarek Nabil', evalId:'EVL-4808', status:'in_review', sla:null, kpis:['Follow-up Confirmation'], score:74, time:'1 day ago', auditor:'Ahmed Salah', rationale:'I sent a follow-up confirmation email within 2 hours of the chat closing. The evaluation appears to have only assessed the in-chat interaction and did not account for the post-chat email confirmation.', aiRationale:'No follow-up confirmation phrase detected in the chat interaction transcript.', confidence:'85%' },
+        d6: { agent:'Rasha Kamel', evalId:'EVL-4797', status:'in_review', sla:null, kpis:['Script Adherence'], score:62, time:'22 hours ago', auditor:'Nadia Fathy', rationale:'The script I was using was the updated version from Feb 2026. The evaluation appears to be using the old script as a reference. The updated script has different opening and closing requirements.', aiRationale:'Opening greeting did not match the approved script template. Standard deviation detected in 3 required phrases.', confidence:'76%' },
+        d7: { agent:'Ali Mahmoud', evalId:'EVL-4792', status:'in_review', sla:null, kpis:['Closure','Product Promotion'], score:60, time:'18 hours ago', auditor:'Layla Ibrahim', rationale:'The customer ended the call abruptly before I could complete the standard closure. For product promotion, the customer explicitly stated they did not want any offers, and promoting in this case would have been against the opt-out policy.', aiRationale:'Call closure script not completed. Product promotion not recorded during the interaction.', confidence:'77%' },
+        d8: { agent:'Hana Youssef', evalId:'EVL-4831', status:'pending', sla:null, kpis:['Empathy'], score:65, time:'8 hours ago', auditor:'Unassigned', rationale:'The empathy score is too low. I acknowledged the customer\u2019s situation multiple times and the customer thanked me at the end of the interaction. The AI may have missed the verbal acknowledgments in the call.', aiRationale:'Empathy indicators not detected at expected frequency during customer frustration moments.', confidence:'80%' },
+        d9: { agent:'Faris Adel', evalId:'EVL-4829', status:'pending', sla:null, kpis:['Survey Promotion','Follow-up Confirmation'], score:58, time:'5 hours ago', auditor:'Unassigned', rationale:'Survey was promoted at 01:45. Follow-up confirmation was given both verbally and I left a note in the ticket. The AI evaluation may not have access to the ticket notes.', aiRationale:'Survey promotion not detected in transcript. Follow-up confirmation absent from interaction.', confidence:'83%' },
+        d10: { agent:'Dina Fouad', evalId:'EVL-4827', status:'pending', sla:null, kpis:['Script Adherence'], score:66, time:'3 hours ago', auditor:'Unassigned', rationale:'I was on a coached escalation call. My supervisor was listening. The script was followed as trained. I can provide the supervisor\u2019s notes confirming adherence if needed.', aiRationale:'Script deviation detected in the middle section of the interaction. Standard phrases not found.', confidence:'74%' },
+        d11: { agent:'Samy Gamal', evalId:'EVL-4825', status:'pending', sla:null, kpis:['Tone','Closure'], score:63, time:'1 hour ago', auditor:'Unassigned', rationale:'The customer was very hostile throughout the call. I remained professional despite provocation. Tone should be evaluated relative to the context of the interaction, not in isolation.', aiRationale:'Tone flagged as substandard in 2 segments. Closure phrase not confirmed before call end.', confidence:'78%' }
       };
 
       /* ── Active state ─────────── */
@@ -7026,9 +7436,23 @@
         if(d.sla){ slaBadge.style.display=''; slaBadge.textContent = d.sla + ' \u2014 SLA Breach'; }
         else { slaBadge.style.display='none'; }
         document.getElementById('generic-title').innerHTML = d.agent + ' \u2014 Evaluation <span class="eval-id-link">#' + d.evalId + '</span>';
-        document.getElementById('generic-meta').textContent = 'Submitted ' + d.time + ' \u00b7 Chat Interaction';
+        var auditorLabel = d.auditor && d.auditor !== 'Unassigned' ? 'Auditor: ' + d.auditor : 'Unassigned';
+        document.getElementById('generic-meta').textContent = 'Submitted ' + d.time + ' \u00b7 Chat Interaction \u00b7 ' + auditorLabel;
+        // Score summary row
+        var scorePct = d.score;
+        var scoreColor = scorePct < 60 ? 'var(--err)' : scorePct < 75 ? 'var(--warn)' : 'var(--ok)';
+        var summaryEl = document.getElementById('generic-score-summary');
+        if(summaryEl) {
+          summaryEl.innerHTML =
+            '<div class="eval-summary-stat"><span class="ess-label">Overall Score</span><span class="ess-value" style="color:' + scoreColor + '">' + scorePct + '%</span><span class="ess-target">Target: 80%</span></div>' +
+            '<div class="eval-summary-stat"><span class="ess-label">Pass Rate</span><span class="ess-value warn">' + d.kpis.length + '/' + (d.kpis.length + 3) + ' KPIs</span></div>' +
+            '<div class="eval-summary-stat"><span class="ess-label">Contested</span><span class="ess-value neutral">' + d.kpis.length + ' KPI' + (d.kpis.length > 1 ? 's' : '') + '</span></div>';
+        }
         document.getElementById('generic-score').textContent = d.score + '%';
+        var confPct = parseInt(d.confidence);
+        var confCls = confPct < 75 ? 'low' : '';
         document.getElementById('generic-confidence').textContent = d.confidence + ' confidence';
+        document.getElementById('generic-confidence').className = 'ai-confidence-pill ' + confCls;
         document.getElementById('generic-ai-rationale').textContent = d.aiRationale;
         document.getElementById('generic-kpi-count').textContent = d.kpis.length + ' KPI' + (d.kpis.length > 1 ? 's' : '') + ' contested';
         var parts = d.agent.split(' ');
@@ -7041,8 +7465,10 @@
         pillsEl.innerHTML = d.kpis.map(function(k){ return '<span class="contested-kpi-pill">' + k + '</span>'; }).join('');
         var score = d.score;
         var kpiList = document.getElementById('generic-kpi-list');
-        kpiList.innerHTML = d.kpis.map(function(k){
-          var pct = Math.floor(score * 0.6 + Math.random() * 20);
+        // deterministic score per KPI based on hash of name + overall score
+        kpiList.innerHTML = d.kpis.map(function(k, idx){
+          var seed = score + idx * 7 + k.length * 3;
+          var pct = Math.min(Math.floor(seed % 40 + 25), 100);
           var cls = pct < 50 ? 'fail' : pct < 70 ? 'warn' : 'pass';
           return '<div class="kpi-item kpi-contested"><div class="kpi-item-left"><span class="contested-marker">Contested</span><span class="kpi-name">' + k + '</span></div><div class="kpi-item-right"><div class="kpi-bar-track"><div class="kpi-bar-fill ' + cls + '" style="width:' + pct + '%"></div></div><span class="kpi-score ' + cls + '">' + pct + '%</span></div></div>';
         }).join('');
@@ -7053,8 +7479,9 @@
         var adjList = document.getElementById('generic-adjuster-list');
         (function buildAdjusters() {
           var rows = d.kpis.map(function(k, i) {
-            var was = Math.floor(score * 0.6 + Math.random() * 15);
-            var newVal = was + 30;
+            var seed = score + i * 7 + k.length * 3;
+            var was = Math.min(Math.floor(seed % 40 + 25), 100);
+            var newVal = Math.min(was + 30, 95);
             return '<div class="kpi-adjuster-row">' +
               '<div class="kpi-adjuster-name">' +
                 '<input type="checkbox" class="kpi-adj-check" id="gadj-' + i + '" checked>' +
@@ -7080,6 +7507,9 @@
           if(t.dataset.decision === 'partial') t.classList.add('active');
         });
         document.getElementById('partialPanel-generic').style.display = '';
+        // Show/hide reassign button based on status
+        var reassignBtn = document.querySelector('#detail-generic .reassign-btn');
+        if(reassignBtn) reassignBtn.style.display = (d.status === 'in_review' || d.sla) ? '' : 'none';
       }
 
       /* ── Decision tabs ──────── */
@@ -7089,8 +7519,34 @@
         el.classList.add('active');
         currentDecision[id] = type;
         var partialPanel = document.getElementById('partialPanel-' + id);
+        var overturnPanel = document.getElementById('overturnPanel-' + id);
         if(partialPanel) partialPanel.style.display = type === 'partial' ? '' : 'none';
+        if(overturnPanel) {
+          overturnPanel.style.display = type === 'overturn' ? '' : 'none';
+          // Populate original score from before-score element
+          if(type === 'overturn') {
+            var beforeEl = document.getElementById('beforeScore-' + id);
+            var beforeTxt = beforeEl ? beforeEl.textContent : '';
+            var beforePct = document.getElementById('overturnBefore-' + id);
+            if(beforePct && beforeTxt) beforePct.textContent = beforeTxt;
+            updateOverturnPreview(id);
+          }
+        }
         checkRationaleLength(id);
+      };
+
+      /* ── Overturn score preview ──────── */
+      window.updateOverturnPreview = function(id) {
+        var input = document.getElementById('overturnInput-' + id);
+        var deltaEl = document.getElementById('overturnDelta-' + id);
+        var beforeEl = document.getElementById('beforeScore-' + id);
+        if(!input || !deltaEl) return;
+        var newVal = parseInt(input.value) || 0;
+        var baseStr = beforeEl ? beforeEl.textContent : '0%';
+        var base = parseInt(baseStr) || 0;
+        var delta = newVal - base;
+        deltaEl.textContent = (delta >= 0 ? '+' : '') + delta + '%';
+        deltaEl.style.color = delta >= 0 ? 'var(--ok)' : 'var(--err)';
       };
 
       /* ── Score preview ──────── */
@@ -7620,6 +8076,183 @@
       if(firstRow){ firstRow.setAttribute('aria-selected','true'); firstRow.classList.add('selected'); }
 
     })();
+
+    /* ══ CREATE DISPUTE MODAL ════════════════════════════════════════════ */
+    (function(){
+      var cdStep = 1;
+      var cdData = { agentName: '', evalId: '', score: '' };
+
+      window.openCreateDisputeModal = function() {
+        cdStep = 1;
+        cdData = { agentName: '', evalId: '', score: '' };
+        showCdPanel(1);
+        updateCdFooter();
+        document.getElementById('createDisputeModal').classList.add('open');
+      };
+
+      function showCdPanel(step) {
+        [1,2,3].forEach(function(n){
+          var panel = document.getElementById('cdPanel' + n);
+          if(panel) panel.style.display = n === step ? '' : 'none';
+          var stepEl = document.getElementById('cdStep' + n);
+          if(stepEl){
+            stepEl.classList.remove('active','done');
+            if(n === step) stepEl.classList.add('active');
+            else if(n < step) stepEl.classList.add('done');
+          }
+        });
+      }
+
+      window.cdNext = function() {
+        if(cdStep === 1) {
+          if(!cdData.agentName) return;
+          cdStep = 2;
+          showCdPanel(2);
+          updateCdFooter();
+        } else if(cdStep === 2) {
+          var checked = document.querySelectorAll('#cdKpiGrid input:checked');
+          if(checked.length === 0){
+            document.getElementById('cdKpiNone').style.display = '';
+            return;
+          }
+          document.getElementById('cdKpiNone').style.display = 'none';
+          cdStep = 3;
+          showCdPanel(3);
+          updateCdFooter();
+        } else if(cdStep === 3) {
+          var rationale = document.getElementById('cdRationale').value.trim();
+          if(rationale.length < 80) return;
+          submitCdDispute();
+        }
+      };
+
+      window.cdBack = function() {
+        cdStep = Math.max(1, cdStep - 1);
+        showCdPanel(cdStep);
+        updateCdFooter();
+      };
+
+      function updateCdFooter() {
+        var nextBtn = document.getElementById('cdNextBtn');
+        var backBtn = document.getElementById('cdBackBtn');
+        backBtn.style.display = cdStep > 1 ? '' : 'none';
+        if(cdStep === 1){
+          nextBtn.textContent = cdData.agentName ? 'Select KPIs \u2192' : 'Select an evaluation';
+          nextBtn.disabled = !cdData.agentName;
+        } else if(cdStep === 2){
+          var checked = document.querySelectorAll('#cdKpiGrid input:checked');
+          nextBtn.textContent = checked.length > 0 ? 'Write rationale \u2192' : 'Select at least one KPI';
+          nextBtn.disabled = checked.length === 0;
+        } else {
+          var len = (document.getElementById('cdRationale').value||'').trim().length;
+          nextBtn.textContent = len >= 80 ? 'Submit dispute' : 'Add rationale (min 80 chars)';
+          nextBtn.disabled = len < 80;
+        }
+      }
+
+      window.selectCdAgent = function(name, evalId, score, el) {
+        document.querySelectorAll('.cd-agent-row').forEach(function(r){ r.classList.remove('selected'); });
+        el.classList.add('selected');
+        cdData = { agentName: name, evalId: '#' + evalId, score: score };
+        document.getElementById('cdSelAgentName').textContent = name;
+        document.getElementById('cdSelEvalId').textContent = '#' + evalId;
+        document.getElementById('cdSelScore').textContent = score;
+        document.getElementById('cdSelectedEval').style.display = '';
+        updateCdFooter();
+      };
+
+      window.clearCdSelection = function() {
+        document.querySelectorAll('.cd-agent-row').forEach(function(r){ r.classList.remove('selected'); });
+        cdData = { agentName: '', evalId: '', score: '' };
+        document.getElementById('cdSelectedEval').style.display = 'none';
+        updateCdFooter();
+      };
+
+      window.filterCdAgents = function(q) {
+        var rows = document.querySelectorAll('.cd-agent-row');
+        rows.forEach(function(row){
+          var name = row.querySelector('.cd-agent-name').textContent.toLowerCase();
+          row.style.display = (!q || name.indexOf(q.toLowerCase()) !== -1) ? '' : 'none';
+        });
+      };
+
+      window.updateCdCharCount = function() {
+        var ta = document.getElementById('cdRationale');
+        var count = document.getElementById('cdCharCount');
+        var len = ta.value.trim().length;
+        count.textContent = len + ' / 80 min characters';
+        count.className = 'rationale-char-count' + (len >= 80 ? ' met' : '');
+        updateCdFooter();
+      };
+
+      window.handleCdFileSelect = function(input) {
+        if(!input.files || !input.files[0]) return;
+        var file = input.files[0];
+        document.getElementById('cdFileName').textContent = file.name;
+        document.getElementById('cdFileAttached').style.display = '';
+        document.getElementById('cdUploadZone').style.display = 'none';
+      };
+
+      window.removeCdFile = function() {
+        document.getElementById('cdFileInput').value = '';
+        document.getElementById('cdFileAttached').style.display = 'none';
+        document.getElementById('cdUploadZone').style.display = '';
+      };
+
+      // Wire KPI checkboxes to update footer
+      document.querySelectorAll('#cdKpiGrid input').forEach(function(c){
+        c.addEventListener('change', function(){
+          document.getElementById('cdKpiNone').style.display = 'none';
+          updateCdFooter();
+        });
+      });
+
+      function submitCdDispute() {
+        var checked = Array.from(document.querySelectorAll('#cdKpiGrid input:checked')).map(function(c){ return c.value; });
+        closeModal('createDisputeModal');
+        document.getElementById('successAgentName').textContent = cdData.agentName;
+        document.getElementById('createDisputeSuccessModal').classList.add('open');
+        // Add to audit trail
+        var timeline = document.getElementById('auditTimeline');
+        if(timeline){
+          var evt = document.createElement('div');
+          evt.className = 'audit-event';
+          evt.setAttribute('data-event-type','submission');
+          evt.style.animation = 'fadeSlideUp 300ms ease both';
+          evt.innerHTML =
+            '<div class="audit-event-dot submission"></div>' +
+            '<div class="audit-event-content">' +
+              '<div class="audit-event-top">' +
+                '<span class="audit-actor">Admin <span class="audit-role">Admin</span></span>' +
+                '<span class="audit-action">Dispute submitted</span>' +
+                '<span class="audit-time">Just now</span>' +
+              '</div>' +
+              '<p class="audit-event-detail">' + cdData.evalId + ' \u00b7 ' + cdData.agentName + ' \u00b7 ' + checked.join(', ') + ' contested.</p>' +
+            '</div>';
+          timeline.insertBefore(evt, timeline.firstChild);
+        }
+        // Update open count
+        var countEl = document.getElementById('openCount');
+        if(countEl){ var n = parseInt(countEl.textContent) + 1; countEl.textContent = n + ' open'; }
+        showDispToast({ title: 'Dispute submitted for ' + cdData.agentName, sub: 'Added to auditor queue \u00b7 Audit trail updated', type: 'ok' });
+      }
+    })();
+
+    /* ══ AUDIT TRAIL FILTER ═══════════════════════════════════════════════ */
+    window.setAuditFilter = function(filter, el) {
+      document.querySelectorAll('.audit-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+      el.classList.add('active');
+      var events = document.querySelectorAll('#auditTimeline .audit-event');
+      events.forEach(function(evt){
+        var type = evt.getAttribute('data-event-type');
+        var show = false;
+        if(filter === 'all') show = true;
+        else if(filter === 'decision') show = (type === 'decision');
+        else if(filter === 'sla') show = (type === 'sla' || type === 'escalation');
+        else if(filter === 'submission') show = (type === 'submission' || type === 'review');
+        evt.style.display = show ? '' : 'none';
+      });
+    };
     </script>
 
 </body>
