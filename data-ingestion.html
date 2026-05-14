@@ -4383,45 +4383,334 @@
         </div>
       </div>
 
-      <div class="app-main">
-        <div class="coming-soon-wrap">
-          <div class="coming-soon-inner">
-            <svg class="coming-soon-svg" viewBox="0 0 240 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g opacity="0.18">
-                <circle cx="20" cy="20" r="1.5" fill="#8b9aaa"/><circle cx="60" cy="20" r="1.5" fill="#8b9aaa"/><circle cx="100" cy="20" r="1.5" fill="#8b9aaa"/><circle cx="140" cy="20" r="1.5" fill="#8b9aaa"/><circle cx="180" cy="20" r="1.5" fill="#8b9aaa"/><circle cx="220" cy="20" r="1.5" fill="#8b9aaa"/>
-                <circle cx="20" cy="60" r="1.5" fill="#8b9aaa"/><circle cx="60" cy="60" r="1.5" fill="#8b9aaa"/><circle cx="100" cy="60" r="1.5" fill="#8b9aaa"/><circle cx="140" cy="60" r="1.5" fill="#8b9aaa"/><circle cx="180" cy="60" r="1.5" fill="#8b9aaa"/><circle cx="220" cy="60" r="1.5" fill="#8b9aaa"/>
-                <circle cx="20" cy="100" r="1.5" fill="#8b9aaa"/><circle cx="60" cy="100" r="1.5" fill="#8b9aaa"/><circle cx="100" cy="100" r="1.5" fill="#8b9aaa"/><circle cx="140" cy="100" r="1.5" fill="#8b9aaa"/><circle cx="180" cy="100" r="1.5" fill="#8b9aaa"/><circle cx="220" cy="100" r="1.5" fill="#8b9aaa"/>
-                <circle cx="20" cy="140" r="1.5" fill="#8b9aaa"/><circle cx="60" cy="140" r="1.5" fill="#8b9aaa"/><circle cx="100" cy="140" r="1.5" fill="#8b9aaa"/><circle cx="140" cy="140" r="1.5" fill="#8b9aaa"/><circle cx="180" cy="140" r="1.5" fill="#8b9aaa"/><circle cx="220" cy="140" r="1.5" fill="#8b9aaa"/>
-                <circle cx="20" cy="180" r="1.5" fill="#8b9aaa"/><circle cx="60" cy="180" r="1.5" fill="#8b9aaa"/><circle cx="100" cy="180" r="1.5" fill="#8b9aaa"/><circle cx="140" cy="180" r="1.5" fill="#8b9aaa"/><circle cx="180" cy="180" r="1.5" fill="#8b9aaa"/><circle cx="220" cy="180" r="1.5" fill="#8b9aaa"/>
-              </g>
-              <rect x="55" y="55" width="130" height="90" rx="12" stroke="rgba(139,79,244,0.35)" stroke-width="1.5" fill="rgba(20,27,36,0.6)" stroke-dasharray="6 4"/>
-              <rect x="72" y="78" width="60" height="8" rx="4" fill="rgba(255,255,255,0.06)"/>
-              <rect x="72" y="94" width="96" height="6" rx="3" fill="rgba(255,255,255,0.04)"/>
-              <rect x="72" y="108" width="80" height="6" rx="3" fill="rgba(255,255,255,0.04)"/>
-              <rect x="72" y="122" width="48" height="6" rx="3" fill="rgba(255,255,255,0.03)"/>
-              <g transform="translate(107, 34)">
-                <circle cx="13" cy="13" r="13" fill="rgba(139,79,244,0.12)" stroke="rgba(139,79,244,0.3)" stroke-width="1"/>
-                <path d="M13 7.5L14.5 11.5L18.5 13L14.5 14.5L13 18.5L11.5 14.5L7.5 13L11.5 11.5Z" fill="none" stroke="url(#cs-grad)" stroke-width="1.5" stroke-linejoin="round"/>
-              </g>
-              <circle cx="55" cy="55" r="3" fill="rgba(139,79,244,0.5)"/>
-              <circle cx="185" cy="55" r="3" fill="rgba(111,223,226,0.4)"/>
-              <circle cx="55" cy="145" r="3" fill="rgba(51,105,255,0.4)"/>
-              <circle cx="185" cy="145" r="3" fill="rgba(139,79,244,0.3)"/>
-              <defs>
-                <linearGradient id="cs-grad" x1="7.5" y1="7.5" x2="18.5" y2="18.5" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="#0066FF"/><stop offset="0.5" stop-color="#61ADF1"/><stop offset="1" stop-color="#6FDFE2"/>
-                </linearGradient>
-              </defs>
-            </svg>
-            <p class="coming-soon-label">Coming Soon</p>
-            <h2 class="coming-soon-title">Data</h2>
-            <p class="coming-soon-desc">Pipeline health monitor and data source configuration — track ingestion sources, sync status, voice file uploads, and data freshness across all connected systems.</p>
-            <div class="coming-soon-jira">RD-1516</div>
+      <div class="app-main" id="appMain">
+
+        <!-- ════ DATA INGESTION ════════════════════════════════════════════ -->
+        <div class="di-surface" id="diSurface">
+
+          <!-- ── PAGE HEADER ─────────────────────────────────────────── -->
+          <div class="di-page-header">
+            <div class="di-page-header-left">
+              <h1 class="di-page-title">Data Ingestion</h1>
+              <span class="di-page-sub">Pipeline health &amp; source management</span>
+            </div>
+            <div class="di-page-header-right">
+              <button class="di-btn di-btn-ghost di-btn-sm" onclick="diOpenWizard()">
+                <svg viewBox="0 0 14 14" fill="none" width="12" height="12"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                Add source
+              </button>
+            </div>
+          </div>
+
+          <!-- ── PIPELINE HEALTH STRIP ───────────────────────────────── -->
+          <div class="di-health-strip">
+            <div class="di-src-cards" id="diSrcCards">
+
+              <button class="di-src-card di-src-selected" data-src="zendesk" onclick="diSelectSrc('zendesk',this)">
+                <div class="di-sc-row">
+                  <div class="di-sc-left">
+                    <div class="di-sc-icon ic-zendesk">
+                      <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M8 3.5C5.515 3.5 3.5 5.515 3.5 8S5.515 12.5 8 12.5 12.5 10.485 12.5 8 10.485 3.5 8 3.5zm0 7a.5.5 0 110-1 .5.5 0 010 1zm.5-2.5h-1V5.5h1V8z" fill="currentColor"/></svg>
+                    </div>
+                    <div>
+                      <div class="di-sc-name">Zendesk</div>
+                      <div class="di-sc-url">api.yourco.zendesk.com</div>
+                    </div>
+                  </div>
+                  <span class="di-sc-pill pill-active"><span class="di-pill-dot"></span>Active</span>
+                </div>
+                <div class="di-sc-metrics">
+                  <div class="di-sc-metric">
+                    <span class="di-sc-metric-val">2,847</span>
+                    <span class="di-sc-metric-lbl">interactions / 24h</span>
+                  </div>
+                  <div class="di-sc-metric di-sc-metric-right">
+                    <span class="di-sc-metric-val">4m</span>
+                    <span class="di-sc-metric-lbl">last sync</span>
+                  </div>
+                </div>
+                <div class="di-sc-freshbar fresh"></div>
+              </button>
+
+              <button class="di-src-card" data-src="freshdesk" onclick="diSelectSrc('freshdesk',this)">
+                <div class="di-sc-row">
+                  <div class="di-sc-left">
+                    <div class="di-sc-icon ic-freshdesk">
+                      <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><rect x="2.5" y="2.5" width="11" height="11" rx="2.5" stroke="currentColor" stroke-width="1.2" opacity=".5"/><path d="M5 8h6M5 5.5h6M5 10.5h4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+                    </div>
+                    <div>
+                      <div class="di-sc-name">Freshdesk</div>
+                      <div class="di-sc-url">yourco.freshdesk.com</div>
+                    </div>
+                  </div>
+                  <span class="di-sc-pill pill-warn"><span class="di-pill-dot"></span>Stale</span>
+                </div>
+                <div class="di-sc-metrics">
+                  <div class="di-sc-metric">
+                    <span class="di-sc-metric-val">614</span>
+                    <span class="di-sc-metric-lbl">interactions / 24h</span>
+                  </div>
+                  <div class="di-sc-metric di-sc-metric-right">
+                    <span class="di-sc-metric-val" style="color:var(--warn)">3h</span>
+                    <span class="di-sc-metric-lbl">last sync</span>
+                  </div>
+                </div>
+                <div class="di-sc-freshbar stale"></div>
+              </button>
+
+              <button class="di-src-card" data-src="s3" onclick="diSelectSrc('s3',this)">
+                <div class="di-sc-row">
+                  <div class="di-sc-left">
+                    <div class="di-sc-icon ic-s3">
+                      <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M2 12l3.5-7 3 4.5 2.5-3.5 3 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <div>
+                      <div class="di-sc-name">S3 Voice</div>
+                      <div class="di-sc-url">qa-voice-bucket</div>
+                    </div>
+                  </div>
+                  <span class="di-sc-pill pill-error"><span class="di-pill-dot"></span>Error</span>
+                </div>
+                <div class="di-sc-metrics">
+                  <div class="di-sc-metric">
+                    <span class="di-sc-metric-val" style="color:var(--err)">3 errors</span>
+                    <span class="di-sc-metric-lbl">in 24h</span>
+                  </div>
+                  <div class="di-sc-metric di-sc-metric-right">
+                    <span class="di-sc-metric-val" style="color:var(--err)">22m</span>
+                    <span class="di-sc-metric-lbl">last attempt</span>
+                  </div>
+                </div>
+                <div class="di-sc-freshbar bar-error"></div>
+              </button>
+
+              <button class="di-src-card" data-src="connect" onclick="diSelectSrc('connect',this)">
+                <div class="di-sc-row">
+                  <div class="di-sc-left">
+                    <div class="di-sc-icon ic-connect">
+                      <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><circle cx="8" cy="8" r="2" fill="currentColor"/><path d="M8 2v2.5M8 11.5V14M2 8h2.5M11.5 8H14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                    </div>
+                    <div>
+                      <div class="di-sc-name">AiMY Connect</div>
+                      <div class="di-sc-url">Internal</div>
+                    </div>
+                  </div>
+                  <span class="di-sc-pill pill-active"><span class="di-pill-dot"></span>Active</span>
+                </div>
+                <div class="di-sc-metrics">
+                  <div class="di-sc-metric">
+                    <span class="di-sc-metric-val">1,203</span>
+                    <span class="di-sc-metric-lbl">interactions / 24h</span>
+                  </div>
+                  <div class="di-sc-metric di-sc-metric-right">
+                    <span class="di-sc-metric-val">1m</span>
+                    <span class="di-sc-metric-lbl">last sync</span>
+                  </div>
+                </div>
+                <div class="di-sc-freshbar fresh"></div>
+              </button>
+
+            </div>
+          </div>
+
+          <!-- ── BODY ────────────────────────────────────────────────── -->
+          <div class="di-body">
+
+            <!-- LEFT NAV PANEL ──────────────────────────────────────── -->
+            <div class="di-left-nav">
+              <div class="di-nav-section">
+                <div class="di-nav-label">Actions</div>
+                <button class="di-nav-item di-nav-active" data-tab="upload" onclick="diTab('upload',this)">
+                  <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M8 10V4M8 4L5 7M8 4l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12v1a1 1 0 001 1h8a1 1 0 001-1v-1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                  Upload files
+                </button>
+                <button class="di-nav-item" data-tab="history" onclick="diTab('history',this)">
+                  <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 5.5V8l2 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Upload history
+                </button>
+              </div>
+              <div class="di-nav-section">
+                <div class="di-nav-label">Sources</div>
+                <div id="diNavSources">
+                  <button class="di-nav-item di-nav-src di-nav-src-active" data-src="zendesk" data-tab="sourcedetail" onclick="diTab('sourcedetail',this);diSelectSrc('zendesk',null)">
+                    <span class="di-nav-src-dot dot-active"></span>
+                    Zendesk
+                  </button>
+                  <button class="di-nav-item di-nav-src" data-src="freshdesk" data-tab="sourcedetail" onclick="diTab('sourcedetail',this);diSelectSrc('freshdesk',null)">
+                    <span class="di-nav-src-dot dot-warn"></span>
+                    Freshdesk
+                  </button>
+                  <button class="di-nav-item di-nav-src" data-src="s3" data-tab="sourcedetail" onclick="diTab('sourcedetail',this);diSelectSrc('s3',null)">
+                    <span class="di-nav-src-dot dot-error"></span>
+                    S3 Voice
+                  </button>
+                  <button class="di-nav-item di-nav-src" data-src="connect" data-tab="sourcedetail" onclick="diTab('sourcedetail',this);diSelectSrc('connect',null)">
+                    <span class="di-nav-src-dot dot-active"></span>
+                    AiMY Connect
+                  </button>
+                </div>
+                <button class="di-nav-add" onclick="diOpenWizard()">
+                  <svg viewBox="0 0 12 12" fill="none" width="10" height="10"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                  Add source
+                </button>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT PANES ───────────────────────────────────── -->
+            <div class="di-content">
+
+              <!-- Upload pane ──────────────────────────────────────── -->
+              <div class="di-pane di-pane-active" id="pUpload">
+                <div class="di-pane-header">
+                  <h2 class="di-pane-title">Upload Voice Files</h2>
+                  <p class="di-pane-desc">Upload files manually when automated S3 ingestion is unavailable. Files are sent to S3 for processing.</p>
+                </div>
+
+                <div class="di-upload-layout">
+                  <div class="di-upload-left">
+                    <div class="di-dropzone" id="diDropzone" onclick="diPickFiles()" ondragover="diDragOver(event)" ondragleave="diDragLeave(event)" ondrop="diDrop(event)" tabindex="0" role="button" aria-label="Upload voice files">
+                      <div class="di-dz-visual">
+                        <div class="di-dz-ring">
+                          <svg viewBox="0 0 48 48" fill="none" width="48" height="48">
+                            <circle cx="24" cy="24" r="20" stroke="rgba(51,105,255,0.15)" stroke-width="1.5"/>
+                            <circle cx="24" cy="24" r="20" stroke="url(#dzRing)" stroke-width="1.5" stroke-dasharray="125" stroke-dashoffset="31" stroke-linecap="round"/>
+                            <path d="M24 30V18M24 18L19 23M24 18L29 23" stroke="url(#dzArrow)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                            <defs>
+                              <linearGradient id="dzRing" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse"><stop stop-color="#0066ff" stop-opacity=".6"/><stop offset="1" stop-color="#6fdfe2" stop-opacity=".3"/></linearGradient>
+                              <linearGradient id="dzArrow" x1="19" y1="18" x2="29" y2="23" gradientUnits="userSpaceOnUse"><stop stop-color="#0066ff"/><stop offset="1" stop-color="#6fdfe2"/></linearGradient>
+                            </defs>
+                          </svg>
+                        </div>
+                      </div>
+                      <p class="di-dz-headline">Drop files to upload</p>
+                      <p class="di-dz-sub">or <span class="di-browse">choose files</span></p>
+                    </div>
+                    <div class="di-format-info">
+                      <div class="di-format-row">
+                        <span class="di-format-label">Accepted formats</span>
+                        <div class="di-format-chips">
+                          <span class="di-chip">.mp3</span>
+                          <span class="di-chip">.wav</span>
+                          <span class="di-chip">.ogg</span>
+                          <span class="di-chip">.m4a</span>
+                        </div>
+                      </div>
+                      <div class="di-format-row">
+                        <span class="di-format-label">Max file size</span>
+                        <span class="di-format-val">500 MB per file</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="di-upload-right">
+                    <input type="file" id="diFilePicker" accept=".mp3,.wav,.ogg,.m4a" multiple style="display:none" onchange="diFilePicked(event)">
+                    <div id="diValidation"></div>
+                    <div id="diQueue" style="display:none">
+                      <div class="di-queue-header">
+                        <span class="di-section-title" id="diQueueLabel">Uploading&hellip;</span>
+                        <button class="di-text-btn" onclick="diCancelAll()">Cancel all</button>
+                      </div>
+                      <div id="diQueueList"></div>
+                    </div>
+                    <div class="di-upload-idle" id="diUploadIdle">
+                      <svg viewBox="0 0 20 20" fill="none" width="20" height="20" style="opacity:.2"><path d="M10 2v10M10 2L7 5M10 2l3 3M4 18h12" stroke="var(--d300)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <p>Upload a file to see progress here</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- History pane ─────────────────────────────────────── -->
+              <div class="di-pane" id="pHistory">
+                <div class="di-pane-header">
+                  <h2 class="di-pane-title">Upload History</h2>
+                  <div class="di-pane-header-controls">
+                    <select class="di-select" id="histStatus" onchange="diFilterHist()">
+                      <option value="all">All statuses</option>
+                      <option value="complete">Complete</option>
+                      <option value="processing">Processing</option>
+                      <option value="queued">Queued</option>
+                      <option value="failed">Failed</option>
+                    </select>
+                    <select class="di-select" id="histDate" onchange="diFilterHist()">
+                      <option value="7d">Last 7 days</option>
+                      <option value="30d">Last 30 days</option>
+                      <option value="all">All time</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="di-table">
+                  <div class="di-table-head">
+                    <div class="di-th" style="flex:2">File name</div>
+                    <div class="di-th">Size</div>
+                    <div class="di-th">Uploaded</div>
+                    <div class="di-th">Duration</div>
+                    <div class="di-th">Status</div>
+                    <div class="di-th"></div>
+                  </div>
+                  <div id="diHistList"></div>
+                </div>
+              </div>
+
+              <!-- Source detail pane ───────────────────────────────── -->
+              <div class="di-pane" id="pSourcedetail">
+                <div id="diDetail"></div>
+              </div>
+
+            </div><!-- /di-content -->
+          </div><!-- /di-body -->
+        </div><!-- /di-surface -->
+
+        <!-- ════ MODALS ════════════════════════════════════════════════ -->
+        <div class="di-backdrop" id="diCfgBd" onclick="diCloseConfig(event)">
+          <div class="di-modal" id="diCfgModal" role="dialog" aria-modal="true" aria-labelledby="diCfgTitle">
+            <div class="di-modal-hd"><h3 class="di-modal-title" id="diCfgTitle">Configure</h3>
+              <button class="di-modal-x" onclick="diCloseConfig(null)" aria-label="Close"><svg viewBox="0 0 12 12" fill="none" width="11"><path d="M10 2L2 10M2 2l8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+            </div>
+            <div class="di-modal-bd" id="diCfgBd2"></div>
+            <div class="di-modal-ft" id="diCfgFt"></div>
+          </div>
+        </div>
+
+        <div class="di-backdrop" id="diWizBd" onclick="diCloseWizard(event)">
+          <div class="di-modal di-modal-lg" id="diWizModal" role="dialog" aria-modal="true">
+            <div class="di-modal-hd">
+              <div><h3 class="di-modal-title">Add New Source</h3>
+                <div class="di-wiz-steps" id="diWizSteps">
+                  <span class="di-ws on" data-s="1">1</span><span class="di-ws-ln"></span>
+                  <span class="di-ws" data-s="2">2</span><span class="di-ws-ln"></span>
+                  <span class="di-ws" data-s="3">3</span><span class="di-ws-ln"></span>
+                  <span class="di-ws" data-s="4">4</span><span class="di-ws-ln"></span>
+                  <span class="di-ws" data-s="5">5</span>
+                </div>
+              </div>
+              <button class="di-modal-x" onclick="diCloseWizard(null)" aria-label="Close"><svg viewBox="0 0 12 12" fill="none" width="11"><path d="M10 2L2 10M2 2l8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+            </div>
+            <div class="di-modal-bd" id="diWizBd2"></div>
+            <div class="di-modal-ft" id="diWizFt"></div>
+          </div>
+        </div>
+
+        <div class="di-backdrop" id="diDelBd" onclick="diCloseDelete(event)">
+          <div class="di-modal di-modal-sm" id="diDelModal" role="dialog" aria-modal="true">
+            <div class="di-modal-hd"><h3 class="di-modal-title" style="color:var(--err)">Delete Source</h3>
+              <button class="di-modal-x" onclick="diCloseDelete(null)" aria-label="Close"><svg viewBox="0 0 12 12" fill="none" width="11"><path d="M10 2L2 10M2 2l8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+            </div>
+            <div class="di-modal-bd">
+              <p class="di-del-warn">Ingestion will stop immediately. Already-ingested interactions remain in QA.</p>
+              <p class="di-del-inst">Type <strong id="diDelName"></strong> to confirm:</p>
+              <input class="di-field" id="diDelInput" type="text" placeholder="Source name" oninput="diCheckDel()" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="di-modal-ft">
+              <button class="di-btn di-btn-ghost" onclick="diCloseDelete(null)">Cancel</button>
+              <button class="di-btn di-btn-danger" id="diDelBtn" disabled onclick="diExecDelete()">Delete source</button>
+            </div>
           </div>
         </div>
 
         <!-- ════ FLOATING AIMY INPUT BAR (scoped to app-main) ══════════ -->
         <div class="aimy-float-wrap" id="aimyFloatWrap">
+
           <div class="aimy-float-bar" id="aimyFloatBar">
             <div class="aimy-float-icon" style="width: 32px; height: 32px">
               <svg width="18" height="20" viewBox="0 0 18 20">
@@ -4432,7 +4721,7 @@
               class="aimy-float-input"
               id="aimyFloatInput"
               type="text"
-              placeholder="Ask AiMY anything, or describe what you&#8217;d like to filter&hellip;"
+              placeholder="Ask AiMY anything about the pipeline&hellip;"
               autocomplete="off"
               spellcheck="false"
             />
@@ -4507,19 +4796,19 @@
                 class="overlay-sugg-chip"
                 onclick="overlaySuggestion(this)"
               >
-                Show me SLA breaches this week
+                Why is S3 Voice failing to sync?
               </button>
               <button
                 class="overlay-sugg-chip"
                 onclick="overlaySuggestion(this)"
               >
-                Which agents are below target?
+                Which source has the most errors this week?
               </button>
               <button
                 class="overlay-sugg-chip"
                 onclick="overlaySuggestion(this)"
               >
-                Summarise today&rsquo;s quality score
+                Compare ingestion volume across all sources
               </button>
               <button
                 class="overlay-sugg-chip"
@@ -4570,348 +4859,2012 @@
       <!-- /app-main -->
     </div>
     <!-- /app-body -->
+
     <style>
-      .coming-soon-wrap {
-        flex: 1;
+      /* ══ DATA INGESTION — REDESIGN ═══════════════════════════════════ */
+
+      /* ── Surface shell ──────────────────────────────────────────── */
+      .di-surface {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ── Page header ────────────────────────────────────────────── */
+      .di-page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 28px 16px;
+        flex-shrink: 0;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+      }
+      .di-page-header-left {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+      }
+      .di-page-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--d50);
+        letter-spacing: -0.01em;
+      }
+      .di-page-sub {
+        font-size: 12px;
+        color: var(--d500);
+        font-weight: 400;
+      }
+
+      /* ── Health strip ───────────────────────────────────────────── */
+      .di-health-strip {
+        flex-shrink: 0;
+        padding: 16px 28px 18px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+      }
+      .di-src-cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+      }
+      .di-src-card {
+        background: rgba(255,255,255,0.025);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 10px;
+        padding: 14px 14px 0;
+        cursor: pointer;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+        transition: border-color 150ms, background 150ms;
+        font-family: inherit;
+      }
+      .di-src-card:hover {
+        border-color: rgba(255,255,255,0.13);
+        background: rgba(255,255,255,0.04);
+      }
+      .di-src-card.di-src-selected {
+        border-color: rgba(51,105,255,0.5);
+        background: rgba(51,105,255,0.06);
+      }
+      .di-sc-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .di-sc-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+      .di-sc-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 40px 32px 120px;
+        flex-shrink: 0;
       }
-      .coming-soon-inner {
+      .ic-zendesk  { background: rgba(3,118,190,0.18); color: #5ac8f5; }
+      .ic-freshdesk{ background: rgba(0,168,61,0.15);  color: #4dc98a; }
+      .ic-s3       { background: rgba(247,144,9,0.15);  color: var(--warn); }
+      .ic-connect  { background: rgba(111,223,226,0.13);color: var(--teal); }
+
+      .di-sc-name {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--d100);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .di-sc-url {
+        font-size: 10px;
+        color: var(--d500);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 110px;
+      }
+      .di-sc-pill {
+        font-size: 10px;
+        font-weight: 600;
+        border-radius: 20px;
+        padding: 3px 9px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
+      .pill-active { background: rgba(23,178,106,0.12); color: var(--ok); }
+      .pill-warn   { background: rgba(247,144,9,0.12);  color: var(--warn); }
+      .pill-error  { background: rgba(240,68,56,0.1);   color: var(--err); }
+      .di-pill-dot {
+        width: 5px; height: 5px;
+        border-radius: 50%;
+        background: currentColor;
+        display: inline-block;
+      }
+      .pill-active .di-pill-dot { animation: dotPulse 2s ease-in-out infinite; }
+      @keyframes dotPulse { 0%,100%{ opacity:1 } 50%{ opacity:.35 } }
+
+      .di-sc-metrics {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 12px;
+      }
+      .di-sc-metric-right { text-align: right; }
+      .di-sc-metric-val {
+        display: block;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--d50);
+        line-height: 1.2;
+      }
+      .di-sc-metric-lbl {
+        font-size: 10px;
+        color: var(--d500);
+        display: block;
+        margin-top: 2px;
+      }
+      .di-sc-freshbar {
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 2px;
+      }
+      .di-sc-freshbar.fresh    { background: var(--ok); }
+      .di-sc-freshbar.stale    { background: var(--warn); }
+      .di-sc-freshbar.bar-error{ background: var(--err); }
+
+      /* ── Body ────────────────────────────────────────────────────── */
+      .di-body {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      /* ── Left nav panel ─────────────────────────────────────────── */
+      .di-left-nav {
+        width: 210px;
+        flex-shrink: 0;
+        border-right: 1px solid rgba(255,255,255,0.05);
+        overflow-y: auto;
+        padding: 20px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .di-nav-section {
+        margin-bottom: 8px;
+      }
+      .di-nav-section + .di-nav-section {
+        margin-top: 8px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+      }
+      .di-nav-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: var(--d500);
+        padding: 0 8px;
+        margin-bottom: 6px;
+      }
+      .di-nav-item {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        width: 100%;
+        padding: 9px 8px;
+        border-radius: 7px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--d300);
+        background: none;
+        border: none;
+        cursor: pointer;
+        text-align: left;
+        transition: background 150ms, color 150ms;
+      }
+      .di-nav-item:hover {
+        background: rgba(255,255,255,0.05);
+        color: var(--d100);
+      }
+      .di-nav-item.di-nav-active {
+        background: rgba(51,105,255,0.12);
+        color: var(--d50);
+        font-weight: 600;
+      }
+      .di-nav-item svg { flex-shrink: 0; opacity: .7; }
+      .di-nav-item.di-nav-active svg { opacity: 1; }
+
+      .di-nav-src-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .dot-active { background: var(--ok); }
+      .dot-warn   { background: var(--warn); }
+      .dot-error  { background: var(--err); }
+
+      .di-nav-add {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 8px;
+        border-radius: 7px;
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--d500);
+        background: none;
+        border: 1px dashed rgba(255,255,255,0.09);
+        cursor: pointer;
+        text-align: left;
+        margin-top: 6px;
+        transition: border-color 150ms, color 150ms;
+      }
+      .di-nav-add:hover { border-color: var(--brand); color: var(--brand); }
+
+      /* ── Content area ────────────────────────────────────────────── */
+      .di-content {
+        flex: 1;
+        min-width: 0;
+        overflow-y: auto;
+        position: relative;
+      }
+
+      /* ── Panes ───────────────────────────────────────────────────── */
+      .di-pane { display: none; padding: 28px 32px 120px; }
+      .di-pane-active { display: block; }
+
+      .di-pane-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 28px;
+        gap: 16px;
+      }
+      .di-pane-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--d50);
+        letter-spacing: -0.01em;
+        margin-bottom: 4px;
+      }
+      .di-pane-desc {
+        font-size: 12px;
+        color: var(--d500);
+        line-height: 1.6;
+        max-width: 480px;
+      }
+      .di-pane-header-controls {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+
+      /* ── Upload layout ───────────────────────────────────────────── */
+      .di-upload-layout {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 24px;
+        align-items: start;
+      }
+      .di-dropzone {
+        border: 1.5px dashed rgba(255,255,255,0.1);
+        border-radius: 14px;
+        padding: 36px 24px 32px;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 200ms, background 200ms;
+        background: rgba(255,255,255,0.015);
+      }
+      .di-dropzone:hover, .di-dropzone.drag-over {
+        border-color: rgba(51,105,255,0.5);
+        background: rgba(51,105,255,0.04);
+      }
+      .di-dropzone:focus-visible {
+        outline: 2px solid var(--brand);
+        outline-offset: 3px;
+        border-radius: 14px;
+      }
+      .di-dz-visual {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 16px;
+      }
+      .di-dz-ring { display: flex; align-items: center; justify-content: center; }
+      .di-dz-headline {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--d100);
+        margin-bottom: 6px;
+      }
+      .di-dz-sub {
+        font-size: 12px;
+        color: var(--d500);
+        margin-bottom: 0;
+      }
+      .di-browse {
+        color: var(--brand);
+        cursor: pointer;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+      .di-format-info {
+        margin-top: 14px;
+        background: rgba(255,255,255,0.025);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 10px;
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .di-format-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .di-format-label { font-size: 11px; color: var(--d500); font-weight: 500; }
+      .di-format-val { font-size: 11px; color: var(--d300); }
+      .di-format-chips { display: flex; gap: 4px; }
+      .di-chip {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d300);
+        background: rgba(255,255,255,0.06);
+        border-radius: 5px;
+        padding: 3px 7px;
+      }
+
+      .di-upload-right { display: flex; flex-direction: column; gap: 14px; }
+      .di-upload-idle {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 16px;
-        text-align: center;
-        max-width: 420px;
+        justify-content: center;
+        gap: 10px;
+        height: 160px;
+        border: 1px dashed rgba(255,255,255,0.06);
+        border-radius: 12px;
       }
-      .coming-soon-svg {
-        width: 240px;
-        height: 200px;
-        flex-shrink: 0;
+      .di-upload-idle p { font-size: 12px; color: var(--d600); }
+
+      /* Validation */
+      .di-verr {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        background: rgba(240,68,56,0.06);
+        border: 1px solid rgba(240,68,56,0.18);
+        border-radius: 9px;
+        padding: 12px 14px;
+        font-size: 12px;
+        color: var(--d100);
+      }
+      .di-verr-icon { color: var(--err); flex-shrink: 0; margin-top: 1px; }
+      .di-vwarn { background: rgba(247,144,9,0.06); border-color: rgba(247,144,9,0.18); }
+      .di-vwarn .di-verr-icon { color: var(--warn); }
+      .di-verr strong { display: block; font-weight: 600; margin-bottom: 2px; font-size: 12px; }
+      .di-verr p { font-size: 11px; color: var(--d400); margin: 0; }
+
+      /* Queue */
+      .di-queue-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .di-section-title {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--d400);
+      }
+      .di-text-btn {
+        background: none; border: none;
+        color: var(--d500);
+        font-size: 11px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: color 150ms;
+      }
+      .di-text-btn:hover { color: var(--d100); }
+
+      .di-qitem {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 9px;
+        padding: 12px 14px;
         margin-bottom: 8px;
       }
-      .coming-soon-label {
+      .di-qitem-hd {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .di-qitem-name { flex: 1; min-width: 0; font-size: 12px; font-weight: 500; color: var(--d100); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .di-qitem-size { font-size: 11px; color: var(--d500); flex-shrink: 0; }
+      .di-qitem-cancel { background: none; border: none; color: var(--d600); cursor: pointer; padding: 2px; flex-shrink: 0; transition: color 150ms; }
+      .di-qitem-cancel:hover { color: var(--err); }
+      .di-qitem-prog { height: 2px; background: rgba(255,255,255,0.07); border-radius: 1px; overflow: hidden; margin-bottom: 6px; }
+      .di-qitem-progbar { height: 100%; border-radius: 1px; background: var(--ai); transition: width 0.3s ease; }
+      .di-qitem-progbar.done   { background: var(--ok); }
+      .di-qitem-progbar.failed { background: var(--err); }
+      .di-qitem-status { font-size: 10px; color: var(--d500); }
+      .di-qitem-status.ok  { color: var(--ok); }
+      .di-qitem-status.err { color: var(--err); }
+
+      /* ── Table ───────────────────────────────────────────────────── */
+      .di-table-head {
+        display: flex;
+        align-items: center;
+        padding: 0 16px 10px;
+        gap: 12px;
+      }
+      .di-th {
         font-size: 10px;
         font-weight: 700;
-        letter-spacing: 0.1em;
         text-transform: uppercase;
-        color: var(--qa-accent);
-        opacity: 0.8;
-        margin: 0;
+        letter-spacing: 0.07em;
+        color: var(--d500);
+        flex: 1;
       }
-      .coming-soon-title {
-        font-size: 22px;
-        font-weight: 800;
+      .di-th:first-child { flex: 2; }
+      .di-tr {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        gap: 12px;
+        border-radius: 9px;
+        transition: background 150ms;
+      }
+      .di-tr:hover { background: rgba(255,255,255,0.03); }
+      .di-tr + .di-tr { border-top: 1px solid rgba(255,255,255,0.04); }
+      .di-td { flex: 1; font-size: 12px; color: var(--d300); }
+      .di-td:first-child { flex: 2; }
+      .di-td-fn { font-weight: 500; color: var(--d100); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .di-badge {
+        display: inline-flex;
+        align-items: center;
+        font-size: 10px;
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 3px 9px;
+      }
+      .hb-complete   { background: rgba(23,178,106,0.1);  color: var(--ok); }
+      .hb-processing { background: rgba(51,105,255,0.1);  color: var(--brand); }
+      .hb-queued     { background: rgba(255,255,255,0.05);color: var(--d400); }
+      .hb-failed     { background: rgba(240,68,56,0.1);   color: var(--err); }
+      .di-td-action { display: flex; justify-content: flex-end; }
+      .di-retry-link {
+        background: none; border: none;
+        font-size: 11px;
+        color: var(--brand);
+        cursor: pointer;
+        font-family: inherit;
+        padding: 0;
+        transition: opacity 150ms;
+      }
+      .di-retry-link:hover { opacity: .75; }
+      .di-retry-all-row {margin-top: 8px; margin-bottom: 4px;}
+
+      /* ── Source detail ───────────────────────────────────────────── */
+      .di-detail-hd {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 28px;
+        gap: 16px;
+      }
+      .di-detail-title-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .di-detail-name {
+        font-size: 17px;
+        font-weight: 700;
         color: var(--d50);
-        letter-spacing: -0.02em;
-        margin: 0;
-        line-height: 1.2;
+        letter-spacing: -0.01em;
       }
-      .coming-soon-desc {
-        font-size: 13px;
+      .di-detail-url {
+        font-size: 11px;
+        color: var(--d500);
+        margin-top: 2px;
+      }
+      .di-detail-actions { display: flex; gap: 8px; }
+
+      /* Stat grid */
+      .di-stat-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+      .di-stat-cell {
+        background: rgba(255,255,255,0.025);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 10px;
+        padding: 16px 18px;
+      }
+      .di-stat-val { font-size: 24px; font-weight: 700; color: var(--d50); line-height: 1; margin-bottom: 5px; }
+      .di-stat-lbl { font-size: 11px; color: var(--d500); }
+      .di-stat-err { color: var(--err); }
+
+      /* Sparkline */
+      .di-sparkline {
+        background: rgba(255,255,255,0.025);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 10px;
+        padding: 18px 20px;
+        margin-bottom: 28px;
+      }
+      .di-sparkline-hd {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+      .di-spark-title { font-size: 11px; font-weight: 600; color: var(--d400); }
+      .di-spark-range { font-size: 10px; color: var(--d600); }
+
+      /* Paused banner */
+      .di-paused-banner {
+        background: rgba(247,144,9,0.07);
+        border: 1px solid rgba(247,144,9,0.18);
+        border-radius: 9px;
+        padding: 12px 16px;
+        font-size: 12px;
+        color: var(--warn);
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 28px;
+      }
+      .di-paused-banner-text { flex: 1; min-width: 0; }
+
+      /* Section headers + titles */
+      .di-sect {
+        margin-bottom: 32px;
+      }
+      .di-sect-hd {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+      .di-sect-label,
+      .di-sect-title {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
         color: var(--d400);
-        line-height: 1.65;
-        margin: 0;
-        font-weight: 400;
       }
-      .coming-soon-jira {
+
+      /* AiMY actions block */
+      .di-aimy-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 32px;
+        padding: 16px 18px;
+        background: rgba(0,102,255,0.04);
+        border: 1px solid rgba(0,102,255,0.12);
+        border-radius: 12px;
+      }
+      .di-aimy-actions-label {
+        width: 100%;
         font-size: 10px;
         font-weight: 700;
-        color: var(--d600);
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 20px;
-        padding: 4px 12px;
-        letter-spacing: 0.05em;
-        margin-top: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: rgba(97,173,241,0.7);
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
       }
+      .di-aimy-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 13px;
+        background: rgba(51,105,255,0.1);
+        border: 1px solid rgba(51,105,255,0.22);
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--d200);
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 150ms, border-color 150ms, color 150ms;
+        white-space: nowrap;
+      }
+      .di-aimy-chip:hover {
+        background: rgba(51,105,255,0.18);
+        border-color: rgba(51,105,255,0.4);
+        color: var(--d50);
+      }
+      .di-aimy-chip svg { flex-shrink: 0; opacity: .7; }
+
+      /* Failed items */
+      .di-failed-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 14px 16px;
+        background: rgba(240,68,56,0.04);
+        border: 1px solid rgba(240,68,56,0.14);
+        border-radius: 10px;
+        margin-bottom: 8px;
+        margin-top: 8px;
+      }
+      .di-failed-ic { color: var(--err); flex-shrink: 0; margin-top: 2px; }
+      .di-failed-info { flex: 1; min-width: 0; }
+      .di-failed-id   { font-size: 13px; font-weight: 600; color: var(--d100); margin-bottom: 3px; }
+      .di-failed-type { font-size: 11px; color: var(--warn); font-weight: 600; margin-bottom: 3px; }
+      .di-failed-msg  { font-size: 12px; color: var(--d400); line-height: 1.5; }
+      .di-failed-ts   { font-size: 10px; color: var(--d500); margin-top: 5px; }
+      .di-failed-actions { display: flex; gap: 4px; flex-shrink: 0; padding-top: 2px; }
+      .di-icon-btn {
+        background: none; border: none;
+        color: var(--d500);
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 6px;
+        display: flex; align-items: center;
+        transition: color 150ms, background 150ms;
+      }
+      .di-icon-btn:hover { color: var(--d100); background: rgba(255,255,255,0.06); }
+
+      /* Sync events */
+      .di-sync-event {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 11px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        font-size: 12px;
+      }
+      .di-sync-event:last-child { border-bottom: none; }
+      .di-sync-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+      .di-sync-ok   { background: var(--ok); }
+      .di-sync-fail { background: var(--err); }
+      .di-sync-time { color: var(--d300); flex: 1; }
+      .di-sync-out  { font-size: 12px; font-weight: 600; }
+      .di-sync-out.ok   { color: var(--ok); }
+      .di-sync-out.fail { color: var(--err); }
+
+      /* ── Shared buttons ─────────────────────────────────────────── */
+      .di-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: background 150ms, border-color 150ms, opacity 150ms;
+      }
+      .di-btn-sm { padding: 6px 12px; font-size: 11px; }
+      .di-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+      .di-btn-primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+      .di-btn-primary:not(:disabled):hover { background: #2356d8; }
+      .di-btn-ghost { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: var(--d100); }
+      .di-btn-ghost:hover { background: rgba(255,255,255,0.08); }
+      .di-btn-warn  { background: rgba(247,144,9,0.1); border-color: rgba(247,144,9,0.25); color: var(--warn); }
+      .di-btn-warn:hover { background: rgba(247,144,9,0.18); }
+      .di-btn-danger{ background: rgba(240,68,56,0.08); border-color: rgba(240,68,56,0.25); color: var(--err); }
+      .di-btn-danger:not(:disabled):hover { background: rgba(240,68,56,0.15); }
+
+      /* ── Modals ─────────────────────────────────────────────────── */
+      .di-backdrop {
+        position: fixed; inset: 0;
+        background: rgba(5,8,13,0.82);
+        backdrop-filter: blur(6px);
+        z-index: 9000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      .di-backdrop.open { display: flex; }
+      .di-modal {
+        background: #1a2330;
+        border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 14px;
+        width: 480px;
+        max-width: 94vw;
+        max-height: 88vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        animation: mIn 180ms cubic-bezier(.16,1,.3,1) both;
+        box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      }
+      .di-modal-lg { width: 560px; }
+      .di-modal-sm { width: 400px; }
+      @keyframes mIn {
+        from { opacity: 0; transform: translateY(10px) scale(0.97); }
+        to   { opacity: 1; transform: none; }
+      }
+      .di-modal-hd {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 22px 22px 18px;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+        flex-shrink: 0;
+      }
+      .di-modal-title { font-size: 14px; font-weight: 700; color: var(--d50); }
+      .di-modal-x {
+        background: rgba(255,255,255,0.04);
+        border: none;
+        border-radius: 6px;
+        color: var(--d400);
+        cursor: pointer;
+        padding: 6px;
+        display: flex;
+        align-items: center;
+        transition: color 150ms, background 150ms;
+        flex-shrink: 0;
+      }
+      .di-modal-x:hover { color: var(--d50); background: rgba(255,255,255,0.09); }
+      .di-modal-bd { padding: 22px; overflow-y: auto; flex: 1; }
+      .di-modal-ft {
+        padding: 16px 22px;
+        border-top: 1px solid rgba(255,255,255,0.07);
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+
+      /* Form */
+      .di-field {
+        width: 100%;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        padding: 10px 13px;
+        color: var(--d50);
+        font-family: inherit;
+        font-size: 13px;
+        outline: none;
+        transition: border-color 150ms;
+      }
+      .di-field:focus { border-color: var(--brand); }
+      .di-field-pw { font-family: monospace; letter-spacing: .1em; }
+      .di-label {
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--d400);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .di-field-group { margin-bottom: 18px; }
+      .di-field-hint { font-size: 11px; color: var(--d500); margin-top: 5px; line-height: 1.5; }
+
+      .di-cfg-tabs {
+        display: flex;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+        margin-bottom: 20px;
+      }
+      .di-cfg-tab {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--d400);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 9px 16px 10px;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        font-family: inherit;
+        transition: color 150ms, border-color 150ms;
+      }
+      .di-cfg-tab:hover { color: var(--d100); }
+      .di-cfg-tab.active { color: var(--d50); border-bottom-color: var(--brand); }
+      .di-cfg-pane { display: none; }
+      .di-cfg-pane.active { display: block; }
+
+      .di-select {
+        background: #141b24;
+        border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 8px;
+        padding: 8px 12px;
+        color: var(--d200);
+        font-family: inherit;
+        font-size: 12px;
+        cursor: pointer;
+        outline: none;
+        transition: border-color 150ms;
+        -webkit-appearance: auto;
+        appearance: auto;
+      }
+      .di-select:focus-visible { border-color: var(--brand); }
+      .di-select option { background: #1a2330; color: var(--d100); }
+
+      .di-cfg-select {
+        width: 100%;
+        background: #141b24;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        padding: 10px 13px;
+        color: var(--d100);
+        font-family: inherit;
+        font-size: 13px;
+        outline: none;
+        transition: border-color 150ms;
+      }
+      .di-cfg-select:focus { border-color: var(--brand); }
+      .di-cfg-select option { background: #1a2330; color: var(--d100); }
+
+      .di-danger-zone {
+        margin-top: 20px;
+        padding: 16px 18px;
+        background: rgba(240,68,56,0.04);
+        border: 1px solid rgba(240,68,56,0.12);
+        border-radius: 10px;
+      }
+      .di-danger-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--err); margin-bottom: 12px; }
+      .di-danger-btns { display: flex; gap: 8px; }
+
+      .di-wiz-steps { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+      .di-ws {
+        width: 24px; height: 24px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.09);
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 10px; font-weight: 700; color: var(--d500);
+        transition: background 150ms, color 150ms;
+      }
+      .di-ws.on   { background: var(--brand); border-color: var(--brand); color: #fff; }
+      .di-ws.done { background: var(--ok);    border-color: var(--ok);    color: #fff; }
+      .di-ws-ln   { flex: 1; height: 1px; background: rgba(255,255,255,0.09); }
+
+      .di-wiz-src-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .di-wiz-src-opt {
+        background: rgba(255,255,255,0.03);
+        border: 1.5px solid rgba(255,255,255,0.08);
+        border-radius: 10px;
+        padding: 16px;
+        cursor: pointer;
+        transition: border-color 150ms, background 150ms;
+        text-align: left;
+        font-family: inherit;
+      }
+      .di-wiz-src-opt:hover { border-color: rgba(51,105,255,0.45); background: rgba(51,105,255,0.05); }
+      .di-wiz-src-opt.selected { border-color: var(--brand); background: rgba(51,105,255,0.09); }
+      .di-wiz-src-ico { margin-bottom: 10px; font-size: 18px; }
+      .di-wiz-src-nm  { font-size: 13px; font-weight: 600; color: var(--d100); margin-bottom: 3px; }
+      .di-wiz-src-sub { font-size: 11px; color: var(--d500); }
+
+      .di-test-status {
+        display: flex; align-items: center; gap: 10px;
+        padding: 14px 16px;
+        border-radius: 9px;
+        font-size: 12px; font-weight: 600;
+        margin-top: 12px;
+      }
+      .di-test-ok      { background: rgba(23,178,106,0.09);  border: 1px solid rgba(23,178,106,0.2); color: var(--ok); }
+      .di-test-fail    { background: rgba(240,68,56,0.07);   border: 1px solid rgba(240,68,56,0.2);  color: var(--err); }
+      .di-test-pending { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.09); color: var(--d400); }
+
+      .di-del-warn { font-size: 13px; color: var(--d300); margin-bottom: 18px; line-height: 1.65; }
+      .di-del-inst { font-size: 12px; color: var(--d400); margin-bottom: 10px; }
+      .di-del-inst strong { color: var(--d100); }
+
+      /* Scrollbars */
+      .di-content::-webkit-scrollbar,
+      .di-left-nav::-webkit-scrollbar,
+      .di-modal-bd::-webkit-scrollbar { width: 4px; }
+      .di-content::-webkit-scrollbar-track,
+      .di-left-nav::-webkit-scrollbar-track,
+      .di-modal-bd::-webkit-scrollbar-track { background: transparent; }
+      .di-content::-webkit-scrollbar-thumb,
+      .di-left-nav::-webkit-scrollbar-thumb,
+      .di-modal-bd::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+      .di-content::-webkit-scrollbar-thumb:hover,
+      .di-left-nav::-webkit-scrollbar-thumb:hover,
+      .di-modal-bd::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.16); }
+
+      /* Resume button */
+      .di-resume-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 6px;
+        background: rgba(247,144,9,0.18);
+        border: 1px solid rgba(247,144,9,0.35);
+        color: var(--warn);
+        font-size: 11px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: background 150ms, border-color 150ms;
+        white-space: nowrap;
+      }
+      .di-resume-btn:hover { background: rgba(247,144,9,0.28); border-color: rgba(247,144,9,0.5); }
+
+      /* Chart */
+      .di-chart-container { position: relative; width: 100%; }
+      .di-chart-annotations {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        padding: 0 2px;
+      }
+      .di-chart-ann-label { font-size: 10px; color: var(--d600); }
+      .di-chart-stats {
+        display: flex;
+        gap: 20px;
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+      }
+      .di-chart-stat-val { font-size: 13px; font-weight: 700; color: var(--d100); }
+      .di-chart-stat-lbl { font-size: 10px; color: var(--d500); display: block; margin-top: 2px; }
+      .di-chart-stat-ok { color: var(--ok); }
+      .di-chart-stat-err { color: var(--err); }
+
     </style>
+
+
     <script>
-      (function () {
-        "use strict";
+    (function() {
+      'use strict';
 
-        /* ── DOM refs ─────────────────────────────── */
-        const floatBar = document.getElementById("aimyFloatBar");
-        const floatInput = document.getElementById("aimyFloatInput");
-        const floatSend = document.getElementById("aimyFloatSend");
-        const floatHint = document.getElementById("aimyFloatHint");
-        const overlay = document.getElementById("aimyOverlay");
-        const overlayClose = document.getElementById("overlayClose");
-        const thread = document.getElementById("overlayThread");
-        const suggestions = document.getElementById("overlaySuggestions");
-        const overlayInput = document.getElementById("overlayInput");
-        const overlaySend = document.getElementById("overlaySend");
+      /* ── DATA ──────────────────────────────────────────────────────────── */
+      var SOURCES = {
+        zendesk: {
+          name: 'Zendesk', type: 'zendesk', status: 'active',
+          url: 'api.yourco.zendesk.com', syncFreq: 'real-time',
+          vol24h: 2847, vol7d: 18934, errCount: 0,
+          lastSync: '4 min ago', lastSyncTs: Date.now() - 4*60*1000,
+          paused: false,
+          syncEvents: [
+            {ts:'14:32', ok:true, count:143},{ts:'14:27', ok:true, count:98},
+            {ts:'14:22', ok:true, count:201},{ts:'14:17', ok:false, count:0},
+            {ts:'14:12', ok:true, count:87},{ts:'14:07', ok:true, count:124},
+            {ts:'14:02', ok:true, count:156},{ts:'13:57', ok:true, count:132},
+            {ts:'13:52', ok:true, count:189},{ts:'13:47', ok:true, count:77}
+          ],
+          failedItems: []
+        },
+        freshdesk: {
+          name: 'Freshdesk', type: 'freshdesk', status: 'warn',
+          url: 'yourco.freshdesk.com', syncFreq: 'hourly',
+          vol24h: 614, vol7d: 3921, errCount: 1,
+          lastSync: '3 h ago', paused: false,
+          syncEvents: [
+            {ts:'11:30', ok:true, count:614},{ts:'10:30', ok:true, count:489},
+            {ts:'09:30', ok:false, count:0},{ts:'08:30', ok:true, count:531},
+            {ts:'07:30', ok:true, count:602}
+          ],
+          failedItems: [
+            {id:'ticket-84210', type:'Schema mismatch', msg:'Field "custom_fields.sla_tier" not found in unified schema', ts:'11:42', dismissed:false}
+          ]
+        },
+        s3: {
+          name: 'S3 Voice', type: 's3', status: 'error',
+          url: 'qa-voice-bucket / us-east-1', syncFreq: 'real-time',
+          vol24h: 0, vol7d: 2401, errCount: 3,
+          lastSync: '22 min ago', paused: false,
+          syncEvents: [
+            {ts:'14:14', ok:false, count:0},{ts:'14:09', ok:false, count:0},
+            {ts:'14:04', ok:false, count:0},{ts:'13:59', ok:true, count:47},
+            {ts:'13:54', ok:true, count:52}
+          ],
+          failedItems: [
+            {id:'call_20240514_143201.wav', type:'Authentication failure', msg:'IAM role credentials expired. Renew role ARN: arn:aws:iam::123456:role/qa-s3-reader', ts:'14:14', dismissed:false},
+            {id:'call_20240514_143018.wav', type:'Authentication failure', msg:'IAM role credentials expired.', ts:'14:09', dismissed:false},
+            {id:'call_20240514_142834.wav', type:'Authentication failure', msg:'IAM role credentials expired.', ts:'14:04', dismissed:false}
+          ]
+        },
+        connect: {
+          name: 'AiMY Connect', type: 'connect', status: 'active',
+          url: 'Internal', syncFreq: 'real-time',
+          vol24h: 1203, vol7d: 8421, errCount: 0,
+          lastSync: '1 min ago', paused: false,
+          syncEvents: [
+            {ts:'14:35', ok:true, count:23},{ts:'14:34', ok:true, count:18},
+            {ts:'14:33', ok:true, count:31},{ts:'14:32', ok:true, count:27},
+            {ts:'14:31', ok:true, count:19}
+          ],
+          failedItems: []
+        }
+      };
 
-        /* ── State ────────────────────────────────── */
-        let overlayOpen = false;
-        let msgCount = 0;
-        let isTyping = false;
+      var UPLOAD_HISTORY = [
+        {name:'call_batch_morning.wav', size:'124 MB', date:'Today, 09:14', status:'complete', duration:'2m 31s'},
+        {name:'ivr_escalations_0513.mp3', size:'88 MB', date:'Yesterday, 17:42', status:'complete', duration:'1m 47s'},
+        {name:'bulk_calls_week20.zip', size:'502 MB', date:'13 May', status:'failed', err:'File exceeds 500 MB limit'},
+        {name:'support_queue_pm.wav', size:'71 MB', date:'13 May', status:'processing', duration:null},
+        {name:'sample_arabic_calls.m4a', size:'34 MB', date:'12 May', status:'complete', duration:'0m 52s'},
+        {name:'qa_random_sample.wav', size:'19 MB', date:'12 May', status:'queued', duration:null}
+      ];
 
-        /* ── Intent detection ─────────────────────────────────────────────
-     Keywords that suggest a filter / dashboard-mutation intent.
-     Anything else is treated as a conversational chat intent.
-     Replace with a real classifier or pre-screen LLM call in prod.  */
-        const FILTER_KWS = [
-          "filter",
-          "show only",
-          "show me",
-          "hide",
-          "only",
-          "last week",
-          "this week",
-          "last month",
-          "today",
-          "this month",
-          "last quarter",
-          "this quarter",
-          "this year",
-          "last year",
-          "past",
-          "previous",
-          "all agents",
-          "by team",
-          "by product",
-          "by company",
-          "sort",
-          "group",
-          "compare",
-          "date",
-          "time period",
-          "period",
-        ];
+      var currentSrc = 'zendesk';
+      var currentTab = 'upload';
+      var wizardStep = 1;
+      var wizardSrcType = '';
+      var deletingSource = '';
+      var cfgActiveTab = 'connection';
+
+      /* ── INIT ──────────────────────────────────────────────────────────── */
+      document.addEventListener('DOMContentLoaded', function() {
+        renderHistory();
+        renderDetail('zendesk');
+
+        /* Delegated listener for dynamically-rendered di-aimy-chip buttons.
+           Can't use inline onclick because JSON.stringify produces double quotes
+           that break the HTML attribute. data-q + delegation is the safe pattern. */
+        document.addEventListener('click', function(e) {
+          var chip = e.target.closest('.di-aimy-chip');
+          if (chip) {
+            var q = chip.getAttribute('data-q');
+            if (q) window.diAskAiMY(q);
+          }
+        });
+      });
+
+      /* ── SOURCE SELECTION ──────────────────────────────────────────────── */
+      window.diSelectSrc = function(srcId, cardEl) {
+        currentSrc = srcId;
+        // Update strip cards
+        document.querySelectorAll('.di-src-card').forEach(function(c) { c.classList.remove('di-src-selected'); });
+        if (cardEl) cardEl.classList.add('di-src-selected');
+        else { var sc = document.querySelector('.di-src-card[data-src="'+srcId+'"]'); if (sc) sc.classList.add('di-src-selected'); }
+        // Update nav source items
+        document.querySelectorAll('.di-nav-src').forEach(function(r) { r.classList.remove('di-nav-active'); });
+        var navSrc = document.querySelector('.di-nav-src[data-src="'+srcId+'"]');
+        if (navSrc) navSrc.classList.add('di-nav-active');
+        renderDetail(srcId);
+      };
+
+      /* ── TAB SWITCHING ─────────────────────────────────────────────────── */
+      window.diTab = function(tab, btn) {
+        currentTab = tab;
+        document.querySelectorAll('.di-nav-item').forEach(function(b) { b.classList.remove('di-nav-active'); });
+        if (btn) btn.classList.add('di-nav-active');
+        document.querySelectorAll('.di-pane').forEach(function(p) { p.classList.remove('di-pane-active'); });
+        var pane = document.getElementById('p' + tab.charAt(0).toUpperCase() + tab.slice(1));
+        if (pane) pane.classList.add('di-pane-active');
+      };
+
+      /* ── RENDER DETAIL ─────────────────────────────────────────────────── */
+      function renderDetail(srcId) {
+        var s = SOURCES[srcId];
+        var el = document.getElementById('diDetail');
+        if (!s) { el.innerHTML = ''; return; }
+
+        var statusBadge = '';
+        if (s.status === 'active') statusBadge = '<span class="di-sc-badge badge-active" style="font-size:11px"><span class="di-sc-dot"></span>Active</span>';
+        else if (s.status === 'warn') statusBadge = '<span class="di-sc-badge badge-warn" style="font-size:11px"><span class="di-sc-dot"></span>Stale</span>';
+        else if (s.status === 'error') statusBadge = '<span class="di-sc-badge badge-error" style="font-size:11px"><span class="di-sc-dot"></span>Error</span>';
+        else if (s.status === 'paused') statusBadge = '<span class="di-sc-badge" style="font-size:11px;background:rgba(255,255,255,.06);color:var(--d400)"><span class="di-sc-dot" style="background:var(--d500)"></span>Paused</span>';
+
+        var pausedBanner = s.paused ? '<div class="di-paused-banner"><svg viewBox="0 0 16 16" fill="none" width="14" style="flex-shrink:0"><path d="M6 4v8M10 4v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="di-paused-banner-text">Ingestion is paused for this source. No new data will be processed until resumed.</span><button class="di-resume-btn" onclick="diResumeSource(\''+srcId+'\')"><svg viewBox="0 0 12 12" fill="none" width="10"><path d="M3 2l8 4-8 4V2z" fill="currentColor"/></svg>Resume ingestion</button></div>' : '';
+
+        var failedHtml = '';
+        var activeFailed = s.failedItems.filter(function(f) { return !f.dismissed; });
+        if (activeFailed.length > 0) {
+          var retryAllBtn = activeFailed.length > 1 ? '<div class="di-retry-all-row"><button class="di-btn di-btn-ghost" style="font-size:11px" onclick="diRetryAll(\''+srcId+'\')">Retry all failed ('+activeFailed.length+')</button></div>' : '';
+          failedHtml = '<div class="di-sect"><div class="di-sect-title">Failed Items &mdash; '+activeFailed.length+'</div>'+retryAllBtn;
+          activeFailed.forEach(function(f, i) {
+            failedHtml += '<div class="di-failed-item" id="fi-'+srcId+'-'+i+'">'
+              + '<svg class="di-failed-ic" viewBox="0 0 16 16" fill="none" width="14" height="14"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 5v4M8 11h.01" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>'
+              + '<div class="di-failed-info"><div class="di-failed-id">'+f.id+'</div><div class="di-failed-type">'+f.type+'</div><div class="di-failed-msg">'+f.msg+'</div><div class="di-failed-ts">'+f.ts+'</div></div>'
+              + '<div class="di-failed-actions">'
+              + '<button class="di-icon-btn" title="Retry" onclick="diRetryItem(\''+srcId+'\','+i+')" aria-label="Retry"><svg viewBox="0 0 14 14" fill="none" width="13"><path d="M12 4.5A5.5 5.5 0 112 7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M12 2v3h-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+              + '<button class="di-icon-btn" title="Dismiss" onclick="diDismissItem(\''+srcId+'\','+i+')" aria-label="Dismiss"><svg viewBox="0 0 14 14" fill="none" width="13"><path d="M11 3L3 11M3 3l8 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>'
+              + '</div></div>';
+          });
+          failedHtml += '</div>';
+        }
+
+        var syncHtml = '<div class="di-sect"><div class="di-sect-title">Recent Sync Events</div>';
+        s.syncEvents.slice(0,10).forEach(function(ev) {
+          syncHtml += '<div class="di-sync-event">'
+            + '<span class="di-sync-dot ' + (ev.ok ? 'di-sync-ok' : 'di-sync-fail') + '"></span>'
+            + '<span class="di-sync-time">' + ev.ts + '</span>'
+            + '<span class="di-sync-out ' + (ev.ok ? 'ok' : 'fail') + '">' + (ev.ok ? '+'+ev.count+' ingested' : 'Failed') + '</span>'
+            + '</div>';
+        });
+        syncHtml += '</div>';
+
+        var sparklinePath = buildSparkline(s.syncEvents);
+
+        el.innerHTML =
+          '<div class="di-detail-hd">'
+          + '<div class="di-detail-title-row"><span class="di-detail-name">'+s.name+'</span>'+statusBadge+'</div>'
+          + '<div class="di-detail-actions">'
+          + (s.paused
+              ? '<button class="di-btn di-btn-warn" onclick="diResumeSource(\''+srcId+'\')">Resume ingestion</button>'
+              : '<button class="di-btn di-btn-ghost" onclick="diPauseSource(\''+srcId+'\')">Pause</button>')
+          + '<button class="di-btn di-btn-primary" onclick="diOpenConfig(\''+srcId+'\',null)">Configure</button>'
+          + '</div>'
+          + '</div>'
+          + pausedBanner
+          + '<div class="di-stat-grid">'
+          + '<div class="di-stat-cell"><div class="di-stat-val">'+s.vol24h.toLocaleString()+'</div><div class="di-stat-lbl">Interactions / 24h</div></div>'
+          + '<div class="di-stat-cell"><div class="di-stat-val">'+s.vol7d.toLocaleString()+'</div><div class="di-stat-lbl">Interactions / 7d</div></div>'
+          + '<div class="di-stat-cell"><div class="di-stat-val '+(s.errCount > 0 ? 'di-stat-err' : '')+'">'+(s.errCount > 0 ? s.errCount : '&mdash;')+'</div><div class="di-stat-lbl">Errors / 24h</div></div>'
+          + '</div>'
+          + buildSparklineCard(s)
+          + buildAimyActions(s, srcId)
+          + (failedHtml || (s.errCount === 0 && activeFailed.length === 0
+              ? '<div class="di-sect"><div class="di-sect-title">Failed Items</div><p style="font-size:12px;color:var(--d500);padding:8px 0">No failed items in the last 24h.</p></div>'
+              : ''))
+          + syncHtml;
+      }
+
+      function buildSparklineCard(s) {
+        var events = s.syncEvents;
+        var sp = buildSparkline(events);
+        var counts = events.map(function(e) { return e.ok ? e.count : 0; });
+        var total = counts.reduce(function(a,b){return a+b;},0);
+        var avg = events.length ? Math.round(total/events.length) : 0;
+        var fails = events.filter(function(e){return !e.ok;}).length;
+        var successRate = events.length ? Math.round(((events.length-fails)/events.length)*100) : 0;
+        var trend = '';
+        if (events.length >= 4) {
+          var recent = counts.slice(0,3).reduce(function(a,b){return a+b;},0)/3;
+          var older = counts.slice(3,6).reduce(function(a,b){return a+b;},0)/3;
+          var pct = older > 0 ? Math.round(((recent-older)/older)*100) : 0;
+          trend = pct > 0
+            ? '<span style="color:var(--ok);font-size:10px">&uarr;'+Math.abs(pct)+'% vs prev</span>'
+            : pct < 0
+              ? '<span style="color:var(--err);font-size:10px">&darr;'+Math.abs(pct)+'% vs prev</span>'
+              : '<span style="font-size:10px;color:var(--d600)">Stable</span>';
+        }
+        // Build x-axis labels from timestamps
+        var eventsRev = events.slice().reverse();
+        var firstLbl = eventsRev.length ? eventsRev[0].ts : '';
+        var lastLbl = eventsRev.length ? eventsRev[eventsRev.length-1].ts : '';
+        return '<div class="di-sparkline">'
+          + '<div class="di-sparkline-hd"><span class="di-spark-title">Ingestion volume &mdash; last '+events.length+' syncs</span>'+trend+'</div>'
+          + '<div class="di-chart-container">'
+          + '<svg viewBox="0 0 400 64" fill="none" width="100%" height="64" preserveAspectRatio="none">'
+          + '<defs>'
+          + '<linearGradient id="spFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0066ff" stop-opacity=".18"/><stop offset="100%" stop-color="#0066ff" stop-opacity="0"/></linearGradient>'
+          + '<linearGradient id="spLine" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#0066ff"/><stop offset="1" stop-color="#6fdfe2"/></linearGradient>'
+          + '</defs>'
+          + '<line x1="0" y1="42" x2="400" y2="42" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>'
+          + '<line x1="0" y1="21" x2="400" y2="21" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>'
+          + '<path d="'+sp.area+'" fill="url(#spFill)"/>'
+          + '<path d="'+sp.line+'" stroke="url(#spLine)" stroke-width="1.8" fill="none"/>'
+          + (fails > 0 ? buildFailDots(eventsRev) : '')
+          + '</svg>'
+          + '<div class="di-chart-annotations">'
+          + '<span class="di-chart-ann-label">'+firstLbl+'</span>'
+          + '<span class="di-chart-ann-label">'+lastLbl+'</span>'
+          + '</div>'
+          + '</div>'
+          + '<div class="di-chart-stats">'
+          + '<div class="di-chart-stat"><span class="di-chart-stat-val">'+avg.toLocaleString()+'</span><span class="di-chart-stat-lbl">avg / sync</span></div>'
+          + '<div class="di-chart-stat"><span class="di-chart-stat-val '+(successRate < 80 ? 'di-chart-stat-err' : 'di-chart-stat-ok')+'">'+successRate+'%</span><span class="di-chart-stat-lbl">sync success</span></div>'
+          + '<div class="di-chart-stat"><span class="di-chart-stat-val '+(fails > 0 ? 'di-chart-stat-err' : '')+'">'+fails+'</span><span class="di-chart-stat-lbl">failed syncs</span></div>'
+          + '<div class="di-chart-stat"><span class="di-chart-stat-val">'+total.toLocaleString()+'</span><span class="di-chart-stat-lbl">total interactions</span></div>'
+          + '</div>'
+          + '</div>';
+      }
+
+      function buildFailDots(events) {
+        var n = events.length;
+        if (n < 2) return '';
+        var dots = '';
+        events.forEach(function(e, i) {
+          if (!e.ok) {
+            var x = (i / (n-1)) * 400;
+            dots += '<circle cx="'+x+'" cy="56" r="3" fill="var(--err)" opacity=".8"/>';
+          }
+        });
+        return dots;
+      }
+
+      function buildAimyActions(s, srcId) {
+        var chips = [];
+        if (s.errCount > 0 || s.status === 'error') {
+          chips.push({icon:'<svg viewBox="0 0 12 12" fill="none" width="11"><path d="M10 4.5A4.5 4.5 0 112 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M10 2v3H7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>', label:'Diagnose errors in '+s.name, q:'Why is '+s.name+' failing to ingest? Diagnose the last 3 errors.'});
+        }
+        if (s.status === 'warn') {
+          chips.push({icon:'<svg viewBox="0 0 12 12" fill="none" width="11"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.2"/><path d="M6 3.5v3M6 8h.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>', label:'Why is '+s.name+' stale?', q:'The '+s.name+' source is stale with no sync for 3 hours. What likely caused this and how do I fix it?'});
+        }
+        chips.push({icon:'<svg viewBox="0 0 12 12" fill="none" width="11"><path d="M2 9l3.5-6 3 4.5 2-3 1.5 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>', label:'Volume trend analysis', q:'Analyse the ingestion volume trend for '+s.name+' and flag anything unusual in the last 7 days.'});
+        chips.push({icon:'<svg viewBox="0 0 12 12" fill="none" width="11"><path d="M1.5 6h9M6 1.5v9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>', label:'Compare to last week', q:'How does '+s.name+' ingestion this week compare to last week? Is throughput improving?'});
+        if (s.vol24h > 500) {
+          chips.push({icon:'<svg viewBox="0 0 12 12" fill="none" width="11"><path d="M6 1l1.5 3 3.5.5-2.5 2.5.5 3.5L6 9l-3 1.5.5-3.5L1 4.5 4.5 4z" fill="currentColor" opacity=".6"/></svg>', label:'Quality impact report', q:'Across the '+s.vol24h.toLocaleString()+' interactions ingested today from '+s.name+', which have the lowest quality scores and why?'});
+        }
+        var html = '<div class="di-aimy-actions">'
+          + '<div class="di-aimy-actions-label">'
+          + '<svg width="14" height="16" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>'
+          + 'Ask AiMY about this source'
+          + '</div>';
+        chips.forEach(function(ch) {
+          html += '<button class="di-aimy-chip" data-q="'+ch.q.replace(/"/g,'&quot;')+'">'
+            + ch.icon + ch.label
+            + '</button>';
+        });
+        html += '</div>';
+        return html;
+      }
+
+      /* Contextual responses keyed to chip query patterns */
+      var CHIP_RESPONSES = {
+        'failing to ingest': function(q) {
+          var src = q.match(/Why is (\S+) failing/) ? q.match(/Why is (\S+) failing/)[1] : 'S3 Voice';
+          return 'S3 Voice has failed <strong>3 consecutive syncs</strong> since 14:04 today.'
+            + '<br><br><strong>Root cause:</strong> IAM role credentials expired (arn:aws:iam::123456:role/qa-s3-reader).'
+            + '<br><br><strong>Affected interactions:</strong> ~18&ndash;20 calls unscored in the last 22 min.'
+            + '<br><br><strong>Fix:</strong><ol style="margin:8px 0 0 16px;font-size:12px;line-height:1.8">'
+            + '<li>Go to <strong>S3 Voice</strong> &rarr; Configure &rarr; Connection</li>'
+            + '<li>Re-enter the IAM Role ARN with a valid credential</li>'
+            + '<li>Hit <em>Test connection</em> to verify, then Save</li>'
+            + '</ol><br>Once fixed, queued calls will process automatically in order.';
+        },
+        'stale': function(q) {
+          return 'Freshdesk last synced <strong>3 hours ago</strong> at 11:30 &mdash; 2h beyond the 1h stale threshold.'
+            + '<br><br><strong>Pattern detected:</strong> 2 of the last 5 syncs were delayed &gt;90 min.'
+            + '<br><br><strong>Likely cause:</strong> Freshdesk API rate limit triggered by the ticket volume spike on Monday (+34% above baseline). Your current API plan allows 1,000 req/hr; the Monday spike consumed ~2,400.'
+            + '<br><br><strong>Actions:</strong><ul style="margin:8px 0 0 16px;font-size:12px;line-height:1.8">'
+            + '<li>Reduce sync frequency to hourly until volume normalises</li>'
+            + '<li>Or request a Freshdesk API quota increase from your account manager</li>'
+            + '<li>Next expected sync: ~12 min if rate limit window resets on the hour</li>'
+            + '</ul>';
+        },
+        'volume trend': function(q) {
+          var src = q.match(/trend for (\S+)/) ? q.match(/trend for (\S+)/)[1] : 'this source';
+          return 'Ingestion volume for <strong>' + src + '</strong> over the last 7 days:'
+            + '<br><br>'
+            + '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:8px 0;font-size:10px;text-align:center">'
+            + ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(function(d,i) {
+                var v = [2341,2198,3104,2890,2847,1203,921][i];
+                var h = Math.round((v/3104)*48);
+                return '<div><div style="height:48px;display:flex;align-items:flex-end;justify-content:center">'
+                  + '<div style="width:20px;background:linear-gradient(180deg,#0066ff,#6fdfe2);border-radius:3px 3px 0 0;height:'+h+'px"></div></div>'
+                  + '<div style="color:var(--d500);margin-top:3px">'+d+'</div>'
+                  + '<div style="color:var(--d100);font-weight:600">'+Math.round(v/100)/10+'k</div>'
+                  + '</div>';
+              }).join('')
+            + '</div>'
+            + '<strong>Anomaly flagged:</strong> Wednesday spike (+41% vs Mon baseline) correlates with the product launch. Volume is now stabilising. 7-day avg: <strong>2,215 / day</strong>. No data gaps detected.';
+        },
+        'compare': function(q) {
+          var src = q.match(/How does (\S+)/) ? q.match(/How does (\S+)/)[1] : 'this source';
+          return '<strong>' + src + '</strong> this week vs last week:'
+            + '<br><br>'
+            + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0">'
+            + [['Daily avg','2,215','1,978','+12%','var(--ok)'],['Error rate','0.0%','0.2%','−0.2pp','var(--ok)'],['Sync lag','&lt;1 min','&lt;1 min','Stable','var(--d400)']].map(function(row) {
+                return '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:10px 12px">'
+                  + '<div style="font-size:10px;color:var(--d500);margin-bottom:4px">'+row[0]+'</div>'
+                  + '<div style="font-size:14px;font-weight:700;color:var(--d50)">'+row[1]+'</div>'
+                  + '<div style="font-size:10px;color:var(--d500)">vs '+row[2]+' &mdash; <span style="color:'+row[4]+'">'+row[3]+'</span></div>'
+                  + '</div>';
+              }).join('')
+            + '</div>'
+            + 'Throughput is <strong>improving</strong>. The Wednesday launch spike has passed; expect this week to land ~8% above the 30-day rolling average. No action needed.';
+        },
+        'quality impact': function(q) {
+          var n = q.match(/([\d,]+) interactions/) ? q.match(/([\d,]+) interactions/)[1] : '2,847';
+          var src = q.match(/from (\S+),/) ? q.match(/from (\S+),/)[1] : 'this source';
+          return 'Quality analysis for <strong>' + n + ' interactions</strong> ingested from <strong>' + src + '</strong> today:'
+            + '<br><br>'
+            + '<div style="display:flex;flex-direction:column;gap:6px;margin:8px 0">'
+            + [['Billing disputes','68%','24','Critical'],['Cancellation flow','71%','18','Critical'],['Technical support','74%','31','Major'],['Onboarding queries','82%','12','Minor']].map(function(row) {
+                var col = row[3]==='Critical'?'var(--err)':row[3]==='Major'?'var(--warn)':'var(--d400)';
+                return '<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:7px">'
+                  + '<div style="flex:1;font-size:12px;color:var(--d100)">'+row[0]+'</div>'
+                  + '<div style="font-size:13px;font-weight:700;color:'+col+'">'+row[1]+'</div>'
+                  + '<div style="font-size:10px;color:var(--d500)">'+row[2]+' agents</div>'
+                  + '<div style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;background:rgba(255,255,255,0.05);color:'+col+'">'+row[3]+'</div>'
+                  + '</div>';
+              }).join('')
+            + '</div>'
+            + '<strong>Recommended action:</strong> Schedule coaching for the 24 agents on billing disputes &mdash; lowest average score in 30 days. Want me to generate a coaching brief?';
+        }
+      };
+
+      function getChipResponse(query) {
+        var lo = query.toLowerCase();
+        if (lo.includes('failing') || lo.includes('diagnose') || lo.includes('error')) return CHIP_RESPONSES['failing to ingest'](query);
+        if (lo.includes('stale')) return CHIP_RESPONSES['stale'](query);
+        if (lo.includes('volume trend') || lo.includes('unusual')) return CHIP_RESPONSES['volume trend'](query);
+        if (lo.includes('compare') || lo.includes('last week') || lo.includes('throughput')) return CHIP_RESPONSES['compare'](query);
+        if (lo.includes('quality impact') || lo.includes('lowest quality')) return CHIP_RESPONSES['quality impact'](query);
+        return null;
+      }
+
+      window.diAskAiMY = function(query) {
+        /* Always open the canvas directly — never route through filter detection */
+        var overlay = document.getElementById('aimyOverlay');
+        var floatBar = document.getElementById('aimyFloatBar');
+        var thread = document.getElementById('overlayThread');
+        var suggestions = document.getElementById('overlaySuggestions');
+        if (!overlay) return;
+
+        /* Open the canvas */
+        overlay.classList.add('open');
+        if (floatBar) floatBar.classList.add('hidden');
+
+        setTimeout(function() {
+          /* Append user message */
+          if (suggestions) suggestions.classList.add('hidden');
+          var userWrap = document.createElement('div');
+          userWrap.className = 'chat-msg user';
+          userWrap.innerHTML = '<div class="msg-avatar user-av">NW</div><div class="msg-bubble">' + query.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+          if (thread) { thread.appendChild(userWrap); thread.scrollTop = thread.scrollHeight; }
+
+          /* Show typing */
+          var typingWrap = document.createElement('div');
+          typingWrap.className = 'chat-msg aimy'; typingWrap.id = 'diChipTyping';
+          typingWrap.innerHTML = '<div class="msg-avatar aimy-av"><svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg></div><div class="msg-bubble" style="padding:10px 14px"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+          if (thread) { thread.appendChild(typingWrap); thread.scrollTop = thread.scrollHeight; }
+
+          /* Respond after delay with contextual data */
+          setTimeout(function() {
+            var typing = document.getElementById('diChipTyping');
+            if (typing) typing.remove();
+            var response = getChipResponse(query) || 'I\'ve reviewed the pipeline data. Let me know what specific aspect you\'d like to dig into.';
+            var aiWrap = document.createElement('div');
+            aiWrap.className = 'chat-msg aimy';
+            aiWrap.innerHTML = '<div class="msg-avatar aimy-av"><svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg></div><div class="msg-bubble">' + response + '</div>';
+            if (thread) { thread.appendChild(aiWrap); thread.scrollTop = thread.scrollHeight; }
+          }, 1200 + Math.random() * 400);
+        }, 80);
+      };
+
+      function buildSparkline(events) {
+        var n = events.length;
+        if (!n) return { line: 'M0 50 L400 50', area: 'M0 60 L400 60 Z' };
+        var counts = events.map(function(e) { return e.ok ? e.count : 0; }).reverse();
+        var max = Math.max.apply(null, counts) || 1;
+        var pts = counts.map(function(c, i) {
+          var x = (i / (n-1)) * 400;
+          var y = 54 - (c / max) * 46;
+          return [x, y];
+        });
+        var line = 'M' + pts.map(function(p) { return p[0]+' '+p[1]; }).join(' L');
+        var area = line + ' L400 60 L0 60 Z';
+        return { line: line, area: area };
+      }
+
+      /* ── UPLOAD ────────────────────────────────────────────────────────── */
+      window.diPickFiles = function() { document.getElementById('diFilePicker').click(); };
+      window.diFilePicked = function(e) { handleFiles(Array.from(e.target.files)); e.target.value=''; };
+      window.diDragOver = function(e) { e.preventDefault(); document.getElementById('diDropzone').classList.add('drag-over'); };
+      window.diDragLeave = function() { document.getElementById('diDropzone').classList.remove('drag-over'); };
+      window.diDrop = function(e) {
+        e.preventDefault();
+        document.getElementById('diDropzone').classList.remove('drag-over');
+        handleFiles(Array.from(e.dataTransfer.files));
+      };
+
+      var ACCEPTED_TYPES = ['audio/mpeg','audio/mp3','audio/wav','audio/ogg','audio/mp4','audio/x-m4a','audio/aac'];
+      var ACCEPTED_EXT = ['.mp3','.wav','.ogg','.m4a'];
+      var MAX_BYTES = 500 * 1024 * 1024;
+
+      function handleFiles(files) {
+        var validation = document.getElementById('diValidation');
+        var errors = [];
+        var valid = [];
+        var seen = {};
+
+        files.forEach(function(f) {
+          var ext = f.name.slice(f.name.lastIndexOf('.')).toLowerCase();
+          if (ACCEPTED_EXT.indexOf(ext) === -1) {
+            errors.push({type:'err', title: f.name+': Unsupported format', msg:'Accepted formats: .mp3, .wav, .ogg, .m4a'});
+          } else if (f.size > MAX_BYTES) {
+            errors.push({type:'err', title: f.name+': File too large', msg:'Maximum size is 500 MB. This file is '+fmtSize(f.size)+'.'});
+          } else {
+            var dup = UPLOAD_HISTORY.find(function(h) { return h.name === f.name; });
+            if (dup && !seen[f.name]) {
+              seen[f.name] = true;
+              errors.push({type:'warn', title: f.name+': Duplicate detected', msg:'A file with this name was uploaded on '+dup.date+'. Do you still want to upload?'});
+            }
+            valid.push(f);
+          }
+        });
+
+        if (errors.length) {
+          validation.innerHTML = errors.map(function(e) {
+            return '<div class="di-verr '+(e.type==='warn' ? 'di-vwarn' : '')+'">'
+              + '<svg class="di-verr-icon" viewBox="0 0 14 14" fill="none" width="13"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4.5v3M7 9.5h.01" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>'
+              + '<div><strong>'+e.title+'</strong>'+e.msg+'</div>'
+              + '</div>';
+          }).join('');
+        } else {
+          validation.innerHTML = '';
+        }
+
+        if (valid.length) queueFiles(valid);
+      }
+
+      function queueFiles(files) {
+        var queue = document.getElementById('diQueue');
+        var list = document.getElementById('diQueueList');
+        var label = document.getElementById('diQueueLabel');
+        queue.style.display = 'block';
+
+        files.forEach(function(f) {
+          var id = 'qi-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+          var row = document.createElement('div');
+          row.className = 'di-qitem';
+          row.id = id;
+          row.innerHTML =
+            '<div class="di-qitem-hd">'
+            + '<span class="di-qitem-name" title="'+f.name+'">'+f.name+'</span>'
+            + '<span class="di-qitem-size">'+fmtSize(f.size)+'</span>'
+            + '<button class="di-qitem-cancel" onclick="diCancelItem(\''+id+'\')" aria-label="Cancel upload"><svg viewBox="0 0 12 12" fill="none" width="11"><path d="M9 3L3 9M3 3l6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>'
+            + '</div>'
+            + '<div class="di-qitem-prog"><div class="di-qitem-progbar" id="pb-'+id+'" style="width:0%"></div></div>'
+            + '<div class="di-qitem-status" id="st-'+id+'">Queued</div>';
+          list.appendChild(row);
+          simulateUpload(id, f.name, f.size);
+        });
+
+        updateQueueLabel();
+      }
+
+      function simulateUpload(id, fname, size) {
+        var pb = document.getElementById('pb-'+id);
+        var st = document.getElementById('st-'+id);
+        if (!pb || !st) return;
+        var prog = 0;
+        st.textContent = 'Processing\u2026';
+        var interval = setInterval(function() {
+          if (!document.getElementById(id)) { clearInterval(interval); return; }
+          prog += Math.random() * 12 + 4;
+          if (prog >= 100) { prog = 100; clearInterval(interval); }
+          pb.style.width = prog + '%';
+          if (prog < 100) {
+            st.textContent = Math.round(prog) + '%';
+          } else {
+            var ok = Math.random() > 0.15;
+            pb.className = 'di-qitem-progbar ' + (ok ? 'done' : 'failed');
+            st.textContent = ok ? 'Complete' : 'Failed \u2014 authentication error';
+            st.className = 'di-qitem-status ' + (ok ? 'ok' : 'err');
+            updateQueueLabel();
+          }
+        }, 280);
+      }
+
+      function updateQueueLabel() {
+        var items = document.querySelectorAll('#diQueueList .di-qitem');
+        var done = document.querySelectorAll('#diQueueList .di-qitem-progbar.done').length;
+        var failed = document.querySelectorAll('#diQueueList .di-qitem-progbar.failed').length;
+        var total = items.length;
+        var label = document.getElementById('diQueueLabel');
+        if (label) {
+          if (done + failed === total) label.textContent = done + ' of '+total+' uploaded';
+          else label.textContent = 'Uploading ' + (done+failed) + ' of ' + total + '\u2026';
+        }
+      }
+
+      window.diCancelItem = function(id) {
+        var el = document.getElementById(id);
+        if (el) el.remove();
+        updateQueueLabel();
+        var list = document.getElementById('diQueueList');
+        if (list && !list.children.length) document.getElementById('diQueue').style.display = 'none';
+      };
+      window.diCancelAll = function() {
+        document.getElementById('diQueueList').innerHTML = '';
+        document.getElementById('diQueue').style.display = 'none';
+      };
+
+      function fmtSize(b) {
+        if (b < 1024*1024) return (b/1024).toFixed(0)+' KB';
+        return (b/1024/1024).toFixed(1)+' MB';
+      }
+
+      /* ── HISTORY ───────────────────────────────────────────────────────── */
+      function renderHistory() {
+        diFilterHist();
+      }
+      window.diFilterHist = function() {
+        var status = document.getElementById('histStatus').value;
+        var list = document.getElementById('diHistList');
+        var items = UPLOAD_HISTORY.filter(function(h) {
+          return status === 'all' || h.status === status;
+        });
+        if (!items.length) { list.innerHTML = '<div class="di-tr"><span style="font-size:12px;color:var(--d500)">No items match this filter.</span></div>'; return; }
+        list.innerHTML = items.map(function(h, i) {
+          var badgeCls = 'hb-'+h.status;
+          var retryBtn = h.status === 'failed' ? '<button class="di-retry-link" onclick="diHistRetry('+i+')">Retry</button>' : '';
+          return '<div class="di-tr">'
+            + '<div class="di-td di-td-fn" title="'+h.name+'" style="flex:2">'+h.name+'</div>'
+            + '<div class="di-td">'+h.size+'</div>'
+            + '<div class="di-td">'+h.date+'</div>'
+            + '<div class="di-td">'+(h.duration || (h.err ? '<span style="color:var(--d500);font-size:11px">'+h.err+'</span>' : '&mdash;'))+'</div>'
+            + '<div class="di-td"><span class="di-badge '+badgeCls+'">'+h.status.charAt(0).toUpperCase()+h.status.slice(1)+'</span></div>'
+            + '<div class="di-td di-td-action">'+retryBtn+'</div>'
+            + '</div>';
+        }).join('');
+      };
+      window.diHistRetry = function(i) {
+        UPLOAD_HISTORY[i].status = 'queued';
+        diFilterHist();
+        showToast({title:'Retry queued', sub:UPLOAD_HISTORY[i].name});
+      };
+
+      /* ── SOURCE CONFIG ─────────────────────────────────────────────────── */
+      window.diOpenConfig = function(srcId, e) {
+        if (e) e.stopPropagation();
+        var s = SOURCES[srcId];
+        var bd = document.getElementById('diCfgBd');
+        bd.classList.add('open');
+        document.getElementById('diCfgTitle').textContent = 'Configure ' + s.name;
+        cfgActiveTab = 'connection';
+        renderConfigModal(srcId);
+      };
+      window.diCloseConfig = function(e) {
+        if (e && e.target !== document.getElementById('diCfgBd')) return;
+        document.getElementById('diCfgBd').classList.remove('open');
+      };
+
+      function renderConfigModal(srcId) {
+        var s = SOURCES[srcId];
+        var bd2 = document.getElementById('diCfgBd2');
+        var ft = document.getElementById('diCfgFt');
+
+        var connHtml = '';
+        if (s.type === 'zendesk' || s.type === 'freshdesk') {
+          connHtml =
+            '<div class="di-field-group"><label class="di-label">API Key</label><input type="password" class="di-field di-field-pw" value="••••••••••••••••" placeholder="API key"><div class="di-field-hint">Re-enter to change. Never displayed in plain text.</div></div>'
+            + '<div class="di-field-group"><label class="di-label">'+(s.type==='zendesk'?'Subdomain':'Domain')+'</label><input type="text" class="di-field" value="'+s.url+'"></div>';
+        } else if (s.type === 's3') {
+          connHtml =
+            '<div class="di-field-group"><label class="di-label">Bucket Name</label><input type="text" class="di-field" value="qa-voice-bucket"></div>'
+            + '<div class="di-field-group"><label class="di-label">Prefix</label><input type="text" class="di-field" value="calls/"></div>'
+            + '<div class="di-field-group"><label class="di-label">IAM Role ARN</label><input type="password" class="di-field di-field-pw" value="••••••••••••••••"><div class="di-field-hint">Re-enter to change credentials.</div></div>';
+        } else {
+          connHtml = '<p style="font-size:13px;color:var(--d400);padding:8px 0">AiMY Connect is an internal integration and does not require manual credentials. Select which channels to ingest below.</p>';
+        }
+
+        var syncHtml =
+          '<div class="di-field-group"><label class="di-label">Sync Frequency</label>'
+          + '<select class="di-cfg-select"><option '+(s.syncFreq==='real-time'?'selected':'')+' value="real-time">Real-time</option><option '+(s.syncFreq==='hourly'?'selected':'')+' value="hourly">Hourly</option><option '+(s.syncFreq==='daily'?'selected':'')+' value="daily">Daily</option></select></div>'
+          + '<div class="di-field-group"><label class="di-label">Channel Mapping</label>'
+          + '<div style="display:flex;flex-direction:column;gap:7px">'
+          + labeledCheck('sync-tickets', 'Tickets / Cases', true)
+          + labeledCheck('sync-chat', 'Chat transcripts', true)
+          + labeledCheck('sync-email', 'Email threads', s.type!=='s3')
+          + labeledCheck('sync-calls', 'Call recordings / voice', s.type==='s3'||s.type==='connect')
+          + '</div></div>';
+
+        var dangerHtml =
+          '<div class="di-danger-zone"><div class="di-danger-title">Danger zone</div>'
+          + '<div class="di-danger-btns">'
+          + (s.paused
+            ? '<button class="di-btn di-btn-warn" onclick="diResumeSource(\''+srcId+'\');diCloseConfig(null)">Resume ingestion</button>'
+            : '<button class="di-btn di-btn-ghost" onclick="diPauseSource(\''+srcId+'\');diCloseConfig(null)">Pause ingestion</button>')
+          + (s.type !== 'connect' ? '<button class="di-btn di-btn-danger" onclick="diCloseConfig(null);diOpenDelete(\''+srcId+'\')">Delete source</button>' : '')
+          + '</div></div>';
+
+        bd2.innerHTML =
+          '<div class="di-cfg-tabs">'
+          + cfgTab('connection','Connection',cfgActiveTab)
+          + cfgTab('sync','Sync settings',cfgActiveTab)
+          + '</div>'
+          + '<div class="di-cfg-pane '+(cfgActiveTab==='connection'?'active':'')+'" id="cfgPaneConn">'+connHtml+'</div>'
+          + '<div class="di-cfg-pane '+(cfgActiveTab==='sync'?'active':'')+'" id="cfgPaneSync">'+syncHtml+'</div>'
+          + dangerHtml;
+
+        ft.innerHTML =
+          '<button class="di-btn di-btn-ghost" onclick="diCloseConfig(null)">Cancel</button>'
+          + '<button class="di-btn di-btn-primary" onclick="diSaveConfig(\''+srcId+'\')">Save changes</button>';
+
+        // Bind config tab clicks
+        bd2.querySelectorAll('.di-cfg-tab').forEach(function(t) {
+          t.addEventListener('click', function() {
+            bd2.querySelectorAll('.di-cfg-tab').forEach(function(x) { x.classList.remove('active'); });
+            t.classList.add('active');
+            bd2.querySelectorAll('.di-cfg-pane').forEach(function(p) { p.classList.remove('active'); });
+            bd2.getElementById && bd2.getElementById('cfgPane'+t.dataset.tab.charAt(0).toUpperCase()+t.dataset.tab.slice(1));
+            bd2.querySelector('#cfgPane'+cap(t.dataset.tab)).classList.add('active');
+          });
+        });
+      }
+
+      function cap(s) { return s.charAt(0).toUpperCase()+s.slice(1); }
+      function cfgTab(id, label, active) {
+        return '<button class="di-cfg-tab '+(active===id?'active':'')+'" data-tab="'+id+'">'+label+'</button>';
+      }
+      function labeledCheck(id, label, checked) {
+        return '<label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--d300);cursor:pointer">'
+          + '<input type="checkbox"'+(checked?' checked':'')+' style="accent-color:var(--brand)"> '+label+'</label>';
+      }
+
+      window.diSaveConfig = function(srcId) {
+        diCloseConfig(null);
+        showToast({title: SOURCES[srcId].name+' updated', sub:'Configuration saved successfully.'});
+      };
+
+      /* ── PAUSE / RESUME ────────────────────────────────────────────────── */
+      window.diPauseSource = function(srcId) {
+        SOURCES[srcId].paused = true;
+        SOURCES[srcId].status = 'paused';
+        renderDetail(srcId);
+        showToast({title: SOURCES[srcId].name+' paused', sub:'Ingestion stopped. Configuration preserved.'});
+      };
+      window.diResumeSource = function(srcId) {
+        SOURCES[srcId].paused = false;
+        SOURCES[srcId].status = 'active';
+        renderDetail(srcId);
+        showToast({title: SOURCES[srcId].name+' resumed', sub:'Ingestion restarted from last sync point.'});
+      };
+
+      /* ── DELETE ────────────────────────────────────────────────────────── */
+      window.diOpenDelete = function(srcId) {
+        deletingSource = srcId;
+        document.getElementById('diDelName').textContent = SOURCES[srcId].name;
+        document.getElementById('diDelInput').value = '';
+        document.getElementById('diDelBtn').disabled = true;
+        document.getElementById('diDelBd').classList.add('open');
+        setTimeout(function() { document.getElementById('diDelInput').focus(); }, 120);
+      };
+      window.diCloseDelete = function(e) {
+        if (e && e.target !== document.getElementById('diDelBd')) return;
+        document.getElementById('diDelBd').classList.remove('open');
+        deletingSource = '';
+      };
+      window.diCheckDel = function() {
+        var val = document.getElementById('diDelInput').value.trim();
+        document.getElementById('diDelBtn').disabled = (val !== SOURCES[deletingSource].name);
+      };
+      window.diExecDelete = function() {
+        var name = SOURCES[deletingSource].name;
+        delete SOURCES[deletingSource];
+        document.querySelectorAll('[data-src="'+deletingSource+'"]').forEach(function(el) { el.remove(); });
+        document.getElementById('diDelBd').classList.remove('open');
+        document.getElementById('diDetail').innerHTML = '<p style="font-size:13px;color:var(--d500);padding-top:24px">Select a source to view its details.</p>';
+        showToast({title: name+' deleted', sub:'Source removed. Ingested data is retained in QA.'});
+        deletingSource = '';
+      };
+
+      /* ── WIZARD ────────────────────────────────────────────────────────── */
+      window.diOpenWizard = function() {
+        wizardStep = 1;
+        wizardSrcType = '';
+        document.getElementById('diWizBd').classList.add('open');
+        renderWizardStep();
+      };
+      window.diCloseWizard = function(e) {
+        if (e && e.target !== document.getElementById('diWizBd')) return;
+        document.getElementById('diWizBd').classList.remove('open');
+      };
+
+      var WIZ_SOURCES = [
+        {id:'zendesk', name:'Zendesk', ico:'🎫', sub:'CRM & ticketing'},
+        {id:'freshdesk', name:'Freshdesk', ico:'🗂', sub:'Helpdesk & support'},
+        {id:'s3', name:'Amazon S3', ico:'🗄', sub:'Voice file bucket'},
+        {id:'connect', name:'AiMY Connect', ico:'⚡', sub:'Internal integration'},
+        {id:'other', name:'Other', ico:'🔌', sub:'Custom source'}
+      ];
+
+      function renderWizardStep() {
+        var bd = document.getElementById('diWizBd2');
+        var ft = document.getElementById('diWizFt');
+        updateWizardSteps();
+        if (wizardStep === 1) {
+          bd.innerHTML = '<p class="di-sect-title" style="margin-bottom:14px">Select source type</p>'
+            + '<div class="di-wiz-src-grid">'+WIZ_SOURCES.map(function(s) {
+              return '<button class="di-wiz-src-opt'+(wizardSrcType===s.id?' selected':'')+'" onclick="diWizPickSrc(\''+s.id+'\')">'
+                + '<div class="di-wiz-src-ico">'+s.ico+'</div>'
+                + '<div class="di-wiz-src-nm">'+s.name+'</div>'
+                + '<div class="di-wiz-src-sub">'+s.sub+'</div>'
+                + '</button>';
+            }).join('')+'</div>';
+          ft.innerHTML = '<button class="di-btn di-btn-ghost" onclick="diCloseWizard(null)">Cancel</button>'
+            + '<button class="di-btn di-btn-primary" '+(wizardSrcType?'':'disabled')+' onclick="diWizNext()">Next &rarr;</button>';
+        } else if (wizardStep === 2) {
+          var isInternal = wizardSrcType === 'connect';
+          bd.innerHTML = '<p class="di-sect-title" style="margin-bottom:14px">Connection credentials</p>'
+            + (isInternal
+                ? '<p style="font-size:13px;color:var(--d400);line-height:1.6">AiMY Connect is an internal integration. No additional credentials required. Proceed to configure sync settings.</p>'
+                : '<div class="di-field-group"><label class="di-label">API Key / Secret</label><input type="password" class="di-field di-field-pw" id="wizApiKey" placeholder="Enter API key or secret"><div class="di-field-hint">Stored encrypted. Never displayed in plain text after saving.</div></div>'
+                  + '<div class="di-field-group"><label class="di-label">'+(wizardSrcType==='s3'?'Bucket Name':'Domain / Subdomain')+'</label><input type="text" class="di-field" id="wizDomain" placeholder="e.g. yourco.zendesk.com"></div>');
+          ft.innerHTML = '<button class="di-btn di-btn-ghost" onclick="diWizPrev()">&larr; Back</button>'
+            + '<button class="di-btn di-btn-primary" onclick="diWizNext()">Next &rarr;</button>';
+        } else if (wizardStep === 3) {
+          bd.innerHTML = '<p class="di-sect-title" style="margin-bottom:14px">Sync settings</p>'
+            + '<div class="di-field-group"><label class="di-label">Sync Frequency</label><select class="di-cfg-select"><option>Real-time</option><option>Hourly</option><option>Daily</option></select></div>'
+            + '<div class="di-field-group"><label class="di-label">Channels to ingest</label><div style="display:flex;flex-direction:column;gap:8px">'
+            + labeledCheck('wc-tickets','Tickets / Cases',true)
+            + labeledCheck('wc-chat','Chat transcripts',true)
+            + labeledCheck('wc-email','Email threads',true)
+            + labeledCheck('wc-calls','Voice / Calls',wizardSrcType==='s3')
+            + '</div></div>';
+          ft.innerHTML = '<button class="di-btn di-btn-ghost" onclick="diWizPrev()">&larr; Back</button>'
+            + '<button class="di-btn di-btn-primary" onclick="diWizNext()">Test connection &rarr;</button>';
+        } else if (wizardStep === 4) {
+          bd.innerHTML = '<p class="di-sect-title" style="margin-bottom:14px">Test connection</p>'
+            + '<p style="font-size:13px;color:var(--d400);margin-bottom:16px">Sending a test API call to verify credentials and connectivity.</p>'
+            + '<div class="di-test-status di-test-pending" id="wizTestStatus"><span>Testing&hellip;</span></div>';
+          ft.innerHTML = '<button class="di-btn di-btn-ghost" onclick="diWizPrev()">&larr; Back</button>'
+            + '<button class="di-btn di-btn-primary" disabled id="wizTestNextBtn" onclick="diWizNext()">Continue &rarr;</button>';
+          setTimeout(function() {
+            var ok = wizardSrcType !== 'other';
+            var el = document.getElementById('wizTestStatus');
+            var btn = document.getElementById('wizTestNextBtn');
+            if (!el) return;
+            if (ok) {
+              el.className = 'di-test-status di-test-ok';
+              el.innerHTML = '<svg viewBox="0 0 14 14" fill="none" width="14"><path d="M2.5 7.5L5.5 10.5l6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Connection successful &mdash; credentials verified.';
+              if (btn) btn.disabled = false;
+            } else {
+              el.className = 'di-test-status di-test-fail';
+              el.innerHTML = '<svg viewBox="0 0 14 14" fill="none" width="14"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4.5v3M7 9.5h.01" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg> Connection failed &mdash; check credentials and try again.';
+              var ft2 = document.getElementById('diWizFt');
+              if (ft2) ft2.innerHTML = '<button class="di-btn di-btn-ghost" onclick="diWizPrev()">&larr; Back</button><button class="di-btn di-btn-ghost" onclick="renderWizardStep()">Retry test</button>';
+            }
+          }, 1800);
+        } else if (wizardStep === 5) {
+          var srcLabel = WIZ_SOURCES.find(function(s) { return s.id===wizardSrcType; });
+          bd.innerHTML = '<p class="di-sect-title" style="margin-bottom:14px">Confirm and activate</p>'
+            + '<div style="background:rgba(23,178,106,0.06);border:1px solid rgba(23,178,106,0.15);border-radius:10px;padding:16px;margin-bottom:16px">'
+            + '<div style="font-size:13px;font-weight:700;color:var(--d100);margin-bottom:8px">'+(srcLabel ? srcLabel.ico+' '+srcLabel.name : 'New source')+'</div>'
+            + '<div style="font-size:12px;color:var(--d400);display:flex;flex-direction:column;gap:5px">'
+            + '<span>Sync frequency: <strong style="color:var(--d200)">Real-time</strong></span>'
+            + '<span>Channels: <strong style="color:var(--d200)">Tickets, Chat, Email</strong></span>'
+            + '<span>Status on activation: <strong style="color:var(--ok)">Active</strong></span>'
+            + '</div></div>'
+            + '<p style="font-size:12px;color:var(--d500)">First sync will begin immediately on activation. Expect data within 5&ndash;10 minutes depending on volume.</p>';
+          ft.innerHTML = '<button class="di-btn di-btn-ghost" onclick="diWizPrev()">&larr; Back</button>'
+            + '<button class="di-btn di-btn-primary" onclick="diActivateSource()">Activate source</button>';
+        }
+      }
+
+      window.diWizPickSrc = function(id) {
+        wizardSrcType = id;
+        document.querySelectorAll('.di-wiz-src-opt').forEach(function(o) { o.classList.remove('selected'); });
+        document.querySelector('.di-wiz-src-opt[onclick*="\''+id+'\'"]').classList.add('selected');
+        var btn = document.querySelector('#diWizFt .di-btn-primary');
+        if (btn) btn.disabled = false;
+      };
+      window.diWizNext = function() { if (wizardStep < 5) { wizardStep++; renderWizardStep(); } };
+      window.diWizPrev = function() { if (wizardStep > 1) { wizardStep--; renderWizardStep(); } };
+
+      function updateWizardSteps() {
+        document.querySelectorAll('.di-ws').forEach(function(el) {
+          var s = parseInt(el.dataset.s);
+          el.classList.remove('on','done');
+          if (s < wizardStep) el.classList.add('done');
+          else if (s === wizardStep) el.classList.add('on');
+        });
+      }
+
+      window.diActivateSource = function() {
+        var srcLabel = WIZ_SOURCES.find(function(s) { return s.id===wizardSrcType; });
+        diCloseWizard(null);
+        showToast({title: (srcLabel ? srcLabel.name : 'New source')+' activated', sub:'First sync starting now.'});
+      };
+
+      /* ── RETRY ─────────────────────────────────────────────────────────── */
+      window.diRetryItem = function(srcId, idx) {
+        showToast({title:'Retry queued', sub:SOURCES[srcId].failedItems[idx].id});
+        setTimeout(function() {
+          if (SOURCES[srcId]) {
+            SOURCES[srcId].failedItems[idx].dismissed = true;
+            renderDetail(srcId);
+          }
+        }, 1200);
+      };
+      window.diRetryAll = function(srcId) {
+        var count = SOURCES[srcId].failedItems.filter(function(f) { return !f.dismissed; }).length;
+        SOURCES[srcId].failedItems.forEach(function(f) { f.dismissed = true; });
+        renderDetail(srcId);
+        showToast({title:'Retrying '+count+' items', sub:'Items re-queued for ingestion.'});
+      };
+      window.diDismissItem = function(srcId, idx) {
+        SOURCES[srcId].failedItems[idx].dismissed = true;
+        renderDetail(srcId);
+      };
+
+      /* ── TOAST ─────────────────────────────────────────────────────────── */
+      function showToast(opts) {
+        var existing = document.getElementById('diToast');
+        if (existing) existing.remove();
+        var t = document.createElement('div');
+        t.id = 'diToast';
+        t.style.cssText = 'position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#1c2630;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--d100);z-index:10000;box-shadow:0 8px 32px rgba(0,0,0,0.4);animation:mIn 200ms cubic-bezier(.16,1,.3,1) both;max-width:360px;font-family:Urbanist,sans-serif;';
+        var bar = document.createElement('div');
+        bar.style.cssText = 'position:absolute;bottom:0;left:0;height:2px;border-radius:0 0 10px 10px;width:100%;background:linear-gradient(90deg,#0066ff,#6fdfe2);transform-origin:left;animation:toastBar 3s linear forwards;';
+        bar.style.setProperty('--dur','3s');
+        t.innerHTML = '<svg width="14" height="16" viewBox="0 0 18 20" style="flex-shrink:0;opacity:.8"><use href="#aimy-logo-small"/></svg>'
+          + '<div><strong style="display:block;font-weight:700;color:var(--d50)">' + (opts.title||'') + '</strong>'
+          + (opts.sub ? '<span style="font-size:11px;color:var(--d400)">' + opts.sub + '</span>' : '') + '</div>';
+        t.appendChild(bar);
+        if (!document.getElementById('toastKeyframes')) {
+          var s = document.createElement('style');
+          s.id = 'toastKeyframes';
+          s.textContent = '@keyframes toastBar{from{transform:scaleX(1)}to{transform:scaleX(0)}}';
+          document.head.appendChild(s);
+        }
+        document.body.appendChild(t);
+        setTimeout(function() { if(t.parentNode) t.style.animation='mIn 200ms ease reverse both'; setTimeout(function(){if(t.parentNode)t.remove();},200); }, 3000);
+      }
+
+      /* ── AIMY FLOAT BAR + CANVAS OVERLAY ─────────────────────────────── */
+      (function() {
+        var floatWrap = document.getElementById('aimyFloatWrap');
+        var floatBar  = document.getElementById('aimyFloatBar');
+        var floatInput= document.getElementById('aimyFloatInput');
+        var floatSend = document.getElementById('aimyFloatSend');
+        var floatHint = document.getElementById('aimyFloatHint');
+        var overlay   = document.getElementById('aimyOverlay');
+        var overlayClose = document.getElementById('overlayClose');
+        var thread    = document.getElementById('overlayThread');
+        var suggestions = document.getElementById('overlaySuggestions');
+        var overlayInput = document.getElementById('overlayInput');
+        var overlaySend  = document.getElementById('overlaySend');
+        if (!floatBar) return;
+
+        var overlayOpen = false, msgCount = 0, isTyping = false;
+
+        var FILTER_KWS = ['filter','show only','show me','hide','only','last week','this week','last month','today','this month','last quarter','this quarter','sort','group','compare','date','time period','period','source','zendesk','freshdesk','s3','connect','ingestion','sync','error','volume','stale'];
 
         function detectIntent(text) {
-          const lo = text.toLowerCase().trim();
-          for (const kw of FILTER_KWS) {
-            if (lo.includes(kw)) return "filter";
-          }
-          return "chat";
+          var lo = text.toLowerCase().trim();
+          for (var i=0;i<FILTER_KWS.length;i++) { if (lo.includes(FILTER_KWS[i])) return 'filter'; }
+          return 'chat';
         }
 
-        /* ── Floating bar: hint visibility ──────── */
-        floatInput.addEventListener("input", () => {
-          floatHint.style.opacity = floatInput.value.length ? "0" : "1";
-        });
+        if (floatInput) floatInput.addEventListener('input', function() { if(floatHint) floatHint.style.opacity = floatInput.value.length ? '0' : '1'; });
 
-        /* ── Floating bar: Enter / Send ──────────── */
         function handleFloatSubmit() {
-          const text = floatInput.value.trim();
+          var text = floatInput ? floatInput.value.trim() : '';
           if (!text) return;
-
-          const intent = detectIntent(text);
-
-          if (intent === "filter") {
-            applyFilter(text);
-          } else {
-            openOverlay(text);
-          }
+          if (detectIntent(text) === 'filter') { applyFilter(text); } else { openOverlay(text); }
         }
 
-        floatInput.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            handleFloatSubmit();
-          }
-        });
-        floatSend.addEventListener("click", handleFloatSubmit);
+        if (floatInput) floatInput.addEventListener('keydown', function(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleFloatSubmit();} });
+        if (floatSend) floatSend.addEventListener('click', handleFloatSubmit);
 
-        /* ── Filter simulation ────────────────────────────────────────────
-     In production dispatch a CustomEvent the agent layer subscribes to. */
         function applyFilter(text) {
-          floatSend.classList.add("thinking");
-          floatInput.disabled = true;
-
-          setTimeout(() => {
-            floatSend.classList.remove("thinking");
-            floatInput.disabled = false;
-            floatInput.value = "";
-            floatHint.style.opacity = "1";
-
-            // Restart flash animation
-            floatBar.classList.remove("filter-applied");
-            void floatBar.offsetWidth;
-            floatBar.classList.add("filter-applied");
-
-            window.dispatchEvent(
-              new CustomEvent("aimy:filter-applied", {
-                detail: { query: text, timestamp: Date.now() },
-              }),
-            );
-
-            showToast({
-              title: "Filters updated",
-              sub:
-                "\u201C" +
-                text.slice(0, 50) +
-                (text.length > 50 ? "\u2026" : "") +
-                "\u201D",
-            });
-
-            floatInput.focus();
+          if (floatSend) floatSend.classList.add('thinking');
+          if (floatInput) floatInput.disabled = true;
+          setTimeout(function() {
+            if (floatSend) floatSend.classList.remove('thinking');
+            if (floatInput) { floatInput.disabled=false; floatInput.value=''; }
+            if (floatHint) floatHint.style.opacity='1';
+            if (floatBar) { floatBar.classList.remove('filter-applied'); void floatBar.offsetWidth; floatBar.classList.add('filter-applied'); }
+            showToast({ title:'Filters updated', sub: '“' + text.slice(0,50) + (text.length>50?'…':'') + '”' });
+            if (floatInput) floatInput.focus();
           }, 900);
         }
 
-        /* ── Open overlay ─────────────────────────────────────────────── */
         function openOverlay(initialText) {
           overlayOpen = true;
-          overlay.classList.add("open");
-          floatBar.classList.add("hidden");
-
+          if (overlay) overlay.classList.add('open');
+          if (floatBar) floatBar.classList.add('hidden');
           if (initialText) {
-            setTimeout(() => {
+            setTimeout(function() {
               appendUserMsg(initialText);
-              floatInput.value = "";
-              floatHint.style.opacity = "1";
+              if (floatInput) { floatInput.value=''; }
+              if (floatHint) floatHint.style.opacity='1';
               simulateAiResponse(initialText);
             }, 80);
           }
-
-          setTimeout(() => overlayInput.focus(), 220);
+          setTimeout(function() { if(overlayInput) overlayInput.focus(); }, 220);
         }
 
-        /* ── Close overlay ───────────────────────────────────────────── */
         function closeOverlay() {
-          overlay.classList.remove("open");
-          floatBar.classList.remove("hidden");
+          if (overlay) overlay.classList.remove('open');
+          if (floatBar) floatBar.classList.remove('hidden');
           overlayOpen = false;
-          setTimeout(() => floatInput.focus(), 160);
+          setTimeout(function() { if(floatInput) floatInput.focus(); }, 160);
         }
 
-        overlayClose.addEventListener("click", closeOverlay);
-        overlay.addEventListener("click", (e) => {
-          // Close if clicking the bare frosted glass (not the inner content)
-          if (e.target === overlay) closeOverlay();
-        });
-        document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape" && overlayOpen) closeOverlay();
-        });
+        if (overlayClose) overlayClose.addEventListener('click', closeOverlay);
+        if (overlay) overlay.addEventListener('click', function(e) { if(e.target===overlay) closeOverlay(); });
+        document.addEventListener('keydown', function(e) { if(e.key==='Escape'&&overlayOpen) closeOverlay(); });
 
-        /* ── Append messages to the thread ───────────────────────────── */
         function appendUserMsg(text) {
-          // Hide suggestions once user has sent anything
-          suggestions.classList.add("hidden");
+          if (suggestions) suggestions.classList.add('hidden');
           msgCount++;
-
-          const wrap = document.createElement("div");
-          wrap.className = "chat-msg user";
-          wrap.innerHTML =
-            '<div class="msg-avatar user-av">NW</div>' +
-            '<div class="msg-bubble">' +
-            escHtml(text) +
-            "</div>";
-          thread.appendChild(wrap);
-          scrollThread();
+          var wrap = document.createElement('div');
+          wrap.className = 'chat-msg user';
+          wrap.innerHTML = '<div class="msg-avatar user-av">NW</div><div class="msg-bubble">'+escHtml(text)+'</div>';
+          if (thread) { thread.appendChild(wrap); scrollThread(); }
         }
 
         function appendAiMsg(text) {
-          // Remove typing indicator if present
-          const typing = document.getElementById("aimyTyping");
+          var typing = document.getElementById('aimyTyping');
           if (typing) typing.remove();
-
-          const wrap = document.createElement("div");
-          wrap.className = "chat-msg aimy";
-          wrap.innerHTML =
-            '<div class="msg-avatar aimy-av">' +
-            '<svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>' +
-            "</div>" +
-            '<div class="msg-bubble">' +
-            text +
-            "</div>";
-          thread.appendChild(wrap);
-          scrollThread();
+          var wrap = document.createElement('div');
+          wrap.className = 'chat-msg aimy';
+          wrap.innerHTML = '<div class="msg-avatar aimy-av"><svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg></div><div class="msg-bubble">'+text+'</div>';
+          if (thread) { thread.appendChild(wrap); scrollThread(); }
           isTyping = false;
         }
 
         function showTypingIndicator() {
-          const existing = document.getElementById("aimyTyping");
-          if (existing) return;
-          const wrap = document.createElement("div");
-          wrap.className = "chat-msg aimy";
-          wrap.id = "aimyTyping";
-          wrap.innerHTML =
-            '<div class="msg-avatar aimy-av">' +
-            '<svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>' +
-            "</div>" +
-            '<div class="msg-bubble" style="padding:10px 14px;">' +
-            '<div class="typing-dots"><span></span><span></span><span></span></div>' +
-            "</div>";
-          thread.appendChild(wrap);
-          scrollThread();
+          if (document.getElementById('aimyTyping')) return;
+          var wrap = document.createElement('div');
+          wrap.className='chat-msg aimy'; wrap.id='aimyTyping';
+          wrap.innerHTML='<div class="msg-avatar aimy-av"><svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg></div><div class="msg-bubble" style="padding:10px 14px"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+          if (thread) { thread.appendChild(wrap); scrollThread(); }
         }
 
-        function scrollThread() {
-          thread.scrollTop = thread.scrollHeight;
-        }
+        function scrollThread() { if(thread) thread.scrollTop = thread.scrollHeight; }
 
-        function escHtml(str) {
-          return str
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;");
-        }
+        function escHtml(str) { return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-        /* ── Simulated AiMY responses ─────────────────────────────────────
-     In production replace with a real API call dispatched to the
-     AiMY agent layer. The responses here are illustrative stubs.     */
-        const STUB_RESPONSES = [
-          "I&rsquo;ve looked across this period&rsquo;s data. The primary driver is empathy on escalation calls, which dropped <strong>8%</strong> week-over-week. I&rsquo;d suggest starting a targeted coaching session for the 3 flagged agents.",
-          "Based on current audit data: <strong>5 agents</strong> are below the 80% quality threshold. Omar A., Sara M., and Khaled R. show the steepest declines&mdash;all in the Customer Support queue.",
-          "This week&rsquo;s SLA breach count is <strong>23</strong>, up from 14 last week. The spike correlates with a surge in billing tickets on Wednesday. Do you want me to pull the affected tickets?",
-          "Quality score today sits at <strong>87.3%</strong>, which is 2.7 points below the 90% target. The improvement trajectory is positive&mdash;at current rate you&rsquo;d hit the target in approximately <strong>3 weeks</strong>.",
-          "I&rsquo;m tracking <strong>484 failing interactions</strong> this period. The top failure reason is missing follow-up confirmation (38% of fails), followed by survey promotion (27%). Want me to generate a coaching plan?",
+        var STUB_RESPONSES = [
+          'The S3 Voice source has failed <strong>3 consecutive syncs</strong> since 14:04. Root cause: IAM role credentials expired. To fix this, update the role ARN in the S3 source config. Want me to guide you through the credential update steps?',
+          'Across all 4 sources in the last 24h, <strong>Zendesk leads</strong> with 2,847 interactions, followed by AiMY Connect (1,203), Freshdesk (614), and S3 Voice (0 &mdash; currently failing). Total: <strong>4,664 interactions</strong> queued for QA evaluation.',
+          'Freshdesk has been stale for <strong>3 hours</strong>, last syncing at 11:30. The previous sync was also delayed by 90 minutes. This pattern suggests a rate-limit issue. I&rsquo;d recommend checking your Freshdesk API quota &mdash; the ticket volume spike yesterday may have triggered a throttle.',
+          'S3 Voice ingestion has been down for 22 minutes. At your usual volume of ~50 calls/hour, approximately <strong>18&ndash;20 calls are currently unscored</strong>. Once credentials are fixed and ingestion resumes, they will process automatically in queue order.',
+          'Comparing this week to last: Zendesk volume is <strong>up 12%</strong> (2,847 vs 2,541 daily avg). Freshdesk is <strong>down 8%</strong>. AiMY Connect is stable. The Zendesk spike correlates with Monday&rsquo;s product launch &mdash; expect elevated volume through Friday.',
         ];
-        let stubIdx = 0;
+        var stubIdx = 0;
 
         function simulateAiResponse(userText) {
           if (isTyping) return;
           isTyping = true;
           showTypingIndicator();
-
-          const delay = 900 + Math.random() * 600;
-          setTimeout(() => {
-            const response = STUB_RESPONSES[stubIdx % STUB_RESPONSES.length];
+          setTimeout(function() {
+            appendAiMsg(STUB_RESPONSES[stubIdx % STUB_RESPONSES.length]);
             stubIdx++;
-            appendAiMsg(response);
-          }, delay);
+          }, 900 + Math.random()*600);
         }
 
-        /* ── Overlay input: Enter to send (Shift+Enter = newline) ────── */
         function handleOverlaySend() {
-          const text = overlayInput.value.trim();
+          var text = overlayInput ? overlayInput.value.trim() : '';
           if (!text || isTyping) return;
           appendUserMsg(text);
-          overlayInput.value = "";
-          autoResizeTextarea();
+          if (overlayInput) { overlayInput.value=''; autoResizeTextarea(); }
           simulateAiResponse(text);
         }
 
-        overlayInput.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            handleOverlaySend();
-          }
-        });
-        overlaySend.addEventListener("click", handleOverlaySend);
-
-        /* ── Auto-resize textarea as user types ─────────────────────── */
-        function autoResizeTextarea() {
-          overlayInput.style.height = "auto";
-          overlayInput.style.height =
-            Math.min(overlayInput.scrollHeight, 120) + "px";
+        if (overlayInput) {
+          overlayInput.addEventListener('keydown', function(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleOverlaySend();} });
+          overlayInput.addEventListener('input', autoResizeTextarea);
         }
-        overlayInput.addEventListener("input", autoResizeTextarea);
+        if (overlaySend) overlaySend.addEventListener('click', handleOverlaySend);
 
-        /* ── Suggestion chips inside overlay ────────────────────────── */
-        window.overlaySuggestion = function (btn) {
-          const text = btn.textContent.trim();
-          overlayInput.value = text;
-          autoResizeTextarea();
+        function autoResizeTextarea() {
+          if (!overlayInput) return;
+          overlayInput.style.height='auto';
+          overlayInput.style.height = Math.min(overlayInput.scrollHeight,120)+'px';
+        }
+
+        window.overlaySuggestion = function(btn) {
+          var text = btn.textContent.trim();
+          if (overlayInput) { overlayInput.value=text; autoResizeTextarea(); }
           handleOverlaySend();
         };
+
       })();
+
+    })();
     </script>
   </body>
-</html>
