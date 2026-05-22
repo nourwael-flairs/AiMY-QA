@@ -218,7 +218,7 @@
         font-weight: 600;
         color: var(--d400);
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
         border: 1px solid transparent;
         white-space: nowrap;
       }
@@ -256,7 +256,7 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
         color: var(--d400);
         position: relative;
       }
@@ -292,7 +292,7 @@
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.08);
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
       }
       .topnav-user:hover {
         border-color: rgba(255, 255, 255, 0.14);
@@ -392,7 +392,7 @@
         font-size: 13px;
         font-weight: 600;
         cursor: pointer;
-        transition: all var(--transition-base);
+        transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
         border: 1px solid transparent;
         text-decoration: none;
       }
@@ -486,7 +486,7 @@
         align-items: center;
         gap: 6px;
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
         font-family: "Urbanist", sans-serif;
       }
       .filter-select:hover {
@@ -514,7 +514,7 @@
         gap: 6px;
         font-family: "Urbanist", sans-serif;
         box-shadow: 0 2px 8px rgba(var(--qa-accent-rgb), 0.25);
-        transition: all var(--transition-base);
+        transition: transform var(--transition-base), box-shadow var(--transition-base);
       }
       .export-btn:hover {
         box-shadow: 0 4px 16px rgba(var(--qa-accent-rgb), 0.35);
@@ -589,7 +589,6 @@
         box-shadow:
           0 12px 40px rgba(0, 0, 0, 0.45),
           0 0 0 1px rgba(var(--qa-accent-rgb), 0.2);
-        transform: translateY(-1px);
       }
       .bcard.tier-primary:hover {
         transform: translateY(-3px);
@@ -725,7 +724,7 @@
         border: none;
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
         flex-shrink: 0;
       }
       .action-btn svg {
@@ -794,6 +793,11 @@
       }
       .bcard-data.open {
         display: block;
+        animation: fadeSlideDown 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+      @keyframes fadeSlideDown {
+        from { opacity: 0; transform: translateY(-4px); }
+        to   { opacity: 1; transform: translateY(0); }
       }
       .data-grid {
         display: grid;
@@ -884,19 +888,19 @@
         padding: 10px 12px;
         background: rgba(255, 255, 255, 0.03);
         border-radius: 8px;
-        border-left: 2px solid transparent;
+        border: 1px solid rgba(255, 255, 255, 0.06);
       }
       .finding-item.err-f {
-        border-left-color: var(--err);
-        background: color-mix(in srgb, var(--err) 4%, var(--card-bg));
+        border-color: rgba(240, 68, 56, 0.2);
+        background: color-mix(in srgb, var(--err) 5%, var(--card-bg));
       }
       .finding-item.warn-f {
-        border-left-color: var(--warn);
-        background: color-mix(in srgb, var(--warn) 4%, var(--card-bg));
+        border-color: rgba(247, 144, 9, 0.2);
+        background: color-mix(in srgb, var(--warn) 5%, var(--card-bg));
       }
       .finding-item.ok-f {
-        border-left-color: var(--ok);
-        background: color-mix(in srgb, var(--ok) 3%, var(--card-bg));
+        border-color: rgba(23, 178, 106, 0.18);
+        background: color-mix(in srgb, var(--ok) 4%, var(--card-bg));
       }
       .finding-icon {
         width: 20px;
@@ -947,7 +951,7 @@
         font-family: "Urbanist", sans-serif;
         flex-shrink: 0;
         margin-top: 2px;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast);
       }
       .finding-action.err-f {
         background: var(--err-bg);
@@ -997,6 +1001,7 @@
       }
       .chart-area.open {
         display: block;
+        animation: fadeSlideDown 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
       }
       .chart-area svg {
         width: 100%;
@@ -1018,7 +1023,7 @@
         background: var(--card-bg);
         border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.06);
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
         cursor: pointer;
       }
       .kpi-brief:hover {
@@ -1114,7 +1119,7 @@
         font-family: "Urbanist", sans-serif;
         flex-shrink: 0;
         align-self: center;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast);
       }
       .kf-err .kf-action {
         background: var(--err-bg);
@@ -1312,6 +1317,7 @@
       }
       .collapsible-section.open {
         display: block;
+        animation: fadeSlideDown 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
       }
       .spike-chart-wrap {
         background: rgba(0, 0, 0, 0.2);
@@ -1455,27 +1461,28 @@
       .driver-bar-fill {
         height: 100%;
         border-radius: 4px;
+        transform-origin: left center;
       }
       .driver-bar-fill.primary {
         background: linear-gradient(90deg, #f04438, #fb7067);
         box-shadow: 0 0 8px rgba(240, 68, 56, 0.4);
-        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) both;
+        animation: growBar 0.9s cubic-bezier(0.4, 0, 0.2, 1) both;
       }
       .driver-bar-fill.secondary {
         background: rgba(240, 68, 56, 0.35);
-        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
+        animation: growBar 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
       }
       .driver-bar-fill.minor {
         background: rgba(240, 68, 56, 0.38);
-        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+        animation: growBar 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
       }
       .driver-bar-fill.neutral {
         background: rgba(23, 178, 106, 0.3);
-        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.25s both;
+        animation: growBar 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.25s both;
       }
-      @keyframes grow {
+      @keyframes growBar {
         from {
-          width: 0;
+          transform: scaleX(0);
         }
       }
       .driver-bar-stat {
@@ -1512,7 +1519,7 @@
         color: var(--err);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
         white-space: nowrap;
       }
       .primary-action-btn:hover {
@@ -1539,7 +1546,7 @@
         background: rgba(255, 255, 255, 0.02);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
         white-space: nowrap;
       }
       .sec-btn:hover {
@@ -1727,7 +1734,7 @@
         cursor: pointer;
         white-space: nowrap;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast);
         align-self: center;
         flex-shrink: 0;
       }
@@ -1829,34 +1836,6 @@
   outline: none;
   box-shadow: none; 
 }
-      .v2-ai-input {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid var(--d600);
-        border-radius: 20px;
-        padding: 6px 12px;
-        width: 180px;
-        transition: border-color var(--transition-base);
-      }
-      .v2-ai-input:focus-within {
-        border-color: rgba(0, 102, 255, 0.4);
-      }
-      .v2-ai-input svg {
-        width: 12px;
-        height: 12px;
-        flex-shrink: 0;
-      }
-      .v2-ai-input input {
-        background: transparent;
-        border: none;
-        outline: none;
-        color: var(--d50);
-        font-family: inherit;
-        font-size: 11px;
-        width: 100%;
-      }
       .range-tabs {
         display: flex;
         background: rgba(0, 0, 0, 0.25);
@@ -1875,7 +1854,7 @@
         border: none;
         background: none;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), color var(--transition-fast);
       }
       .range-tab:hover {
         color: var(--d300);
@@ -1899,7 +1878,7 @@
         border-radius: 8px;
         background: rgba(255, 255, 255, 0.03);
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
       }
       .compare-toggle:hover {
         color: var(--d50);
@@ -1927,7 +1906,7 @@
         background: rgba(111, 223, 226, 0.06);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
       }
       .ai-insight-btn:hover {
         background: rgba(111, 223, 226, 0.12);
@@ -2118,9 +2097,12 @@
         max-width: calc(100vw - 80px);
         bottom: calc(100% + 10px);
         left: 50%;
-        transform: translateX(-50%);
+        transform: translateX(-50%) translateY(4px);
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
         z-index: 20;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 150ms ease-out, transform 150ms ease-out;
       }
       @media (max-width: 768px) {
         .chart-annotation .anno-card,
@@ -2166,7 +2148,7 @@
         padding: 4px 8px;
         cursor: pointer;
         font-family: inherit;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast);
       }
       .anno-btn:hover {
         background: rgba(240, 68, 56, 0.18);
@@ -2185,11 +2167,14 @@
         color: var(--d400);
         bottom: calc(100% + 8px);
         left: 50%;
-        transform: translateX(-50%);
+        transform: translateX(-50%) translateY(4px);
         white-space: nowrap;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         z-index: 20;
         line-height: 1.4;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 150ms ease-out, transform 150ms ease-out;
       }
       .peak-card span {
         color: var(--ok);
@@ -2220,6 +2205,7 @@
       .chart-annotation:hover .anno-card,
       .chart-annotation:hover .peak-card {
         opacity: 1;
+        pointer-events: auto;
         transform: translateX(-50%) translateY(-2px);
       }
 
@@ -2289,7 +2275,7 @@
         pointer-events: all;
         width: 100%;
         max-width: 760px;
-        background: #1e2428;
+        background: var(--d800);
         border: 1px solid rgba(255, 255, 255, 0.09);
         border-radius: 40px;
         box-shadow:
@@ -2393,7 +2379,7 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), box-shadow var(--transition-fast);
         box-shadow: 0 2px 10px rgba(var(--qa-accent-rgb), 0.4);
       }
       .aimy-float-send:hover {
@@ -2496,7 +2482,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
         color: var(--d300);
       }
       .overlay-close:hover {
@@ -2619,8 +2605,8 @@
         border-radius: 4px 12px 12px 12px;
       }
       .chat-msg.user .msg-bubble {
-        background: rgba(var(--qa-accent-rgb), 0.14);
-        border: 1px solid rgba(var(--qa-accent-rgb), 0.22);
+        background: rgba(51, 105, 255, 0.14);
+        border: 1px solid rgba(51, 105, 255, 0.22);
         border-radius: 12px 4px 12px 12px;
         color: var(--d100);
       }
@@ -2732,7 +2718,7 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), box-shadow var(--transition-fast);
         box-shadow: 0 2px 10px rgba(var(--qa-accent-rgb), 0.4);
       }
       .overlay-send:hover {
@@ -2772,7 +2758,7 @@
         border: 1px solid rgba(255, 255, 255, 0.09);
         border-radius: 20px;
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
         white-space: nowrap;
       }
       .overlay-sugg-chip:hover {
@@ -2836,7 +2822,7 @@
         background: none;
         cursor: pointer;
         font-family: inherit;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
       }
       .v2-refresh-btn:hover {
         color: var(--d300);
@@ -2860,7 +2846,7 @@
         border: 1px solid rgba(255, 255, 255, 0.08);
         background: rgba(255, 255, 255, 0.03);
         cursor: pointer;
-        transition: all var(--transition-base);
+        transition: background var(--transition-base), border-color var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
         min-width: 180px;
         flex: 1;
         position: relative;
@@ -2909,7 +2895,20 @@
         opacity: 0;
         transform: scale(0.95);
         pointer-events: none;
-        transition: all var(--transition-base);
+        max-width: 0;
+        min-width: 0;
+        padding-left: 0;
+        padding-right: 0;
+        margin: 0;
+        overflow: hidden;
+        flex: 0 0 0;
+        transition:
+          opacity var(--transition-base),
+          transform var(--transition-base),
+          max-width 250ms 150ms ease-out,
+          flex 250ms 150ms ease-out,
+          padding 250ms 150ms ease-out,
+          margin 250ms 150ms ease-out;
       }
       .v2-chip-top {
         display: flex;
@@ -3261,7 +3260,7 @@
         background: none;
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
       }
       .state-alt:hover {
         color: var(--d300);
@@ -3290,7 +3289,7 @@
         font-weight: 700;
         font-family: "Urbanist", sans-serif;
         cursor: pointer;
-        transition: all var(--transition-base);
+        transition: background var(--transition-base), border-color var(--transition-base), color var(--transition-base);
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.1);
         color: var(--d300);
@@ -3412,7 +3411,7 @@
         color: var(--d50);
         letter-spacing: -0.03em;
         line-height: 1;
-        transition: all var(--transition-base);
+        transition: color var(--transition-base);
       }
       .donut-label {
         font-size: 9px;
@@ -3421,7 +3420,7 @@
         text-transform: uppercase;
         letter-spacing: 0.06em;
         margin-top: 2px;
-        transition: all var(--transition-base);
+        transition: color var(--transition-base);
       }
 
       /* Segment arcs */
@@ -3692,7 +3691,7 @@
         color: var(--err);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast);
         flex-shrink: 0;
       }
       .eval-primary-btn:hover {
@@ -3712,7 +3711,7 @@
         background: rgba(255, 255, 255, 0.02);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
         white-space: nowrap;
       }
       .eval-sec-btn:hover {
@@ -4484,7 +4483,7 @@
             <!-- SLA items -->
             <div class="disp-row sla-row" data-id="d1" data-status="in_review" data-sla="true" onclick="selectDispute('d1',this)" tabindex="0" role="button" aria-selected="true">
               <div class="disp-row-left">
-                <div class="disp-status-dot in-review"></div>
+                <div class="disp-status-dot in-review"></div><span class="disp-status-label in-review">In Review</span>
                 <div class="disp-row-body">
                   <div class="disp-row-agent">Omar Ashraf <span class="disp-eval-id">#EVL-4821</span></div>
                   <div class="disp-row-kpis">Empathy · Follow-up Confirmation</div>
@@ -4498,7 +4497,7 @@
             </div>
             <div class="disp-row sla-row" data-id="d2" data-status="pending" data-sla="true" onclick="selectDispute('d2',this)" tabindex="0" role="button">
               <div class="disp-row-left">
-                <div class="disp-status-dot pending"></div>
+                <div class="disp-status-dot pending"></div><span class="disp-status-label pending">Pending</span>
                 <div class="disp-row-body">
                   <div class="disp-row-agent">Sara Mostafa <span class="disp-eval-id">#EVL-4799</span></div>
                   <div class="disp-row-kpis">Survey Promotion</div>
@@ -4513,7 +4512,7 @@
             <div class="disp-row sla-row disp-row--with-suggest" data-id="d3" data-status="in_review" data-sla="true" tabindex="0" role="button">
               <div class="disp-row-main" onclick="selectDispute('d3',this.closest('.disp-row'))">
                 <div class="disp-row-left">
-                  <div class="disp-status-dot in-review"></div>
+                  <div class="disp-status-dot in-review"></div><span class="disp-status-label in-review">In Review</span>
                   <div class="disp-row-body">
                     <div class="disp-row-agent">Khaled Riad <span class="disp-eval-id">#EVL-4780</span></div>
                     <div class="disp-row-kpis">Product Promotion · Script Adhere...</div>
@@ -4536,7 +4535,7 @@
             <div class="disp-section-label">In Review</div>
             <div class="disp-row" data-id="d4" data-status="in_review" onclick="selectDispute('d4',this)" tabindex="0" role="button">
               <div class="disp-row-left">
-                <div class="disp-status-dot in-review"></div>
+                <div class="disp-status-dot in-review"></div><span class="disp-status-label in-review">In Review</span>
                 <div class="disp-row-body">
                   <div class="disp-row-agent">Mona Hassan <span class="disp-eval-id">#EVL-4812</span></div>
                   <div class="disp-row-kpis">Empathy · Tone</div>
@@ -4548,7 +4547,7 @@
             </div>
             <div class="disp-row" data-id="d5" data-status="in_review" onclick="selectDispute('d5',this)" tabindex="0" role="button">
               <div class="disp-row-left">
-                <div class="disp-status-dot in-review"></div>
+                <div class="disp-status-dot in-review"></div><span class="disp-status-label in-review">In Review</span>
                 <div class="disp-row-body">
                   <div class="disp-row-agent">Tarek Nabil <span class="disp-eval-id">#EVL-4808</span></div>
                   <div class="disp-row-kpis">Follow-up Confirmation</div>
@@ -4560,7 +4559,7 @@
             </div>
             <div class="disp-row" data-id="d6" data-status="in_review" onclick="selectDispute('d6',this)" tabindex="0" role="button">
               <div class="disp-row-left">
-                <div class="disp-status-dot in-review"></div>
+                <div class="disp-status-dot in-review"></div><span class="disp-status-label in-review">In Review</span>
                 <div class="disp-row-body">
                   <div class="disp-row-agent">Rasha Kamel <span class="disp-eval-id">#EVL-4797</span></div>
                   <div class="disp-row-kpis">Script Adherence</div>
@@ -4572,7 +4571,7 @@
             </div>
             <div class="disp-row" data-id="d7" data-status="in_review" onclick="selectDispute('d7',this)" tabindex="0" role="button">
               <div class="disp-row-left">
-                <div class="disp-status-dot in-review"></div>
+                <div class="disp-status-dot in-review"></div><span class="disp-status-label in-review">In Review</span>
                 <div class="disp-row-body">
                   <div class="disp-row-agent">Ali Mahmoud <span class="disp-eval-id">#EVL-4792</span></div>
                   <div class="disp-row-kpis">Closure · Product Promotion</div>
@@ -4587,7 +4586,7 @@
             <div class="disp-section-label">Pending Review</div>
             <div class="disp-row" data-id="d8" data-status="pending" onclick="selectDispute('d8',this)" tabindex="0" role="button">
               <div class="disp-row-left">
-                <div class="disp-status-dot pending"></div>
+                <div class="disp-status-dot pending"></div><span class="disp-status-label pending">Pending</span>
                 <div class="disp-row-body">
                   <div class="disp-row-agent">Hana Youssef <span class="disp-eval-id">#EVL-4831</span></div>
                   <div class="disp-row-kpis">Empathy</div>
@@ -4599,7 +4598,7 @@
             </div>
             <div class="disp-row" data-id="d9" data-status="pending" onclick="selectDispute('d9',this)" tabindex="0" role="button">
               <div class="disp-row-left">
-                <div class="disp-status-dot pending"></div>
+                <div class="disp-status-dot pending"></div><span class="disp-status-label pending">Pending</span>
                 <div class="disp-row-body">
                   <div class="disp-row-agent">Faris Adel <span class="disp-eval-id">#EVL-4829</span></div>
                   <div class="disp-row-kpis">Survey Promotion · Follow-up Confirmation</div>
@@ -4611,7 +4610,7 @@
             </div>
             <div class="disp-row" data-id="d10" data-status="pending" onclick="selectDispute('d10',this)" tabindex="0" role="button">
               <div class="disp-row-left">
-                <div class="disp-status-dot pending"></div>
+                <div class="disp-status-dot pending"></div><span class="disp-status-label pending">Pending</span>
                 <div class="disp-row-body">
                   <div class="disp-row-agent">Dina Fouad <span class="disp-eval-id">#EVL-4827</span></div>
                   <div class="disp-row-kpis">Script Adherence</div>
@@ -4623,7 +4622,7 @@
             </div>
             <div class="disp-row" data-id="d11" data-status="pending" onclick="selectDispute('d11',this)" tabindex="0" role="button">
               <div class="disp-row-left">
-                <div class="disp-status-dot pending"></div>
+                <div class="disp-status-dot pending"></div><span class="disp-status-label pending">Pending</span>
                 <div class="disp-row-body">
                   <div class="disp-row-agent">Samy Gamal <span class="disp-eval-id">#EVL-4825</span></div>
                   <div class="disp-row-kpis">Tone · Closure</div>
@@ -4638,7 +4637,7 @@
             <div class="disp-section-label">Resolved</div>
             <div class="disp-row resolved-row" data-id="d12" data-status="resolved" onclick="selectDispute('d12',this)" tabindex="0" role="button">
               <div class="disp-row-left">
-                <div class="disp-status-dot resolved"></div>
+                <div class="disp-status-dot resolved"></div><span class="disp-status-label resolved">Resolved</span>
                 <div class="disp-row-body">
                   <div class="disp-row-agent">Lina Saad <span class="disp-eval-id">#EVL-4760</span></div>
                   <div class="disp-row-kpis">Empathy · Tone</div>
@@ -4650,7 +4649,7 @@
             </div>
             <div class="disp-row resolved-row" data-id="d13" data-status="resolved" onclick="selectDispute('d13',this)" tabindex="0" role="button">
               <div class="disp-row-left">
-                <div class="disp-status-dot resolved"></div>
+                <div class="disp-status-dot resolved"></div><span class="disp-status-label resolved">Resolved</span>
                 <div class="disp-row-body">
                   <div class="disp-row-agent">Karim Bassem <span class="disp-eval-id">#EVL-4748</span></div>
                   <div class="disp-row-kpis">Script Adherence</div>
@@ -4662,7 +4661,7 @@
             </div>
             <div class="disp-row resolved-row" data-id="d14" data-status="resolved" onclick="selectDispute('d14',this)" tabindex="0" role="button">
               <div class="disp-row-left">
-                <div class="disp-status-dot resolved"></div>
+                <div class="disp-status-dot resolved"></div><span class="disp-status-label resolved">Resolved</span>
                 <div class="disp-row-body">
                   <div class="disp-row-agent">Nadia Fawzy <span class="disp-eval-id">#EVL-4741</span></div>
                   <div class="disp-row-kpis">Follow-up Confirmation</div>
@@ -5657,9 +5656,6 @@
       .disp-scroll::-webkit-scrollbar { width: 6px; }
       .disp-scroll::-webkit-scrollbar-track { background: transparent; }
       .disp-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-      .disp-scroll::-webkit-scrollbar { width: 6px; }
-      .disp-scroll::-webkit-scrollbar-track { background: transparent; }
-      .disp-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
 
       /* ══ DISPUTES PAGE STYLES ══════════════════════════════════════════════ */
 
@@ -5679,10 +5675,10 @@
         flex-wrap: wrap;
       }
       .page-title {
-        font-size: 18px;
+        font-size: 22px;
         font-weight: 800;
         color: var(--d50);
-        letter-spacing: -0.02em;
+        letter-spacing: -0.025em;
         line-height: 1.2;
       }
       .page-badge-count {
@@ -5731,7 +5727,7 @@
         color: var(--d400);
         cursor: pointer;
         font-family: 'Urbanist', sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
       }
       .disp-filter-chip:hover { background: rgba(255,255,255,0.06); color: var(--d200,#e8edf2); }
       .disp-filter-chip.active { background: var(--qa-accent-dim); color: var(--qa-accent); border-color: rgba(var(--qa-accent-rgb),0.28); }
@@ -5751,7 +5747,7 @@
         font-weight: 600;
         cursor: pointer;
         font-family: 'Urbanist', sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
       }
       .disp-select:hover { border-color: rgba(255,255,255,0.18); }
 
@@ -5786,7 +5782,7 @@
         margin-top: 4px;
       }
       .disp-section-label:first-child { margin-top: 0; }
-      .sla-label { color: var(--err); opacity: 0.8; }
+      .sla-label { color: var(--err); }
       .sla-dot-sm { width: 6px; height: 6px; border-radius: 50%; background: var(--err); flex-shrink: 0; animation: blink 1.2s ease-in-out infinite; }
 
       .disp-row {
@@ -5794,10 +5790,10 @@
         align-items: flex-start;
         justify-content: space-between;
         gap: 8px;
-        padding: 10px 14px;
+        padding: 11px 14px;
         cursor: pointer;
         transition: background var(--transition-fast);
-        margin: 1px 8px;
+        margin: 4px 8px;
         border-radius: 8px;
         border: 1px solid transparent;
       }
@@ -5816,14 +5812,18 @@
         height: 8px;
         border-radius: 50%;
         flex-shrink: 0;
-        margin-top: 5px;
+        margin-top: 4px;
       }
       .disp-status-dot.pending { background: var(--warn); }
       .disp-status-dot.in-review { background: var(--brand); }
       .disp-status-dot.resolved { background: var(--ok); }
+      /* Status label pill — hidden; section labels provide the context */
+      .disp-status-label {
+        display: none;
+      }
       .disp-row-body { flex: 1; min-width: 0; }
-      .disp-row-agent { font-size: 12px; font-weight: 700; color: var(--d100); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .disp-eval-id { font-size: 10px; font-weight: 600; color: var(--d500); margin-left: 4px; }
+      .disp-row-agent { font-size: 13px; font-weight: 700; color: var(--d100); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .disp-eval-id { font-size: 9px; font-weight: 600; color: var(--d600); display: block; margin-top: 1px; }
       .disp-row-kpis { font-size: 10px; color: var(--d400); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .disp-row-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
       .disp-time { font-size: 10px; color: var(--d600); white-space: nowrap; }
@@ -5852,7 +5852,6 @@
       .disp-detail-col {
         position: relative;
       }
-      
 
       .detail-view { display: none; }
       .detail-view.active { display: block; }
@@ -5895,7 +5894,7 @@
         color: var(--d300);
         cursor: pointer;
         font-family: 'Urbanist', sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
       }
       .reassign-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.18); color: var(--d50); }
       .reassign-btn svg { width: 12px; height: 12px; }
@@ -6010,7 +6009,7 @@
         font-family: 'Urbanist', sans-serif;
         font-size: 13px;
         font-weight: 700;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
         flex: 1;
         min-width: 100px;
       }
@@ -6102,7 +6101,7 @@
         font-size: 14px;
         font-weight: 700;
         cursor: pointer;
-        transition: all var(--transition-base);
+        transition: transform var(--transition-base), box-shadow var(--transition-base);
         box-shadow: 0 4px 16px rgba(var(--qa-accent-rgb),0.3);
       }
       .confirm-decision-btn:disabled {
@@ -6165,7 +6164,7 @@
         color: #61adf1;
         cursor: pointer;
         font-family: 'Urbanist', sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
       }
       .nsb-btn:hover { background: rgba(0,102,255,0.15); }
       .nsb-btn svg { width: 11px; height: 11px; }
@@ -6265,9 +6264,9 @@
       .modal-body strong { color: var(--d50); }
       .modal-warning { font-size: 11px; font-weight: 700; color: var(--warn); margin-top: 10px; display: flex; align-items: center; gap: 5px; }
       .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-      .modal-cancel { font-size: 13px; font-weight: 700; padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: var(--d300); cursor: pointer; font-family: 'Urbanist', sans-serif; transition: all var(--transition-fast); }
+      .modal-cancel { font-size: 13px; font-weight: 700; padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: var(--d300); cursor: pointer; font-family: 'Urbanist', sans-serif; transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast); }
       .modal-cancel:hover { background: rgba(255,255,255,0.08); }
-      .modal-confirm { font-size: 13px; font-weight: 700; padding: 10px 20px; border-radius: 8px; border: none; background: var(--qa-accent); color: #fff; cursor: pointer; font-family: 'Urbanist', sans-serif; transition: all var(--transition-fast); box-shadow: 0 2px 8px rgba(var(--qa-accent-rgb),0.3); }
+      .modal-confirm { font-size: 13px; font-weight: 700; padding: 10px 20px; border-radius: 8px; border: none; background: var(--qa-accent); color: #fff; cursor: pointer; font-family: 'Urbanist', sans-serif; transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast); box-shadow: 0 2px 8px rgba(var(--qa-accent-rgb),0.3); }
       .modal-confirm:hover { box-shadow: 0 4px 16px rgba(var(--qa-accent-rgb),0.45); }
 
       /* Export modal */
@@ -6276,7 +6275,7 @@
       .export-date-row { display: flex; gap: 8px; }
       .export-date-input { flex: 1; background: var(--d850, #141b24); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 12px; color: var(--d50); font-family: 'Urbanist', sans-serif; font-size: 12px; }
       .export-format-row { display: flex; gap: 8px; }
-      .export-format-btn { flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); color: var(--d300); font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Urbanist', sans-serif; transition: all var(--transition-fast); }
+      .export-format-btn { flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); color: var(--d300); font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Urbanist', sans-serif; transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast); }
       .export-format-btn.active { background: var(--qa-accent-dim); border-color: rgba(var(--qa-accent-rgb),0.3); color: var(--qa-accent); }
       .export-preview { font-size: 12px; color: var(--d400); padding: 10px 12px; background: rgba(0,0,0,0.2); border-radius: 8px; }
       .export-preview strong { color: var(--d50); }
@@ -6296,7 +6295,7 @@
         font-family: 'Urbanist', sans-serif;
         font-size: 12px;
         font-weight: 600;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
       }
       .reassign-auditor-btn:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.16); }
       .reassign-auditor-btn.selected { background: var(--qa-accent-dim); border-color: rgba(var(--qa-accent-rgb),0.3); color: var(--qa-accent); }
@@ -6373,14 +6372,14 @@
         font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 6px;
         background: rgba(0,102,255,0.12); border: 1px solid rgba(0,102,255,0.25);
         color: #61adf1; cursor: pointer; font-family: 'Urbanist', sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
       }
       .aimy-draft-accept:hover { background: rgba(0,102,255,0.2); }
       .aimy-draft-clear {
         font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px;
         background: none; border: 1px solid rgba(255,255,255,0.08);
         color: var(--d500); cursor: pointer; font-family: 'Urbanist', sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
       }
       .aimy-draft-clear:hover { color: var(--d300); border-color: rgba(255,255,255,0.16); }
       .rationale-textarea.has-draft {
@@ -6496,7 +6495,7 @@
         font-size: 11px; font-weight: 700; padding: 6px 14px; border-radius: 8px;
         border: 1px solid rgba(111,223,226,0.25); background: rgba(111,223,226,0.07);
         color: var(--teal); cursor: pointer; font-family: 'Urbanist', sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
       }
       .ads-action-btn:hover { background: rgba(111,223,226,0.14); }
 
@@ -6519,7 +6518,7 @@
         font-size: 9px; font-weight: 700; padding: 3px 9px; border-radius: 6px;
         background: rgba(0,102,255,0.1); border: 1px solid rgba(0,102,255,0.2);
         color: #61adf1; cursor: pointer; font-family: 'Urbanist', sans-serif;
-        transition: all var(--transition-fast); white-space: nowrap; flex-shrink: 0;
+        transition: background var(--transition-fast), border-color var(--transition-fast); white-space: nowrap; flex-shrink: 0;
       }
       .aimy-suggest-accept:hover { background: rgba(0,102,255,0.18); }
       .aimy-suggest-accept.accepted {
@@ -6607,7 +6606,7 @@
         font-size: 11px; font-weight: 700; padding: 7px 14px; border-radius: 8px;
         border: 1px solid rgba(111,223,226,0.3); background: rgba(111,223,226,0.08);
         color: var(--teal); cursor: pointer; font-family: 'Urbanist', sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
       }
       .cr-btn:hover { background: rgba(111,223,226,0.15); }
       .cr-btn-sec {
@@ -6628,7 +6627,7 @@
         background: var(--qa-accent); color: #fff;
         cursor: pointer; font-family: 'Urbanist', sans-serif;
         box-shadow: 0 4px 14px rgba(var(--qa-accent-rgb),0.3);
-        transition: all var(--transition-base);
+        transition: transform var(--transition-base), box-shadow var(--transition-base);
         white-space: nowrap;
       }
       .new-dispute-btn svg { width: 13px; height: 13px; }
@@ -6645,7 +6644,7 @@
         border: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.02);
         color: var(--d500); cursor: pointer; font-family: 'Urbanist', sans-serif;
         display: flex; align-items: center; gap: 4px;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
       }
       .audit-filter-btn:hover { background: rgba(255,255,255,0.06); color: var(--d200,#e8edf2); }
       .audit-filter-btn.active { background: var(--qa-accent-dim); border-color: rgba(var(--qa-accent-rgb),0.25); color: var(--qa-accent); }
@@ -6690,14 +6689,16 @@
         border: 1.5px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04);
         color: var(--d500); font-size: 10px; font-weight: 800;
         display: flex; align-items: center; justify-content: center;
-        transition: all var(--transition-base);
+        transition: background var(--transition-base), border-color var(--transition-base), color var(--transition-base);
       }
       .cd-step-label { font-size: 11px; font-weight: 600; color: var(--d500); white-space: nowrap; transition: color var(--transition-base); }
       .cd-step.active .cd-step-num { background: var(--qa-accent); border-color: var(--qa-accent); color: #fff; }
       .cd-step.active .cd-step-label { color: var(--d100); }
       .cd-step.done .cd-step-num { background: var(--ok); border-color: var(--ok); color: #fff; }
       .cd-step.done .cd-step-label { color: var(--ok); }
-      .cd-step-line { flex: 1; height: 1px; background: rgba(255,255,255,0.08); margin: 0 10px; }
+      .cd-step-line { flex: 1; height: 1px; background: rgba(255,255,255,0.08); margin: 0 10px; transition: background var(--transition-base); }
+      .cd-step.done + .cd-step-line,
+      .cd-step-line.done { background: rgba(23,178,106,0.35); }
 
       /* Form fields */
       .cd-field-label { display: block; font-size: 11px; font-weight: 700; color: var(--d300); margin-bottom: 8px; }
@@ -6721,7 +6722,8 @@
         border-radius: 8px; border: 1px solid transparent;
         background: rgba(255,255,255,0.02); cursor: pointer;
         text-align: left; font-family: 'Urbanist',sans-serif;
-        transition: all var(--transition-fast); width: 100%;
+        transition: background var(--transition-fast), border-color var(--transition-fast);
+        width: 100%;
       }
       .cd-agent-row:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.09); }
       .cd-agent-row.selected { background: var(--qa-accent-dim); border-color: rgba(var(--qa-accent-rgb),0.3); }
@@ -6746,7 +6748,7 @@
         padding: 9px 12px; border-radius: 8px;
         border: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.02);
         cursor: pointer; font-size: 12px; font-weight: 600; color: var(--d200,#e8edf2);
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
       }
       .cd-kpi-check:hover { background: rgba(255,255,255,0.06); }
       .cd-kpi-check input { accent-color: var(--qa-accent); width: 14px; height: 14px; cursor: pointer; flex-shrink: 0; }
@@ -6760,7 +6762,7 @@
         border: 1.5px dashed rgba(255,255,255,0.1);
         background: rgba(255,255,255,0.02); cursor: pointer;
         color: var(--d400); font-size: 12px; font-weight: 600;
-        text-align: center; transition: all var(--transition-base);
+        text-align: center; transition: background var(--transition-base), border-color var(--transition-base);
       }
       .cd-upload-zone:hover { border-color: rgba(var(--qa-accent-rgb),0.3); background: rgba(var(--qa-accent-rgb),0.04); color: var(--d200,#e8edf2); }
       .cd-upload-zone svg { width: 20px; height: 20px; color: var(--d500); }

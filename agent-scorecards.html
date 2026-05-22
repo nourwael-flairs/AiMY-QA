@@ -54,6 +54,9 @@
         --transition-base: 200ms;
         --motion-hover-lift-sm: translateY(-1px);
         --motion-hover-lift-md: translateY(-2px);
+        /* Easing tokens — strong ease-out for all enter/UI animations */
+        --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
         /* Card surface with blue tint */
         --card-bg: #141b24;
         --card-border: rgba(255, 255, 255, 0.07);
@@ -218,7 +221,7 @@
         font-weight: 600;
         color: var(--d400);
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         border: 1px solid transparent;
         white-space: nowrap;
       }
@@ -256,7 +259,7 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         color: var(--d400);
         position: relative;
       }
@@ -273,13 +276,14 @@
       }
       .bell-dot {
         position: absolute;
-        top: 6px;
-        right: 6px;
+        top: 7px;
+        right: 7px;
         width: 6px;
         height: 6px;
         border-radius: 50%;
         background: var(--err);
         border: 1.5px solid #171a1c;
+        pointer-events: none;
       }
 
       /* User pill */
@@ -292,7 +296,7 @@
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.08);
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .topnav-user:hover {
         border-color: rgba(255, 255, 255, 0.14);
@@ -392,7 +396,7 @@
         font-size: 13px;
         font-weight: 600;
         cursor: pointer;
-        transition: all var(--transition-base);
+        transition: transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base), background var(--transition-base), color var(--transition-base), opacity var(--transition-base);
         border: 1px solid transparent;
         text-decoration: none;
       }
@@ -466,11 +470,7 @@
         background: transparent;
       }
 
-      /* ── Filter glass keyframes — shimmer only, no pulse ─────────────── */
-      @keyframes glassShimmer {
-        0%   { background-position: -200% center; }
-        100% { background-position:  200% center; }
-      }
+      /* ── Filter entrance keyframes ───────────────────────────────────── */
       @keyframes afsEntrance {
         from { opacity: 0; transform: translateY(-3px); }
         to   { opacity: 1; transform: translateY(0);    }
@@ -491,13 +491,11 @@
         border-radius: 10px;
         background: rgba(51, 105, 255, 0.05);
         border: 1px solid rgba(51, 105, 255, 0.12);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
         box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
         min-height: 32px;
         position: relative;
         overflow: hidden;
-        animation: afsEntrance 180ms ease both;
+        animation: afsEntrance 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
       }
       .active-filter-strip::before {
         content: "";
@@ -511,8 +509,6 @@
           rgba(139, 79, 244, 0.3) 65%,
           transparent
         );
-        background-size: 200% 100%;
-        animation: glassShimmer 4s linear infinite;
       }
       .active-filter-strip.visible { display: flex; }
 
@@ -542,6 +538,10 @@
         white-space: nowrap;
         animation: chipPop 220ms cubic-bezier(0.34,1.56,0.64,1) both;
       }
+      .afs-chip:nth-child(2) { animation-delay: 30ms; }
+      .afs-chip:nth-child(3) { animation-delay: 60ms; }
+      .afs-chip:nth-child(4) { animation-delay: 90ms; }
+      .afs-chip:nth-child(5) { animation-delay: 120ms; }
       .afs-chip strong { color: #a8ccff; font-weight: 700; }
       .afs-chip-x {
         background: none;
@@ -597,12 +597,10 @@
         display: flex;
         align-items: center;
         gap: 5px;
-        background: rgba(14, 20, 30, 0.75);
+        background: rgba(14, 20, 30, 0.96);
         border: 1px solid rgba(99, 169, 255, 0.10);
         border-radius: 12px;
         padding: 6px 10px;
-        backdrop-filter: blur(24px) saturate(1.5);
-        -webkit-backdrop-filter: blur(24px) saturate(1.5);
         box-shadow:
           inset 0 1px 0 rgba(255,255,255,0.06),
           0 4px 20px rgba(0,0,0,0.35),
@@ -624,8 +622,6 @@
           rgba(139,79,244,0.25) 60%,
           transparent
         );
-        background-size: 200% 100%;
-        animation: glassShimmer 3.5s linear infinite;
       }
       .filter-tray-inner::after {
         content: "";
@@ -851,7 +847,7 @@
       }
       .evidence-pill .ev-value {
         font-weight: 700;
-        color: #ffffff;
+        color: var(--d50);
       }
       .evidence-pill .ev-delta {
         font-size: 10px;
@@ -873,11 +869,12 @@
       }
       .bcard-action {
         display: flex;
-        flex-direction: column;
-        gap: 16px;
+        flex-direction: row;
+        gap: 8px;
         align-items: center;
         justify-content: space-between;
         padding: 0;
+        flex-wrap: wrap;
       }
       .action-btn {
         display: flex;
@@ -890,7 +887,7 @@
         border: none;
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         flex-shrink: 0;
       }
       .action-btn svg {
@@ -980,7 +977,7 @@
       .dc-val {
         font-size: 14px;
         font-weight: 700;
-        color: #ffffff;
+        color: var(--d50);
         letter-spacing: -0.02em;
       }
       .dc-sub {
@@ -1049,19 +1046,19 @@
         padding: 10px 12px;
         background: rgba(255, 255, 255, 0.03);
         border-radius: 8px;
-        border-left: 2px solid transparent;
+        border: 1px solid transparent;
       }
       .finding-item.err-f {
-        border-left-color: var(--err);
-        background: color-mix(in srgb, var(--err) 4%, var(--card-bg));
+        border-color: rgba(240, 68, 56, 0.18);
+        background: color-mix(in srgb, var(--err) 7%, var(--card-bg));
       }
       .finding-item.warn-f {
-        border-left-color: var(--warn);
-        background: color-mix(in srgb, var(--warn) 4%, var(--card-bg));
+        border-color: rgba(247, 144, 9, 0.18);
+        background: color-mix(in srgb, var(--warn) 7%, var(--card-bg));
       }
       .finding-item.ok-f {
-        border-left-color: var(--ok);
-        background: color-mix(in srgb, var(--ok) 3%, var(--card-bg));
+        border-color: rgba(23, 178, 106, 0.15);
+        background: color-mix(in srgb, var(--ok) 6%, var(--card-bg));
       }
       .finding-icon {
         width: 20px;
@@ -1093,7 +1090,7 @@
       .finding-title {
         font-size: 12px;
         font-weight: 700;
-        color: #ffffff;
+        color: var(--d50);
         margin-bottom: 2px;
       }
       .finding-sub {
@@ -1112,7 +1109,7 @@
         font-family: "Urbanist", sans-serif;
         flex-shrink: 0;
         margin-top: 2px;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .finding-action.err-f {
         background: var(--err-bg);
@@ -1183,7 +1180,7 @@
         background: var(--card-bg);
         border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.06);
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         cursor: pointer;
       }
       .kpi-brief:hover {
@@ -1225,7 +1222,7 @@
       .kf-conclusion {
         font-size: 12px;
         font-weight: 700;
-        color: #ffffff;
+        color: var(--d50);
         margin-bottom: 3px;
         line-height: 1.4;
       }
@@ -1279,7 +1276,7 @@
         font-family: "Urbanist", sans-serif;
         flex-shrink: 0;
         align-self: center;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .kf-err .kf-action {
         background: var(--err-bg);
@@ -1493,7 +1490,7 @@
       .spike-chart-label {
         font-size: 10px;
         font-weight: 600;
-        letter-spacing: 0.07em;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
         color: var(--d400);
       }
@@ -1564,7 +1561,7 @@
       .driver-label {
         font-size: 10px;
         font-weight: 700;
-        letter-spacing: 0.07em;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
         color: var(--d400);
         margin-bottom: 10px;
@@ -1620,27 +1617,31 @@
       .driver-bar-fill {
         height: 100%;
         border-radius: 4px;
+        transform-origin: left;
       }
       .driver-bar-fill.primary {
         background: linear-gradient(90deg, #f04438, #fb7067);
         box-shadow: 0 0 8px rgba(240, 68, 56, 0.4);
-        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) both;
+        animation: grow 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
       }
       .driver-bar-fill.secondary {
         background: rgba(240, 68, 56, 0.35);
-        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
+        animation: grow 0.9s cubic-bezier(0.22, 1, 0.36, 1) 40ms both;
       }
       .driver-bar-fill.minor {
         background: rgba(240, 68, 56, 0.38);
-        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+        animation: grow 0.9s cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
       }
       .driver-bar-fill.neutral {
         background: rgba(23, 178, 106, 0.3);
-        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.25s both;
+        animation: grow 0.9s cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
       }
       @keyframes grow {
         from {
-          width: 0;
+          transform: scaleX(0);
+        }
+        to {
+          transform: scaleX(1);
         }
       }
       .driver-bar-stat {
@@ -1677,7 +1678,7 @@
         color: var(--err);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         white-space: nowrap;
       }
       .primary-action-btn:hover {
@@ -1704,7 +1705,7 @@
         background: rgba(255, 255, 255, 0.02);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         white-space: nowrap;
       }
       .sec-btn:hover {
@@ -1797,7 +1798,7 @@
       .feed-title {
         font-size: 12px;
         font-weight: 700;
-        color: #ffffff;
+        color: var(--d50);
         margin-bottom: 3px;
         line-height: 1.35;
       }
@@ -1892,7 +1893,7 @@
         cursor: pointer;
         white-space: nowrap;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         align-self: center;
         flex-shrink: 0;
       }
@@ -1999,7 +2000,7 @@
         align-items: center;
         gap: 8px;
         background: rgba(255, 255, 255, 0.03);
-        border: 1px solid var(--d600);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 20px;
         padding: 6px 12px;
         width: 180px;
@@ -2040,7 +2041,7 @@
         border: none;
         background: none;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .range-tab:hover {
         color: var(--d300);
@@ -2064,7 +2065,7 @@
         border-radius: 8px;
         background: rgba(255, 255, 255, 0.03);
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .compare-toggle:hover {
         color: var(--d50);
@@ -2092,7 +2093,7 @@
         background: rgba(111, 223, 226, 0.06);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .ai-insight-btn:hover {
         background: rgba(111, 223, 226, 0.12);
@@ -2194,7 +2195,7 @@
       .tooltip-month {
         font-size: 10px;
         font-weight: 700;
-        letter-spacing: 0.07em;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
         color: var(--d400);
         margin-bottom: 5px;
@@ -2331,7 +2332,7 @@
         padding: 4px 8px;
         cursor: pointer;
         font-family: inherit;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .anno-btn:hover {
         background: rgba(240, 68, 56, 0.18);
@@ -2558,7 +2559,7 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         box-shadow: 0 2px 10px rgba(var(--qa-accent-rgb), 0.4);
       }
       .aimy-float-send:hover {
@@ -2661,7 +2662,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         color: var(--d300);
       }
       .overlay-close:hover {
@@ -2687,7 +2688,7 @@
         gap: 6px;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.07em;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
         color: var(--d400);
         padding: 5px 12px;
@@ -2897,7 +2898,7 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         box-shadow: 0 2px 10px rgba(var(--qa-accent-rgb), 0.4);
       }
       .overlay-send:hover {
@@ -2919,11 +2920,13 @@
         justify-content: center;
         /* Fades out once user starts chatting */
         transition:
-          opacity 200ms,
-          transform 200ms;
+          opacity 200ms cubic-bezier(0.22, 1, 0.36, 1),
+          transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+          visibility 200ms;
       }
       .overlay-suggestions.hidden {
         opacity: 0;
+        visibility: hidden;
         pointer-events: none;
         transform: translateY(6px);
       }
@@ -2937,7 +2940,7 @@
         border: 1px solid rgba(255, 255, 255, 0.09);
         border-radius: 20px;
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         white-space: nowrap;
       }
       .overlay-sugg-chip:hover {
@@ -3001,7 +3004,7 @@
         background: none;
         cursor: pointer;
         font-family: inherit;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .v2-refresh-btn:hover {
         color: var(--d300);
@@ -3025,7 +3028,7 @@
         border: 1px solid rgba(255, 255, 255, 0.08);
         background: rgba(255, 255, 255, 0.03);
         cursor: pointer;
-        transition: all var(--transition-base);
+        transition: transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base), background var(--transition-base), color var(--transition-base), opacity var(--transition-base);
         min-width: 180px;
         flex: 1;
         position: relative;
@@ -3074,7 +3077,7 @@
         opacity: 0;
         transform: scale(0.95);
         pointer-events: none;
-        transition: all var(--transition-base);
+        transition: transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base), background var(--transition-base), color var(--transition-base), opacity var(--transition-base);
       }
       .v2-chip-top {
         display: flex;
@@ -3409,7 +3412,7 @@
         background: none;
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .state-alt:hover {
         color: var(--d300);
@@ -3438,7 +3441,7 @@
         font-weight: 700;
         font-family: "Urbanist", sans-serif;
         cursor: pointer;
-        transition: all var(--transition-base);
+        transition: transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base), background var(--transition-base), color var(--transition-base), opacity var(--transition-base);
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.1);
         color: var(--d300);
@@ -3560,7 +3563,7 @@
         color: var(--d50);
         letter-spacing: -0.03em;
         line-height: 1;
-        transition: all var(--transition-base);
+        transition: transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base), background var(--transition-base), color var(--transition-base), opacity var(--transition-base);
       }
       .donut-label {
         font-size: 9px;
@@ -3569,7 +3572,7 @@
         text-transform: uppercase;
         letter-spacing: 0.06em;
         margin-top: 2px;
-        transition: all var(--transition-base);
+        transition: transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base), background var(--transition-base), color var(--transition-base), opacity var(--transition-base);
       }
 
       /* Segment arcs */
@@ -3797,7 +3800,7 @@
       .eval-insight-label {
         font-size: 10px;
         font-weight: 700;
-        letter-spacing: 0.07em;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
         color: #61adf1;
       }
@@ -3840,7 +3843,7 @@
         color: var(--err);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         flex-shrink: 0;
       }
       .eval-primary-btn:hover {
@@ -3860,7 +3863,7 @@
         background: rgba(255, 255, 255, 0.02);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         white-space: nowrap;
       }
       .eval-sec-btn:hover {
@@ -4038,7 +4041,7 @@
       }
       .heatmap-table th {
         font-size: 9px; font-weight: 700; text-transform: uppercase;
-        letter-spacing: 0.07em; color: var(--d500);
+        letter-spacing: 0.08em; color: var(--d500);
         padding: 0 0 8px 0; text-align: center;
       }
       .heatmap-table th.kpi-col-header { text-align: left; padding-right: 12px; }
@@ -4058,7 +4061,9 @@
         transition: transform var(--transition-fast), outline var(--transition-fast);
         position: relative;
       }
-      .hm-cell:hover { transform: scale(1.15); z-index: 2; outline: 1px solid rgba(255,255,255,0.3); }
+      @media (hover: hover) and (pointer: fine) {
+        .hm-cell:hover { transform: scale(1.15); z-index: 2; outline: 1px solid rgba(255,255,255,0.3); }
+      }
       .hm-ok   { background: rgba(23,178,106,0.40); color: var(--ok); }
       .hm-warn { background: rgba(247,144,9,0.25);  color: var(--warn); }
       .hm-err  { background: rgba(240,68,56,0.25);  color: var(--err); }
@@ -4172,7 +4177,7 @@
       }
       /* Canvas render label (type badge at top of each render block) */
       .canvas-type-label {
-        font-size: 9px; font-weight: 700; letter-spacing: 0.07em;
+        font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
         text-transform: uppercase; color: var(--d500);
         margin-bottom: 6px;
         display: flex; align-items: center; gap: 5px;
@@ -4209,7 +4214,7 @@
       }
       .memory-panel-title {
         font-size: 10px; font-weight: 700; color: var(--teal);
-        text-transform: uppercase; letter-spacing: 0.07em; flex: 1;
+        text-transform: uppercase; letter-spacing: 0.08em; flex: 1;
       }
       .memory-panel-age {
         font-size: 10px; color: var(--d500); font-weight: 500;
@@ -4581,27 +4586,132 @@
       }
       .eval-filter-label {
         font-size: 9px; font-weight: 700; color: var(--d500);
-        text-transform: uppercase; letter-spacing: 0.07em;
+        text-transform: uppercase; letter-spacing: 0.08em;
         margin-right: 4px; flex-shrink: 0;
       }
-      .eval-filter-select {
-        background: rgba(255,255,255,0.05);
+      /* ── Custom dropdown engine CSS (v2-dropdown) is below ─────────── */
+      .v2-dropdown {
+        position: relative;
+        display: inline-flex;
+        flex-shrink: 0;
+      }
+      .v2-dropdown-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 6px;
+        padding: 4px 8px 4px 10px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--d200, #e8edf2);
+        font-family: "Urbanist", sans-serif;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+        line-height: 1.4;
+      }
+      .v2-dropdown-btn:hover {
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(255,255,255,0.16);
+      }
+      .v2-dropdown-btn.open {
+        background: rgba(51,105,255,0.08);
+        border-color: rgba(99,169,255,0.28);
+        color: #c5dcff;
+      }
+      .v2-dropdown-btn.active-filter {
+        background: rgba(51,105,255,0.10);
+        border-color: rgba(99,169,255,0.32);
+        color: #a8ccff;
+      }
+      .v2-dropdown-btn svg {
+        width: 10px;
+        height: 10px;
+        flex-shrink: 0;
+        transition: transform 150ms cubic-bezier(0.22,1,0.36,1);
+        color: var(--d400);
+      }
+      .v2-dropdown-btn.open svg { transform: rotate(180deg); }
+      .v2-dropdown-btn .dd-label-text {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      /* Roster sort variant — full width */
+      .v2-dropdown.roster-dd { flex: 1; }
+      .v2-dropdown.roster-dd .v2-dropdown-btn {
+        width: 100%;
+        justify-content: space-between;
+        padding: 7px 10px 7px 12px;
+        border-radius: 6px;
+      }
+
+      /* Dropdown panel */
+      .v2-dropdown-panel {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        min-width: 100%;
+        background: var(--d800);
         border: 1px solid rgba(255,255,255,0.10);
-        border-radius: 6px; padding: 4px 8px;
-        font-size: 11px; font-weight: 600; color: var(--d200);
-        font-family: "Urbanist", sans-serif; cursor: pointer;
-        transition: all var(--transition-fast);
-        appearance: none; -webkit-appearance: none;
-        padding-right: 20px;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b9aaa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 6px center;
+        border-radius: 10px;
+        padding: 4px;
+        box-shadow:
+          0 8px 32px rgba(0,0,0,0.5),
+          0 0 0 1px rgba(0,0,0,0.2),
+          inset 0 1px 0 rgba(255,255,255,0.06);
+        z-index: 200;
+        opacity: 0;
+        transform: translateY(-4px) scale(0.98);
+        transform-origin: top left;
+        pointer-events: none;
+        transition:
+          opacity 150ms cubic-bezier(0.22,1,0.36,1),
+          transform 150ms cubic-bezier(0.22,1,0.36,1);
+        white-space: nowrap;
       }
-      .eval-filter-select:hover {
-        border-color: rgba(255,255,255,0.18);
-        background-color: rgba(255,255,255,0.08);
+      .v2-dropdown-panel.open {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
       }
-      .eval-filter-select option { background: #1c2630; color: var(--d100); }
+      .v2-dropdown-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--d200, #e8edf2);
+        font-family: "Urbanist", sans-serif;
+        cursor: pointer;
+        transition: background var(--transition-fast), color var(--transition-fast);
+      }
+      .v2-dropdown-option:hover {
+        background: rgba(255,255,255,0.06);
+        color: var(--d50);
+      }
+      .v2-dropdown-option.selected {
+        background: rgba(51,105,255,0.10);
+        color: #a8ccff;
+      }
+      .v2-dropdown-option.selected::before {
+        content: '';
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #61adf1;
+        flex-shrink: 0;
+      }
+      .v2-dropdown-option:not(.selected)::before {
+        content: '';
+        width: 5px;
+        height: 5px;
+        flex-shrink: 0;
+      }
 
       /* Sort controls */
       .eval-sort-bar {
@@ -4620,7 +4730,7 @@
         background: none; border: none; cursor: pointer;
         font-family: "Urbanist", sans-serif; padding: 3px 8px;
         border-radius: 4px;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .sort-btn:hover { background: rgba(255,255,255,0.06); color: var(--d200); }
       .sort-btn.active { color: var(--brand); background: rgba(51,105,255,0.10); }
@@ -4641,7 +4751,7 @@
         font-size: 10px; font-weight: 700;
         padding: 5px 12px; border-radius: 6px; border: none;
         cursor: pointer; font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .eval-bulk-btn.primary { background: rgba(51,105,255,0.18); color: #6699ff; }
       .eval-bulk-btn.primary:hover { background: rgba(51,105,255,0.28); }
@@ -4659,7 +4769,7 @@
         border: 1px solid rgba(255,255,255,0.06);
         border-radius: 10px;
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .eval-row:hover {
         border-color: rgba(255,255,255,0.12);
@@ -4707,7 +4817,7 @@
         border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);
         background: rgba(255,255,255,0.04); color: var(--d300);
         cursor: pointer; font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .eval-page-btn:hover { background: rgba(255,255,255,0.08); }
       .eval-page-btn.active { background: rgba(51,105,255,0.14); color: var(--brand); border-color: rgba(51,105,255,0.25); }
@@ -4900,7 +5010,7 @@
       }
       .erel-section-label {
         font-size: 9px; font-weight: 700; color: var(--d500);
-        text-transform: uppercase; letter-spacing: 0.07em;
+        text-transform: uppercase; letter-spacing: 0.08em;
         padding: 10px 16px 4px;
       }
       .erel-row {
@@ -4923,7 +5033,7 @@
         border: 1px solid rgba(240,68,56,0.22);
         color: #f04438; font-size: 12px; font-weight: 700;
         font-family: "Urbanist", sans-serif; cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .eval-dispute-btn:hover { background: rgba(240,68,56,0.14); }
       .eval-dispute-btn svg { width: 13px; height: 13px; }
@@ -4939,15 +5049,42 @@
         border: 1px solid rgba(255,255,255,0.10);
         color: var(--d300); font-size: 12px; font-weight: 700;
         font-family: "Urbanist", sans-serif; cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .eval-export-btn:hover { background: rgba(255,255,255,0.09); }
       .eval-export-btn svg { width: 13px; height: 13px; }
 
       /* ══ KPI BREAKDOWN INTERACTIVE STYLES ═══════════════════════════════ */
       @keyframes kpiDrawerIn {
-        from { opacity: 0; transform: translateY(-4px); }
+        from { opacity: 0; transform: translateY(4px); }
         to   { opacity: 1; transform: translateY(0); }
+      }
+      #kpiDetailDrawer {
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(4px);
+        max-height: 0;
+        pointer-events: none;
+        transition:
+          opacity 180ms cubic-bezier(0.22, 1, 0.36, 1),
+          transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+          max-height 200ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      #kpiDetailDrawer.kpi-drawer-open {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 600px;
+        pointer-events: auto;
+      }
+      #kpiDetailDrawer.kpi-drawer-closing {
+        opacity: 0;
+        transform: translateY(4px);
+        max-height: 0;
+        pointer-events: none;
+        transition:
+          opacity 120ms cubic-bezier(0.22, 1, 0.36, 1),
+          transform 120ms cubic-bezier(0.22, 1, 0.36, 1),
+          max-height 140ms cubic-bezier(0.22, 1, 0.36, 1);
       }
       .kpi-row-selectable { cursor: pointer; transition: background var(--transition-fast); position: relative; }
       .kpi-row-selectable:hover { background: rgba(255,255,255,0.03); border-radius: 8px; }
@@ -7102,13 +7239,19 @@
                   />
                 </div>
                 <div class="roster-controls">
-                  <select class="roster-sort" aria-label="Sort agents">
-                    <option>Sort: Quality (low→high)</option>
-                    <option>Sort: Quality (high→low)</option>
-                    <option>Sort: Risk level</option>
-                    <option>Sort: Name (A→Z)</option>
-                    <option>Sort: Recent change</option>
-                  </select>
+                  <div class="v2-dropdown roster-dd" data-dd="roster-sort">
+                    <button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Sort agents">
+                      <span class="dd-label-text">Quality (low→high)</span>
+                      <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg>
+                    </button>
+                    <div class="v2-dropdown-panel" role="listbox" aria-label="Sort agents">
+                      <div class="v2-dropdown-option selected" role="option" data-value="Sort: Quality (low→high)">Quality (low→high)</div>
+                      <div class="v2-dropdown-option" role="option" data-value="Sort: Quality (high→low)">Quality (high→low)</div>
+                      <div class="v2-dropdown-option" role="option" data-value="Sort: Risk level">Risk level</div>
+                      <div class="v2-dropdown-option" role="option" data-value="Sort: Name (A→Z)">Name (A→Z)</div>
+                      <div class="v2-dropdown-option" role="option" data-value="Sort: Recent change">Recent change</div>
+                    </div>
+                  </div>
                   <span class="roster-count">12 agents</span>
                 </div>
               </div>
@@ -7666,7 +7809,7 @@
                 </div>
 
                 <!-- KPI detail drawer -->
-                <div id="kpiDetailDrawer" style="display:none; margin: 0 -20px; border-top: 1px solid rgba(255,255,255,0.07); border-bottom: 1px solid rgba(255,255,255,0.07); background: rgba(0,0,0,0.18); padding: 16px 20px; animation: kpiDrawerIn 200ms ease both;">
+                <div id="kpiDetailDrawer" style="margin: 0 -20px; border-top: 1px solid rgba(255,255,255,0.07); border-bottom: 1px solid rgba(255,255,255,0.07); background: rgba(0,0,0,0.18); padding: 0 20px;">
                   <div id="kpiDetailInner"></div>
                 </div>
 
@@ -8049,60 +8192,117 @@
               <!-- Filter panel — same 8 filters, no agent pre-filter applied -->
               <div class="eval-filter-strip">
                 <span class="eval-filter-label">Filter</span>
-                <select class="eval-filter-select" aria-label="Date range">
-                  <option>Last 30 days</option>
-                  <option>Last 7 days</option>
-                  <option>Last 90 days</option>
-                  <option>Custom range</option>
-                </select>
-                <select class="eval-filter-select" aria-label="Agent">
-                  <option>All agents</option>
-                  <option>Omar Abdallah</option>
-                  <option>Tariq Mansour</option>
-                  <option>Michael Chen</option>
-                  <option>Aisha Khalil</option>
-                  <option>Daniel Rodriguez</option>
-                  <option>Priya Venkat</option>
-                  <option>Jamal Williams</option>
-                  <option>Lina Haddad</option>
-                  <option>Sarah Reyes</option>
-                </select>
-                <select class="eval-filter-select" aria-label="Channel">
-                  <option>All channels</option>
-                  <option>Voice</option>
-                  <option>Chat</option>
-                  <option>Email</option>
-                  <option>Ticket</option>
-                </select>
-                <select class="eval-filter-select" aria-label="Score range">
-                  <option>All scores</option>
-                  <option>Below 70%</option>
-                  <option>70–85%</option>
-                  <option>Above 85%</option>
-                </select>
-                <select class="eval-filter-select" aria-label="Confidence level">
-                  <option>All confidence</option>
-                  <option>High ≥80%</option>
-                  <option>Medium 50–79%</option>
-                  <option>Low &lt;50%</option>
-                </select>
-                <select class="eval-filter-select" aria-label="Outcome">
-                  <option>Pass / Fail / Borderline</option>
-                  <option>Pass only</option>
-                  <option>Fail only</option>
-                  <option>Borderline only</option>
-                </select>
-                <select class="eval-filter-select" aria-label="Sentiment">
-                  <option>All sentiment</option>
-                  <option>Positive</option>
-                  <option>Neutral</option>
-                  <option>Negative</option>
-                </select>
-                <select class="eval-filter-select" aria-label="Interaction type">
-                  <option>Human &amp; AI</option>
-                  <option>Human only</option>
-                  <option>AiMY only</option>
-                </select>
+
+                <div class="v2-dropdown" data-dd="eval-date">
+                  <button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="dd-label-text">Last 30 days</span>
+                    <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg>
+                  </button>
+                  <div class="v2-dropdown-panel" role="listbox" aria-label="Date range">
+                    <div class="v2-dropdown-option selected" role="option" data-value="Last 30 days">Last 30 days</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Last 7 days">Last 7 days</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Last 90 days">Last 90 days</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Custom range">Custom range</div>
+                  </div>
+                </div>
+
+                <div class="v2-dropdown" data-dd="eval-agent">
+                  <button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="dd-label-text">All agents</span>
+                    <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg>
+                  </button>
+                  <div class="v2-dropdown-panel" role="listbox" aria-label="Agent">
+                    <div class="v2-dropdown-option selected" role="option" data-value="All agents">All agents</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Omar Abdallah">Omar Abdallah</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Tariq Mansour">Tariq Mansour</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Michael Chen">Michael Chen</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Aisha Khalil">Aisha Khalil</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Daniel Rodriguez">Daniel Rodriguez</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Priya Venkat">Priya Venkat</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Jamal Williams">Jamal Williams</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Lina Haddad">Lina Haddad</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Sarah Reyes">Sarah Reyes</div>
+                  </div>
+                </div>
+
+                <div class="v2-dropdown" data-dd="eval-channel">
+                  <button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="dd-label-text">All channels</span>
+                    <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg>
+                  </button>
+                  <div class="v2-dropdown-panel" role="listbox" aria-label="Channel">
+                    <div class="v2-dropdown-option selected" role="option" data-value="All channels">All channels</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Voice">Voice</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Chat">Chat</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Email">Email</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Ticket">Ticket</div>
+                  </div>
+                </div>
+
+                <div class="v2-dropdown" data-dd="eval-score">
+                  <button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="dd-label-text">All scores</span>
+                    <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg>
+                  </button>
+                  <div class="v2-dropdown-panel" role="listbox" aria-label="Score range">
+                    <div class="v2-dropdown-option selected" role="option" data-value="All scores">All scores</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Below 70%">Below 70%</div>
+                    <div class="v2-dropdown-option" role="option" data-value="70–85%">70–85%</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Above 85%">Above 85%</div>
+                  </div>
+                </div>
+
+                <div class="v2-dropdown" data-dd="eval-conf">
+                  <button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="dd-label-text">All confidence</span>
+                    <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg>
+                  </button>
+                  <div class="v2-dropdown-panel" role="listbox" aria-label="Confidence level">
+                    <div class="v2-dropdown-option selected" role="option" data-value="All confidence">All confidence</div>
+                    <div class="v2-dropdown-option" role="option" data-value="High ≥80%">High ≥80%</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Medium 50–79%">Medium 50–79%</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Low &lt;50%">Low &lt;50%</div>
+                  </div>
+                </div>
+
+                <div class="v2-dropdown" data-dd="eval-outcome">
+                  <button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="dd-label-text">Pass / Fail / Borderline</span>
+                    <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg>
+                  </button>
+                  <div class="v2-dropdown-panel" role="listbox" aria-label="Outcome">
+                    <div class="v2-dropdown-option selected" role="option" data-value="Pass / Fail / Borderline">Pass / Fail / Borderline</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Pass only">Pass only</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Fail only">Fail only</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Borderline only">Borderline only</div>
+                  </div>
+                </div>
+
+                <div class="v2-dropdown" data-dd="eval-sentiment">
+                  <button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="dd-label-text">All sentiment</span>
+                    <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg>
+                  </button>
+                  <div class="v2-dropdown-panel" role="listbox" aria-label="Sentiment">
+                    <div class="v2-dropdown-option selected" role="option" data-value="All sentiment">All sentiment</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Positive">Positive</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Neutral">Neutral</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Negative">Negative</div>
+                  </div>
+                </div>
+
+                <div class="v2-dropdown" data-dd="eval-type">
+                  <button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="dd-label-text">Human &amp; AI</span>
+                    <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg>
+                  </button>
+                  <div class="v2-dropdown-panel" role="listbox" aria-label="Interaction type">
+                    <div class="v2-dropdown-option selected" role="option" data-value="Human &amp; AI">Human &amp; AI</div>
+                    <div class="v2-dropdown-option" role="option" data-value="Human only">Human only</div>
+                    <div class="v2-dropdown-option" role="option" data-value="AiMY only">AiMY only</div>
+                  </div>
+                </div>
+
               </div>
 
               <!-- Sort controls -->
@@ -9121,7 +9321,7 @@
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
         box-shadow: 0 2px 8px rgba(var(--qa-accent-rgb), 0.25);
-        transition: all var(--transition-base);
+        transition: transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base), background var(--transition-base), color var(--transition-base), opacity var(--transition-base);
       }
       .brief-primary-btn:hover {
         box-shadow: 0 4px 16px rgba(var(--qa-accent-rgb), 0.35);
@@ -9144,7 +9344,7 @@
         font-weight: 600;
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .brief-sec-btn:hover {
         background: rgba(255, 255, 255, 0.07);
@@ -9266,7 +9466,7 @@
         font-size: 12px;
         font-weight: 500;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .roster-search::placeholder {
         color: var(--d500);
@@ -9281,23 +9481,7 @@
         align-items: center;
         gap: 8px;
       }
-      .roster-sort {
-        flex: 1;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        color: var(--d100);
-        padding: 7px 10px;
-        border-radius: 6px;
-        font-size: 11px;
-        font-weight: 600;
-        font-family: "Urbanist", sans-serif;
-        cursor: pointer;
-        appearance: none;
-        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238b9aaa' stroke-width='2.5'><polyline points='6 9 12 15 18 9'/></svg>");
-        background-repeat: no-repeat;
-        background-position: right 10px center;
-        padding-right: 28px;
-      }
+      /* .roster-sort replaced by .v2-dropdown.roster-dd */
       .roster-count {
         font-size: 10px;
         font-weight: 700;
@@ -9466,7 +9650,7 @@
         align-items: center;
         justify-content: center;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .roster-page-btn svg {
         width: 11px;
@@ -9957,7 +10141,7 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         letter-spacing: 0.01em;
       }
       .view-toggle-btn:hover {
@@ -10015,7 +10199,7 @@
         padding: 6px 12px;
         border-radius: 6px;
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .team-time-btn:hover {
         color: var(--d100);
@@ -10371,7 +10555,7 @@
         border: 1px solid rgba(255, 255, 255, 0.05);
         border-radius: 10px;
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .pattern-row:hover {
         background: rgba(255, 255, 255, 0.04);
@@ -10534,7 +10718,7 @@
         font-weight: 600;
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .header-quick-link:hover {
         background: rgba(255, 255, 255, 0.07);
@@ -10714,7 +10898,7 @@
         padding: 6px 11px;
         border-radius: 7px;
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         flex-shrink: 0;
         white-space: nowrap;
       }
@@ -10858,7 +11042,7 @@
         padding: 8px 12px;
         border-radius: 7px;
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         white-space: nowrap;
         box-shadow: 0 2px 6px rgba(var(--qa-accent-rgb), 0.2);
       }
@@ -11347,7 +11531,7 @@
         padding: 6px 12px;
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         white-space: nowrap;
       }
       .breakdown-plan-btn:hover {
@@ -11862,7 +12046,7 @@
         border: 1px solid rgba(255,255,255,0.08);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         white-space: nowrap;
       }
       .bcard-ack-btn:hover { background: rgba(255,255,255,0.07); color: var(--d200, #e8edf2); border-color: rgba(255,255,255,0.14); }
@@ -11908,7 +12092,7 @@
         font-weight: 700;
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         text-decoration: none;
       }
       .msg-action-link:hover { background: rgba(var(--qa-accent-rgb),0.18); border-color: rgba(var(--qa-accent-rgb),0.4); }
@@ -11937,7 +12121,7 @@
       .action-confirm-no {
         font-size: 11px; font-weight: 600; padding: 5px 14px; border-radius: 8px;
         background: rgba(255,255,255,0.04); color: var(--d400); border: 1px solid rgba(255,255,255,0.08); cursor: pointer; font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .action-confirm-no:hover { background: rgba(255,255,255,0.08); color: var(--d200, #e8edf2); }
 
@@ -12043,7 +12227,7 @@
       }
       .coach-btn {
         font-size: 11px; font-weight: 700; padding: 6px 14px; border-radius: 8px;
-        cursor: pointer; font-family: "Urbanist", sans-serif; transition: all var(--transition-fast);
+        cursor: pointer; font-family: "Urbanist", sans-serif; transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
         border: 1px solid transparent; flex-shrink: 0;
       }
       .coach-btn.accept {
@@ -12091,7 +12275,7 @@
         font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px;
         background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
         color: var(--d300); cursor: pointer; font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       }
       .defer-opt:hover { background: rgba(var(--qa-accent-rgb),0.1); border-color: rgba(var(--qa-accent-rgb),0.25); color: var(--qa-accent); }
 
@@ -12249,7 +12433,7 @@
       .alert-detail-action {
         font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 8px;
         cursor: pointer; font-family: "Urbanist",sans-serif;
-        transition: all var(--transition-fast); border: 1px solid transparent;
+        transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast); border: 1px solid transparent;
       }
       .ada-primary { background: rgba(var(--qa-accent-rgb),.1); color: var(--qa-accent); border-color: rgba(var(--qa-accent-rgb),.22); }
       .ada-primary:hover { background: rgba(var(--qa-accent-rgb),.18); }
@@ -13081,31 +13265,121 @@
           btn.querySelector("svg").style.transform = open ? "rotate(180deg)" : "";
         };
 
-        /* ── Composite attention sort — roster select ────────────────── */
-        const rosterSort = document.querySelector(".roster-sort");
-        if (rosterSort) {
-          rosterSort.addEventListener("change", function() {
-            const val = this.value;
-            const list = document.querySelector(".roster-list");
+        /* ══ CUSTOM DROPDOWN ENGINE ══════════════════════════════════════
+           Handles all .v2-dropdown instances — eval filters and roster sort.
+           Single shared init, delegate-friendly. ========================= */
+        (function() {
+          var activeDropdown = null;
+
+          function closeAll(except) {
+            document.querySelectorAll('.v2-dropdown').forEach(function(dd) {
+              if (dd === except) return;
+              var btn = dd.querySelector('.v2-dropdown-btn');
+              var panel = dd.querySelector('.v2-dropdown-panel');
+              if (btn) { btn.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
+              if (panel) panel.classList.remove('open');
+            });
+            if (!except) activeDropdown = null;
+          }
+
+          function initDropdown(dd) {
+            var btn   = dd.querySelector('.v2-dropdown-btn');
+            var panel = dd.querySelector('.v2-dropdown-panel');
+            var labelEl = btn && btn.querySelector('.dd-label-text');
+            if (!btn || !panel) return;
+
+            btn.addEventListener('click', function(e) {
+              e.stopPropagation();
+              var isOpen = panel.classList.contains('open');
+              closeAll(isOpen ? null : dd);
+              if (!isOpen) {
+                btn.classList.add('open');
+                btn.setAttribute('aria-expanded', 'true');
+                panel.classList.add('open');
+                activeDropdown = dd;
+                /* Flip panel if clipped at bottom */
+                var rect = panel.getBoundingClientRect();
+                if (rect.bottom > window.innerHeight - 8) {
+                  panel.style.top = 'auto';
+                  panel.style.bottom = 'calc(100% + 4px)';
+                  panel.style.transformOrigin = 'bottom left';
+                } else {
+                  panel.style.top = '';
+                  panel.style.bottom = '';
+                  panel.style.transformOrigin = 'top left';
+                }
+              }
+            });
+
+            btn.addEventListener('keydown', function(e) {
+              if (e.key === 'Escape') { closeAll(); btn.focus(); }
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                var first = panel.querySelector('.v2-dropdown-option');
+                if (first) { panel.classList.add('open'); btn.setAttribute('aria-expanded','true'); first.focus(); }
+              }
+            });
+
+            panel.querySelectorAll('.v2-dropdown-option').forEach(function(opt) {
+              opt.setAttribute('tabindex', '-1');
+              opt.addEventListener('click', function(e) {
+                e.stopPropagation();
+                /* Update selection state */
+                panel.querySelectorAll('.v2-dropdown-option').forEach(function(o) { o.classList.remove('selected'); });
+                opt.classList.add('selected');
+                /* Update button label */
+                if (labelEl) labelEl.textContent = opt.textContent.trim();
+                /* Mark as active filter if not the first/default option */
+                var isDefault = opt === panel.querySelector('.v2-dropdown-option:first-child');
+                btn.classList.toggle('active-filter', !isDefault);
+                closeAll();
+                btn.focus();
+                /* Fire custom event for listeners (e.g. roster sort) */
+                dd.dispatchEvent(new CustomEvent('v2-select', { detail: { value: opt.dataset.value }, bubbles: true }));
+              });
+
+              opt.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); opt.click(); }
+                if (e.key === 'Escape') { closeAll(); btn.focus(); }
+                if (e.key === 'ArrowDown') { e.preventDefault(); var next = opt.nextElementSibling; if (next) next.focus(); }
+                if (e.key === 'ArrowUp')   { e.preventDefault(); var prev = opt.previousElementSibling; if (prev) prev.focus(); else btn.focus(); }
+              });
+            });
+          }
+
+          /* Init all dropdowns on DOMContentLoaded (already past it here) */
+          document.querySelectorAll('.v2-dropdown').forEach(initDropdown);
+
+          /* Close on outside click */
+          document.addEventListener('click', function() { closeAll(); });
+          document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeAll(); });
+        })();
+
+        /* ── Composite attention sort — roster dropdown ──────────────────── */
+        (function() {
+          var rosterDd = document.querySelector('[data-dd="roster-sort"]');
+          if (!rosterDd) return;
+          rosterDd.addEventListener('v2-select', function(e) {
+            var val = e.detail.value;
+            var list = document.querySelector('.roster-list');
             if (!list) return;
-            const rows = Array.from(list.querySelectorAll(".roster-row"));
+            var rows = Array.from(list.querySelectorAll('.roster-row'));
             rows.sort(function(a, b) {
-              const getScore = function(el) { return parseFloat(el.querySelector(".attention-val")?.textContent) || 0; };
-              const getAtt   = function(el) { return parseFloat(el.dataset.attention) || 0; };
-              if (val.includes("Quality (low")) return getScore(a) - getScore(b);
-              if (val.includes("Quality (high")) return getScore(b) - getScore(a);
-              if (val.includes("Risk")) return getAtt(b) - getAtt(a); // composite attention descending
-              if (val.includes("Name")) {
-                const na = a.querySelector(".roster-name")?.textContent || "";
-                const nb = b.querySelector(".roster-name")?.textContent || "";
+              var getScore = function(el) { return parseFloat(el.querySelector('.attention-val')?.textContent) || 0; };
+              var getAtt   = function(el) { return parseFloat(el.dataset.attention) || 0; };
+              if (val.includes('Quality (low'))  return getScore(a) - getScore(b);
+              if (val.includes('Quality (high')) return getScore(b) - getScore(a);
+              if (val.includes('Risk'))          return getAtt(b) - getAtt(a);
+              if (val.includes('Name')) {
+                var na = a.querySelector('.roster-name')?.textContent || '';
+                var nb = b.querySelector('.roster-name')?.textContent || '';
                 return na.localeCompare(nb);
               }
-              // "Recent change" — composite attention
-              return getAtt(b) - getAtt(a);
+              return getAtt(b) - getAtt(a); /* Recent change */
             });
-            rows.forEach(function(r){ list.appendChild(r); });
+            rows.forEach(function(r) { list.appendChild(r); });
           });
-        }
+        })();
 
         /* ── Account-wide eval list selection ────────────────────────── */
         window.toggleAccountEvalRow = function(checkbox) {
@@ -14637,6 +14911,7 @@
 
         /* ── Open / close drawer ─────────────────────────────────────────── */
         var activeKpi = null;
+        var _kpiCloseTimer = null;
 
         window.openKpiDrawer = function(kpiNum) {
           var drawer = document.getElementById('kpiDetailDrawer');
@@ -14646,10 +14921,18 @@
           if (activeKpi === kpiNum) { closeKpiDrawer(); return; }
           activeKpi = kpiNum;
 
-          inner.innerHTML = drawerHTML(kpiNum);
-          drawer.style.display = 'block';
+          /* Clear any pending close */
+          if (_kpiCloseTimer) { clearTimeout(_kpiCloseTimer); _kpiCloseTimer = null; }
+          drawer.classList.remove('kpi-drawer-closing');
 
-          /* Animate bar fill after paint */
+          inner.innerHTML = drawerHTML(kpiNum);
+          drawer.style.padding = '16px 20px';
+
+          /* Force reflow then open */
+          drawer.offsetHeight;
+          drawer.classList.add('kpi-drawer-open');
+
+          /* Animate bar fill after open transition starts */
           requestAnimationFrame(function() {
             var fill = inner.querySelector('.kpi-drawer-minibar-fill');
             if (fill) fill.style.width = fill.dataset.target + '%';
@@ -14676,10 +14959,17 @@
 
         window.closeKpiDrawer = function() {
           var drawer = document.getElementById('kpiDetailDrawer');
-          if (drawer) drawer.style.display = 'none';
+          if (!drawer) return;
+          drawer.classList.remove('kpi-drawer-open');
+          drawer.classList.add('kpi-drawer-closing');
           activeKpi = null;
           document.querySelectorAll('.kpi-row-selectable').forEach(function(r) { r.classList.remove('kpi-row-active'); });
           document.querySelectorAll('.dotplot-marker').forEach(function(m) { m.style.boxShadow = ''; m.style.zIndex = ''; });
+          /* Clear padding after exit animation completes */
+          _kpiCloseTimer = setTimeout(function() {
+            drawer.classList.remove('kpi-drawer-closing');
+            drawer.style.padding = '';
+          }, 150);
         };
 
         /* ── KPI action callback (for non-canvas actions) ────────────────── */

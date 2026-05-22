@@ -92,6 +92,21 @@
         border-radius: 8px;
       }
 
+      /* Focus rings for dynamically-injected canvas buttons */
+      .eval-insight button:focus-visible,
+      .coaching-card button:focus-visible,
+      .aimy-context-panel button:focus-visible,
+      .alert-detail-action:focus-visible,
+      .coach-btn:focus-visible,
+      .defer-opt:focus-visible,
+      .action-confirm-yes:focus-visible,
+      .action-confirm-no:focus-visible,
+      .msg-action-link:focus-visible {
+        outline: 2px solid var(--brand);
+        outline-offset: 2px;
+        border-radius: 6px;
+      }
+
       body {
         font-family: "Urbanist", sans-serif;
         background: #171a1c;
@@ -218,7 +233,7 @@
         font-weight: 600;
         color: var(--d400);
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
         border: 1px solid transparent;
         white-space: nowrap;
       }
@@ -256,7 +271,7 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
         color: var(--d400);
         position: relative;
       }
@@ -292,7 +307,7 @@
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.08);
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
       }
       .topnav-user:hover {
         border-color: rgba(255, 255, 255, 0.14);
@@ -392,7 +407,7 @@
         font-size: 13px;
         font-weight: 600;
         cursor: pointer;
-        transition: all var(--transition-base);
+        transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
         border: 1px solid transparent;
         text-decoration: none;
       }
@@ -407,21 +422,11 @@
         border-color: rgba(var(--qa-accent-rgb), 0.28);
         box-shadow: 0 0 20px rgba(var(--qa-accent-rgb), 0.08);
       }
-      /* AI Chat & Canvas — subtle AI gradient border to mark it as the primary surface */
+      /* AI Chat & Canvas — subtle full border to mark it as the primary surface */
       .nav-item.primary-surface {
         position: relative;
-      }
-      .nav-item.primary-surface::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 2px;
-        height: 18px;
-        border-radius: 2px;
-        background: var(--ai);
-        opacity: 0.6;
+        background: rgba(0, 102, 255, 0.04);
+        border-color: rgba(0, 102, 255, 0.12);
       }
       .nav-item.primary-surface .ai-sparkle {
         margin-left: auto;
@@ -430,9 +435,6 @@
       .nav-item.primary-surface .ai-sparkle svg {
         width: 12px;
         height: 12px;
-      }
-      .nav-item.active.primary-surface::before {
-        opacity: 1;
       }
       .nav-item svg {
         width: 16px;
@@ -512,7 +514,7 @@
           transparent
         );
         background-size: 200% 100%;
-        animation: glassShimmer 4s linear infinite;
+        animation: glassShimmer 4s linear 2;
       }
       .active-filter-strip.visible { display: flex; }
 
@@ -625,7 +627,7 @@
           transparent
         );
         background-size: 200% 100%;
-        animation: glassShimmer 3.5s linear infinite;
+        animation: glassShimmer 3.5s linear 2;
       }
       .filter-tray-inner::after {
         content: "";
@@ -868,7 +870,8 @@
       .bcard-divider {
         height: 1px;
         background: rgba(255, 255, 255, 0.07);
-        margin: 0 -20px 16px;
+        margin: 0 0 16px;
+        /* Parent .bcard has overflow:hidden — no negative margin needed */
       }
       .bcard-action {
         display: flex;
@@ -889,7 +892,7 @@
         border: none;
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), color var(--transition-fast);
         flex-shrink: 0;
       }
       .action-btn svg {
@@ -1111,7 +1114,7 @@
         font-family: "Urbanist", sans-serif;
         flex-shrink: 0;
         margin-top: 2px;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), color var(--transition-fast);
       }
       .finding-action.err-f {
         background: var(--err-bg);
@@ -1182,7 +1185,7 @@
         background: var(--card-bg);
         border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.06);
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
         cursor: pointer;
       }
       .kpi-brief:hover {
@@ -1278,7 +1281,7 @@
         font-family: "Urbanist", sans-serif;
         flex-shrink: 0;
         align-self: center;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), color var(--transition-fast);
       }
       .kf-err .kf-action {
         background: var(--err-bg);
@@ -1422,8 +1425,8 @@
         border: none;
         border-top: 1px solid rgba(255, 255, 255, 0.05);
         padding: 10px 20px;
-        margin: 0 -20px;
-        width: calc(100% + 40px);
+        /* Removed negative margin — .signal-card has overflow:hidden so
+           full-bleed is achieved without layout-fragile negative margins */
         font-family: "Urbanist", sans-serif;
         font-size: 11px;
         font-weight: 600;
@@ -1601,7 +1604,7 @@
         font-size: 12px;
       }
       .primary-driver-badge {
-        font-size: 8px;
+        font-size: 9px;
         font-weight: 700;
         padding: 1px 5px;
         border-radius: 8px;
@@ -1623,24 +1626,29 @@
       .driver-bar-fill.primary {
         background: linear-gradient(90deg, #f04438, #fb7067);
         box-shadow: 0 0 8px rgba(240, 68, 56, 0.4);
-        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) both;
+        animation: grow 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
       }
       .driver-bar-fill.secondary {
         background: rgba(240, 68, 56, 0.35);
-        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
+        animation: grow 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.04s both;
       }
       .driver-bar-fill.minor {
         background: rgba(240, 68, 56, 0.38);
-        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+        animation: grow 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
       }
       .driver-bar-fill.neutral {
         background: rgba(23, 178, 106, 0.3);
-        animation: grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.25s both;
+        animation: grow 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
       }
       @keyframes grow {
         from {
-          width: 0;
+          transform: scaleX(0);
         }
+      }
+      /* scaleX grows from left anchor — origin must be set on fill elements */
+      .driver-bar-fill,
+      .scorecard-kpi-bar {
+        transform-origin: left center;
       }
       .driver-bar-stat {
         font-size: 11px;
@@ -1676,7 +1684,7 @@
         color: var(--err);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
         white-space: nowrap;
       }
       .primary-action-btn:hover {
@@ -1703,7 +1711,7 @@
         background: rgba(255, 255, 255, 0.02);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
         white-space: nowrap;
       }
       .sec-btn:hover {
@@ -1879,6 +1887,20 @@
       }
 
       /* ── Knowledge-First Quality Score Chart (from dashboardqa2) ─ */
+
+      /* SVG chart accent token bridge — SVG presentation attributes can't use
+         CSS custom properties directly. These CSS rules override them.
+         When --qa-accent is updated, the chart updates automatically. */
+      .chart-accent-stroke {
+        stroke: var(--qa-accent) !important;
+      }
+      .chart-accent-fill {
+        fill: var(--qa-accent) !important;
+      }
+      /* Gradient stop: CSS can override stop-color on SVG stop elements */
+      .v2fill-stop-top {
+        stop-color: var(--qa-accent);
+      }
       /* AiMY signal bar — knowledge-first lead */
       .kf-signal-action {
         font-size: 11px;
@@ -1891,7 +1913,7 @@
         cursor: pointer;
         white-space: nowrap;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
         align-self: center;
         flex-shrink: 0;
       }
@@ -2039,7 +2061,7 @@
         border: none;
         background: none;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), color var(--transition-fast);
       }
       .range-tab:hover {
         color: var(--d300);
@@ -2063,7 +2085,7 @@
         border-radius: 8px;
         background: rgba(255, 255, 255, 0.03);
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
       }
       .compare-toggle:hover {
         color: var(--d50);
@@ -2091,7 +2113,7 @@
         background: rgba(111, 223, 226, 0.06);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
       }
       .ai-insight-btn:hover {
         background: rgba(111, 223, 226, 0.12);
@@ -2214,7 +2236,7 @@
         color: var(--d50);
       }
       .tooltip-value.prev {
-        color: var(--d600);
+        color: var(--d400); /* raised from --d600 (#5b6771) — WCAG AA on --d800 bg */
       }
       .ai-insight-panel {
         background: rgba(0, 102, 255, 0.07);
@@ -2277,7 +2299,7 @@
         font-family: "Urbanist", sans-serif;
         cursor: pointer;
         white-space: nowrap;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
         flex-shrink: 0;
       }
       .ask-aimy-chart-btn:hover {
@@ -2391,7 +2413,7 @@
         padding: 4px 8px;
         cursor: pointer;
         font-family: inherit;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast);
       }
       .anno-btn:hover {
         background: rgba(240, 68, 56, 0.18);
@@ -2446,6 +2468,36 @@
       .chart-annotation:hover .peak-card {
         opacity: 1;
         transform: translateX(-50%) translateY(-2px);
+      }
+
+      /* ── Page load card entry animation ─────────────────────────────────
+         One-shot staggered reveal. CSS-only, no JS required.
+         Emil principle: nothing appears statically — even 8px translateY
+         with a good ease is enough to signal "this arrived." */
+      @keyframes cardEnter {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+      }
+      .tier-1-grid .bcard {
+        animation: cardEnter 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+      .tier-1-grid .bcard:nth-child(1) { animation-delay: 0ms; }
+      .tier-1-grid .bcard:nth-child(2) { animation-delay: 60ms; }
+      .tier-1-grid .bcard:nth-child(3) { animation-delay: 120ms; }
+      .tier-1-grid .bcard:nth-child(4) { animation-delay: 180ms; }
+      .narrative-card {
+        animation: cardEnter 400ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
+      }
+      .chart-v2 {
+        animation: cardEnter 400ms cubic-bezier(0.22, 1, 0.36, 1) 100ms both;
+      }
+      .eval-panel {
+        animation: cardEnter 400ms cubic-bezier(0.22, 1, 0.36, 1) 140ms both;
+      }
+      .aimy-context-panel {
+        animation: cardEnter 400ms cubic-bezier(0.22, 1, 0.36, 1) 20ms both;
       }
 
       /* ── Skeleton loading states ──────────────────────────────
@@ -2618,7 +2670,7 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), box-shadow var(--transition-fast);
         box-shadow: 0 2px 10px rgba(var(--qa-accent-rgb), 0.4);
       }
       .aimy-float-send:hover {
@@ -2627,6 +2679,38 @@
       }
       .aimy-float-send:active {
         transform: translateY(0);
+      }
+
+      /* ── Universal press feedback — all interactive elements ─────────────
+         Emil principle: buttons must feel responsive to press.
+         80ms ease-out = immediate, then snaps back quickly. */
+      .bcard:active,
+      .v2-chip:active,
+      .kpi-brief:active,
+      .action-btn:active,
+      .nav-item:active,
+      .topnav-tab:active,
+      .overlay-sugg-chip:active,
+      .sec-btn:active,
+      .eval-primary-btn:active,
+      .eval-sec-btn:active,
+      .bcard-ack-btn:active,
+      .quick-action-btn:active,
+      .coach-btn:active,
+      .defer-opt:active,
+      .alert-detail-action:active,
+      .msg-action-link:active,
+      .overlay-close:active,
+      .compare-toggle:active,
+      .ai-insight-btn:active,
+      .ask-aimy-chart-btn:active {
+        transform: scale(0.97);
+        transition: transform 80ms ease-out;
+      }
+      /* Range tabs are smaller — subtler press */
+      .range-tab:active {
+        transform: scale(0.96);
+        transition: transform 80ms ease-out;
       }
       .aimy-float-send svg {
         width: 14px;
@@ -2721,8 +2805,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), opacity 200ms 100ms ease;
         color: var(--d300);
+        opacity: 0;
       }
       .overlay-close:hover {
         background: rgba(255, 255, 255, 0.1);
@@ -2734,6 +2819,9 @@
         height: 16px;
         stroke: currentColor;
         stroke-width: 2;
+      }
+      .aimy-overlay.open .overlay-close {
+        opacity: 1;
       }
 
       /* Overlay header badge — "AiMY Chat" label */
@@ -2754,6 +2842,11 @@
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 20px;
+        opacity: 0;
+        transition: opacity 200ms 100ms ease;
+      }
+      .aimy-overlay.open .overlay-badge {
+        opacity: 1;
       }
       .overlay-badge svg {
         width: 11px;
@@ -2957,7 +3050,7 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), box-shadow var(--transition-fast);
         box-shadow: 0 2px 10px rgba(var(--qa-accent-rgb), 0.4);
       }
       .overlay-send:hover {
@@ -2997,13 +3090,55 @@
         border: 1px solid rgba(255, 255, 255, 0.09);
         border-radius: 20px;
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
         white-space: nowrap;
       }
       .overlay-sugg-chip:hover {
         background: rgba(255, 255, 255, 0.08);
         border-color: rgba(255, 255, 255, 0.16);
         color: var(--d50);
+      }
+
+      /* ── Accessibility: reduced motion ───────────────────────────────────
+         Remove position-based animations; keep opacity for comprehension. */
+      @media (prefers-reduced-motion: reduce) {
+        .signal-badge-dot,
+        .eval-live-dot.spike,
+        .aimy-toast-progress,
+        .skeleton,
+        .driver-bar-fill,
+        .eval-bar-fill,
+        .scorecard-kpi-bar {
+          animation: none !important;
+          transition: none !important;
+        }
+        .bcard:hover,
+        .v2-chip:hover,
+        .kpi-brief:hover,
+        .action-btn:hover,
+        .quick-action-btn:hover,
+        .ask-aimy-chart-btn:hover,
+        .aimy-float-send:hover,
+        .overlay-send:hover {
+          transform: none;
+        }
+        .bcard:active,
+        .v2-chip:active,
+        .kpi-brief:active,
+        .action-btn:active,
+        .nav-item:active,
+        .topnav-tab:active,
+        .overlay-sugg-chip:active,
+        .range-tab:active,
+        .sec-btn:active,
+        .eval-primary-btn:active,
+        .eval-sec-btn:active,
+        .quick-action-btn:active,
+        .coach-btn:active,
+        .defer-opt:active,
+        .alert-detail-action:active {
+          transform: none;
+        }
       }
 
       /* Styled scrollbar */
@@ -3061,7 +3196,7 @@
         background: none;
         cursor: pointer;
         font-family: inherit;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
       }
       .v2-refresh-btn:hover {
         color: var(--d300);
@@ -3085,7 +3220,7 @@
         border: 1px solid rgba(255, 255, 255, 0.08);
         background: rgba(255, 255, 255, 0.03);
         cursor: pointer;
-        transition: all var(--transition-base);
+        transition: transform var(--transition-base), border-color var(--transition-base), background var(--transition-base), box-shadow var(--transition-base);
         min-width: 180px;
         flex: 1;
         position: relative;
@@ -3134,7 +3269,7 @@
         opacity: 0;
         transform: scale(0.95);
         pointer-events: none;
-        transition: all var(--transition-base);
+        transition: opacity var(--transition-base), transform var(--transition-base);
       }
       .v2-chip-top {
         display: flex;
@@ -3333,11 +3468,12 @@
         position: absolute;
         bottom: 0;
         left: 0;
-        height: 1.5px;
+        height: 2.5px;
         background: linear-gradient(90deg, #0066ff, #61adf1, #6fdfe2);
         border-radius: 0 0 14px 14px;
         width: 100%;
         transform-origin: left;
+        opacity: 0.9;
         animation: toast-countdown 5s linear forwards;
       }
       @keyframes toast-countdown {
@@ -3469,7 +3605,7 @@
         background: none;
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
       }
       .state-alt:hover {
         color: var(--d300);
@@ -3498,7 +3634,7 @@
         font-weight: 700;
         font-family: "Urbanist", sans-serif;
         cursor: pointer;
-        transition: all var(--transition-base);
+        transition: background var(--transition-base), border-color var(--transition-base), color var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.1);
         color: var(--d300);
@@ -3620,7 +3756,7 @@
         color: var(--d50);
         letter-spacing: -0.03em;
         line-height: 1;
-        transition: all var(--transition-base);
+        transition: color var(--transition-base);
       }
       .donut-label {
         font-size: 9px;
@@ -3629,7 +3765,7 @@
         text-transform: uppercase;
         letter-spacing: 0.06em;
         margin-top: 2px;
-        transition: all var(--transition-base);
+        transition: color var(--transition-base);
       }
 
       /* Segment arcs */
@@ -3729,7 +3865,8 @@
       .eval-bar-fill {
         height: 100%;
         border-radius: 2px;
-        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: left center;
+        transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
       }
 
       /* Floating causes tooltip — absolutely positioned, no layout shift */
@@ -3844,8 +3981,7 @@
         margin: 0 20px 16px;
         background: rgba(0, 102, 255, 0.06);
         border: 1px solid rgba(0, 102, 255, 0.18);
-        border-left: 3px solid var(--brand);
-        border-radius: 0 8px 8px 0;
+        border-radius: 8px;
         padding: 10px 16px;
       }
       .eval-insight-header {
@@ -3900,7 +4036,7 @@
         color: var(--err);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
         flex-shrink: 0;
       }
       .eval-primary-btn:hover {
@@ -3920,7 +4056,7 @@
         background: rgba(255, 255, 255, 0.02);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
         white-space: nowrap;
       }
       .eval-sec-btn:hover {
@@ -4019,7 +4155,7 @@
         border: 1px solid rgba(255,255,255,0.08);
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
         white-space: nowrap;
       }
       .bcard-ack-btn:hover { background: rgba(255,255,255,0.07); color: var(--d200, #e8edf2); border-color: rgba(255,255,255,0.14); }
@@ -4078,7 +4214,7 @@
         font-weight: 700;
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
         text-decoration: none;
       }
       .msg-action-link:hover { background: rgba(var(--qa-accent-rgb),0.18); border-color: rgba(var(--qa-accent-rgb),0.4); }
@@ -4107,7 +4243,7 @@
       .action-confirm-no {
         font-size: 11px; font-weight: 600; padding: 5px 14px; border-radius: 8px;
         background: rgba(255,255,255,0.04); color: var(--d400); border: 1px solid rgba(255,255,255,0.08); cursor: pointer; font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), color var(--transition-fast);
       }
       .action-confirm-no:hover { background: rgba(255,255,255,0.08); color: var(--d200, #e8edf2); }
 
@@ -4143,12 +4279,14 @@
 
       /* Type 3: Coaching recommendation card in thread */
       .coaching-card {
-        background: rgba(20,27,36,0.65);
+        background: rgba(20,27,36,0.85);
         border: 1px solid rgba(255,255,255,0.1);
         border-radius: 12px;
         overflow: hidden;
         max-width: 540px;
-        backdrop-filter: blur(8px);
+        /* backdrop-filter removed — element is inside a scrolling container.
+           Continuous blur repaints on scroll tank mobile performance.
+           The overlay itself (blur 28px) already provides the glass context. */
       }
       .coaching-card-header {
         display: flex;
@@ -4200,8 +4338,8 @@
         font-size: 11px; color: var(--d400); line-height: 1.5; margin-bottom: 12px;
         padding: 8px 10px;
         background: rgba(255,255,255,0.03);
-        border-left: 2px solid rgba(255,255,255,0.1);
-        border-radius: 0 6px 6px 0;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 6px;
       }
       .coaching-why strong { color: var(--d200, #e8edf2); }
       .coaching-card-actions {
@@ -4213,7 +4351,7 @@
       }
       .coach-btn {
         font-size: 11px; font-weight: 700; padding: 6px 14px; border-radius: 8px;
-        cursor: pointer; font-family: "Urbanist", sans-serif; transition: all var(--transition-fast);
+        cursor: pointer; font-family: "Urbanist", sans-serif; transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
         border: 1px solid transparent; flex-shrink: 0;
       }
       .coach-btn.accept {
@@ -4261,7 +4399,7 @@
         font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px;
         background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
         color: var(--d300); cursor: pointer; font-family: "Urbanist", sans-serif;
-        transition: all var(--transition-fast);
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
       }
       .defer-opt:hover { background: rgba(var(--qa-accent-rgb),0.1); border-color: rgba(var(--qa-accent-rgb),0.25); color: var(--qa-accent); }
 
@@ -4423,7 +4561,8 @@
       .alert-detail-action {
         font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 8px;
         cursor: pointer; font-family: "Urbanist",sans-serif;
-        transition: all var(--transition-fast); border: 1px solid transparent;
+        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+        border: 1px solid transparent;
       }
       .ada-primary { background: rgba(var(--qa-accent-rgb),.1); color: var(--qa-accent); border-color: rgba(var(--qa-accent-rgb),.22); }
       .ada-primary:hover { background: rgba(var(--qa-accent-rgb),.18); }
@@ -4527,9 +4666,10 @@
             <stop offset="1" stop-color="#451AFF" />
           </linearGradient>
         </symbol>
-        <!-- v2fill: chart area fill gradient -->
+        <!-- v2fill: chart area fill gradient — stop-color uses currentColor
+             so the parent SVG's color property (set via CSS --qa-accent) controls it -->
         <linearGradient id="v2fill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#8B4FF4" stop-opacity="0.22" />
+          <stop offset="0%" stop-color="#8B4FF4" stop-opacity="0.22" class="v2fill-stop-top" />
           <stop offset="100%" stop-color="#8B4FF4" stop-opacity="0" />
         </linearGradient>
         <linearGradient id="anomalyFill" x1="0" y1="0" x2="0" y2="1">
@@ -5774,7 +5914,7 @@
                     <div class="legend-item">
                       <div
                         class="legend-line"
-                        style="background: #8b4ff4"
+                        style="background: var(--qa-accent)"
                       ></div>
                       <span>This period</span>
                     </div>
@@ -6033,6 +6173,7 @@
                     <g clip-path="url(#chartClip)">
                       <path
                         id="mainPath"
+                        class="chart-accent-stroke"
                         d="M40,112 C80,105 120,90 165,88 C205,86 230,100 270,93 C305,87 320,112 355,90 C385,73 400,90 435,86 C465,82 485,93 520,88 C555,83 575,90 610,88 C645,86 670,100 710,93 C735,88 760,105 800,100"
                         fill="none"
                         stroke="#8B4FF4"
@@ -6046,6 +6187,7 @@
                     </g>
                     <g clip-path="url(#chartClip)">
                       <line
+                        class="chart-accent-stroke"
                         x1="355"
                         y1="73"
                         x2="355"
@@ -6056,6 +6198,7 @@
                         opacity="0.5"
                       />
                       <circle
+                        class="chart-accent-fill"
                         cx="355"
                         cy="73"
                         r="4"
@@ -6076,6 +6219,7 @@
                     </g>
                     <g clip-path="url(#chartClip)">
                       <circle
+                        class="chart-accent-fill"
                         cx="800"
                         cy="100"
                         r="5"
@@ -6084,6 +6228,7 @@
                         stroke-width="2"
                       />
                       <circle
+                        class="chart-accent-fill"
                         cx="800"
                         cy="100"
                         r="9"
@@ -6222,6 +6367,7 @@
                     />
                     <line
                       id="hoverLine"
+                      class="chart-accent-stroke"
                       x1="0"
                       y1="0"
                       x2="0"
@@ -6234,6 +6380,7 @@
                     />
                     <circle
                       id="hoverDot"
+                      class="chart-accent-fill"
                       cx="0"
                       cy="0"
                       r="4"
