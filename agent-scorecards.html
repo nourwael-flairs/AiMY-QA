@@ -5851,41 +5851,354 @@
             </span>
           </div>
 
-          <!-- ══ TEAM METRICS STRIP (shared across views) ══════════ -->
+          <!-- ══ MORNING BRIEF ══════════════════════════════════════ -->
+          <style>
+            /* Brief card */
+            .morning-brief {
+              background: var(--card-bg);
+              border: 1px solid rgba(255,255,255,0.09);
+              border-radius: 20px;
+              overflow: hidden;
+              position: relative;
+              margin-bottom: 0;
+            }
+            .morning-brief::before {
+              content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+              background: linear-gradient(90deg, transparent 0%, rgba(0,102,255,0.6) 25%, rgba(97,173,241,0.5) 55%, rgba(111,223,226,0.4) 75%, transparent 100%);
+            }
+            .mb-inner {
+              padding: 22px 24px 20px;
+              display: grid;
+              grid-template-columns: 1fr 196px;
+              gap: 20px;
+              align-items: stretch;
+            }
+            /* Attribution row */
+            .mb-attr {
+              display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+            }
+            .mb-attr-icon {
+              width: 22px; height: 22px;
+              background: rgba(0,102,255,0.1);
+              border: 1px solid rgba(0,102,255,0.18);
+              border-radius: 6px;
+              display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            }
+            .mb-attr-label {
+              font-size: 10px; font-weight: 700; color: var(--teal);
+              letter-spacing: 0.07em; text-transform: uppercase;
+            }
+            .mb-attr-time {
+              font-size: 10px; font-weight: 500; color: var(--d500); margin-left: auto;
+            }
+            /* Brief statement */
+            .mb-statement {
+              font-size: 14px; font-weight: 600; color: var(--d50);
+              line-height: 1.65; letter-spacing: -0.01em; margin-bottom: 16px;
+            }
+            .mb-statement .hl-warn { color: var(--warn); font-weight: 700; }
+            .mb-statement .hl-err  { color: var(--err);  font-weight: 700; }
+            .mb-statement .hl-ok   { color: var(--ok);   font-weight: 700; }
+            .mb-statement .hl-dim  { color: var(--d300); }
+            /* Evidence pills */
+            .mb-evidence {
+              display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px;
+            }
+            .mb-ev-pill {
+              display: inline-flex; align-items: center; gap: 5px;
+              background: rgba(255,255,255,0.04);
+              border: 1px solid rgba(255,255,255,0.08);
+              border-radius: 999px; padding: 4px 10px;
+              font-size: 11px; font-weight: 500; color: var(--d300);
+              white-space: nowrap;
+            }
+            .mb-ev-pill .ev-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+            .mb-ev-pill .ev-val { font-weight: 800; color: var(--d50); }
+            .mb-ev-pill .ev-delta { font-size: 10px; font-weight: 700; }
+            .mb-ev-pill .ev-delta.dn  { color: var(--err); }
+            .mb-ev-pill .ev-delta.up  { color: var(--ok); }
+            .mb-ev-pill .ev-delta.neu { color: var(--d500); }
+            /* Actions */
+            .mb-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+            .mb-action {
+              display: inline-flex; align-items: center; gap: 6px;
+              border: none; border-radius: 8px;
+              font-family: "Urbanist", sans-serif; font-size: 12px; font-weight: 700;
+              padding: 8px 14px; cursor: pointer;
+              transition: transform 150ms, box-shadow 150ms, background 150ms;
+            }
+            .mb-action svg { flex-shrink: 0; }
+            .mb-action.primary {
+              background: var(--qa-accent); color: #fff;
+              box-shadow: 0 2px 10px rgba(var(--qa-accent-rgb),0.28);
+            }
+            .mb-action.primary:hover { transform: translateY(-1px); box-shadow: 0 4px 18px rgba(var(--qa-accent-rgb),0.38); }
+            .mb-action.secondary {
+              background: rgba(255,255,255,0.05); color: var(--d100);
+              border: 1px solid rgba(255,255,255,0.1);
+            }
+            .mb-action.secondary:hover { background: rgba(255,255,255,0.08); color: var(--d50); }
+            .mb-action.ghost {
+              background: transparent; color: var(--d400);
+              border: 1px solid rgba(255,255,255,0.07);
+            }
+            .mb-action.ghost:hover { color: var(--d200); border-color: rgba(255,255,255,0.13); }
+            /* Since last visit column */
+            .mb-since {
+              background: rgba(255,255,255,0.025);
+              border: 1px solid rgba(255,255,255,0.06);
+              border-radius: 14px; padding: 16px; flex-shrink: 0;
+            }
+            .mb-since-label {
+              font-size: 9px; font-weight: 700; text-transform: uppercase;
+              letter-spacing: 0.08em; color: var(--d500); margin-bottom: 12px;
+            }
+            .mb-since-row {
+              display: flex; align-items: flex-start; gap: 9px;
+              padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+            }
+            .mb-since-row:last-child { border-bottom: none; padding-bottom: 0; }
+            .mb-since-dot {
+              width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px;
+            }
+            .mb-since-dot.err  { background: var(--err); }
+            .mb-since-dot.warn { background: var(--warn); }
+            .mb-since-dot.ok   { background: var(--ok); }
+            .mb-since-dot.neu  { background: var(--d600); }
+            .mb-since-text {
+              font-size: 11px; font-weight: 600; color: var(--d200); line-height: 1.45;
+            }
+            .mb-since-sub {
+              display: block; font-size: 10px; font-weight: 500; color: var(--d500); margin-top: 1px;
+            }
+          </style>
+
           <div class="sc-section-label">
-            Team context
+            Today's brief
+            <span class="sc-aimy-hint">
+              <svg width="10" height="11" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+              AiMY analysis
+            </span>
           </div>
-          <div class="tier-1-grid" style="margin-bottom: 0;">
-            <div class="bcard team-stat">
-              <div class="team-stat-label">Team quality score</div>
-              <div class="team-stat-value">84<span class="ts-unit">%</span></div>
-              <div class="team-stat-meta">
-                <span class="team-stat-delta err">↓ 2pts</span>
-                <span>vs last 30 days</span>
+
+          <div class="morning-brief">
+            <div class="mb-inner">
+              <div style="display:flex;flex-direction:column;">
+                <!-- Attribution -->
+                <div class="mb-attr">
+                  <div class="mb-attr-icon">
+                    <svg width="12" height="14" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                  </div>
+                  <span class="mb-attr-label">AiMY Analysis</span>
+                  <span class="mb-attr-time">Updated 7:02 AM · 3 days since last visit</span>
+                </div>
+
+                <!-- Brief statement -->
+                <div class="mb-statement">
+                  <span class="hl-warn">Quality and FCR are declining together</span> while Adherence and Utilization improve — ruling out a staffing problem. <span class="hl-dim">The pattern points to a closing-sequence gap: agents are handling volume but not resolving it cleanly.</span> <span class="hl-err">Omar Abdallah crossed into at-risk since your last visit</span> — he was on watch 3 days ago. 3 coaching sessions are overdue, including his.
+                </div>
+
+                <!-- Evidence pills -->
+                <div class="mb-evidence">
+                  <span class="mb-ev-pill"><span class="ev-dot" style="background:var(--warn)"></span>Quality <span class="ev-val">84%</span><span class="ev-delta dn">↓ 2pts</span></span>
+                  <span class="mb-ev-pill"><span class="ev-dot" style="background:var(--warn)"></span>FCR <span class="ev-val">76%</span><span class="ev-delta dn">↓ 1pt</span></span>
+                  <span class="mb-ev-pill"><span class="ev-dot" style="background:var(--err)"></span>At-risk <span class="ev-val">2 agents</span><span class="ev-delta dn">↑ 1 new</span></span>
+                  <span class="mb-ev-pill"><span class="ev-dot" style="background:var(--err)"></span>Coaching overdue <span class="ev-val">3 sessions</span></span>
+                  <span class="mb-ev-pill"><span class="ev-dot" style="background:var(--ok)"></span>Adherence <span class="ev-val">92%</span><span class="ev-delta up">↑ +1pt</span></span>
+                  <span class="mb-ev-pill"><span class="ev-dot" style="background:var(--ok)"></span>CSAT <span class="ev-val">87%</span><span class="ev-delta neu">→ stable</span></span>
+                </div>
+
+                <!-- Actions -->
+                <div class="mb-actions" style="margin-top:auto;padding-top:18px;">
+                  <button class="mb-action primary" type="button" onclick="openCanvasQuery('Generate a prioritised coaching plan for Product Support — address the closing-sequence gap across FCR and Quality. Prioritise the 2 at-risk agents and 3 overdue sessions.')">
+                    <svg width="12" height="14" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                    Generate team coaching plan
+                  </button>
+                  <button class="mb-action secondary" type="button" onclick="openCanvasQuery('Pull up Omar Abdallah\'s full scorecard — show the KPI breakdown and why he crossed into at-risk.')">
+                    Review Omar's scorecard
+                  </button>
+                  <button class="mb-action ghost" type="button" onclick="openCanvasQuery('Show the closing-sequence KPI breakdown across all 12 agents — rank by failure rate.')">
+                    Diagnose closing-sequence gap
+                  </button>
+                </div>
+              </div>
+
+              <!-- Since last visit -->
+              <div class="mb-since">
+                <div class="mb-since-label">Since your last visit</div>
+                <div class="mb-since-row">
+                  <div class="mb-since-dot err"></div>
+                  <div class="mb-since-text">Omar Abdallah crossed into at-risk<span class="mb-since-sub">Was: watch · Now: at-risk</span></div>
+                </div>
+                <div class="mb-since-row">
+                  <div class="mb-since-dot warn"></div>
+                  <div class="mb-since-text">Quality dropped another point<span class="mb-since-sub">85% → 84% in 3 days</span></div>
+                </div>
+                <div class="mb-since-row">
+                  <div class="mb-since-dot err"></div>
+                  <div class="mb-since-text">3 coaching sessions now overdue<span class="mb-since-sub">Was 1 overdue on last visit</span></div>
+                </div>
+                <!-- <div class="mb-since-row">
+                  <div class="mb-since-dot ok"></div>
+                  <div class="mb-since-text">Adherence and Utilization both up<span class="mb-since-sub">Staffing discipline holding</span></div>
+                </div>
+                <div class="mb-since-row">
+                  <div class="mb-since-dot neu"></div>
+                  <div class="mb-since-text">CSAT stable at 87%<span class="mb-since-sub">No change since last visit</span></div>
+                </div> -->
               </div>
             </div>
-            <div class="bcard team-stat">
-              <div class="team-stat-label">Team CSAT</div>
-              <div class="team-stat-value">87<span class="ts-unit">%</span></div>
-              <div class="team-stat-meta">
-                <span class="team-stat-delta neu">→ Stable</span>
-                <span>target 85%</span>
+          </div>
+
+          <!-- ══ COMPARISON BRIEF ══════════════════════════════════════ -->
+          <style>
+            .cmp-brief {
+              background: var(--card-bg);
+              border: 1px solid rgba(255,255,255,0.07);
+              border-radius: 16px;
+              padding: 18px 22px 18px;
+              margin-top: 10px;
+              display: grid;
+              grid-template-columns: 1fr auto;
+              gap: 20px;
+              align-items: stretch;
+            }
+            .cmp-attr {
+              display: flex; align-items: center; gap: 7px; margin-bottom: 12px;
+            }
+            .cmp-attr-label {
+              font-size: 10px; font-weight: 700; color: var(--d500);
+              letter-spacing: 0.07em; text-transform: uppercase;
+            }
+            .cmp-statement {
+              font-size: 13px; font-weight: 600; color: var(--d100);
+              line-height: 1.65; letter-spacing: -0.01em; margin-bottom: 14px;
+            }
+            .cmp-statement .hl-warn { color: var(--warn); font-weight: 700; }
+            .cmp-statement .hl-err  { color: var(--err);  font-weight: 700; }
+            .cmp-statement .hl-ok   { color: var(--ok);   font-weight: 700; }
+            .cmp-statement .hl-dim  { color: var(--d400); }
+            /* Inline team rank bars */
+            .cmp-teams {
+              display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px;
+            }
+            .cmp-team-row {
+              display: grid;
+              grid-template-columns: 100px 1fr 36px;
+              align-items: center; gap: 10px;
+            }
+            .cmp-team-name {
+              font-size: 11px; font-weight: 600; color: var(--d300);
+              white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+              display: flex; align-items: center; gap: 6px;
+            }
+            .cmp-team-name.is-current { color: var(--d50); font-weight: 700; }
+            .cmp-team-dot {
+              width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+            }
+            .cmp-team-bar-track {
+              height: 5px; background: rgba(255,255,255,0.06);
+              border-radius: 999px; overflow: hidden;
+            }
+            .cmp-team-bar-fill {
+              height: 100%; border-radius: 999px;
+              transition: width 500ms var(--ease-out);
+            }
+            .cmp-team-val {
+              font-size: 11px; font-weight: 800; text-align: right; white-space: nowrap;
+            }
+            .cmp-team-val.ok   { color: var(--ok); }
+            .cmp-team-val.warn { color: var(--warn); }
+            /* Benchmark row */
+            .cmp-benchmark {
+              display: flex; align-items: center; gap: 8px;
+              padding: 9px 12px;
+              background: rgba(255,255,255,0.025);
+              border: 1px solid rgba(255,255,255,0.06);
+              border-radius: 10px; margin-bottom: 14px;
+            }
+            .cmp-bm-label {
+              font-size: 11px; font-weight: 600; color: var(--d400); flex: 1;
+            }
+            .cmp-bm-label strong { color: var(--d100); font-weight: 700; }
+            .cmp-bm-delta {
+              font-size: 11px; font-weight: 700;
+            }
+            .cmp-bm-delta.warn { color: var(--warn); }
+            .cmp-bm-delta.ok   { color: var(--ok); }
+          </style>
+
+          <div class="cmp-brief">
+            <div style="display:flex;flex-direction:column;">
+              <div class="cmp-attr">
+                <span class="cmp-attr-label">Team comparison</span>
+                <span style="font-size:10px;color:var(--d600)">·</span>
+                <span style="font-size:10px;font-weight:500;color:var(--d500)">last 30 days · quality score</span>
+              </div>
+
+              <div class="cmp-statement">
+                Product Support is <span class="hl-warn">#3 of 4 teams</span>, <span class="hl-warn">7pts behind Onboarding</span> — the gap is entirely in FCR and Quality. <span class="hl-dim">Onboarding's playbook emphasises resolution confirmation on every call, which is exactly the KPI this team is failing.</span> Against the org benchmark of 88%, <span class="hl-err">this team is 4pts short</span> with no upward trend.
+              </div>
+
+              <!-- Team rank bars -->
+              <div class="cmp-teams">
+                <div class="cmp-team-row">
+                  <span class="cmp-team-name"><span class="cmp-team-dot" style="background:#6fdfe2"></span>Onboarding</span>
+                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="width:91%;background:#17b26a"></div></div>
+                  <span class="cmp-team-val ok">91%</span>
+                </div>
+                <div class="cmp-team-row">
+                  <span class="cmp-team-name"><span class="cmp-team-dot" style="background:#8b4ff4"></span>Tier-2 Escal.</span>
+                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="width:87%;background:#17b26a"></div></div>
+                  <span class="cmp-team-val ok">87%</span>
+                </div>
+                <div class="cmp-team-row">
+                  <span class="cmp-team-name is-current"><span class="cmp-team-dot" style="background:var(--qa-accent)"></span>Product Support</span>
+                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="width:84%;background:#f79009"></div></div>
+                  <span class="cmp-team-val warn">84%</span>
+                </div>
+                <div class="cmp-team-row">
+                  <span class="cmp-team-name"><span class="cmp-team-dot" style="background:#f79009"></span>Billing Support</span>
+                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="width:78%;background:#f79009"></div></div>
+                  <span class="cmp-team-val warn">78%</span>
+                </div>
+              </div>
+
+              <!-- Benchmark -->
+              <div class="cmp-benchmark">
+                <span class="cmp-bm-label">Org benchmark <strong>88%</strong> · 30-day rolling</span>
+                <span class="cmp-bm-delta warn">↓ 4pts below target</span>
+              </div>
+
+              <!-- Actions -->
+              <div class="mb-actions" style="margin-top:auto;padding-top:18px;">
+                <button class="mb-action secondary" type="button" onclick="openCanvasQuery('What is Onboarding doing differently on resolution confirmation? Compare their playbook to Product Support and show the KPI gap.')">
+                  What is Onboarding doing differently?
+                </button>
+                <button class="mb-action ghost" type="button" onclick="openCanvasQuery('Show me Product Support\'s trajectory against the 88% org benchmark — what would it take to close the gap in 30 days?')">
+                  Close the benchmark gap
+                </button>
               </div>
             </div>
-            <div class="bcard team-stat p1">
-              <div class="team-stat-label">At-risk agents</div>
-              <div class="team-stat-value">2<span class="ts-unit"> of 12</span></div>
-              <div class="team-stat-meta">
-                <span class="team-stat-delta err">↑ +1</span>
-                <span>this week</span>
+
+            <!-- Right: benchmark visual -->
+            <div class="mb-since" style="min-width:160px">
+              <div class="mb-since-label">vs benchmark</div>
+              <div class="mb-since-row">
+                <div class="mb-since-dot err"></div>
+                <div class="mb-since-text">Quality 84% <span class="mb-since-sub">Benchmark 88% · ↓ 4pts</span></div>
               </div>
-            </div>
-            <div class="bcard team-stat p2">
-              <div class="team-stat-label">Coaching sessions due</div>
-              <div class="team-stat-value">5</div>
-              <div class="team-stat-meta">
-                <span class="team-stat-delta warn">3 overdue</span>
-                <span>· next: tomorrow</span>
+              <div class="mb-since-row">
+                <div class="mb-since-dot warn"></div>
+                <div class="mb-since-text">FCR 76% <span class="mb-since-sub">Benchmark 81% · ↓ 5pts</span></div>
+              </div>
+              <div class="mb-since-row">
+                <div class="mb-since-dot ok"></div>
+                <div class="mb-since-text">CSAT 87% <span class="mb-since-sub">Benchmark 85% · ↑ 2pts</span></div>
+              </div>
+              <div class="mb-since-row">
+                <div class="mb-since-dot ok"></div>
+                <div class="mb-since-text">Adherence 92% <span class="mb-since-sub">Benchmark 85% · ↑ 7pts</span></div>
               </div>
             </div>
           </div>
@@ -5894,263 +6207,6 @@
                ████  TEAM VIEW (default)  ██████████████████████████████
                ══════════════════════════════════════════════════════════ -->
           <div class="view-pane is-active" id="viewTeam" role="tabpanel" aria-labelledby="toggleTeam">
-
-            <!-- ── TEAM AGGREGATE KPIs ── -->
-            <div class="sc-section-label">
-              Team aggregate scorecard
-              <span class="sc-aimy-hint" style="text-transform: none; letter-spacing: normal; font-size: 11px; font-weight: 600; color: var(--d400);">
-                across 12 agents · last 30 days
-              </span>
-            </div>
-            <div class="kpi-six-grid">
-              <div class="kpi-mini">
-                <div class="kpi-mini-label">Quality score</div>
-                <div class="kpi-mini-value warn">84<span class="km-unit">%</span></div>
-                <div class="kpi-mini-meta">
-                  <span class="kpi-mini-delta err">↓ 2pts</span>
-                  <span class="kpi-mini-target">tgt 85%</span>
-                </div>
-                <div class="kpi-mini-trend">
-                  <svg viewBox="0 0 100 22" preserveAspectRatio="none">
-                    <polyline points="0,8 12,8 24,9 36,9 48,10 60,10 72,11 84,11 96,12" fill="none" stroke="#f79009" stroke-width="1.5"/>
-                    <line x1="0" y1="9" x2="100" y2="9" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="2 2"/>
-                  </svg>
-                </div>
-                <button class="k-chip" type="button" aria-label="Ask AiMY: Why is Quality declining?">
-                  <svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-                  Ask AiMY
-                </button>
-              </div>
-              <div class="kpi-mini">
-                <div class="kpi-mini-label">CSAT</div>
-                <div class="kpi-mini-value ok">87<span class="km-unit">%</span></div>
-                <div class="kpi-mini-meta">
-                  <span class="kpi-mini-delta neu">→ Stable</span>
-                  <span class="kpi-mini-target">tgt 85%</span>
-                </div>
-                <div class="kpi-mini-trend">
-                  <svg viewBox="0 0 100 22" preserveAspectRatio="none">
-                    <polyline points="0,7 12,7 24,8 36,7 48,7 60,8 72,7 84,7 96,7" fill="none" stroke="#17b26a" stroke-width="1.5"/>
-                    <line x1="0" y1="9" x2="100" y2="9" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="2 2"/>
-                  </svg>
-                </div>
-                <button class="k-chip" type="button" aria-label="Ask AiMY: Which tickets drive CSAT?">
-                  <svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-                  Ask AiMY
-                </button>
-              </div>
-              <div class="kpi-mini">
-                <div class="kpi-mini-label">FCR</div>
-                <div class="kpi-mini-value warn">76<span class="km-unit">%</span></div>
-                <div class="kpi-mini-meta">
-                  <span class="kpi-mini-delta err">↓ 1pt</span>
-                  <span class="kpi-mini-target">tgt 75%</span>
-                </div>
-                <div class="kpi-mini-trend">
-                  <svg viewBox="0 0 100 22" preserveAspectRatio="none">
-                    <polyline points="0,9 12,8 24,9 36,10 48,9 60,10 72,11 84,11 96,11" fill="none" stroke="#f79009" stroke-width="1.5"/>
-                    <line x1="0" y1="11" x2="100" y2="11" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="2 2"/>
-                  </svg>
-                </div>
-                <button class="k-chip" type="button" aria-label="Ask AiMY: Show failed FCR cases">
-                  <svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-                  Ask AiMY
-                </button>
-              </div>
-              <div class="kpi-mini">
-                <div class="kpi-mini-label">Avg handle time</div>
-                <div class="kpi-mini-value warn">5m 47s</div>
-                <div class="kpi-mini-meta">
-                  <span class="kpi-mini-delta warn">↑ +28s</span>
-                  <span class="kpi-mini-target">tgt &lt;7m</span>
-                </div>
-                <div class="kpi-mini-trend">
-                  <svg viewBox="0 0 100 22" preserveAspectRatio="none">
-                    <polyline points="0,14 12,13 24,12 36,11 48,10 60,9 72,8 84,7 96,6" fill="none" stroke="#f79009" stroke-width="1.5"/>
-                    <line x1="0" y1="13" x2="100" y2="13" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="2 2"/>
-                  </svg>
-                </div>
-                <button class="k-chip" type="button" aria-label="Ask AiMY: Compare AHT to team avg">
-                  <svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-                  Ask AiMY
-                </button>
-              </div>
-              <div class="kpi-mini">
-                <div class="kpi-mini-label">Adherence</div>
-                <div class="kpi-mini-value ok">92<span class="km-unit">%</span></div>
-                <div class="kpi-mini-meta">
-                  <span class="kpi-mini-delta ok">↑ +1pt</span>
-                  <span class="kpi-mini-target">tgt 85%</span>
-                </div>
-                <div class="kpi-mini-trend">
-                  <svg viewBox="0 0 100 22" preserveAspectRatio="none">
-                    <polyline points="0,8 12,8 24,7 36,7 48,6 60,6 72,5 84,5 96,4" fill="none" stroke="#17b26a" stroke-width="1.5"/>
-                    <line x1="0" y1="11" x2="100" y2="11" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="2 2"/>
-                  </svg>
-                </div>
-                <button class="k-chip" type="button" aria-label="Ask AiMY: Adherence by shift">
-                  <svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-                  Ask AiMY
-                </button>
-              </div>
-              <div class="kpi-mini">
-                <div class="kpi-mini-label">Utilization</div>
-                <div class="kpi-mini-value ok">86<span class="km-unit">%</span></div>
-                <div class="kpi-mini-meta">
-                  <span class="kpi-mini-delta ok">↑ +2pts</span>
-                  <span class="kpi-mini-target">tgt 80%</span>
-                </div>
-                <div class="kpi-mini-trend">
-                  <svg viewBox="0 0 100 22" preserveAspectRatio="none">
-                    <polyline points="0,11 12,10 24,10 36,9 48,8 60,8 72,7 84,7 96,6" fill="none" stroke="#17b26a" stroke-width="1.5"/>
-                    <line x1="0" y1="13" x2="100" y2="13" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="2 2"/>
-                  </svg>
-                </div>
-                <button class="k-chip" type="button" aria-label="Ask AiMY: Utilization breakdown">
-                  <svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-                  Ask AiMY
-                </button>
-              </div>
-            </div>
-
-            <!-- ── TEAM VS TEAM COMPARISON ── -->
-            <div class="sc-section-label">
-              Team vs team
-              <span class="sc-aimy-hint" style="text-transform: none; letter-spacing: normal; font-size: 11px; font-weight: 600; color: var(--d400);">
-                ranked by quality score · last 30 days
-              </span>
-            </div>
-            <div class="team-compare-grid">
-              <!-- Onboarding Team — #1 -->
-              <div class="team-compare-card">
-                <div class="tcc-header">
-                  <span class="tcc-name">
-                    <span class="tcc-name-dot" style="background: #6fdfe2;"></span>
-                    Onboarding
-                  </span>
-                  <span class="tcc-rank">#1 · 8 agents</span>
-                </div>
-                <div class="tcc-stats">
-                  <div class="tcc-stat-row">
-                    <span class="tcc-stat-label">Quality</span>
-                    <span class="tcc-stat-bar"><span class="tcc-stat-fill ok" style="width: 91%;"></span></span>
-                    <span class="tcc-stat-val">91%</span>
-                  </div>
-                  <div class="tcc-stat-row">
-                    <span class="tcc-stat-label">CSAT</span>
-                    <span class="tcc-stat-bar"><span class="tcc-stat-fill ok" style="width: 92%;"></span></span>
-                    <span class="tcc-stat-val">92%</span>
-                  </div>
-                  <div class="tcc-stat-row">
-                    <span class="tcc-stat-label">FCR</span>
-                    <span class="tcc-stat-bar"><span class="tcc-stat-fill ok" style="width: 84%;"></span></span>
-                    <span class="tcc-stat-val">84%</span>
-                  </div>
-                </div>
-                <div class="tcc-action">
-                  <button class="k-row-action" type="button" style="width: 100%; justify-content: center;">
-                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h8M2 8h8"/></svg>
-                    What is Onboarding doing differently?
-                  </button>
-                </div>
-              </div>
-
-              <!-- Tier-2 Escalations — #2 -->
-              <div class="team-compare-card">
-                <div class="tcc-header">
-                  <span class="tcc-name">
-                    <span class="tcc-name-dot" style="background: #8b4ff4;"></span>
-                    Tier-2 Escalations
-                  </span>
-                  <span class="tcc-rank">#2 · 15 agents</span>
-                </div>
-                <div class="tcc-stats">
-                  <div class="tcc-stat-row">
-                    <span class="tcc-stat-label">Quality</span>
-                    <span class="tcc-stat-bar"><span class="tcc-stat-fill ok" style="width: 87%;"></span></span>
-                    <span class="tcc-stat-val">87%</span>
-                  </div>
-                  <div class="tcc-stat-row">
-                    <span class="tcc-stat-label">CSAT</span>
-                    <span class="tcc-stat-bar"><span class="tcc-stat-fill ok" style="width: 89%;"></span></span>
-                    <span class="tcc-stat-val">89%</span>
-                  </div>
-                  <div class="tcc-stat-row">
-                    <span class="tcc-stat-label">FCR</span>
-                    <span class="tcc-stat-bar"><span class="tcc-stat-fill warn" style="width: 71%;"></span></span>
-                    <span class="tcc-stat-val">71%</span>
-                  </div>
-                </div>
-                <div class="tcc-action">
-                  <button class="k-row-action" type="button" style="width: 100%; justify-content: center;">
-                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h8M2 8h8"/></svg>
-                    Compare playbooks
-                  </button>
-                </div>
-              </div>
-
-              <!-- Product Support — current team — #3 -->
-              <div class="team-compare-card is-current">
-                <div class="tcc-header">
-                  <span class="tcc-name">
-                    <span class="tcc-name-dot" style="background: var(--qa-accent);"></span>
-                    Product Support
-                  </span>
-                  <span class="tcc-current-badge">Current</span>
-                </div>
-                <div class="tcc-stats">
-                  <div class="tcc-stat-row">
-                    <span class="tcc-stat-label">Quality</span>
-                    <span class="tcc-stat-bar"><span class="tcc-stat-fill warn" style="width: 84%;"></span></span>
-                    <span class="tcc-stat-val">84%</span>
-                  </div>
-                  <div class="tcc-stat-row">
-                    <span class="tcc-stat-label">CSAT</span>
-                    <span class="tcc-stat-bar"><span class="tcc-stat-fill ok" style="width: 87%;"></span></span>
-                    <span class="tcc-stat-val">87%</span>
-                  </div>
-                  <div class="tcc-stat-row">
-                    <span class="tcc-stat-label">FCR</span>
-                    <span class="tcc-stat-bar"><span class="tcc-stat-fill warn" style="width: 76%;"></span></span>
-                    <span class="tcc-stat-val">76%</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Billing Support — #4 -->
-              <div class="team-compare-card">
-                <div class="tcc-header">
-                  <span class="tcc-name">
-                    <span class="tcc-name-dot" style="background: #f79009;"></span>
-                    Billing Support
-                  </span>
-                  <span class="tcc-rank">#4 · 12 agents</span>
-                </div>
-                <div class="tcc-stats">
-                  <div class="tcc-stat-row">
-                    <span class="tcc-stat-label">Quality</span>
-                    <span class="tcc-stat-bar"><span class="tcc-stat-fill warn" style="width: 78%;"></span></span>
-                    <span class="tcc-stat-val">78%</span>
-                  </div>
-                  <div class="tcc-stat-row">
-                    <span class="tcc-stat-label">CSAT</span>
-                    <span class="tcc-stat-bar"><span class="tcc-stat-fill warn" style="width: 81%;"></span></span>
-                    <span class="tcc-stat-val">81%</span>
-                  </div>
-                  <div class="tcc-stat-row">
-                    <span class="tcc-stat-label">FCR</span>
-                    <span class="tcc-stat-bar"><span class="tcc-stat-fill warn" style="width: 73%;"></span></span>
-                    <span class="tcc-stat-val">73%</span>
-                  </div>
-                </div>
-                <div class="tcc-action">
-                  <button class="k-row-action" type="button" style="width: 100%; justify-content: center;">
-                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v6m0 2v0M2 8l4 4 4-4"/></svg>
-                    Identify shared gaps
-                  </button>
-                </div>
-              </div>
-            </div>
 
             <!-- ── MEMBER BREAKDOWN ── -->
             <div class="behav-card" style="margin-top: 16px;">
