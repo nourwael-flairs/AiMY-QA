@@ -2958,6 +2958,121 @@
     .di-ws.done { background: var(--ok);    border-color: var(--ok);    color: #fff; }
     .di-ws-ln { flex: 1; height: 1px; background: rgba(255,255,255,0.09); }
 
+
+    /* ═══════════════════════════════════════════════
+       QUICK FIND MODAL
+    ═══════════════════════════════════════════════ */
+    #qf-backdrop {
+      display: none;
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(8,11,16,0.72);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      align-items: flex-start; justify-content: center;
+      padding-top: 80px;
+    }
+    #qf-backdrop.qf-open { display: flex; }
+
+    #qf-modal {
+      width: 560px; max-width: calc(100vw - 32px);
+      background: var(--d850);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+      overflow: hidden;
+      animation: qf-in 140ms cubic-bezier(0.22,1,0.36,1);
+    }
+    @keyframes qf-in {
+      from { opacity: 0; transform: scale(0.96) translateY(-8px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    #qf-input-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    #qf-input-row svg { flex-shrink: 0; color: var(--d500); }
+    #qf-input {
+      flex: 1; background: transparent; border: none; outline: none;
+      font-family: var(--font-sans); font-size: 14px; font-weight: 500;
+      color: var(--d50);
+      caret-color: var(--brand);
+    }
+    #qf-input::placeholder { color: var(--d600); }
+    #qf-clear {
+      display: none; background: rgba(255,255,255,0.06);
+      border: none; border-radius: 4px; color: var(--d400);
+      font-size: 11px; padding: 2px 7px; cursor: pointer;
+      font-family: var(--font-sans);
+    }
+    #qf-clear.visible { display: block; }
+
+    #qf-results {
+      max-height: 380px; overflow-y: auto;
+      padding: 6px 0;
+    }
+    #qf-results:empty::after {
+      content: 'No results';
+      display: block; text-align: center;
+      padding: 32px 0; font-size: 13px; color: var(--d600);
+      font-family: var(--font-sans);
+    }
+
+    .qf-group-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--d600);
+      padding: 10px 16px 4px;
+    }
+
+    .qf-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 16px; cursor: pointer;
+      transition: background 80ms;
+    }
+    .qf-item:hover, .qf-item.qf-active {
+      background: rgba(51,105,255,0.1);
+    }
+    .qf-item:hover .qf-label, .qf-item.qf-active .qf-label {
+      color: var(--d50);
+    }
+    .qf-item-icon {
+      width: 22px; height: 22px; border-radius: 5px;
+      background: rgba(255,255,255,0.05);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 11px;
+    }
+    .qf-label {
+      font-family: var(--font-sans); font-size: 13px;
+      font-weight: 500; color: var(--d300);
+      flex: 1;
+    }
+    .qf-label mark {
+      background: transparent;
+      color: var(--brand);
+      font-weight: 700;
+    }
+    .qf-group-tag {
+      font-size: 10px; font-weight: 600; color: var(--d600);
+      font-family: var(--font-sans);
+    }
+
+    #qf-footer {
+      display: flex; align-items: center; gap: 16px;
+      padding: 8px 16px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .qf-hint {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 11px; color: var(--d600); font-family: var(--font-sans);
+    }
+    .qf-hint kbd {
+      font-size: 10px; background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;
+      padding: 1px 5px; color: var(--d500); font-family: var(--font-sans);
+    }
+    .qf-hint-sep { color: var(--d700); }
+
   </style>
 </head>
 <body>
@@ -2997,6 +3112,30 @@
 <!-- ══════════════════════════════════════════════
      TOAST
 ══════════════════════════════════════════════ -->
+
+<!-- ══════════════════════════════════════════════
+     QUICK FIND MODAL
+══════════════════════════════════════════════ -->
+<div id="qf-backdrop" role="dialog" aria-modal="true" aria-label="Quick find">
+  <div id="qf-modal">
+    <div id="qf-input-row">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input id="qf-input" type="text" placeholder="Search components, tokens, sections…" autocomplete="off" spellcheck="false" />
+      <button id="qf-clear" aria-label="Clear">clear</button>
+    </div>
+    <div id="qf-results"></div>
+    <div id="qf-footer">
+      <span class="qf-hint"><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+      <span class="qf-hint-sep">·</span>
+      <span class="qf-hint"><kbd>↵</kbd> go</span>
+      <span class="qf-hint-sep">·</span>
+      <span class="qf-hint"><kbd>Esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+
 <div id="ds-toast">
   <span class="toast-icon">✓</span>
   <span id="ds-toast-msg">Copied!</span>
@@ -3011,15 +3150,15 @@
     AiMY
   </a>
   <span class="ds-topbar-sep">/</span>
-  <span class="ds-topbar-title">QA Design System</span>
+  <span class="ds-topbar-title">QA Design Documentation</span>
 
   <div class="ds-topbar-right">
-    <div class="ds-topbar-search">
+    <div class="ds-topbar-search" role="button" tabindex="0" aria-label="Quick find (press / or ⌘K)">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       Quick find&nbsp;
       <kbd>/</kbd>
     </div>
-    <span class="ds-topbar-version">v2 · 2026</span>
+    <!-- <span class="ds-topbar-version">v2 · 2026</span> -->
   </div>
 </header>
 
@@ -10931,24 +11070,179 @@ function _flashCopyBtn(btn) {
 })();
 
 /* ═══════════════════════════════════════════════════
-   KEYBOARD SHORTCUT — "/" focuses the search box
+   QUICK FIND — full working implementation
 ═══════════════════════════════════════════════════ */
-document.addEventListener('keydown', (e) => {
-  if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-    e.preventDefault();
-    const search = document.querySelector('.ds-topbar-search');
-    if (search) {
-      search.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      /* brief flash to signal activation */
-      search.style.borderColor = 'var(--brand)';
-      search.style.background  = 'rgba(51,105,255,0.06)';
-      setTimeout(() => {
-        search.style.borderColor = '';
-        search.style.background  = '';
-      }, 900);
+(function () {
+  // ── Build index from sidebar nav links ──
+  const INDEX = [];
+  document.querySelectorAll('.ds-nav-group').forEach(group => {
+    const groupLabel = group.querySelector('.ds-nav-label')?.textContent?.trim() || '';
+    group.querySelectorAll('.ds-nav-link').forEach(link => {
+      const href  = link.getAttribute('href') || '';
+      const label = link.textContent.replace(/\s+/g, ' ').trim();
+      if (href && label) {
+        INDEX.push({ label, href, group: groupLabel });
+      }
+    });
+  });
+
+  // ── Group icon map ──
+  const GROUP_ICONS = {
+    'Introduction':    '📄',
+    'Foundations':     '🎨',
+    'Components':      '⬡',
+    'AiMY Canvas':     '✦',
+    'KPI Hub':         '📊',
+    'Scorecards':      '📋',
+    'Disputes':        '⚖',
+    'Data Ingestion':  '📥',
+  };
+
+  const backdrop  = document.getElementById('qf-backdrop');
+  const modal     = document.getElementById('qf-modal');
+  const input     = document.getElementById('qf-input');
+  const results   = document.getElementById('qf-results');
+  const clearBtn  = document.getElementById('qf-clear');
+  const topbarBtn = document.querySelector('.ds-topbar-search');
+
+  let activeIdx = -1;
+
+  function openModal() {
+    backdrop.classList.add('qf-open');
+    input.value = '';
+    clearBtn.classList.remove('visible');
+    renderResults('');
+    requestAnimationFrame(() => input.focus());
+  }
+
+  function closeModal() {
+    backdrop.classList.remove('qf-open');
+    activeIdx = -1;
+  }
+
+  function highlight(text, query) {
+    if (!query) return text;
+    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp('(' + escaped + ')', 'gi'), '<mark>$1</mark>');
+  }
+
+  function renderResults(query) {
+    activeIdx = -1;
+    const q = query.trim().toLowerCase();
+    const filtered = q
+      ? INDEX.filter(item => item.label.toLowerCase().includes(q) || item.group.toLowerCase().includes(q))
+      : INDEX;
+
+    if (filtered.length === 0) {
+      results.innerHTML = '';
+      return;
+    }
+
+    // Group items
+    const grouped = {};
+    filtered.forEach(item => {
+      if (!grouped[item.group]) grouped[item.group] = [];
+      grouped[item.group].push(item);
+    });
+
+    let html = '';
+    let itemIdx = 0;
+    Object.entries(grouped).forEach(([group, items]) => {
+      html += `<div class="qf-group-label">${group}</div>`;
+      items.forEach(item => {
+        const icon = GROUP_ICONS[group] || '◈';
+        const labelHtml = highlight(item.label, q);
+        html += `<div class="qf-item" data-href="${item.href}" data-idx="${itemIdx}" role="option">
+          <span class="qf-item-icon">${icon}</span>
+          <span class="qf-label">${labelHtml}</span>
+          <span class="qf-group-tag">${group}</span>
+        </div>`;
+        itemIdx++;
+      });
+    });
+
+    results.innerHTML = html;
+
+    // Click to navigate
+    results.querySelectorAll('.qf-item').forEach(el => {
+      el.addEventListener('click', () => {
+        navigateTo(el.getAttribute('data-href'));
+      });
+    });
+  }
+
+  function setActive(idx) {
+    const items = results.querySelectorAll('.qf-item');
+    if (!items.length) return;
+    idx = (idx + items.length) % items.length;
+    activeIdx = idx;
+    items.forEach((el, i) => el.classList.toggle('qf-active', i === idx));
+    items[idx].scrollIntoView({ block: 'nearest' });
+  }
+
+  function navigateTo(href) {
+    closeModal();
+    if (!href) return;
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Update sidebar active state
+      document.querySelectorAll('.ds-nav-link').forEach(l => l.classList.remove('active'));
+      const navLink = document.querySelector('.ds-nav-link[href="' + href + '"]');
+      if (navLink) navLink.classList.add('active');
     }
   }
-});
+
+  // Input handler
+  input.addEventListener('input', () => {
+    clearBtn.classList.toggle('visible', input.value.length > 0);
+    renderResults(input.value);
+  });
+
+  // Clear button
+  clearBtn.addEventListener('click', () => {
+    input.value = '';
+    clearBtn.classList.remove('visible');
+    renderResults('');
+    input.focus();
+  });
+
+  // Keyboard navigation inside modal
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActive(activeIdx + 1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(activeIdx - 1); }
+    else if (e.key === 'Enter') {
+      const active = results.querySelector('.qf-item.qf-active');
+      if (active) navigateTo(active.getAttribute('data-href'));
+    }
+    else if (e.key === 'Escape') { closeModal(); }
+  });
+
+  // Click backdrop to close
+  backdrop.addEventListener('click', (e) => {
+    if (!modal.contains(e.target)) closeModal();
+  });
+
+  // Topbar button click
+  if (topbarBtn) topbarBtn.addEventListener('click', openModal);
+
+  // Global keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    const tag = document.activeElement.tagName;
+    if (e.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA') {
+      e.preventDefault();
+      openModal();
+    }
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      if (backdrop.classList.contains('qf-open')) closeModal();
+      else openModal();
+    }
+    if (e.key === 'Escape' && backdrop.classList.contains('qf-open')) {
+      closeModal();
+    }
+  });
+})();
 
 /* ═══════════════════════════════════════════════════
    GRAD ITEMS — click outer div copies value (stopProp
