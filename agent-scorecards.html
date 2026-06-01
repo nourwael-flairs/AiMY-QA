@@ -2739,6 +2739,7 @@
       }
       .chat-msg.user {
         flex-direction: row-reverse;
+        justify-content: flex-start;
       }
 
       .msg-avatar {
@@ -4882,7 +4883,9 @@
       .transcript-msg {
         display: flex; gap: 8px; margin-bottom: 14px; align-items: flex-start;
       }
-      .transcript-msg.agent { flex-direction: row-reverse; }
+      .transcript-msg.agent { flex-direction: row-reverse; justify-content: flex-start; }
+      .transcript-msg.agent > div:not(.tm-avatar) { max-width: 75%; }
+      .transcript-msg.customer > div:not(.tm-avatar) { max-width: 75%; }
       .tm-avatar {
         width: 24px; height: 24px; border-radius: 6px;
         display: flex; align-items: center; justify-content: center;
@@ -4891,7 +4894,7 @@
       .tm-avatar.customer { background: rgba(51,105,255,0.4); }
       .tm-avatar.agent-av { background: linear-gradient(135deg,#1a2a3a,#2d5c8e); }
       .tm-bubble {
-        max-width: 75%; padding: 9px 12px; border-radius: 10px;
+        width: 100%; padding: 9px 12px; border-radius: 10px;
         font-size: 12px; line-height: 1.55; color: var(--d100);
       }
       .transcript-msg.customer .tm-bubble {

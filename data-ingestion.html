@@ -4984,11 +4984,24 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
+        transition: background 150ms;
       }
-      .ic-zendesk  { background: rgba(3,118,190,0.18); color: #5ac8f5; }
-      .ic-freshdesk{ background: rgba(0,168,61,0.15);  color: #4dc98a; }
-      .ic-s3       { background: rgba(247,144,9,0.15);  color: var(--warn); }
-      .ic-connect  { background: rgba(111,223,226,0.13);color: var(--teal); }
+      .ic-zendesk  { background: rgba(255,255,255,0.06); color: #5ac8f5; }
+      .ic-freshdesk{ background: rgba(255,255,255,0.06); color: #4dc98a; }
+      .ic-s3       { background: rgba(255,255,255,0.06); color: var(--warn); }
+      .ic-connect  { background: rgba(255,255,255,0.06); color: var(--teal); }
+
+      /* On hover/selected, icon container reveals a contextual tint */
+      .di-src-card:hover .ic-zendesk,
+      .di-src-selected .ic-zendesk  { background: rgba(90,200,245,0.14); }
+      .di-src-card:hover .ic-freshdesk,
+      .di-src-selected .ic-freshdesk { background: rgba(77,201,138,0.14); }
+      .di-src-card:hover .ic-s3,
+      .di-src-selected .ic-s3       { background: rgba(247,144,9,0.14); }
+      .di-src-card:hover .ic-connect,
+      .di-src-selected .ic-connect  { background: rgba(111,223,226,0.14); }
+
+
 
       .di-sc-name {
         font-size: 12px;
@@ -5052,19 +5065,7 @@
       /* Freshness bar — structural element, not absolute positioned.
          Sits at the bottom of the card as an intentional visual ledger line.
          Height increased to 3px for legibility; rounded top corners only. */
-      .di-sc-freshbar {
-        height: 3px;
-        border-radius: 0 0 10px 10px;
-        margin: 14px -14px -12px;
-        flex-shrink: 0;
-      }
-      .di-sc-freshbar.fresh    { background: var(--ok); opacity: 0.7; }
-      .di-sc-freshbar.stale    { background: var(--warn); opacity: 0.85; }
-      .di-sc-freshbar.bar-error{
-        background: var(--err);
-        opacity: 1;
-        box-shadow: 0 0 8px rgba(240,68,56,0.4);
-      }
+      .di-sc-freshbar { display: none; }
 
       /* ── Body ────────────────────────────────────────────────────── */
       .di-body {
