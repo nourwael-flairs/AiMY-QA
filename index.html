@@ -823,7 +823,6 @@
         color: var(--d400);
       }
 
-
       .summary-headline-label {
         font-size: 12px;
         font-weight: 600;
@@ -945,16 +944,12 @@
         color: var(--d200);
       }
 
-
-
-
-
       .summary-evaluated-line {
         font-size: 10px;
         font-weight: 500;
         color: var(--d500);
+        text-align: left;
         white-space: nowrap;
-        margin-left: auto;
       }
       .summary-evaluated-line strong {
         color: var(--d300);
@@ -5498,11 +5493,10 @@
                 </div>
               </div>
             </div>
+
             <div class="summary-evaluated-line">
-              <strong id="summaryEvalCount">2,847</strong> tickets evaluated today
-            </div>
-
-
+                <strong id="summaryEvalCount">2,847</strong> tickets evaluated today
+              </div>
           </div>
 
           <!-- Row 2: 3 signal tiles spanning full width -->
@@ -8001,27 +7995,26 @@
         renderStateAlts();
       }
 
-      // ── AiMY Daily Summary Card ────────────────────────────────────────
+      // ── AiMY Daily Summary Card ────────────────────────────────────
       (function initSummaryCard() {
-        // Keyboard accessibility: signals behave as buttons
-        const signals = document.querySelectorAll(".summary-signal");
-        signals.forEach(function(sig) {
-          sig.addEventListener("keydown", function(e) {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              sig.click();
-            }
+        var SIGNAL_PROMPTS = {
+          summarySignal1: "SLA compliance dropped to 61% today — first response times are missing the 65% target. What’s driving this and what should I do right now?",
+          summarySignal2: "5 agents are below the quality threshold today. Who are they, what’s the common failure pattern, and can you generate a coaching plan?",
+          summarySignal3: "DISP-0441 and DISP-0438 are past the SLA window. What’s the status of each dispute and what action should I take to resolve them today?",
+        };
+        Object.keys(SIGNAL_PROMPTS).forEach(function(id) {
+          var el = document.getElementById(id);
+          if (!el) return;
+          var prompt = SIGNAL_PROMPTS[id];
+          el.addEventListener("click", function() {
+            if (typeof window.openOverlay === "function") window.openOverlay(prompt);
           });
-          // Each signal click scrolls to the relevant section or triggers the float bar
-          sig.addEventListener("click", function() {
-            const bar = document.getElementById("aimyFloatInput");
-            if (bar) bar.focus();
+          el.addEventListener("keydown", function(e) {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); el.click(); }
           });
         });
-
-
       })();
-      // ── End AiMY Daily Summary Card ───────────────────────────────────
+      // ── End AiMY Daily Summary Card ───────────────────────────────────────────
 
       // ── Evaluation & Friction Panel: donut hover ──────────────
       // ── Causes data for floating panel ──────────────────────────
@@ -8489,29 +8482,75 @@
             .replace(/"/g, "&quot;");
         }
 
-        /* ── Simulated AiMY responses ─────────────────────────────────────
-     In production replace with a real API call dispatched to the
-     AiMY agent layer. The responses here are illustrative stubs.     */
-        const STUB_RESPONSES = [
-          "I&rsquo;ve looked across this period&rsquo;s data. The primary driver is empathy on escalation calls, which dropped <strong>8%</strong> week-over-week. I&rsquo;d suggest starting a targeted coaching session for the 3 flagged agents.",
-          "Based on current audit data: <strong>5 agents</strong> are below the 80% quality threshold. Omar A., Sara M., and Khaled R. show the steepest declines&mdash;all in the Customer Support queue.",
-          "This week&rsquo;s SLA breach count is <strong>23</strong>, up from 14 last week. The spike correlates with a surge in billing tickets on Wednesday. Do you want me to pull the affected tickets?",
-          "Quality score today sits at <strong>87.3%</strong>, which is 2.7 points below the 90% target. The improvement trajectory is positive&mdash;at current rate you&rsquo;d hit the target in approximately <strong>3 weeks</strong>.",
-          "I&rsquo;m tracking <strong>484 failing interactions</strong> this period. The top failure reason is missing follow-up confirmation (38% of fails), followed by survey promotion (27%). Want me to generate a coaching plan?",
+        /* ── AiMY contextual responses ─────────────────────────────────────
+           Keyed response map: matched by prompt keywords.
+           Falls back to a generic quality summary.
+           In production replace simulateAiResponse with a real API call. */
+        var CONTEXTUAL_RESPONSES = [
+          {
+            keys: ["sla", "first response", "response time", "compliance", "61%"],
+            response:
+              "First response SLA compliance is at <strong>61%</strong> today against a 65% target — a <strong>4-point gap</strong> affecting 8 agents. " +
+              "The main driver is a ticket volume spike in the billing queue this morning, where average first response climbed to <strong>52 minutes</strong> (target: 30 min). " +
+              "I’d recommend reassigning 2 agents from the general queue to billing for the rest of the shift. " +
+              "Do you want me to identify which agents have capacity to absorb the load right now?",
+          },
+          {
+            keys: ["agent", "below threshold", "threshold", "coaching", "5 agents"],
+            response:
+              "Five agents are currently below the 80% quality threshold: <strong>Omar A. (74%)</strong>, <strong>Sara M. (71%)</strong>, <strong>Khaled R. (69%)</strong>, Layla T. (76%), and Ahmed S. (78%). " +
+              "All five show the same failure pattern — low scores on <em>empathy during escalations</em> (avg 48%) and <em>follow-up confirmation</em> (avg 52%). " +
+              "This suggests a shared training gap rather than individual performance issues. " +
+              "I can generate a targeted coaching plan for this checklist cluster — want me to do that now?",
+          },
+          {
+            keys: ["dispute", "overdue", "disp-0441", "disp-0438", "past sla", "sla window"],
+            response:
+              "<strong>DISP-0441</strong> and <strong>DISP-0438</strong> are both past the 48-hour SLA window — DISP-0441 by 31 hours, DISP-0438 by 19 hours. " +
+              "Both disputes were filed by agents contesting checklist scoring on empathy items, and both are awaiting auditor response. " +
+              "If unresolved today there is an escalation risk to the agents’ team leads. " +
+              "I’d suggest assigning them to an available senior auditor immediately. Do you want me to surface who is available?",
+          },
+          {
+            keys: ["quality score", "overall", "today", "83", "summary"],
+            response:
+              "Today’s overall quality score is <strong>83%</strong>, down 4 points from yesterday’s 87%. " +
+              "The drop is driven by three converging issues: SLA compliance at 61%, five agents below threshold, and two unresolved disputes adding noise to the audit queue. " +
+              "The score is recoverable today if the SLA gap in billing is addressed and the two overdue disputes are closed. " +
+              "Should I generate a prioritised action plan for the shift?",
+          },
+          {
+            keys: ["empathy", "billing escalation", "coaching brief"],
+            response:
+              "I’ve confirmed the root cause: billing escalation handling is creating a " +
+              "<span class='msg-data-ref'>&#128202; 17% fail rate</span> this period." +
+              "<br><br>Recommended next step:<br>" +
+              "<button class='msg-action-link' id='empathy-action-btn'>Send coaching brief to team lead</button>",
+          },
         ];
-        let stubIdx = 0;
 
         function simulateAiResponse(userText) {
           if (isTyping) return;
           isTyping = true;
           showTypingIndicator();
 
-          const delay = 900 + Math.random() * 600;
-          setTimeout(() => {
-            const response = STUB_RESPONSES[stubIdx % STUB_RESPONSES.length];
-            stubIdx++;
-            appendAiMsg(response);
-          }, delay);
+          var lo = (userText || "").toLowerCase();
+          var matched = null;
+          for (var i = 0; i < CONTEXTUAL_RESPONSES.length; i++) {
+            var entry = CONTEXTUAL_RESPONSES[i];
+            if (entry.keys.some(function(k) { return lo.indexOf(k) !== -1; })) {
+              matched = entry.response;
+              break;
+            }
+          }
+          if (!matched) {
+            matched =
+              "Today’s quality score is <strong>83%</strong>, 4 points below yesterday. " +
+              "Active issues: SLA compliance at 61%, 5 agents below threshold, and 2 overdue disputes. " +
+              "Would you like me to drill into any of these areas?";
+          }
+          var delay = 900 + Math.random() * 500;
+          setTimeout(function() { appendAiMsg(matched); }, delay);
         }
 
         /* ── Overlay input: Enter to send (Shift+Enter = newline) ────── */
@@ -8541,6 +8580,9 @@
         overlayInput.addEventListener("input", autoResizeTextarea);
 
         /* ── Suggestion chips inside overlay ────────────────────────── */
+        // Expose openOverlay so external IIFEs (summary card signals) can call it
+        window.openOverlay = openOverlay;
+
         window.overlaySuggestion = function (btn) {
           const text = btn.textContent.trim();
           overlayInput.value = text;
@@ -9188,13 +9230,6 @@
           }
         });
 
-        /* ── Rich stub response with Take Action ─────────────────────── */
-        STUB_RESPONSES.push(
-          "I&#8217;ve confirmed the root cause: billing escalation handling is creating a " +
-          "<span class='msg-data-ref'>\uD83D\uDCCA 17% fail rate</span> this period." +
-          "<br><br>Recommended next step:<br>" +
-          "<button class='msg-action-link' id='empathy-action-btn'>\u2708 Send coaching brief to team lead</button>"
-        );
         document.addEventListener('click', e => {
           if (e.target?.id === 'empathy-action-btn') window.triggerAction(e.target, 'Send coaching brief to team lead', 'n8n-empathy-brief');
         });
