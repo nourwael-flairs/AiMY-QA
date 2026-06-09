@@ -4839,6 +4839,180 @@
       }
       .eval-detail-page.open { display: block; }
 
+      /* ── Agent Tickets Page (intermediate drill-down layer) ─────────── */
+      .agent-tickets-page {
+        display: none;
+        position: absolute; inset: 0;
+        background: #171a1c;
+        z-index: 40;
+        overflow-y: auto;
+        padding: 28px 36px 100px;
+      }
+      .agent-tickets-page.open { display: block; }
+
+      /* Agent summary header */
+      .atp-header {
+        display: flex; align-items: flex-start; gap: 20px;
+        margin-bottom: 32px;
+        padding-bottom: 28px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      /* Double-bezel avatar shell */
+      .atp-avatar-shell {
+        padding: 3px;
+        border-radius: 18px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.08);
+        flex-shrink: 0;
+      }
+      .atp-avatar {
+        width: 54px; height: 54px; border-radius: 15px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px; font-weight: 800; color: #fff;
+        letter-spacing: 0.02em;
+        box-shadow: inset 0 1px 1px rgba(255,255,255,0.12);
+      }
+      .atp-info { flex: 1; min-width: 0; padding-top: 2px; }
+      .atp-name {
+        font-size: 22px; font-weight: 800; color: var(--d50);
+        letter-spacing: -0.03em; line-height: 1; margin-bottom: 5px;
+      }
+      .atp-meta {
+        font-size: 11px; color: var(--d500); font-weight: 500;
+        margin-bottom: 16px;
+      }
+      .atp-stats {
+        display: flex; gap: 0; align-items: stretch;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 10px;
+        overflow: hidden;
+        width: fit-content;
+      }
+      .atp-stat {
+        display: flex; flex-direction: column; gap: 3px;
+        padding: 10px 18px;
+      }
+      .atp-stat + .atp-stat {
+        border-left: 1px solid rgba(255,255,255,0.07);
+      }
+      .atp-stat-val {
+        font-size: 20px; font-weight: 800; letter-spacing: -0.04em; line-height: 1;
+        color: var(--d100);
+      }
+      .atp-stat-val.ok  { color: var(--ok); }
+      .atp-stat-val.warn{ color: var(--warn); }
+      .atp-stat-val.err { color: var(--err); }
+      .atp-stat-label {
+        font-size: 9px; font-weight: 700; color: var(--d600);
+        text-transform: uppercase; letter-spacing: 0.08em;
+      }
+
+      /* Section title */
+      .atp-section-label {
+        font-size: 10px; font-weight: 700; color: var(--d500);
+        text-transform: uppercase; letter-spacing: 0.08em;
+        margin-bottom: 16px;
+      }
+
+      /* ── Ticket cards grid layout ──────────────────────────────────── */
+      .atp-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 12px;
+      }
+
+      /* Double-bezel ticket card outer shell */
+      .atp-ticket-shell {
+        padding: 2px;
+        border-radius: 18px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.07);
+        cursor: pointer;
+        transition: border-color 220ms cubic-bezier(0.22,1,0.36,1),
+                    background 220ms cubic-bezier(0.22,1,0.36,1),
+                    transform 180ms cubic-bezier(0.22,1,0.36,1);
+      }
+      .atp-ticket-shell:hover {
+        border-color: rgba(255,255,255,0.14);
+        background: rgba(255,255,255,0.06);
+        transform: translateY(-2px);
+      }
+      .atp-ticket-shell:active { transform: translateY(0); }
+
+      /* Inner core of the card */
+      .atp-ticket-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 18px 20px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+        height: 100%;
+      }
+
+      /* Card top row: channel icon + date + type badge */
+      .atp-card-top {
+        display: flex; align-items: center; gap: 10px;
+      }
+      .atp-card-channel {
+        width: 30px; height: 30px; border-radius: 8px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.08);
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0; color: var(--d400);
+      }
+      .atp-card-channel svg { width: 13px; height: 13px; }
+      .atp-card-date {
+        font-size: 11px; font-weight: 700; color: var(--d300);
+        flex: 1; min-width: 0;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      /* Low-confidence indicator on shell */
+      .atp-ticket-shell.low-conf { border-color: rgba(247,144,9,0.22); }
+      .atp-ticket-shell.low-conf:hover { border-color: rgba(247,144,9,0.35); }
+
+      /* Summary text — the meat of the card */
+      .atp-card-summary {
+        font-size: 12px; color: var(--d400); line-height: 1.6;
+        flex: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      /* Card bottom row: score + status + arrow */
+      .atp-card-bottom {
+        display: flex; align-items: center; gap: 8px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        margin-top: auto;
+      }
+      .atp-card-score {
+        font-size: 22px; font-weight: 800; letter-spacing: -0.04em;
+        line-height: 1; margin-right: auto;
+      }
+      .atp-card-score.ok  { color: var(--ok); }
+      .atp-card-score.warn{ color: var(--warn); }
+      .atp-card-score.err { color: var(--err); }
+      .atp-card-arrow {
+        width: 26px; height: 26px; border-radius: 7px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.08);
+        display: flex; align-items: center; justify-content: center;
+        color: var(--d500);
+        transition: color 150ms, background 150ms, transform 180ms cubic-bezier(0.22,1,0.36,1);
+        flex-shrink: 0;
+      }
+      .atp-ticket-shell:hover .atp-card-arrow {
+        color: var(--d200);
+        background: rgba(255,255,255,0.09);
+        transform: translate(1px,-1px);
+      }
+      .atp-card-arrow svg { width: 10px; height: 10px; display: block; }
+
       /* Back navigation */
       .eval-detail-back {
         display: flex; align-items: center; gap: 7px;
@@ -8233,7 +8407,7 @@
               <div class="eval-list-header">
                 <div>
                   <div class="eval-list-title">All evaluations</div>
-                  <div class="eval-list-subtitle">547 evaluations across 12 agents · Product Support team · last 30 days</div>
+                  <div class="eval-list-subtitle">547 evaluations · 12 agents + AiMY · Product Support team · last 30 days</div>
                 </div>
                 <div class="eval-list-controls">
                   <button class="eval-bulk-btn sec" type="button" onclick="toggleAllAccountEvalRows()" style="font-size:10px;padding:5px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.05);color:var(--d300);cursor:pointer;font-family:'Urbanist',sans-serif;">Select all</button>
@@ -8377,7 +8551,7 @@
               <!-- Account-wide rows — all agents, no pre-filter -->
               <div class="eval-list" id="evalListAccountRows" role="list">
 
-                <div class="eval-row" role="listitem" tabindex="0" onclick="openEvalDetail('eval-detail-human')" onkeydown="if(event.key==='Enter')openEvalDetail('eval-detail-human')">
+                <div class="eval-row" role="listitem" tabindex="0" onclick="openAgentTickets('Omar Abdallah')" onkeydown="if(event.key==='Enter')openAgentTickets('Omar Abdallah')">
                   <input class="eval-row-check" type="checkbox" aria-label="Select evaluation" onclick="event.stopPropagation();toggleAccountEvalRow(this)">
                   <div><div class="eval-row-agent">Omar Abdallah</div><div class="eval-row-date">May 7, 2026 · Voice</div></div>
                   <span class="channel-badge"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 8.5c-.5 1-1.5 1.5-2.5 1-2-.5-4-2.5-4.5-4.5C3 4 3.5 3 4.5 2.5l1.5 2-1 1c.5 1 1.5 2 2.5 2.5l1-1 2 1.5z"/></svg>Voice</span>
@@ -8390,7 +8564,7 @@
 
                 <div class="eval-row" role="listitem" tabindex="0" onclick="openEvalDetail('eval-detail-ai')" onkeydown="if(event.key==='Enter')openEvalDetail('eval-detail-ai')">
                   <input class="eval-row-check" type="checkbox" aria-label="Select evaluation" onclick="event.stopPropagation();toggleAccountEvalRow(this)">
-                  <div><div class="eval-row-agent">Omar Abdallah</div><div class="eval-row-date">May 8, 2026 · Chat</div></div>
+                  <div><div class="eval-row-agent">AiMY</div><div class="eval-row-date">May 8, 2026 · Chat</div></div>
                   <span class="channel-badge"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 7.5C10 8.33 9.33 9 8.5 9H3.5C2.67 9 2 8.33 2 7.5V5C2 3.34 3.34 2 5 2h2c1.66 0 3 1.34 3 3v2.5z"/></svg>Chat</span>
                   <span class="interaction-type-flag ai-flag" style="font-size:9px;padding:2px 6px;"><svg width="10" height="11" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>AiMY</span>
                   <span class="eval-row-score err">58%</span>
@@ -8399,7 +8573,7 @@
                   <span class="eval-row-sentiment neg">Negative</span>
                 </div>
 
-                <div class="eval-row" role="listitem" tabindex="0">
+                <div class="eval-row" role="listitem" tabindex="0" onclick="openAgentTickets('Tariq Mansour')" onkeydown="if(event.key==='Enter')openAgentTickets('Tariq Mansour')">
                   <input class="eval-row-check" type="checkbox" aria-label="Select evaluation" onclick="event.stopPropagation();toggleAccountEvalRow(this)">
                   <div><div class="eval-row-agent">Tariq Mansour</div><div class="eval-row-date">May 9, 2026 · Voice</div></div>
                   <span class="channel-badge"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 8.5c-.5 1-1.5 1.5-2.5 1-2-.5-4-2.5-4.5-4.5C3 4 3.5 3 4.5 2.5l1.5 2-1 1c.5 1 1.5 2 2.5 2.5l1-1 2 1.5z"/></svg>Voice</span>
@@ -8410,7 +8584,7 @@
                   <span class="eval-row-sentiment neg">Negative</span>
                 </div>
 
-                <div class="eval-row" role="listitem" tabindex="0">
+                <div class="eval-row" role="listitem" tabindex="0" onclick="openAgentTickets('Sarah Reyes')" onkeydown="if(event.key==='Enter')openAgentTickets('Sarah Reyes')">
                   <input class="eval-row-check" type="checkbox" aria-label="Select evaluation" onclick="event.stopPropagation();toggleAccountEvalRow(this)">
                   <div><div class="eval-row-agent">Sarah Reyes</div><div class="eval-row-date">May 9, 2026 · Chat</div></div>
                   <span class="channel-badge"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 7.5C10 8.33 9.33 9 8.5 9H3.5C2.67 9 2 8.33 2 7.5V5C2 3.34 3.34 2 5 2h2c1.66 0 3 1.34 3 3v2.5z"/></svg>Chat</span>
@@ -8421,7 +8595,7 @@
                   <span class="eval-row-sentiment pos">Positive</span>
                 </div>
 
-                <div class="eval-row" role="listitem" tabindex="0">
+                <div class="eval-row" role="listitem" tabindex="0" onclick="openAgentTickets('Lina Haddad')" onkeydown="if(event.key==='Enter')openAgentTickets('Lina Haddad')">
                   <input class="eval-row-check" type="checkbox" aria-label="Select evaluation" onclick="event.stopPropagation();toggleAccountEvalRow(this)">
                   <div><div class="eval-row-agent">Lina Haddad</div><div class="eval-row-date">May 8, 2026 · Email</div></div>
                   <span class="channel-badge"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="10" height="7" rx="1"/><path d="M1 4l5 3.5L11 4"/></svg>Email</span>
@@ -8432,7 +8606,7 @@
                   <span class="eval-row-sentiment pos">Positive</span>
                 </div>
 
-                <div class="eval-row low-conf-row" role="listitem" tabindex="0">
+                <div class="eval-row low-conf-row" role="listitem" tabindex="0" onclick="openAgentTickets('Michael Chen')" onkeydown="if(event.key==='Enter')openAgentTickets('Michael Chen')">
                   <input class="eval-row-check" type="checkbox" aria-label="Select evaluation" onclick="event.stopPropagation();toggleAccountEvalRow(this)">
                   <div><div class="eval-row-agent">Michael Chen</div><div class="eval-row-date">May 6, 2026 · Ticket</div></div>
                   <span class="channel-badge"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="8" height="8" rx="1.5"/><line x1="4" y1="5" x2="8" y2="5"/><line x1="4" y1="7" x2="6.5" y2="7"/></svg>Ticket</span>
@@ -8461,13 +8635,43 @@
             </div>
           </div><!-- /viewEvals -->
 
+        <!-- ══════════════════════════════════════════════════════════
+             ████  AGENT TICKETS PAGE (intermediate drill-down)  ██████
+             Opens when a supervisor clicks any row in All Evaluations.
+             Shows the agent's tickets for this period before diving
+             into a specific evaluation. Back → All Evaluations list.
+             ══════════════════════════════════════════════════════════ -->
+        <div class="agent-tickets-page" id="agentTicketsPage" role="main" aria-label="Agent ticket list">
+          <button class="eval-detail-back" type="button" onclick="closeAgentTickets()">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3L5 7l4 4"/></svg>
+            <span id="agentTicketsBackLabel">All evaluations</span>
+          </button>
+
+          <!-- Agent summary header (populated by JS) -->
+          <div class="atp-header" id="agentTicketsHeader">
+            <div class="atp-avatar-shell">
+              <div class="atp-avatar" id="agentTicketsAvatar"></div>
+            </div>
+            <div class="atp-info">
+              <div class="atp-name" id="agentTicketsName"></div>
+              <div class="atp-meta" id="agentTicketsMeta"></div>
+              <div class="atp-stats" id="agentTicketsStats"></div>
+            </div>
+          </div>
+
+          <div class="atp-section-label" id="agentTicketsSectionLabel">Tickets this week</div>
+
+          <!-- Cards populated by JS -->
+          <div class="atp-cards" id="agentTicketsCards"></div>
+        </div><!-- /agentTicketsPage -->
+
         <!-- ── EVALUATION DETAIL PAGE — Level 4 (Agent-handled) ──────────────
              Full-page route. Opens when supervisor clicks a human-handled eval row.
              Back button returns to agent scorecard / eval list. -->
         <div class="eval-detail-page" id="eval-detail-human" role="main" aria-label="Evaluation detail">
           <button class="eval-detail-back" type="button" onclick="closeEvalDetail()">
             <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3L5 7l4 4"/></svg>
-            Back to Omar Abdallah · Reviews
+            <span id="evalDetailBackLabel">Back to agent</span>
           </button>
 
           <div class="eval-detail-grid">
@@ -8742,7 +8946,7 @@
         <div class="eval-detail-page" id="eval-detail-ai" role="main" aria-label="AI interaction evaluation detail">
           <button class="eval-detail-back" type="button" onclick="closeEvalDetail()">
             <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3L5 7l4 4"/></svg>
-            Back to Omar Abdallah · Reviews
+            <span id="evalDetailAiBackLabel">Back to agent</span>
           </button>
 
           <div class="eval-detail-grid">
@@ -14288,19 +14492,253 @@
       /* ── EVALUATION LIST & DETAIL PAGE INTERACTIONS ────────────────────── */
       (function() {
 
-        /* Open evaluation detail page */
-        window.openEvalDetail = function(id) {
-          document.querySelectorAll('.eval-detail-page').forEach(p => p.classList.remove('open'));
-          const page = document.getElementById(id);
+        /* ── Agent data map for the intermediate ticket list page ───── */
+        var AGENT_DATA = {
+          'Omar Abdallah': {
+            initials: 'OA',
+            avatarGrad: 'linear-gradient(135deg,#1a2a3a,#2d5c8e)',
+            tenure: '5 months',
+            avgScore: 55,
+            scoreClass: 'err',
+            passRate: '38%',
+            ticketCount: 14,
+            tickets: [
+              { date: 'Jun 2, 2026', channel: 'voice', type: 'Agent', score: 52, scoreClass: 'err', status: 'fail', summary: 'Failed to confirm resolution before closing. Customer escalated.', detailId: 'eval-detail-human' },
+              { date: 'Jun 4, 2026', channel: 'voice', type: 'Agent', score: 67, scoreClass: 'warn', status: 'borderline', summary: 'Good empathy but missed follow-up SOP. Tone consistently professional.' },
+              { date: 'Jun 5, 2026', channel: 'email', type: 'Agent', score: 71, scoreClass: 'warn', status: 'borderline', summary: 'Response time within SLA. Resolution confirmed but phrasing imprecise.' },
+              { date: 'Jun 6, 2026', channel: 'chat', type: 'Agent', score: 48, scoreClass: 'err', status: 'fail', summary: 'Customer expressed frustration twice with no de-escalation attempt.' },
+            ]
+          },
+          'Tariq Mansour': {
+            initials: 'TM',
+            avatarGrad: 'linear-gradient(135deg,#3a1a2a,#7d2c52)',
+            tenure: '8 months',
+            avgScore: 63,
+            scoreClass: 'warn',
+            passRate: '51%',
+            ticketCount: 11,
+            tickets: [
+              { date: 'Jun 2, 2026', channel: 'voice', type: 'Agent', score: 61, scoreClass: 'warn', status: 'borderline', summary: 'Partial resolution. Customer asked to call back; follow-up SOP not completed.' },
+              { date: 'Jun 4, 2026', channel: 'ticket', type: 'Agent', score: 74, scoreClass: 'warn', status: 'borderline', summary: 'Accurate information provided. Response time slightly over SLA.' },
+              { date: 'Jun 5, 2026', channel: 'voice', type: 'Agent', score: 55, scoreClass: 'err', status: 'fail', summary: 'Tone flagged as dismissive. KPI: empathy & tone below 60%.' },
+              { date: 'Jun 6, 2026', channel: 'chat', type: 'Agent', score: 88, scoreClass: 'ok', status: 'pass', summary: 'Strong recovery from initial misunderstanding. Customer satisfaction high.' },
+            ]
+          },
+          'Sarah Reyes': {
+            initials: 'SR',
+            avatarGrad: 'linear-gradient(135deg,#1a2e2a,#1f6b54)',
+            tenure: '1.2 years',
+            avgScore: 92,
+            scoreClass: 'ok',
+            passRate: '94%',
+            ticketCount: 18,
+            tickets: [
+              { date: 'Jun 2, 2026', channel: 'chat', type: 'Agent', score: 96, scoreClass: 'ok', status: 'pass', summary: 'Exemplary handling. Proactive resolution before customer asked. All KPIs met.' },
+              { date: 'Jun 3, 2026', channel: 'voice', type: 'Agent', score: 91, scoreClass: 'ok', status: 'pass', summary: 'Clear communication. Follow-up SOP completed. Customer confirmed satisfied.' },
+              { date: 'Jun 5, 2026', channel: 'email', type: 'Agent', score: 88, scoreClass: 'ok', status: 'pass', summary: 'Thorough written response. Slight delay in reply but content accurate and complete.' },
+              { date: 'Jun 6, 2026', channel: 'chat', type: 'Agent', score: 94, scoreClass: 'ok', status: 'pass', summary: 'De-escalated successfully. Correct product guidance. Tone positive throughout.' },
+            ]
+          },
+          'Lina Haddad': {
+            initials: 'LH',
+            avatarGrad: 'linear-gradient(135deg,#3a1a3a,#8e3d8e)',
+            tenure: '1.8 years',
+            avgScore: 86,
+            scoreClass: 'ok',
+            passRate: '88%',
+            ticketCount: 9,
+            tickets: [
+              { date: 'Jun 1, 2026', channel: 'email', type: 'Agent', score: 89, scoreClass: 'ok', status: 'pass', summary: 'Well-structured response. Product information verified. Customer acknowledged resolution.' },
+              { date: 'Jun 3, 2026', channel: 'chat', type: 'Agent', score: 83, scoreClass: 'ok', status: 'pass', summary: 'Handled billing dispute correctly. Tone empathetic and consistent.' },
+              { date: 'Jun 5, 2026', channel: 'voice', type: 'Agent', score: 77, scoreClass: 'warn', status: 'borderline', summary: 'Minor KPI miss on resolution confirmation. Otherwise strong interaction.' },
+            ]
+          },
+          'Michael Chen': {
+            initials: 'MC',
+            avatarGrad: 'linear-gradient(135deg,#2a2a1a,#6b6010)',
+            tenure: '11 months',
+            avgScore: 44,
+            scoreClass: 'err',
+            passRate: '29%',
+            ticketCount: 7,
+            tickets: [
+              { date: 'May 30, 2026', channel: 'ticket', type: 'Agent', score: 44, scoreClass: 'err', status: 'fail', summary: 'Multiple KPI misses. Low confidence score flagged for human review.', lowConf: true },
+              { date: 'Jun 2, 2026', channel: 'voice', type: 'Agent', score: 51, scoreClass: 'err', status: 'fail', summary: 'Customer escalated mid-call. Resolution not achieved. Tone inconsistent.' },
+              { date: 'Jun 4, 2026', channel: 'chat', type: 'Agent', score: 68, scoreClass: 'warn', status: 'borderline', summary: 'Improved pacing. Product knowledge gap identified. Follow-up SOP missed.' },
+            ]
+          }
+        };
+
+        /* ── Channel SVG icons ─────────────────────────────────────── */
+        var CHANNEL_ICONS = {
+          voice: '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 8.5c-.5 1-1.5 1.5-2.5 1-2-.5-4-2.5-4.5-4.5C3 4 3.5 3 4.5 2.5l1.5 2-1 1c.5 1 1.5 2 2.5 2.5l1-1 2 1.5z"/></svg>',
+          chat:  '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 7.5C10 8.33 9.33 9 8.5 9H3.5C2.67 9 2 8.33 2 7.5V5C2 3.34 3.34 2 5 2h2c1.66 0 3 1.34 3 3v2.5z"/></svg>',
+          email: '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="10" height="7" rx="1"/><path d="M1 4l5 3.5L11 4"/></svg>',
+          ticket:'<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="8" height="8" rx="1.5"/><line x1="4" y1="5" x2="8" y2="5"/><line x1="4" y1="7" x2="6.5" y2="7"/></svg>'
+        };
+
+        /* ── Track which agent is currently open ───────────────────── */
+        var _currentAgentName = null;
+        var _evalOpenedFromAgent = false;
+
+        /* ── Open agent tickets intermediate page ──────────────────── */
+        window.openAgentTickets = function(agentName) {
+          var agent = AGENT_DATA[agentName];
+          _currentAgentName = agentName;
+
+          /* Populate avatar */
+          var avatar = document.getElementById('agentTicketsAvatar');
+          if (avatar) {
+            avatar.textContent = agent ? agent.initials : agentName.split(' ').map(function(n){ return n[0]; }).join('');
+            avatar.style.background = agent ? agent.avatarGrad : 'linear-gradient(135deg,#1a2a3a,#2d5c8e)';
+          }
+
+          /* Populate name and meta */
+          var nameEl = document.getElementById('agentTicketsName');
+          if (nameEl) nameEl.textContent = agentName;
+
+          var metaEl = document.getElementById('agentTicketsMeta');
+          if (metaEl) metaEl.textContent = agent ? (agent.tenure + ' · Product Support') : 'Product Support';
+
+          /* Populate stats */
+          var statsEl = document.getElementById('agentTicketsStats');
+          if (statsEl && agent) {
+            statsEl.innerHTML =
+              '<div class="atp-stat"><span class="atp-stat-val ' + agent.scoreClass + '">' + agent.avgScore + '%</span><span class="atp-stat-label">Avg score</span></div>' +
+              '<div class="atp-stat"><span class="atp-stat-val">' + agent.passRate + '</span><span class="atp-stat-label">Pass rate</span></div>' +
+              '<div class="atp-stat"><span class="atp-stat-val">' + agent.ticketCount + '</span><span class="atp-stat-label">Tickets this week</span></div>';
+          }
+
+          /* Populate back label */
+          var backLabel = document.getElementById('agentTicketsBackLabel');
+          if (backLabel) backLabel.textContent = 'All evaluations';
+
+          /* Update section label */
+          var sectionLabel = document.getElementById('agentTicketsSectionLabel');
+          if (sectionLabel) sectionLabel.textContent = 'Tickets this week · ' + agentName;
+
+          /* Populate ticket cards as a grid */
+          var cardsEl = document.getElementById('agentTicketsCards');
+          if (cardsEl && agent) {
+            cardsEl.innerHTML = '';
+            agent.tickets.forEach(function(t, idx) {
+              /* Outer shell (double-bezel) */
+              var shell = document.createElement('div');
+              shell.className = 'atp-ticket-shell' + (t.lowConf ? ' low-conf' : '');
+              shell.setAttribute('role', 'button');
+              shell.setAttribute('tabindex', '0');
+              shell.setAttribute('aria-label', t.date + ' \u00b7 ' + t.channel + ' \u00b7 ' + t.score + '% \u00b7 ' + t.status);
+              shell.style.animationDelay = (idx * 40) + 'ms';
+
+              var statusHtml = t.status === 'pass'
+                ? '<span class="eval-status pass">Pass</span>'
+                : t.status === 'borderline'
+                  ? '<span class="eval-status" style="color:var(--warn);background:var(--warn-bg);">Borderline</span>'
+                  : '<span class="eval-status fail">Fail</span>';
+
+              var typeBadge = t.type === 'AiMY'
+                ? '<span class="interaction-type-flag ai-flag" style="font-size:9px;padding:2px 6px;"><svg width="9" height="10" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>AiMY</span>'
+                : '';
+
+              /* Inner card */
+              shell.innerHTML =
+                '<div class="atp-ticket-card">' +
+                  '<div class="atp-card-top">' +
+                    '<div class="atp-card-channel">' + (CHANNEL_ICONS[t.channel] || CHANNEL_ICONS.ticket) + '</div>' +
+                    '<span class="atp-card-date">' + t.date + ' &middot; ' + (t.channel.charAt(0).toUpperCase() + t.channel.slice(1)) + '</span>' +
+                    typeBadge +
+                  '</div>' +
+                  '<div class="atp-card-summary">' + t.summary + '</div>' +
+                  '<div class="atp-card-bottom">' +
+                    '<span class="atp-card-score ' + t.scoreClass + '">' + t.score + '<span style="font-size:12px;font-weight:600;opacity:0.7;">%</span></span>' +
+                    statusHtml +
+                    '<div class="atp-card-arrow"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5h6M5.5 2.5L8 5l-2.5 2.5"/></svg></div>' +
+                  '</div>' +
+                '</div>';
+
+              /* Wire click */
+              if (t.detailId) {
+                shell.onclick = (function(id, name) {
+                  return function() {
+                    var lbl1 = document.getElementById('evalDetailBackLabel');
+                    var lbl2 = document.getElementById('evalDetailAiBackLabel');
+                    var backText = name + ' \u00b7 Tickets this week';
+                    if (lbl1) lbl1.textContent = backText;
+                    if (lbl2) lbl2.textContent = backText;
+                    window.openEvalDetail(id, true);
+                  };
+                })(t.detailId, agentName);
+                shell.onkeydown = (function(id, name) {
+                  return function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      var lbl1 = document.getElementById('evalDetailBackLabel');
+                      var lbl2 = document.getElementById('evalDetailAiBackLabel');
+                      var backText = name + ' \u00b7 Tickets this week';
+                      if (lbl1) lbl1.textContent = backText;
+                      if (lbl2) lbl2.textContent = backText;
+                      window.openEvalDetail(id, true);
+                    }
+                  };
+                })(t.detailId, agentName);
+              } else {
+                shell.onclick = function() {
+                  if (window.showToast) window.showToast({ title: 'Full eval not yet loaded', sub: 'This ticket\'s evaluation detail is not available in this demo.' });
+                };
+              }
+
+              cardsEl.appendChild(shell);
+            });
+          } else if (cardsEl) {
+            cardsEl.innerHTML = '<div style="padding:40px 0;text-align:center;color:var(--d500);font-size:12px;">No tickets found for this agent this week.</div>';
+          }
+
+          /* Show the agent tickets page */
+          var page = document.getElementById('agentTicketsPage');
           if (page) {
             page.classList.add('open');
             page.scrollTop = 0;
           }
         };
 
-        /* Close evaluation detail — return to scorecard */
+        /* ── Close agent tickets — return to All Evaluations ────────── */
+        window.closeAgentTickets = function() {
+          var page = document.getElementById('agentTicketsPage');
+          if (page) page.classList.remove('open');
+          _currentAgentName = null;
+        };
+
+        /* Open evaluation detail page */
+        window.openEvalDetail = function(id, fromAgentContext) {
+          document.querySelectorAll('.eval-detail-page').forEach(function(p) { p.classList.remove('open'); });
+          var page = document.getElementById(id);
+          if (page) {
+            page.classList.add('open');
+            page.scrollTop = 0;
+          }
+          /* Track whether this was opened from inside an agent tickets page */
+          _evalOpenedFromAgent = !!fromAgentContext;
+          /* If opened directly from the table (AiMY row), update back label to say "All evaluations" */
+          if (!fromAgentContext) {
+            var lbl1 = document.getElementById('evalDetailBackLabel');
+            var lbl2 = document.getElementById('evalDetailAiBackLabel');
+            if (lbl1) lbl1.textContent = 'All evaluations';
+            if (lbl2) lbl2.textContent = 'All evaluations';
+          }
+        };
+
+        /* Close evaluation detail:
+           - if opened from agent tickets page → keep that page open (return to agent)
+           - if opened directly from All Evaluations (AiMY row) → just close (return to list) */
         window.closeEvalDetail = function() {
-          document.querySelectorAll('.eval-detail-page').forEach(p => p.classList.remove('open'));
+          document.querySelectorAll('.eval-detail-page').forEach(function(p) { p.classList.remove('open'); });
+          if (!_evalOpenedFromAgent) {
+            /* Close agent tickets page too in case it was somehow open */
+            var ticketsPage = document.getElementById('agentTicketsPage');
+            if (ticketsPage) ticketsPage.classList.remove('open');
+            _currentAgentName = null;
+          }
+          /* else: agent tickets page stays open, user lands back there */
+          _evalOpenedFromAgent = false;
         };
 
         /* Toggle confidence factor breakdown */

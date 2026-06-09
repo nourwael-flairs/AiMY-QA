@@ -4903,10 +4903,14 @@
                         <input type="checkbox" class="kpi-adj-check" id="adj-emp" checked onchange="updateScorePreview('d1')">
                         <label for="adj-emp">Empathy &amp; Active Listening</label>
                       </div>
-                      <div class="kpi-adjuster-controls">
-                        <span class="kpi-old-score">Was: 35%</span>
-                        <input type="range" class="kpi-range" min="0" max="100" value="70" oninput="updateScorePreview('d1'); this.nextElementSibling.textContent = this.value + '%'">
-                        <span class="kpi-range-val">70%</span>
+                      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+                        <div class="kpi-adjuster-controls">
+                          <span class="kpi-old-score">Was: 35%</span>
+                          <button type="button" class="kpi-stepper-btn" data-target="score-d1-0" data-delta="-5" aria-label="Decrease">&#8722;</button>
+                          <input type="number" class="kpi-score-input" id="score-d1-0" min="0" max="100" value="70" data-dispute="d1">
+                          <span class="kpi-score-pct">%</span>
+                          <button type="button" class="kpi-stepper-btn" data-target="score-d1-0" data-delta="5" aria-label="Increase">+</button>
+                        </div>
                       </div>
                     </div>
                     <div class="kpi-adjuster-row">
@@ -4914,10 +4918,14 @@
                         <input type="checkbox" class="kpi-adj-check" id="adj-fup" checked onchange="updateScorePreview('d1')">
                         <label for="adj-fup">Follow-up Confirmation</label>
                       </div>
-                      <div class="kpi-adjuster-controls">
-                        <span class="kpi-old-score">Was: 40%</span>
-                        <input type="range" class="kpi-range" min="0" max="100" value="80" oninput="updateScorePreview('d1'); this.nextElementSibling.textContent = this.value + '%'">
-                        <span class="kpi-range-val">80%</span>
+                      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+                        <div class="kpi-adjuster-controls">
+                          <span class="kpi-old-score">Was: 40%</span>
+                          <button type="button" class="kpi-stepper-btn" data-target="score-d1-1" data-delta="-5" aria-label="Decrease">&#8722;</button>
+                          <input type="number" class="kpi-score-input" id="score-d1-1" min="0" max="100" value="80" data-dispute="d1">
+                          <span class="kpi-score-pct">%</span>
+                          <button type="button" class="kpi-stepper-btn" data-target="score-d1-1" data-delta="5" aria-label="Increase">+</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -6035,10 +6043,28 @@
       }
       .kpi-adjuster-name { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--d100); flex: 1; }
       .kpi-adj-check { width: 14px; height: 14px; accent-color: var(--qa-accent); cursor: pointer; flex-shrink: 0; }
-      .kpi-adjuster-controls { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-      .kpi-old-score { font-size: 10px; color: var(--d500); white-space: nowrap; }
-      .kpi-range { width: 80px; accent-color: var(--qa-accent); cursor: pointer; }
-      .kpi-range-val { font-size: 12px; font-weight: 700; color: var(--ok); min-width: 30px; text-align: right; }
+      .kpi-adjuster-controls { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+      .kpi-old-score { font-size: 10px; color: var(--d500); white-space: nowrap; margin-right: 4px; }
+      .kpi-stepper-btn {
+        width: 26px; height: 26px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.04); color: var(--d300); cursor: pointer;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        font-size: 14px; line-height: 1; padding: 0;
+        transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+      }
+      .kpi-stepper-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); color: var(--d50); }
+      .kpi-stepper-btn:active { background: rgba(255,255,255,0.12); }
+      .kpi-score-input {
+        width: 52px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 7px; padding: 5px 8px; color: var(--d50);
+        font-size: 13px; font-weight: 700; font-family: Urbanist, sans-serif;
+        text-align: center; -moz-appearance: textfield;
+        transition: border-color 150ms ease;
+      }
+      .kpi-score-input::-webkit-outer-spin-button,
+      .kpi-score-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+      .kpi-score-input:focus { outline: none; border-color: var(--qa-accent); }
+      .kpi-score-pct { font-size: 13px; font-weight: 700; color: var(--d400); }
 
       /* Score preview */
       .score-preview {
@@ -7483,22 +7509,28 @@
           var rows = d.kpis.map(function(k, i) {
             var seed = score + i * 7 + k.length * 3;
             var was = Math.min(Math.floor(seed % 40 + 25), 100);
-            var newVal = Math.min(was + 30, 95);
+            var aiVal = Math.min(was + 30, 95);
+            var inputId = 'gscore-' + i;
             return '<div class="kpi-adjuster-row">' +
               '<div class="kpi-adjuster-name">' +
                 '<input type="checkbox" class="kpi-adj-check" id="gadj-' + i + '" checked>' +
                 '<label for="gadj-' + i + '">' + k + '</label>' +
               '</div>' +
-              '<div class="kpi-adjuster-controls">' +
-                '<span class="kpi-old-score">Was: ' + was + '%</span>' +
-                '<input type="range" class="kpi-range" min="0" max="100" value="' + newVal + '">' +
-                '<span class="kpi-range-val">' + newVal + '%</span>' +
+              '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">' +
+                '<div class="kpi-adjuster-controls">' +
+                  '<span class="kpi-old-score">Was: ' + was + '%</span>' +
+                  '<button type="button" class="kpi-stepper-btn" data-target="' + inputId + '" data-delta="-5" aria-label="Decrease">−</button>' +
+                  '<input type="number" class="kpi-score-input" id="' + inputId + '" min="0" max="100" value="' + aiVal + '" data-dispute="generic">' +
+                  '<span class="kpi-score-pct">%</span>' +
+                  '<button type="button" class="kpi-stepper-btn" data-target="' + inputId + '" data-delta="5" aria-label="Increase">+</button>' +
+                '</div>' +
               '</div>' +
             '</div>';
           });
           adjList.innerHTML = rows.join('');
           adjList.querySelectorAll('.kpi-adj-check').forEach(function(c){ c.addEventListener('change', function(){ updateScorePreview('generic'); }); });
-          adjList.querySelectorAll('.kpi-range').forEach(function(r){ r.addEventListener('input', function(){ r.nextElementSibling.textContent = r.value + '%'; updateScorePreview('generic'); }); });
+          adjList.querySelectorAll('.kpi-score-input').forEach(function(inp){ inp.addEventListener('input', function(){ updateScorePreview('generic'); }); });
+          adjList.querySelectorAll('.kpi-stepper-btn').forEach(function(btn){ btn.addEventListener('click', function(){ stepScore(btn); updateScorePreview('generic'); }); });
         })();
         document.getElementById('rationale-generic').value = '';
         document.getElementById('rchar-generic').textContent = '0 / 50 min characters';
@@ -7552,18 +7584,27 @@
       };
 
       /* ── Score preview ──────── */
+      window.stepScore = function(btn) {
+        var targetId = btn.dataset.target;
+        var delta = parseInt(btn.dataset.delta);
+        var inp = document.getElementById(targetId);
+        if(!inp) return;
+        var val = Math.min(100, Math.max(0, (parseInt(inp.value) || 0) + delta));
+        inp.value = val;
+      };
+
       window.updateScorePreview = function(id) {
         var panel = document.getElementById('partialPanel-' + id);
         if(!panel) return;
         var checks = panel.querySelectorAll('.kpi-adj-check');
-        var ranges = panel.querySelectorAll('.kpi-range');
+        var inputs = panel.querySelectorAll('.kpi-score-input');
         var beforeScoreEl = document.getElementById('beforeScore-' + id) || document.querySelector('#scorePreview-' + id + ' .sp-val.before');
         var baseScore = parseInt(beforeScoreEl ? beforeScoreEl.textContent : '64');
         var adjustment = 0;
         checks.forEach(function(c, i){
-          if(c.checked && ranges[i]){
-            var newVal = parseInt(ranges[i].value);
-            var oldVal = parseInt(ranges[i].closest('.kpi-adjuster-row').querySelector('.kpi-old-score').textContent.replace('Was: ',''));
+          if(c.checked && inputs[i]){
+            var newVal = parseInt(inputs[i].value) || 0;
+            var oldVal = parseInt(inputs[i].closest('.kpi-adjuster-row').querySelector('.kpi-old-score').textContent.replace('Was: ',''));
             adjustment += (newVal - oldVal) / 10;
           }
         });
@@ -8255,6 +8296,21 @@
         evt.style.display = show ? '' : 'none';
       });
     };
+
+    /* ── Static d1 stepper wiring ────────────────────────────────── */
+    (function() {
+      var d1Panel = document.getElementById('partialPanel-d1');
+      if (!d1Panel) return;
+      d1Panel.querySelectorAll('.kpi-stepper-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          stepScore(btn);
+          updateScorePreview('d1');
+        });
+      });
+      d1Panel.querySelectorAll('.kpi-score-input').forEach(function(inp) {
+        inp.addEventListener('input', function() { updateScorePreview('d1'); });
+      });
+    })();
     </script>
 
 </body>
