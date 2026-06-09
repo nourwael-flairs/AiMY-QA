@@ -3673,7 +3673,10 @@
       .eval-bar-fill {
         height: 100%;
         border-radius: 2px;
-        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        transform-origin: left;
+        transform: scaleX(var(--bar-val, 0));
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       /* Floating causes tooltip — absolutely positioned, no layout shift */
@@ -3957,7 +3960,10 @@
       .rgb-bar-fill {
         height: 100%; border-radius: 2px;
         background: linear-gradient(90deg, #3369ff, #61adf1);
-        transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+        width: 100%;
+        transform-origin: left;
+        transform: scaleX(var(--bar-val, 0));
+        transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
       }
       .rgb-progress-label {
         font-size: 10px; font-weight: 700; color: #61adf1;
@@ -4290,7 +4296,10 @@
       }
       .memory-traj-fill {
         height: 100%; border-radius: 999px; background: var(--ok);
-        transition: width 600ms cubic-bezier(0.22,1,0.36,1);
+        width: 100%;
+        transform-origin: left;
+        transform: scaleX(var(--bar-val, 0));
+        transition: transform 600ms cubic-bezier(0.22,1,0.36,1);
       }
       .memory-traj-pct {
         font-size: 11px; font-weight: 700; color: var(--ok); min-width: 28px; text-align: right;
@@ -4431,7 +4440,10 @@
       }
       .conf-bar-fill {
         height: 100%; border-radius: 999px;
-        transition: width 600ms cubic-bezier(0.22,1,0.36,1);
+        width: 100%;
+        transform-origin: left;
+        transform: scaleX(var(--bar-val, 0));
+        transition: transform 600ms cubic-bezier(0.22,1,0.36,1);
       }
       .conf-bar-fill.high { background: #17b26a; }
       .conf-bar-fill.med  { background: #f79009; }
@@ -5171,7 +5183,7 @@
         height: 6px; border-radius: 999px;
         background: rgba(255,255,255,0.07); overflow: hidden; margin-bottom: 6px;
       }
-      .esc-bar-fill { height: 100%; border-radius: 999px; }
+      .esc-bar-fill { height: 100%; border-radius: 999px; width: 100%; transform-origin: left; transform: scaleX(var(--bar-val, 0)); }
 
       /* Related evaluations sidebar card */
       .eval-related-card {
@@ -5302,7 +5314,7 @@
       .kpi-drawer-close:hover { color: var(--d200); }
       .kpi-drawer-body { font-size: 12px; color: var(--d300); line-height: 1.65; margin-bottom: 12px; }
       .kpi-drawer-minibar { height: 6px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; margin-bottom: 12px; }
-      .kpi-drawer-minibar-fill { height: 100%; border-radius: 999px; transition: width 600ms cubic-bezier(0.22,1,0.36,1); }
+      .kpi-drawer-minibar-fill { height: 100%; border-radius: 999px; width: 100%; transform-origin: left; transform: scaleX(var(--bar-val, 0)); transition: transform 600ms cubic-bezier(0.22,1,0.36,1); }
       .kpi-drawer-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 
 
@@ -6279,7 +6291,10 @@
             }
             .cmp-team-bar-fill {
               height: 100%; border-radius: 999px;
-              transition: width 500ms var(--ease-out);
+              width: 100%;
+              transform-origin: left;
+              transform: scaleX(var(--bar-val, 0));
+              transition: transform 500ms var(--ease-out);
             }
             .cmp-team-val {
               font-size: 11px; font-weight: 800; text-align: right; white-space: nowrap;
@@ -6321,22 +6336,22 @@
               <div class="cmp-teams">
                 <div class="cmp-team-row">
                   <span class="cmp-team-name"><span class="cmp-team-dot" style="background:#6fdfe2"></span>Onboarding</span>
-                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="width:91%;background:#17b26a"></div></div>
+                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="--bar-val:0.91;background:#17b26a"></div></div>
                   <span class="cmp-team-val ok">91%</span>
                 </div>
                 <div class="cmp-team-row">
                   <span class="cmp-team-name"><span class="cmp-team-dot" style="background:#8b4ff4"></span>Tier-2 Escal.</span>
-                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="width:87%;background:#17b26a"></div></div>
+                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="--bar-val:0.87;background:#17b26a"></div></div>
                   <span class="cmp-team-val ok">87%</span>
                 </div>
                 <div class="cmp-team-row">
                   <span class="cmp-team-name is-current"><span class="cmp-team-dot" style="background:var(--qa-accent)"></span>Product Support</span>
-                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="width:84%;background:#f79009"></div></div>
+                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="--bar-val:0.84;background:#f79009"></div></div>
                   <span class="cmp-team-val warn">84%</span>
                 </div>
                 <div class="cmp-team-row">
                   <span class="cmp-team-name"><span class="cmp-team-dot" style="background:#f79009"></span>Billing Support</span>
-                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="width:78%;background:#f79009"></div></div>
+                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="--bar-val:0.78;background:#f79009"></div></div>
                   <span class="cmp-team-val warn">78%</span>
                 </div>
               </div>
@@ -7106,7 +7121,7 @@
                 </div>
               </div>
               <div class="pattern-list">
-                <div class="pattern-row has-action-bar">
+                <div data-pattern-name="Missed follow-up SOP — no clear next steps set after resolution" class="pattern-row has-action-bar">
                   <span class="pattern-rank">#1</span>
                   <div class="pattern-info">
                     <div class="pattern-name">
@@ -7128,7 +7143,7 @@
                     <button class="k-row-action dismiss" type="button">Acknowledge</button>
                   </div>
                 </div>
-                <div class="pattern-row has-action-bar">
+                <div data-pattern-name="Resolution confirmation skipped" class="pattern-row has-action-bar">
                   <span class="pattern-rank">#2</span>
                   <div class="pattern-info">
                     <div class="pattern-name">Resolution confirmation skipped — agent ended without verifying issue resolved</div>
@@ -7147,7 +7162,7 @@
                     <button class="k-row-action dismiss" type="button">Acknowledge</button>
                   </div>
                 </div>
-                <div class="pattern-row has-action-bar">
+                <div data-pattern-name="Empathy lapse during escalation" class="pattern-row has-action-bar">
                   <span class="pattern-rank">#3</span>
                   <div class="pattern-info">
                     <div class="pattern-name">Empathy lapse during escalation — tone shift detected by AiMY</div>
@@ -7166,7 +7181,7 @@
                     <button class="k-row-action dismiss" type="button">Acknowledge</button>
                   </div>
                 </div>
-                <div class="pattern-row has-action-bar is-acknowledged">
+                <div data-pattern-name="Incorrect ticket categorization" class="pattern-row has-action-bar is-acknowledged">
                   <span class="pattern-rank">#4</span>
                   <div class="pattern-info">
                     <div class="pattern-name">
@@ -7360,7 +7375,7 @@
                       <span class="rgb-badge">AiMY TRACKING</span>
                     </div>
                     <div class="rgb-progress-row">
-                      <div class="rgb-bar-track"><div class="rgb-bar-fill" style="width:28%"></div></div>
+                      <div class="rgb-bar-track"><div class="rgb-bar-fill" style="--bar-val:0.28"></div></div>
                       <span class="rgb-progress-label">64% → 75% target</span>
                     </div>
                   </div>
@@ -7684,6 +7699,44 @@
                 </div>
               </div>
 
+              <!-- ── AGENT BRIEF — AI-native "what to do first" frame ──────
+                   Compact scoped brief: replaces the missing morning-brief
+                   equivalent for individual agent view. Updates via JS when
+                   a different agent is selected from the roster.            -->
+              <div class="morning-brief" id="agentBrief" style="margin-bottom:16px;">
+                <div class="mb-inner" style="grid-template-columns:1fr auto;gap:16px;padding:16px 20px;">
+                  <div>
+                    <div class="mb-attr">
+                      <div class="mb-attr-icon">
+                        <svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                      </div>
+                      <span class="mb-attr-label" id="agentBriefLabel">AiMY on Omar Abdallah</span>
+                      <span class="mb-attr-time" id="agentBriefTime">Updated 4 min ago</span>
+                    </div>
+                    <div class="mb-statement" id="agentBriefStatement">
+                      Omar has <span class="hl-err">2 failing KPIs</span> and a <span class="hl-warn">stalled coaching plan</span> from last week. His follow-up SOP score dropped a further <span class="hl-err">3 pts</span> this week — the decline is accelerating. <span class="hl-dim">Recommend acting before the next evaluation cycle.</span>
+                    </div>
+                    <div class="mb-evidence" id="agentBriefEvidence">
+                      <span class="mb-ev-pill"><span class="ev-dot" style="background:var(--err);"></span>Quality <span class="ev-val">64%</span> <span class="ev-delta dn">↓9pts</span></span>
+                      <span class="mb-ev-pill"><span class="ev-dot" style="background:var(--err);"></span>Follow-up SOP <span class="ev-val">47%</span> <span class="ev-delta dn">↓3pts</span></span>
+                      <span class="mb-ev-pill"><span class="ev-dot" style="background:var(--warn);"></span>1 plan stalled <span class="ev-delta neu">18d</span></span>
+                    </div>
+                    <div class="mb-actions" id="agentBriefActions">
+                      <button class="mb-action primary" type="button" onclick="openCanvasQuery('Generate a coaching plan for Omar Abdallah covering the 2 failing KPIs — follow-up SOP and resolution confirmation. Include shadow sessions with Sarah Reyes.')">
+                        <svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                        Generate coaching plan
+                      </button>
+                      <button class="mb-action secondary" type="button" onclick="openCanvasQuery('Why is Omar\'s follow-up SOP declining — show the week-by-week pattern and correlate with ticket type')">
+                        Ask why
+                      </button>
+                      <button class="mb-action secondary" type="button" onclick="drillToReviewsPage({ agentName: 'Omar Abdallah' })">
+                        View evaluations
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- 6 KPI cards — Quality, CSAT, FCR, AHT, Adherence, Utilization -->
               <!-- ── AIMY MEMORY PANEL ──────────────────────────────────────
                    What AiMY has accumulated about Omar over 5 months.
@@ -7728,7 +7781,7 @@
                 <!-- AiMY's confidence in its trajectory prediction -->
                 <div class="memory-trajectory">
                   <span class="memory-traj-label">Trajectory confidence</span>
-                  <div class="memory-traj-bar"><div class="memory-traj-fill" style="width:84%;"></div></div>
+                  <div class="memory-traj-bar"><div class="memory-traj-fill" style="--bar-val:0.84;"></div></div>
                   <span class="memory-traj-pct">84%</span>
                 </div>
                 <div class="memory-traj-note">Based on 8-week stable pattern across 2 channels · comparable to 3 similar historical cases where SOP coaching resolved the gap within 4 weeks.</div>
@@ -8407,7 +8460,7 @@
               <div class="eval-list-header">
                 <div>
                   <div class="eval-list-title">All evaluations</div>
-                  <div class="eval-list-subtitle">547 evaluations · 12 agents + AiMY · Product Support team · last 30 days</div>
+                  <div class="eval-list-subtitle">547 evaluations · 12 agents + AiMY · Product Support team · last 30 days · <strong style="color:var(--qa-accent);">sorted by needs action first</strong></div>
                 </div>
                 <div class="eval-list-controls">
                   <button class="eval-bulk-btn sec" type="button" onclick="toggleAllAccountEvalRows()" style="font-size:10px;padding:5px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.05);color:var(--d300);cursor:pointer;font-family:'Urbanist',sans-serif;">Select all</button>
@@ -8541,7 +8594,11 @@
               <!-- Sort controls -->
               <div class="eval-sort-bar">
                 <span class="eval-sort-label">Sort</span>
-                <button class="sort-btn active" type="button">Date ↓</button>
+                <button class="sort-btn active" type="button" title="Fails and lowest scores first — recommended default">
+                  <svg width="10" height="11" viewBox="0 0 18 20" style="display:inline;vertical-align:-1px;margin-right:3px;"><use href="#aimy-logo-small"/></svg>
+                  Needs action first
+                </button>
+                <button class="sort-btn" type="button">Date ↓</button>
                 <button class="sort-btn" type="button">Score ↑</button>
                 <button class="sort-btn" type="button">Score ↓</button>
                 <button class="sort-btn" type="button">Confidence</button>
@@ -8778,7 +8835,7 @@
                   <div class="conf-bar-row">
                     <span style="font-size:10px;color:var(--d500);font-weight:600;min-width:90px;">AiMY confidence</span>
                     <div class="conf-bar-track">
-                      <div class="conf-bar-fill high" style="width:91%"></div>
+                      <div class="conf-bar-fill high" style="--bar-val:0.91"></div>
                     </div>
                     <span class="conf-bar-pct">91%</span>
                   </div>
@@ -8878,7 +8935,7 @@
                   </div>
                 </div>
                 <div class="esc-bar-track">
-                  <div class="esc-bar-fill" style="width:32%;background:var(--err);"></div>
+                  <div class="esc-bar-fill" style="--bar-val:0.32;background:var(--err);"></div>
                 </div>
                 <div style="font-size:11px;color:var(--d400);line-height:1.5;">Customer opened frustrated (refund delay) and closed neutral. Partial recovery after escalation commitment. Below team baseline of 64.</div>
               </div>
@@ -9047,7 +9104,7 @@
                   <div class="conf-bar-row">
                     <span style="font-size:10px;color:var(--d500);font-weight:600;min-width:90px;">Model confidence</span>
                     <div class="conf-bar-track">
-                      <div class="conf-bar-fill high" style="width:88%"></div>
+                      <div class="conf-bar-fill high" style="--bar-val:0.88"></div>
                     </div>
                     <span class="conf-bar-pct">88%</span>
                   </div>
@@ -9153,7 +9210,7 @@
                   </div>
                 </div>
                 <div class="esc-bar-track">
-                  <div class="esc-bar-fill" style="width:28%;background:var(--err);"></div>
+                  <div class="esc-bar-fill" style="--bar-val:0.28;background:var(--err);"></div>
                 </div>
                 <div style="font-size:11px;color:var(--d400);line-height:1.5;">Customer escalated mid-session. Frustration not de-escalated by AI — no empathy language used. Resolution correct but tone mismatch likely impacted CSAT.</div>
               </div>
@@ -10156,7 +10213,10 @@
       .behav-row-fill {
         height: 100%;
         border-radius: 2px;
-        transition: width var(--transition-base);
+        width: 100%;
+        transform-origin: left;
+        transform: scaleX(var(--bar-val, 0));
+        transition: transform var(--transition-base) var(--ease-out);
       }
       .behav-row-fill.ok {
         background: var(--ok);
@@ -12644,7 +12704,7 @@
         width: 80px; height: 5px; background: rgba(255,255,255,0.07);
         border-radius: 20px; overflow: hidden; flex-shrink: 0;
       }
-      .scorecard-kpi-bar { height: 100%; border-radius: 20px; }
+      .scorecard-kpi-bar { height: 100%; border-radius: 20px; width: 100%; transform-origin: left; transform: scaleX(var(--bar-val, 0)); }
       .scorecard-kpi-val { font-size: 11px; font-weight: 600; color: var(--d50); width: 32px; text-align: right; flex-shrink: 0; }
       .scorecard-footer {
         display: flex; align-items: center; justify-content: space-between;
@@ -12702,6 +12762,26 @@
       .ada-primary:hover { background: rgba(var(--qa-accent-rgb),.18); }
       .ada-secondary { background: rgba(255,255,255,.03); color: var(--d400); border-color: rgba(255,255,255,.07); }
       .ada-secondary:hover { background: rgba(255,255,255,.07); color: var(--d200,#e8edf2); }
+
+      /* ── prefers-reduced-motion — compositor-safe guard ── */
+      @media (prefers-reduced-motion: reduce) {
+        .behav-row-fill,
+        .rgb-bar-fill,
+        .memory-traj-fill,
+        .conf-bar-fill,
+        .cmp-team-bar-fill,
+        .esc-bar-fill {
+          transition: none;
+        }
+        .lollipop-dot.err-down {
+          animation: none;
+        }
+        .loop-state.in-progress .ls-dot {
+          animation: none;
+        }
+        @keyframes lolli-pulse { 0%, 100% { opacity: 1; } }
+        @keyframes ls-pulse    { 0%, 100% { opacity: 1; } }
+      }
 </style>
     <script>
       (function () {
@@ -12798,8 +12878,13 @@
 
         let toastTimer = null;
         let lastDismissed = null;
-
-        function showToast({ title, sub }) {
+        /* Expose on window so sibling IIFEs can set the revert target */
+        Object.defineProperty(window, 'lastDismissed', {
+          get: function() { return lastDismissed; },
+          set: function(v) { lastDismissed = v; },
+          configurable: true
+        });
+        window.showToast = function showToast({ title, sub }) {
           const toast = document.getElementById("aimyToast");
           if (!toast) return;
           const titleEl = document.getElementById("aimyToastTitle");
@@ -12836,6 +12921,9 @@
             lastDismissed.revert();
           }
           lastDismissed = null;
+          /* Always reset undo button label back to default */
+          var undoBtn = document.getElementById('aimyToastUndo');
+          if (undoBtn) undoBtn.textContent = 'Undo';
         }
 
         function commitDismiss() {
@@ -12967,6 +13055,10 @@
           const btn         = document.getElementById("heatmapToggleBtn");
           if (!qualityView || !kpiView || !btn) return;
 
+          /* Save scroll position before DOM change */
+          const scrollEl = document.querySelector('.sc-scroll, .dashboard-scroll');
+          const savedScroll = scrollEl ? scrollEl.scrollTop : 0;
+
           const isQuality = qualityView.style.display !== "none";
 
           if (isQuality) {
@@ -12988,6 +13080,13 @@
             const sub   = btn.closest(".behav-card").querySelector(".behav-card-sub");
             if (title) title.textContent = "Quality score heatmap · per agent · per week";
             if (sub)   sub.textContent   = "12 weeks · darker = higher score · gaps mean no evaluations that week";
+          }
+
+          /* Restore scroll position after layout settles */
+          if (scrollEl) {
+            requestAnimationFrame(function() {
+              scrollEl.scrollTop = savedScroll;
+            });
           }
         };
 
@@ -13021,45 +13120,90 @@
         /* ── Coaching session scheduled state ───────────────────── */
         window.scheduleCoaching = function scheduleCoaching(agentId) {
           const btn = document.getElementById(agentId + "ScheduleBtn");
-          if (!btn) return;
+          const agentNameMap = { omar: 'Omar Abdallah', tariq: 'Tariq Mansour', michael: 'Michael Chen' };
+          const agentName = agentNameMap[agentId] || agentId;
 
-          // Snapshot current state before mutation
-          const prevHTML = btn.innerHTML;
-          const prevBg = btn.style.background;
-          const prevColor = btn.style.color;
-          const prevBorder = btn.style.borderColor;
-          const prevDisabled = btn.disabled;
+          if (btn) {
+            // Snapshot current state before mutation
+            const prevHTML = btn.innerHTML;
+            const prevBg = btn.style.background;
+            const prevColor = btn.style.color;
+            const prevBorder = btn.style.borderColor;
+            const prevDisabled = btn.disabled;
 
-          btn.innerHTML = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="2 6 5 9 10 3"/></svg> Session scheduled — tomorrow 2:00 PM';
-          btn.style.background = "var(--ok-bg)";
-          btn.style.color = "var(--ok)";
-          btn.style.borderColor = "rgba(23,178,106,0.3)";
-          btn.disabled = true;
+            btn.innerHTML = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="2 6 5 9 10 3"/></svg> Session scheduled — tomorrow 2:00 PM';
+            btn.style.background = "var(--ok-bg)";
+            btn.style.color = "var(--ok)";
+            btn.style.borderColor = "rgba(23,178,106,0.3)";
+            btn.disabled = true;
 
-          // Add recovery goal nudge if not already shown
-          let nudge = null;
-          const goal = document.getElementById("omarRecoveryGoal");
-          if (goal && goal.style.display === "none") {
-            nudge = document.createElement("button");
-            nudge.className = "brief-sec-btn";
-            nudge.style.cssText = "margin-top:8px;width:100%;justify-content:center;font-size:11px;color:#61adf1;border-color:rgba(51,105,255,0.2)";
-            nudge.textContent = "Set recovery goal to track progress →";
-            nudge.onclick = activateRecoveryGoal;
-            btn.parentNode.appendChild(nudge);
+            // Add recovery goal nudge if not already shown
+            let nudge = null;
+            const goal = document.getElementById("omarRecoveryGoal");
+            if (goal && goal.style.display === "none") {
+              nudge = document.createElement("button");
+              nudge.className = "brief-sec-btn";
+              nudge.style.cssText = "margin-top:8px;width:100%;justify-content:center;font-size:11px;color:#61adf1;border-color:rgba(51,105,255,0.2)";
+              nudge.textContent = "Set recovery goal to track progress \u2192";
+              nudge.onclick = activateRecoveryGoal;
+              btn.parentNode.appendChild(nudge);
+            }
+
+            lastDismissed = {
+              action: "schedule-coaching",
+              revert: function() {
+                btn.innerHTML = prevHTML;
+                btn.style.background = prevBg;
+                btn.style.color = prevColor;
+                btn.style.borderColor = prevBorder;
+                btn.disabled = prevDisabled;
+                if (nudge && nudge.parentNode) nudge.remove();
+              }
+            };
           }
 
-          lastDismissed = {
-            action: "schedule-coaching",
-            revert: function() {
-              btn.innerHTML = prevHTML;
-              btn.style.background = prevBg;
-              btn.style.color = prevColor;
-              btn.style.borderColor = prevBorder;
-              btn.disabled = prevDisabled;
-              if (nudge && nudge.parentNode) nudge.remove();
+          /* Push confirmation card into canvas thread */
+          var threadEl = document.getElementById('overlayThread');
+          if (!threadEl) {
+            /* Canvas not open — open it with the confirmation */
+            if (typeof openOverlay === 'function') openOverlay('');
+            threadEl = document.getElementById('overlayThread');
+          }
+          if (threadEl) {
+            var wrap = document.createElement('div');
+            wrap.className = 'chat-msg aimy';
+            var av = document.createElement('div');
+            av.className = 'msg-avatar aimy-av';
+            av.innerHTML = '<svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>';
+            wrap.appendChild(av);
+            var bubble = document.createElement('div');
+            bubble.className = 'msg-bubble';
+            bubble.style.maxWidth = '480px';
+            bubble.innerHTML = '<div style="font-size:10px;font-weight:800;color:var(--ok);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;">'
+              + '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;vertical-align:-1px;margin-right:4px;"><polyline points="20 6 9 17 4 12"/></svg>'
+              + 'Coaching session scheduled</div>'
+              + '<div style="font-size:13px;font-weight:600;color:var(--d100);line-height:1.55;margin-bottom:10px;">'
+              + '<strong style="color:var(--d50)">' + agentName + '</strong> \u00b7 tomorrow at 2:00 PM \u00b7 with Lina Haddad<br>'
+              + '<span style="font-size:12px;color:var(--d400);">Calendar invite sent \u00b7 topic: Follow-up SOP + resolution confirmation</span></div>'
+              + '<div style="display:flex;gap:7px;flex-wrap:wrap;">'
+              + '<button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;" onclick="window.showToast({title:\'Reschedule\',sub:\'New time options sent to Lina Haddad\'})">Reschedule</button>'
+              + '<button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;" onclick="setView(\'agent\')">View coaching history</button>'
+              + '</div>';
+            wrap.appendChild(bubble);
+            /* Ensure overlay is open */
+            var overlayEl = document.getElementById('aimyOverlay');
+            var floatBarEl = document.getElementById('aimyFloatBar');
+            if (overlayEl && !overlayEl.classList.contains('open')) {
+              overlayEl.classList.add('open');
+              if (floatBarEl) floatBarEl.classList.add('hidden');
+              var sugEl = document.getElementById('overlaySuggestions');
+              if (sugEl) sugEl.classList.add('hidden');
             }
-          };
-          showToast({ title: "Coaching session scheduled", sub: "Set a recovery goal to track Omar's progress" });
+            threadEl.appendChild(wrap);
+            threadEl.scrollTop = threadEl.scrollHeight;
+          }
+
+          showToast({ title: "Coaching session scheduled", sub: "Set a recovery goal to track " + agentName.split(' ')[0] + "\u2019s progress" });
         }
 
         /* ── Pattern row resolved state ─────────────────────────── */
@@ -13264,7 +13408,7 @@
             </div>
             <div style="font-size:10px;color:var(--d500);padding:6px 2px;">Showing 4 of 12 · click any row to open full evaluation detail</div>
             <div class="canvas-action-row">
-              <button class="k-action-primary" type="button" style="font-size:11px;padding:6px 14px;" onclick="drillToReviewsPage()">Open full list in Reviews</button>
+              <button class="k-action-primary" type="button" style="font-size:11px;padding:6px 14px;" onclick="drillToReviewsPage({ agentName: 'Omar Abdallah' })">Open full list in Reviews</button>
               <button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;" onclick="openCanvasQuery('Export the 12 failed evaluations this week as CSV')">Export 12 evals</button>
               <button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;" onclick="openCanvasQuery('Generate coaching plans for the 3 agents with failures this week')">Generate coaching plans</button>
             </div>
@@ -13344,17 +13488,56 @@
         };
 
         /* ── Drill-down: canvas → Reviews full list page ─────────────────
-           "Open full list in Reviews" button — navigates to the Reviews
-           agent view and scrolls the evaluation list section into view. */
-        window.drillToReviewsPage = function() {
+           Accepts optional context: { agentId, agentName, filterLabel }
+           Pre-applies agent filter and active-filter-strip on arrival.    */
+        window.drillToReviewsPage = function(ctx) {
           closeOverlay();
-          /* Switch to agent view if not already there */
-          const toggleAgent = document.getElementById('toggleAgent');
-          if (toggleAgent) toggleAgent.click();
+          setView('evals');
           setTimeout(function() {
-            /* evalListSection removed from Agent tab — evaluations now live in Evaluations tab */
-            setView('evals');
-          }, 250);
+            /* Pre-apply agent filter if context provided */
+            if (ctx && ctx.agentName) {
+              /* Update the eval-agent dropdown label */
+              var agentDd = document.querySelector('[data-dd="eval-agent"]');
+              if (agentDd) {
+                var labelEl = agentDd.querySelector('.dd-label-text');
+                if (labelEl) labelEl.textContent = ctx.agentName;
+                agentDd.querySelectorAll('.v2-dropdown-option').forEach(function(opt) {
+                  opt.classList.toggle('selected', opt.dataset.value === ctx.agentName);
+                });
+              }
+              /* Show the active-filter-strip */
+              var strip = document.getElementById('activeFilterStrip');
+              if (strip) {
+                strip.querySelectorAll('.afs-chip').forEach(function(c) { c.remove(); });
+                var label = strip.querySelector('.afs-label');
+                var chip = document.createElement('div');
+                chip.className = 'afs-chip';
+                chip.innerHTML = '<span>Agent: <strong>' + ctx.agentName + '</strong></span>' +
+                  '<button class="afs-chip-x" aria-label="Remove Agent filter">\u00d7</button>';
+                if (label) label.insertAdjacentElement('afterend', chip);
+                strip.classList.add('visible');
+                chip.querySelector('.afs-chip-x').addEventListener('click', function() {
+                  chip.remove();
+                  var labelEl2 = document.querySelector('[data-dd="eval-agent"] .dd-label-text');
+                  if (labelEl2) labelEl2.textContent = 'All agents';
+                  document.querySelectorAll('[data-dd="eval-agent"] .v2-dropdown-option').forEach(function(opt) {
+                    opt.classList.toggle('selected', opt.dataset.value === 'All agents');
+                  });
+                  if (!strip.querySelectorAll('.afs-chip').length) strip.classList.remove('visible');
+                });
+              }
+              /* Update eval list subtitle to reflect scope */
+              var subtitle = document.querySelector('#evalListAccountWide .eval-list-subtitle');
+              if (subtitle) {
+                subtitle.textContent = ctx.agentName + ' \u00b7 filtered from 547 evaluations \u00b7 last 30 days';
+              }
+              /* Update context label in view toggle */
+              var ctxEl = document.getElementById('viewToggleContext');
+              if (ctxEl) ctxEl.innerHTML = 'Evaluations for <strong>' + ctx.agentName + '</strong>';
+            }
+            var evalSection = document.getElementById('evalListAccountWide');
+            if (evalSection) evalSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 180);
         };
 
         function simulateAiResponse(userText) {
@@ -13464,9 +13647,158 @@
           if (v.btn) v.btn.addEventListener("click", function(){ setView(v.key); });
         });
 
-        // Member-row click → switch to Agent view
-        document.querySelectorAll(".member-row").forEach(function(row) {
-          row.addEventListener("click", function(){ setView("agent"); });
+        /* ── Roster-row click → switch to Agent view + update panel ────────
+           Each roster row drives the agent detail panel. The AGENT_DATA map
+           holds the minimum data needed to update the visible header elements.
+           Full KPI data would come from the API in production.               */
+        const AGENT_DATA = {
+          'Omar Abdallah':     { initials:'OA', avatarGrad:'linear-gradient(135deg,#1a2a3a,#2d5c8e)', quality:'64%', qualityClass:'err', riskLabel:'At risk',    riskClass:'risk-err',  meta:'Product Support · 5 months tenure · Reports to Lina Haddad', tenure:'5 mo', evals:'89' },
+          'Tariq Mansour':     { initials:'TM', avatarGrad:'linear-gradient(135deg,#3a1a2a,#7d2c52)',  quality:'68%', qualityClass:'err', riskLabel:'At risk',    riskClass:'risk-err',  meta:'Product Support · 8 months tenure · Reports to Lina Haddad', tenure:'8 mo', evals:'102' },
+          'Michael Chen':      { initials:'MC', avatarGrad:'linear-gradient(135deg,#2a2a1a,#6b6010)',  quality:'79%', qualityClass:'warn',riskLabel:'Watch',      riskClass:'risk-warn', meta:'Product Support · 11 months tenure · Reports to Lina Haddad', tenure:'11 mo', evals:'134' },
+          'Aisha Khalil':      { initials:'AK', avatarGrad:'linear-gradient(135deg,#1a1f3a,#3d4a8e)',  quality:'81%', qualityClass:'warn',riskLabel:'Watch',      riskClass:'risk-warn', meta:'Product Support · 1.5 yr tenure · Reports to Lina Haddad', tenure:'1.5 yr', evals:'156' },
+          'Daniel Rodriguez':  { initials:'DR', avatarGrad:'linear-gradient(135deg,#2a1a3a,#5a3d8e)',  quality:'86%', qualityClass:'ok',  riskLabel:'On track',  riskClass:'risk-ok',   meta:'Product Support · 2 years tenure · Reports to Lina Haddad', tenure:'2 yr', evals:'198' },
+          'Priya Venkat':      { initials:'PV', avatarGrad:'linear-gradient(135deg,#3a2a1a,#8e6230)',  quality:'88%', qualityClass:'ok',  riskLabel:'On track',  riskClass:'risk-ok',   meta:'Product Support · 14 months tenure · Reports to Lina Haddad', tenure:'14 mo', evals:'167' },
+          'Jamal Williams':    { initials:'JW', avatarGrad:'linear-gradient(135deg,#1a3a2a,#2c8e54)',  quality:'90%', qualityClass:'ok',  riskLabel:'On track',  riskClass:'risk-ok',   meta:'Product Support · 3 years tenure · Reports to Lina Haddad', tenure:'3 yr', evals:'245' },
+          'Lina Haddad':       { initials:'LH', avatarGrad:'linear-gradient(135deg,#3a1a3a,#8e3d8e)',  quality:'91%', qualityClass:'ok',  riskLabel:'On track',  riskClass:'risk-ok',   meta:'Product Support · 4 years tenure · Team Lead', tenure:'4 yr', evals:'312' },
+          'Sarah Reyes':       { initials:'SR', avatarGrad:'linear-gradient(135deg,#1a2e2a,#1f6b54)',  quality:'98%', qualityClass:'ok',  riskLabel:'Exemplar',  riskClass:'risk-ok',   meta:'Product Support · 2.5 years tenure · Reports to Lina Haddad', tenure:'2.5 yr', evals:'218' },
+        };
+
+        function updateAgentPanel(agentName) {
+          const d = AGENT_DATA[agentName];
+          if (!d) return;
+
+          /* Avatar */
+          const av = document.querySelector('.agent-header-avatar');
+          if (av) { av.textContent = d.initials; av.style.background = d.avatarGrad; }
+
+          /* Name */
+          const nameEl = document.querySelector('.agent-header-name');
+          if (nameEl) nameEl.textContent = agentName;
+
+          /* Risk pill */
+          const riskPill = document.querySelector('.brief-risk-pill');
+          if (riskPill) {
+            riskPill.className = 'brief-risk-pill ' + d.riskClass;
+            riskPill.innerHTML = '<span class="risk-dot"></span>' + d.riskLabel;
+          }
+
+          /* Meta line */
+          const metaEl = document.querySelector('.agent-header-meta');
+          if (metaEl) {
+            metaEl.innerHTML = d.meta + '<span class="sep">\u00b7</span>'
+              + '<span class="coverage-stat">' + d.evals + ' evaluations this period</span>';
+          }
+
+          /* Open coaching strip — hide for healthy agents */
+          const coachStrip = document.querySelector('.open-coach-strip');
+          if (coachStrip) {
+            coachStrip.style.display = (d.qualityClass === 'err') ? '' : 'none';
+          }
+
+          /* Memory panel title */
+          const memTitle = document.querySelector('.memory-panel-title');
+          if (memTitle) {
+            const months = d.tenure;
+            memTitle.textContent = 'AiMY has been tracking ' + agentName.split(' ')[0] + ' for ' + months;
+          }
+
+          /* Update VIEWS agent label */
+          const agentView = VIEWS.find(function(v) { return v.key === 'agent'; });
+          if (agentView) agentView.label = 'Viewing <strong>' + agentName + '</strong> \u00b7 Product Support';
+
+          /* Update view toggle context if agent view is active */
+          if (ctx && btnAgent && btnAgent.classList.contains('is-active')) {
+            ctx.innerHTML = 'Viewing <strong>' + agentName + '</strong> \u00b7 Product Support';
+          }
+
+          /* Update header "Recent evaluations" quick link to pass agent context */
+          const evalLink = document.querySelector('.agent-header-actions .header-quick-link');
+          if (evalLink) {
+            evalLink.setAttribute('aria-label', 'View ' + agentName + '\u2019s evaluations');
+            evalLink.onclick = function() { drillToReviewsPage({ agentName: agentName }); };
+          }
+
+          /* Update Agent Brief */
+          const briefLabel = document.getElementById('agentBriefLabel');
+          const briefStatement = document.getElementById('agentBriefStatement');
+          const briefEvidence = document.getElementById('agentBriefEvidence');
+          const briefActions = document.getElementById('agentBriefActions');
+          if (briefLabel) briefLabel.textContent = 'AiMY on ' + agentName;
+          if (briefStatement) {
+            const firstName = agentName.split(' ')[0];
+            if (d.qualityClass === 'err') {
+              briefStatement.innerHTML = firstName + ' has <span class="hl-err">failing KPIs</span> and needs action this week. Quality is <span class="hl-err">' + d.quality + '</span> \u2014 recommend reviewing the KPI breakdown and scheduling a coaching session.';
+            } else if (d.qualityClass === 'warn') {
+              briefStatement.innerHTML = firstName + ' is in the <span class="hl-warn">watch zone</span> at <span class="hl-warn">' + d.quality + '</span>. No immediate action required but worth monitoring \u2014 check for any trending KPI declines.';
+            } else {
+              briefStatement.innerHTML = firstName + ' is <span class="hl-ok">performing well</span> at <span class="hl-ok">' + d.quality + '</span>. Consider using their top-scoring interactions as training examples for at-risk agents.';
+            }
+          }
+          if (briefEvidence) {
+            briefEvidence.innerHTML = '<span class="mb-ev-pill"><span class="ev-dot" style="background:var(--' + (d.qualityClass === 'ok' ? 'ok' : d.qualityClass) + ');"></span>Quality <span class="ev-val">' + d.quality + '</span></span>'
+              + '<span class="mb-ev-pill"><span class="ev-dot" style="background:var(--d500);"></span>' + d.evals + ' evals this period</span>';
+          }
+          if (briefActions) {
+            const escaped = agentName.replace(/'/g, '\u2019');
+            if (d.qualityClass === 'err') {
+              briefActions.innerHTML = '<button class="mb-action primary" type="button" onclick="openCanvasQuery(\'Generate a coaching plan for ' + escaped + '\')"><svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>Generate coaching plan</button>'
+                + '<button class="mb-action secondary" type="button" onclick="drillToReviewsPage({ agentName: \'' + escaped + '\' })">View evaluations</button>';
+            } else if (d.qualityClass === 'warn') {
+              briefActions.innerHTML = '<button class="mb-action secondary" type="button" onclick="openCanvasQuery(\'Show ' + escaped + '\u2019s KPI trend over the last 4 weeks\')">Check KPI trend</button>'
+                + '<button class="mb-action secondary" type="button" onclick="drillToReviewsPage({ agentName: \'' + escaped + '\' })">View evaluations</button>';
+            } else {
+              briefActions.innerHTML = '<button class="mb-action secondary" type="button" onclick="openCanvasQuery(\'Use ' + escaped + ' as a benchmark \u2014 show their top-performing KPIs\')">Use as benchmark</button>'
+                + '<button class="mb-action secondary" type="button" onclick="openCanvasQuery(\'Assign ' + escaped + ' as shadow trainer for at-risk agents\')">Assign as trainer</button>';
+            }
+          }
+        }
+
+        /* Wire roster rows — click selects agent and updates detail panel */
+        document.querySelectorAll('.roster-row').forEach(function(row) {
+          row.addEventListener('click', function(e) {
+            if (e.target.closest('button')) return;
+            /* Update selected state */
+            document.querySelectorAll('.roster-row').forEach(function(r) {
+              r.classList.remove('is-selected');
+              r.setAttribute('aria-selected', 'false');
+            });
+            row.classList.add('is-selected');
+            row.setAttribute('aria-selected', 'true');
+            /* Get agent name from DOM */
+            const nameEl = row.querySelector('.roster-name');
+            const agentName = nameEl ? nameEl.textContent.trim() : null;
+            if (agentName) updateAgentPanel(agentName);
+            /* Switch to agent view */
+            setView('agent');
+          });
+          /* Keyboard support */
+          row.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); row.click(); }
+          });
+        });
+
+        /* Wire lollipop rows in Team view — name click → agent detail */
+        document.querySelectorAll('.lollipop-row').forEach(function(row) {
+          const nameCell = row.querySelector('.lollipop-name');
+          if (!nameCell) return;
+          nameCell.style.cursor = 'pointer';
+          nameCell.title = 'View agent scorecard';
+          nameCell.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const agentName = nameCell.textContent.trim();
+            /* Sync selection in roster if visible */
+            document.querySelectorAll('.roster-row').forEach(function(r) {
+              r.classList.remove('is-selected');
+              r.setAttribute('aria-selected', 'false');
+              const rn = r.querySelector('.roster-name');
+              if (rn && rn.textContent.trim() === agentName) {
+                r.classList.add('is-selected');
+                r.setAttribute('aria-selected', 'true');
+              }
+            });
+            updateAgentPanel(agentName);
+            setView('agent');
+          });
         });
 
         /* ── Canvas persistence across view changes ─────────────────────
@@ -13496,27 +13828,42 @@
           if (floatBar) floatBar.classList.add("hidden");
         }
 
-        // Wrap setView to save/restore canvas state
+        // Wrap setView to save/restore canvas state + emit context notification
         const _originalSetView = window.setView;
         window.setView = function setView(view) {
+          const wasCanvasOpen = _canvasOpen;
+          const prevView = VIEWS.find(function(v) { return v.btn && v.btn.classList.contains('is-active'); });
           saveCanvasState();
           _originalSetView(view);
           // Restore on next tick so the pane swap completes first
-          setTimeout(restoreCanvasState, 50);
+          setTimeout(function() {
+            restoreCanvasState();
+            // Emit context notification if canvas was open and view actually changed
+            if (wasCanvasOpen && prevView && prevView.key !== view) {
+              const VIEW_CONTEXT_LABELS = {
+                'team':  'Switched to Team view \u2014 comparing all agents on Product Support',
+                'agent': 'Switched to Agent view \u2014 Omar Abdallah',
+                'evals': 'Switched to Evaluations view \u2014 547 evaluations \u00b7 Product Support'
+              };
+              const thread = document.getElementById('overlayThread');
+              if (thread && typeof window.appendSystemMsg === 'function') {
+                window.appendSystemMsg(VIEW_CONTEXT_LABELS[view] || ('Switched to ' + view + ' view'));
+              }
+              // Update float hint placeholder to reflect current view scope
+              const floatInput = document.getElementById('aimyFloatInput');
+              const FLOAT_HINTS = {
+                'team':  'Ask about the team \u2014 e.g. \u201cWho needs coaching this week?\u201d',
+                'agent': 'Ask about Omar \u2014 e.g. \u201cWhy did his score drop?\u201d',
+                'evals': 'Ask about these evaluations \u2014 e.g. \u201cShow me all fails by Tariq\u201d'
+              };
+              if (floatInput && FLOAT_HINTS[view]) {
+                floatInput.placeholder = FLOAT_HINTS[view];
+              }
+            }
+          }, 50);
         };
 
-        /* ── drillToReviewsPage: navigate to Evaluations view ───────── */
-        window.drillToReviewsPage = function() {
-          const overlay = document.getElementById("aimyOverlay");
-          const floatBar = document.getElementById("aimyFloatBar");
-          if (overlay) overlay.classList.remove("open");
-          if (floatBar) floatBar.classList.remove("hidden");
-          setView("evals");
-          setTimeout(function() {
-            const evalSection = document.getElementById("evalListAccountWide");
-            if (evalSection) evalSection.scrollIntoView({ behavior: "smooth", block: "start" });
-          }, 180);
-        };
+        /* ── drillToReviewsPage: defined above in canvas IIFE (context-aware) ── */
 
         /* ── Memory visualization expand/collapse ────────────────────── */
         window.toggleMemoryDetail = function() {
@@ -13999,6 +14346,8 @@
           if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); updateFloatBadge(0); }
           suggestions.classList.add('hidden');
           appendSystemMsg('Loading coaching recommendation for ' + agentName + '\u2026');
+          /* Reset loop summary flag — new coaching session starting */
+          if (typeof _coachLoopSummarized !== 'undefined') _coachLoopSummarized = false;
           setTimeout(function() {
             const typing = document.getElementById('aimyTyping'); if (typing) typing.remove();
             const cardId = 'coach-' + Date.now();
@@ -14073,6 +14422,7 @@
           showToast({ title: 'Workflow triggered', sub: 'Coaching task created and team lead notified' });
           const undoBtn = document.getElementById('aimyToastUndo');
           if (undoBtn) { undoBtn.style.display = 'none'; setTimeout(function() { undoBtn.style.display = ''; }, 5200); }
+          setTimeout(checkCoachingLoopClosed, 350);
         };
                 window.coachDefer = function(btn) {
           const card = btn.closest('.coaching-card');
@@ -14102,6 +14452,7 @@
           card.classList.add('state-deferred');
           if (sp) sp.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Deferred · Will resurface ' + when;
           showToast({ title: 'Coaching deferred', sub: 'Will resurface ' + when });
+          setTimeout(checkCoachingLoopClosed, 350);
         };
                 window.showCoachDismissPicker = function(btn) {
           const card = btn.closest('.coaching-card');
@@ -14149,7 +14500,80 @@
           setTimeout(() => { card.style.display = 'none'; }, 230);
           showToast({ title: 'Recommendation dismissed', sub: 'Reason: ' + (sel.options[sel.selectedIndex]?.text || reason) });
           picker.classList.remove('open');
+          setTimeout(checkCoachingLoopClosed, 450);
         };
+
+        /* ── Coaching closed-loop summary ────────────────────────────────
+           Called after every coaching card action. If all cards in the
+           current thread are in a terminal state (accepted/deferred/dismissed)
+           and no summary has been shown yet, renders the impact summary.      */
+        var _coachLoopSummarized = false;
+        function checkCoachingLoopClosed() {
+          var threadEl = document.getElementById('overlayThread');
+          if (!threadEl) return;
+          var cards = threadEl.querySelectorAll('.coaching-card');
+          if (!cards.length) return;
+          // Count states
+          var accepted = 0, deferred = 0, dismissed = 0;
+          cards.forEach(function(c) {
+            if (c.classList.contains('state-accepted')) accepted++;
+            else if (c.classList.contains('state-deferred')) deferred++;
+            else if (c.style.display === 'none') dismissed++;
+          });
+          var total = cards.length;
+          var handled = accepted + deferred + dismissed;
+          if (handled < total) return; // still pending cards
+          if (_coachLoopSummarized) return; // already showed summary
+          _coachLoopSummarized = true;
+
+          // Build summary card
+          var wrap = document.createElement('div');
+          wrap.className = 'chat-msg aimy';
+          var av = document.createElement('div');
+          av.className = 'msg-avatar aimy-av';
+          av.innerHTML = '<svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>';
+          wrap.appendChild(av);
+
+          var bubble = document.createElement('div');
+          bubble.className = 'msg-bubble';
+          bubble.style.maxWidth = '520px';
+
+          var impactPts = accepted * 4 + Math.floor(deferred * 1.5);
+          var impactLo = Math.max(impactPts - 2, 1);
+          var impactHi = impactPts + 3;
+
+          bubble.innerHTML = '<div style="font-size:10px;font-weight:800;color:var(--ok);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:6px;">'
+            + '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;vertical-align:-1px;margin-right:4px;"><polyline points="20 6 9 17 4 12"/></svg>'
+            + 'Coaching loop closed</div>'
+            + '<div style="font-size:13px;font-weight:600;color:var(--d100);line-height:1.6;margin-bottom:12px;">'
+            + '<strong style="color:var(--d50)">' + accepted + ' plan' + (accepted !== 1 ? 's' : '') + ' triggered</strong>'
+            + (deferred ? ' · <strong style="color:var(--warn)">' + deferred + ' deferred</strong>' : '')
+            + (dismissed ? ' · <span style="color:var(--d400)">' + dismissed + ' dismissed</span>' : '')
+            + '. Expected quality improvement: <strong style="color:var(--ok)">+' + impactLo + '\u2013' + impactHi + ' pts</strong> over 4\u20136 weeks if plans are followed.</div>'
+            + '<div style="display:flex;gap:8px;flex-wrap:wrap;">'
+            + '<button class="k-action-primary" type="button" style="font-size:11px;padding:6px 13px;" id="coachReminderBtn">'
+            + '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;display:inline;vertical-align:-1px;margin-right:4px;"><circle cx="7" cy="7" r="5.5"/><path d="M7 4v3l1.5 1.5"/></svg>'
+            + 'Set 2-week review reminder</button>'
+            + '<button class="brief-sec-btn" type="button" style="font-size:10px;padding:5px 10px;" onclick="openCanvasQuery(\'Show projected quality score trajectory for Omar Abdallah over the next 6 weeks if coaching plans are completed\')">'
+            + 'Show score projection</button>'
+            + '</div>';
+
+          wrap.appendChild(bubble);
+          threadEl.appendChild(wrap);
+          threadEl.scrollTop = threadEl.scrollHeight;
+
+          // Wire reminder button
+          var remBtn = document.getElementById('coachReminderBtn');
+          if (remBtn) {
+            remBtn.addEventListener('click', function() {
+              remBtn.innerHTML = '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;vertical-align:-1px;margin-right:4px;"><polyline points="20 6 9 17 4 12"/></svg>Reminder set \u2014 Jun 23';
+              remBtn.disabled = true;
+              remBtn.style.background = 'var(--ok)';
+              remBtn.style.opacity = '1';
+              showToast({ title: 'Review reminder set', sub: 'AiMY will resurface coaching outcomes on Jun 23' });
+            });
+          }
+        }
 
         /* ── Coaching history in canvas ──────────────────────────────── */
         window.showCoachingHistory = function(btn) {
@@ -14345,7 +14769,7 @@
               barWrap.className = 'scorecard-kpi-bar-wrap';
               const bar = document.createElement('div');
               bar.className = 'scorecard-kpi-bar';
-              bar.style.width = k.pct + '%';
+              bar.style.setProperty('--bar-val', (k.pct / 100).toFixed(4));
               bar.style.background = k.color;
               barWrap.appendChild(bar);
               const val = document.createElement('span');
@@ -14362,10 +14786,31 @@
             note.textContent = 'Last evaluated 2 days ago · 47 interactions this month';
             const fullLink = document.createElement('span');
             fullLink.className = 'scorecard-full-link';
-            fullLink.textContent = 'Open full scorecard in Reviews →';
-            fullLink.title = 'Opens in Reviews (coming in v2)';
+            fullLink.textContent = 'Open full scorecard \u2192';
+            fullLink.title = 'Open in Reviews \u2014 Agent view';
+            fullLink.setAttribute('role', 'button');
+            fullLink.setAttribute('tabindex', '0');
             fullLink.addEventListener('click', function() {
-              appendSystemMsg('Reviews surface coming in v2 — full scorecard drill-down will open here.');
+              /* Close canvas, switch to Agent view — destination already exists */
+              var overlay = document.getElementById('aimyOverlay');
+              var floatBar = document.getElementById('aimyFloatBar');
+              if (overlay) overlay.classList.remove('open');
+              if (floatBar) floatBar.classList.remove('hidden');
+              if (typeof setView === 'function') setView('agent');
+              /* Highlight the correct roster row if it matches the card agent */
+              setTimeout(function() {
+                var rosterRows = document.querySelectorAll('.roster-row');
+                rosterRows.forEach(function(row) {
+                  var nameEl = row.querySelector('.roster-name');
+                  if (nameEl && nameEl.textContent.trim() === agentName) {
+                    row.classList.add('is-selected');
+                    row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                  }
+                });
+              }, 120);
+            });
+            fullLink.addEventListener('keydown', function(e) {
+              if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fullLink.click(); }
             });
             footer.appendChild(note); footer.appendChild(fullLink);
 
@@ -14882,12 +15327,19 @@
           if (btn.dataset.wired) return;
           const txt = btn.textContent.trim();
 
-          /* View N evals — open canvas with filter query */
+          /* View N evals — open canvas with targeted pattern-specific query */
           if (/^View \d+/.test(txt)) {
             btn.dataset.wired = '1';
             btn.addEventListener('click', function() {
               const n = txt.match(/\d+/)[0];
-              openCanvasQuery('Show failed evaluations this week — filter to ' + n + ' instances');
+              /* Find the pattern name from the closest pattern-row */
+              const patternRow = btn.closest('[data-pattern-name]');
+              const patternName = patternRow ? patternRow.dataset.patternName : null;
+              if (patternName) {
+                openCanvasQuery('Show all ' + n + ' evaluations where agents failed "' + patternName + '" — list by agent, date, channel, and CSAT impact. Sort by lowest score first.');
+              } else {
+                openCanvasQuery('Show failed evaluations this week — filter to ' + n + ' instances, sorted by lowest score first');
+              }
             });
             return;
           }
@@ -14896,8 +15348,7 @@
           if (txt === 'View all' && btn.classList.contains('open-coach-action')) {
             btn.dataset.wired = '1';
             btn.addEventListener('click', function() {
-              setView('evals');
-              toast('Coaching actions', 'Showing all open coaching actions for Omar Abdallah');
+              drillToReviewsPage({ agentName: 'Omar Abdallah' });
             });
             return;
           }
@@ -14929,18 +15380,38 @@
           const txt = btn.textContent.trim();
           btn.addEventListener('click', function() {
             const row = btn.closest('.kf-item, .feed-item, .kpi-brief, .finding-item, [class*="pattern-row"], [class*="failure-row"]');
-            if (row) {
-              row.style.opacity = '0.4';
-              row.style.transition = 'opacity 0.3s';
-              row.style.pointerEvents = 'none';
-            }
+
             if (txt === 'Acknowledge' || txt === 'Acknowledge — known') {
-              toast('Acknowledged', 'AiMY will deprioritise this pattern');
+              if (row) {
+                row.style.opacity = '0.45';
+                row.style.transition = 'opacity 0.3s';
+              }
+              /* Reopen is the undo action — no DOM injection into the card */
+              window.lastDismissed = {
+                action: 'acknowledge-pattern',
+                revert: function() {
+                  if (row) { row.style.opacity = ''; row.style.transition = ''; }
+                }
+              };
+              /* Relabel the undo button to "Reopen" for this action */
+              var undoBtn = document.getElementById('aimyToastUndo');
+              if (undoBtn) undoBtn.textContent = 'Reopen';
+              toast('Acknowledged', 'Monitoring \u2014 AiMY will re-alert if score drops below 65%');
+              /* Restore undo button label after toast dismisses */
+              setTimeout(function() {
+                var u = document.getElementById('aimyToastUndo');
+                if (u) u.textContent = 'Undo';
+              }, 5200);
             } else if (txt === 'Reopen') {
               if (row) { row.style.opacity = ''; row.style.pointerEvents = ''; }
               toast('Reopened', 'Pattern marked as active again');
             } else if (txt === 'Stop monitoring') {
-              toast('Monitoring stopped', 'AiMY will no longer track this pattern');
+              if (row) {
+                row.style.opacity = '0.3';
+                row.style.transition = 'opacity 0.3s';
+                row.style.pointerEvents = 'none';
+              }
+              toast('Monitoring stopped', 'AiMY will not resurface this pattern unless you reopen it');
             } else if (txt === 'Cancel') {
               toast('Session cancelled', 'Coaching session removed from schedule');
             }
@@ -15432,7 +15903,7 @@
           /* Animate bar fill after open transition starts */
           requestAnimationFrame(function() {
             var fill = inner.querySelector('.kpi-drawer-minibar-fill');
-            if (fill) fill.style.width = fill.dataset.target + '%';
+            if (fill) fill.style.setProperty('--bar-val', (parseFloat(fill.dataset.target) / 100).toFixed(4));
           });
 
           /* Highlight active row */
@@ -15501,23 +15972,41 @@
             e.stopPropagation();
 
             if (action === 'coach') {
-              var panel = document.getElementById('kpiCoach' + kpiNum);
-              if (!panel) { openKpiDrawer(kpiNum); return; }
-              if (panel.style.display !== 'none') {
-                panel.style.display = 'none';
+              /* Always open / keep the KPI drawer open first */
+              var drawer = document.getElementById('kpiDetailDrawer');
+              var inner  = document.getElementById('kpiDetailInner');
+              if (activeKpi !== kpiNum) openKpiDrawer(kpiNum);
+
+              /* Check if coaching sub-section is already shown inside drawer */
+              var existingCoach = drawer ? drawer.querySelector('.kpi-coach-subsection') : null;
+              if (existingCoach) {
+                /* Toggle — hide it if already visible */
+                existingCoach.remove();
                 btn.textContent = 'Coach on this';
                 return;
               }
-              panel.innerHTML = '<div class="kpi-coach-title">Coaching plan — ' + k.label + '</div>'
+
+              /* Build coaching sub-section inside the drawer */
+              var coachSection = document.createElement('div');
+              coachSection.className = 'kpi-coach-subsection';
+              coachSection.style.cssText = 'margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.07);animation:kpiDrawerIn 180ms ease both;';
+              coachSection.innerHTML = '<div class="kpi-coach-title">Coaching plan \u2014 ' + k.label + '</div>'
                 + '<div class="kpi-coach-body">' + k.coachPlan + '</div>'
                 + '<div class="kpi-coach-actions">'
                 + '<button class="k-action-primary" type="button" style="font-size:11px;padding:5px 12px;" onclick="openCanvasQuery(' + JSON.stringify(KPI[kpiNum].actions[0].query) + ')"><svg width="10" height="11" viewBox="0 0 18 20" style="display:inline;vertical-align:-1px;margin-right:4px;"><use href="#aimy-logo-small"/></svg>Generate this plan</button>'
-                + '<button class="k-row-action" type="button" style="font-size:11px;" onclick="window.showToast&&window.showToast({title:&quot;Shared with Lina Haddad&quot;,sub:&quot;Coaching plan sent for review&quot;})">Share with Lina</button>'
-                + '<button class="k-row-action dismiss" type="button" style="font-size:11px;" onclick="closeKpiCoach(' + kpiNum + ')">Dismiss</button>'
+                + '<button class="k-row-action" type="button" style="font-size:11px;" onclick="window.showToast({title:\'Shared with Lina Haddad\',sub:\'Coaching plan sent for review\'})">Share with Lina</button>'
+                + '<button class="k-row-action dismiss" type="button" style="font-size:11px;" onclick="this.closest(\'.kpi-coach-subsection\').remove();var b=document.querySelector(\'[data-kpi-action=coach][data-kpi=\\\'' + kpiNum + '\\\']\');if(b)b.textContent=\'Coach on this\';">Dismiss</button>'
                 + '</div>';
-              panel.style.display = 'block';
+
+              if (inner) {
+                inner.appendChild(coachSection);
+                coachSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }
               btn.textContent = 'Hide plan';
-              panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+              /* Hide the old separate kpiCoach panel if it exists */
+              var oldPanel = document.getElementById('kpiCoach' + kpiNum);
+              if (oldPanel) oldPanel.style.display = 'none';
 
             } else if (action === 'viewmisses') {
               openCanvasQuery('Show evaluations where Omar Abdallah failed the ticket categorisation KPI — show wrong vs correct category tags');
