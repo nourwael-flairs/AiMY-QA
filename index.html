@@ -54,6 +54,8 @@
         --transition-base: 200ms;
         --motion-hover-lift-sm: translateY(-1px);
         --motion-hover-lift-md: translateY(-2px);
+        /* Body background token */
+        --body-bg: #171a1c;
         /* Card surface with blue tint */
         --card-bg: #141b24;
         --card-border: rgba(255, 255, 255, 0.07);
@@ -109,7 +111,7 @@
 
       body {
         font-family: "Urbanist", sans-serif;
-        background: #171a1c;
+        background: var(--body-bg);
         color: var(--d50);
         height: 100vh;
         display: flex;
@@ -294,7 +296,7 @@
         height: 6px;
         border-radius: 50%;
         background: var(--err);
-        border: 1.5px solid #171a1c;
+        border: 1.5px solid var(--body-bg);
       }
 
       /* User pill */
@@ -1303,19 +1305,19 @@
         padding: 10px 12px;
         background: rgba(255, 255, 255, 0.03);
         border-radius: 8px;
-        border-left: 2px solid transparent;
+        border: 1px solid transparent;
       }
       .finding-item.err-f {
-        border-left-color: var(--err);
-        background: color-mix(in srgb, var(--err) 4%, var(--card-bg));
+        border-color: rgba(240, 68, 56, 0.18);
+        background: color-mix(in srgb, var(--err) 6%, var(--card-bg));
       }
       .finding-item.warn-f {
-        border-left-color: var(--warn);
-        background: color-mix(in srgb, var(--warn) 4%, var(--card-bg));
+        border-color: rgba(247, 144, 9, 0.18);
+        background: color-mix(in srgb, var(--warn) 6%, var(--card-bg));
       }
       .finding-item.ok-f {
-        border-left-color: var(--ok);
-        background: color-mix(in srgb, var(--ok) 3%, var(--card-bg));
+        border-color: rgba(23, 178, 106, 0.18);
+        background: color-mix(in srgb, var(--ok) 5%, var(--card-bg));
       }
       .finding-icon {
         width: 20px;
@@ -2027,6 +2029,12 @@
         border-bottom: none;
       }
       .feed-item:hover {
+        background: rgba(255, 255, 255, 0.025);
+      }
+      .feed-item:focus-visible {
+        outline: 2px solid var(--brand);
+        outline-offset: -2px;
+        border-radius: 4px;
         background: rgba(255, 255, 255, 0.025);
       }
       .sentiment-icon {
@@ -2753,8 +2761,9 @@
       }
 
       /* ── Skeleton loading states ──────────────────────────────
-     Rendered by default before data hydrates. Build agent binds
-     state logic to swap skeletons for live content. */
+     Use .skeleton-card, .skeleton-row, .skeleton-chart, .skeleton-text
+     in place of content while data is loading. JS swaps classes
+     once data hydrates. All shimmer is motion-guarded below. */
       @keyframes skeleton-shimmer {
         0% {
           background-position: 200% 0;
@@ -2762,6 +2771,9 @@
         100% {
           background-position: -200% 0;
         }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        @keyframes skeleton-shimmer { 0%, 100% { background-position: 0 0; } }
       }
       .skeleton {
         background: linear-gradient(
@@ -2774,6 +2786,9 @@
         animation: skeleton-shimmer 1.8s linear infinite;
         border-radius: 8px;
         border: 1px solid var(--card-border);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .skeleton { animation: none; background: var(--card-bg); }
       }
       .skeleton-card {
         height: 180px;
@@ -3105,6 +3120,51 @@
         height: 11px;
       }
 
+      /* Context continuity bar — sits below the badge, shows what AiMY is basing on */
+      .overlay-context-bar {
+        position: absolute;
+        top: 68px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        max-width: calc(100% - 120px);
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 200ms 150ms ease;
+        pointer-events: none;
+      }
+      .aimy-overlay.open .overlay-context-bar {
+        opacity: 1;
+      }
+      .overlay-context-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--d600);
+        flex-shrink: 0;
+      }
+      .overlay-context-tags {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        overflow: hidden;
+      }
+      .overlay-context-tag {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d400);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 2px 8px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
       /* Conversation thread area */
       .overlay-thread {
         width: 100%;
@@ -3364,6 +3424,46 @@
           animation: none !important;
           transition: none !important;
         }
+        /* Entrance / pop animations */
+        .bcard,
+        .tier-1-grid .bcard,
+        .v2-chip,
+        .summary-signal,
+        .aimy-summary-card,
+        .summary-headline-score,
+        .afs-pill,
+        .active-filter-strip {
+          animation: none !important;
+        }
+        /* Donut bar grow + blink */
+        .driver-bar-fill,
+        .eval-bar-fill,
+        .eval-live-dot {
+          animation: none !important;
+        }
+        /* Spinner (float send thinking state) */
+        .aimy-float-send.thinking .think-spinner {
+          animation: none !important;
+          opacity: 1;
+        }
+        /* Typing indicator dots — replace bounce with static dots */
+        .typing-dots span {
+          animation: none !important;
+          opacity: 0.5;
+        }
+        /* Toast countdown bar — collapse duration so toast still auto-dismisses */
+        .aimy-toast-progress {
+          animation-duration: 0.001ms !important;
+        }
+        /* Glass shimmer on filter tray */
+        .aimy-float-bar::before,
+        .aimy-float-bar::after {
+          animation: none !important;
+        }
+        /* scoreCount number entrance */
+        .summary-headline-score {
+          animation: none !important;
+        }
         .bcard:hover,
         .v2-chip:hover,
         .kpi-brief:hover,
@@ -3577,6 +3677,11 @@
         display: flex;
         align-items: center;
         gap: 4px;
+        cursor: pointer;
+        transition: opacity var(--transition-fast);
+      }
+      .v2-chip-action:hover {
+        opacity: 0.75;
       }
       .v2-chip-action svg {
         width: 10px;
@@ -3824,6 +3929,52 @@
         background: rgba(255, 255, 255, 0.05);
         border-radius: 8px;
         margin-left: 2px;
+        cursor: help;
+        position: relative;
+      }
+      /* Confidence reasoning tooltip */
+      .conf-tooltip {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 50%;
+        transform: translateX(-50%);
+        width: 220px;
+        background: var(--d800);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        padding: 10px 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        z-index: 20;
+        pointer-events: none;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity var(--transition-fast), visibility var(--transition-fast);
+      }
+      .state-confidence:hover .conf-tooltip,
+      .state-confidence:focus .conf-tooltip {
+        opacity: 1;
+        visibility: visible;
+      }
+      .conf-tooltip-title {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--d400);
+        margin-bottom: 7px;
+      }
+      .conf-signal {
+        font-size: 11px;
+        color: var(--d300);
+        line-height: 1.5;
+        display: flex;
+        gap: 5px;
+        align-items: baseline;
+      }
+      .conf-signal::before {
+        content: "·";
+        color: var(--d600);
+        flex-shrink: 0;
       }
 
       /* Always-visible alt-states row. Each alt is a clickable state-filter
@@ -3857,12 +4008,18 @@
         background: none;
         cursor: pointer;
         font-family: "Urbanist", sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
         transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
       }
       .state-alt:hover {
         color: var(--d300);
         border-color: rgba(255, 255, 255, 0.16);
         background: rgba(255, 255, 255, 0.03);
+      }
+      .state-alt:hover svg {
+        opacity: 0.85;
       }
 
       /* Quick actions bar */
@@ -4353,9 +4510,19 @@
         color: var(--d400);
         cursor: pointer;
         transition: color var(--transition-fast);
+        border-radius: 4px;
       }
       .eval-view-all:hover {
         color: var(--d50);
+      }
+      .eval-view-all:focus-visible {
+        outline: 2px solid var(--brand);
+        outline-offset: 2px;
+        color: var(--d50);
+      }
+      .eval-borderline-badge:focus-visible {
+        outline: 2px solid var(--brand);
+        outline-offset: 2px;
       }
     
       /* ══ V2 ADDITIONS: Coaching Cards, Message Types, Alert Controls ══ */
@@ -4369,7 +4536,7 @@
         height: 16px;
         border-radius: 20px;
         background: var(--err);
-        border: 2px solid #171a1c;
+        border: 2px solid var(--body-bg);
         font-size: 9px;
         font-weight: 700;
         color: #fff;
@@ -4625,6 +4792,7 @@
       .coaching-state-pill {
         display: none;
         align-items: center;
+        flex-wrap: wrap;
         gap: 5px;
         padding: 8px 14px;
         font-size: 11px;
@@ -4634,6 +4802,34 @@
       .coaching-card.state-accepted .coaching-state-pill { display: flex; color: var(--ok); }
       .coaching-card.state-deferred .coaching-state-pill { display: flex; color: var(--warn); }
       .coaching-state-pill svg { width: 12px; height: 12px; stroke: currentColor; fill: none; }
+      /* Next-step links that appear after coaching is accepted */
+      .coaching-next-links {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-left: 4px;
+      }
+      .coaching-next-link {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--ok);
+        opacity: 0.75;
+        background: var(--ok-bg);
+        border: 1px solid rgba(23,178,106,0.2);
+        border-radius: 6px;
+        padding: 2px 8px;
+        cursor: pointer;
+        text-decoration: none;
+        font-family: "Urbanist", sans-serif;
+        transition: opacity var(--transition-fast), background var(--transition-fast);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .coaching-next-link:hover {
+        opacity: 1;
+        background: rgba(23,178,106,0.2);
+      }
 
       /* Defer snooze picker */
       .defer-picker {
@@ -4692,7 +4888,7 @@
       .notif-ev-pill{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:3px 9px;font-size:10px;color:var(--d300);font-weight:500;}
       .notif-ev-pill .ev-val{font-weight:700;color:#fff;}
       .notif-alert-actions{display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;border-top:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.1);}
-      .notif-cta{font-size:11px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;font-family:"Urbanist",sans-serif;transition:all var(--transition-fast);border:1px solid transparent;}
+      .notif-cta{font-size:11px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;font-family:"Urbanist",sans-serif;transition:background var(--transition-fast),border-color var(--transition-fast),color var(--transition-fast);border:1px solid transparent;}
       .notif-cta.primary-p1{background:var(--err-bg);color:var(--err);border-color:rgba(240,68,56,.25);}
       .notif-cta.primary-p1:hover{background:rgba(240,68,56,.18);}
       .notif-cta.primary-p2{background:var(--warn-bg);color:var(--warn);border-color:rgba(247,144,9,.25);}
@@ -5464,7 +5660,7 @@
         <div class="dashboard-scroll">
           <!-- Active filter strip — only visible when filters are applied -->
           <div class="active-filter-strip" id="activeFilterStrip">
-            <span class="afs-label">Viewing</span>
+            <span class="afs-label">Filtered by</span>
             <!-- Active filter chips injected here by JS -->
             <button class="afs-clear-all" id="afsClearAll">Clear all</button>
           </div>
@@ -5554,7 +5750,7 @@
         <!-- /aimySummaryCard -->
 
         <div class="tier-1-grid">
-            <div class="bcard p1 tier-primary" onclick="toggleCard(this)">
+            <div class="bcard p1 tier-primary" onclick="toggleCard(this)" role="button" tabindex="0">
               <div class="bcard-accent"></div>
               <div class="bcard-body">
                 <div class="bcard-meta">
@@ -5586,7 +5782,7 @@
                 </div>
                 <div class="bcard-divider"></div>
                 <div class="bcard-action">
-                  <button class="action-btn">
+                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('SLA compliance is at 61%. Show me the 23 breached tickets from this week, sorted by wait time, and tell me which agents and queues are responsible.')">
                     View breached tickets
                     <svg viewBox="0 0 13 13" fill="none">
                       <path
@@ -5616,8 +5812,8 @@
                     </svg>
                   </button>
                 <div class="bcard-ack-row" id="ack-row-sla-breach">
-                  <button class="bcard-ack-btn" onclick="acknowledgeAlert(this,'sla-breach')">Acknowledge</button>
-                  <button class="bcard-ack-btn dismiss" onclick="showBcardDismissPicker(this,'sla-breach')">Dismiss</button>
+                  <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'sla-breach')">On it</button>
+                  <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'sla-breach')">Not relevant</button>
                   <div class="bcard-dismiss-picker" id="bdp-sla-breach"></div>
                 </div>
                 </div>
@@ -5643,7 +5839,7 @@
               </div>
             </div>
 
-            <div class="bcard p1 tier-primary" onclick="toggleCard(this)">
+            <div class="bcard p1" onclick="toggleCard(this)" role="button" tabindex="0">
               <div class="bcard-accent"></div>
               <div class="bcard-body">
                 <div class="bcard-meta">
@@ -5674,7 +5870,7 @@
                 </div>
                 <div class="bcard-divider"></div>
                 <div class="bcard-action">
-                  <button class="action-btn">
+                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('3 KPIs are actively failing. Generate a coaching plan targeting empathy during escalations, follow-up clarity, and survey promotion — prioritised by impact and grouped by agent.')">
                     Start coaching plan
                     <svg viewBox="0 0 13 13" fill="none">
                       <path
@@ -5704,8 +5900,8 @@
                     </svg>
                   </button>
                 <div class="bcard-ack-row" id="ack-row-kpi-failures">
-                  <button class="bcard-ack-btn" onclick="acknowledgeAlert(this,'kpi-failures')">Acknowledge</button>
-                  <button class="bcard-ack-btn dismiss" onclick="showBcardDismissPicker(this,'kpi-failures')">Dismiss</button>
+                  <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'kpi-failures')">On it</button>
+                  <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'kpi-failures')">Not relevant</button>
                   <div class="bcard-dismiss-picker" id="bdp-kpi-failures"></div>
                 </div>
                 </div>
@@ -5739,7 +5935,7 @@
               </div>
             </div>
 
-            <div class="bcard p1" onclick="toggleCard(this)">
+            <div class="bcard p1" onclick="toggleCard(this)" role="button" tabindex="0">
               <div class="bcard-accent"></div>
               <div class="bcard-body">
                 <div class="bcard-meta">
@@ -5770,7 +5966,7 @@
                 </div>
                 <div class="bcard-divider"></div>
                 <div class="bcard-action">
-                  <button class="action-btn">
+                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('Negative sentiment is rising week over week with 3 agents flagged. Show me the escalation interactions with the lowest sentiment scores and identify the common failure pattern.')">
                     Review escalation handling
                     <svg viewBox="0 0 13 13" fill="none">
                       <path
@@ -5800,8 +5996,8 @@
                     </svg>
                   </button>
                 <div class="bcard-ack-row" id="ack-row-sentiment">
-                  <button class="bcard-ack-btn" onclick="acknowledgeAlert(this,'sentiment')">Acknowledge</button>
-                  <button class="bcard-ack-btn dismiss" onclick="showBcardDismissPicker(this,'sentiment')">Dismiss</button>
+                  <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'sentiment')">On it</button>
+                  <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'sentiment')">Not relevant</button>
                   <div class="bcard-dismiss-picker" id="bdp-sentiment"></div>
                 </div>
                 </div>
@@ -5924,7 +6120,7 @@
                 </div>
               </div>
             </div>
-            <div class="bcard p2" onclick="toggleCard(this)">
+            <div class="bcard p2" onclick="toggleCard(this)" role="button" tabindex="0">
               <div class="bcard-accent"></div>
               <div class="bcard-body">
                 <div class="bcard-meta">
@@ -5959,7 +6155,7 @@
                 </div>
                 <div class="bcard-divider"></div>
                 <div class="bcard-action">
-                  <button class="action-btn">
+                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('Quality is at 87.3%, 2.7% below the 90% SLA target. Break down exactly which KPI failures account for that gap and rank the fastest fixes.')">
                     See what's blocking target
                     <svg viewBox="0 0 13 13" fill="none">
                       <path
@@ -5989,8 +6185,8 @@
                     </svg>
                   </button>
                 <div class="bcard-ack-row" id="ack-row-quality">
-                  <button class="bcard-ack-btn" onclick="acknowledgeAlert(this,'quality')">Acknowledge</button>
-                  <button class="bcard-ack-btn dismiss" onclick="showBcardDismissPicker(this,'quality')">Dismiss</button>
+                  <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'quality')">On it</button>
+                  <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'quality')">Not relevant</button>
                   <div class="bcard-dismiss-picker" id="bdp-quality"></div>
                 </div>
                 </div>
@@ -6038,8 +6234,8 @@
                   <span id="detectedStateLabel"
                     >3 KPIs failing, Nov dip unresolved</span
                   >
-                  <span class="state-confidence" id="detectedStateConfidence"
-                    >high confidence</span
+                  <span class="state-confidence" id="detectedStateConfidence" tabindex="0"
+                    >high confidence<div class="conf-tooltip" id="confTooltip"><div class="conf-tooltip-title">Why AiMY is confident</div><div id="confSignals"></div></div></span
                   >
                 </div>
               </div>
@@ -6580,6 +6776,7 @@
                       font-size="10"
                       fill="#5B6771"
                       font-family="Urbanist,sans-serif"
+                      data-month-idx="0"
                     >
                       JAN
                     </text>
@@ -6590,6 +6787,7 @@
                       font-size="10"
                       fill="#5B6771"
                       font-family="Urbanist,sans-serif"
+                      data-month-idx="1"
                     >
                       FEB
                     </text>
@@ -6600,6 +6798,7 @@
                       font-size="10"
                       fill="#5B6771"
                       font-family="Urbanist,sans-serif"
+                      data-month-idx="2"
                     >
                       MAR
                     </text>
@@ -6610,6 +6809,7 @@
                       font-size="10"
                       fill="#5B6771"
                       font-family="Urbanist,sans-serif"
+                      data-month-idx="3"
                     >
                       APR
                     </text>
@@ -6620,6 +6820,7 @@
                       font-size="10"
                       fill="#5B6771"
                       font-family="Urbanist,sans-serif"
+                      data-month-idx="4"
                     >
                       MAY
                     </text>
@@ -6630,6 +6831,7 @@
                       font-size="10"
                       fill="#5B6771"
                       font-family="Urbanist,sans-serif"
+                      data-month-idx="5"
                     >
                       JUN
                     </text>
@@ -6640,6 +6842,7 @@
                       font-size="10"
                       fill="#5B6771"
                       font-family="Urbanist,sans-serif"
+                      data-month-idx="6"
                     >
                       JUL
                     </text>
@@ -6650,6 +6853,7 @@
                       font-size="10"
                       fill="#5B6771"
                       font-family="Urbanist,sans-serif"
+                      data-month-idx="7"
                     >
                       AUG
                     </text>
@@ -6660,6 +6864,7 @@
                       font-size="10"
                       fill="#5B6771"
                       font-family="Urbanist,sans-serif"
+                      data-month-idx="8"
                     >
                       SEP
                     </text>
@@ -6670,6 +6875,7 @@
                       font-size="10"
                       fill="#5B6771"
                       font-family="Urbanist,sans-serif"
+                      data-month-idx="9"
                     >
                       OCT
                     </text>
@@ -6680,6 +6886,7 @@
                       font-size="10"
                       fill="#5B6771"
                       font-family="Urbanist,sans-serif"
+                      data-month-idx="10"
                     >
                       NOV
                     </text>
@@ -6690,6 +6897,7 @@
                       font-size="10"
                       fill="#5B6771"
                       font-family="Urbanist,sans-serif"
+                      data-month-idx="11"
                     >
                       DEC
                     </text>
@@ -6751,7 +6959,7 @@
                       </div>
                     </div>
                   </div>
-                  <button class="kf-action">Coach these agents →</button>
+                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Empathy during escalations is at 32% — down 8% this period. Which agents are contributing most to this failure and what\u2019s the fastest coaching intervention?')">Coach these agents →</button>
                 </div>
 
                 <div class="kpi-brief kf-err">
@@ -6773,7 +6981,7 @@
                       </div>
                     </div>
                   </div>
-                  <button class="kf-action">See failed calls →</button>
+                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Follow-up clarity is at 48% and flat for two periods. Show me the evaluations where agents resolved the issue but failed to set next steps \u2014 and suggest a script fix.')">See failed calls →</button>
                 </div>
 
                 <div class="kpi-brief kf-err">
@@ -6795,7 +7003,7 @@
                       </div>
                     </div>
                   </div>
-                  <button class="kf-action">See pattern →</button>
+                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Survey promotion is at 49%, slowly improving at +3%. What pattern do the successful interactions share and how do we replicate it across the team?')">See pattern →</button>
                 </div>
 
                 <div class="kpi-brief kf-warn">
@@ -6815,7 +7023,7 @@
                       </div>
                     </div>
                   </div>
-                  <button class="kf-action">Monitor →</button>
+                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('First response time is at 71%, declining 2pts. At this trajectory when do we breach the 75% threshold and what are the top 3 interventions to reverse it?')">Monitor →</button>
                 </div>
 
                 <button
@@ -6845,7 +7053,7 @@
                     <div class="kf-body">
                       <p class="kf-conclusion">
                         Identity verification is at
-                        <span class="kf-score-ok">82%</span> and improving —
+                        <span class="kf-score-ok">82%</span> and improving &mdash;
                         compliance risk is low here.
                       </p>
                       <div class="kf-evidence">
@@ -6855,7 +7063,7 @@
                         </div>
                       </div>
                     </div>
-                    <button class="kf-action">View →</button>
+                    <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Identity verification is at 82% and improving. What’s driving the 6% gain this period and which agents are leading it?')">View →</button>
                   </div>
                   <div class="kpi-brief kf-ok" style="margin-bottom: 8px">
                     <div
@@ -6867,7 +7075,7 @@
                     <div class="kf-body">
                       <p class="kf-conclusion">
                         First contact resolution is at
-                        <span class="kf-score-ok">87%</span> — agents are
+                        <span class="kf-score-ok">87%</span> &mdash; agents are
                         solving issues without callbacks.
                       </p>
                       <div class="kf-evidence">
@@ -6877,7 +7085,7 @@
                         </div>
                       </div>
                     </div>
-                    <button class="kf-action">View →</button>
+                    <button class="kf-action" onclick="window.openOverlay && window.openOverlay('FCR is at 87%. Identify the agents with the strongest scores and summarise what behaviours they share so we can coach others.')">View →</button>
                   </div>
                   <div class="kpi-brief kf-ok">
                     <div
@@ -6889,7 +7097,7 @@
                     <div class="kf-body">
                       <p class="kf-conclusion">
                         Compliance script adherence is at
-                        <span class="kf-score-ok">91%</span> and stable — agents
+                        <span class="kf-score-ok">91%</span> and stable &mdash; agents
                         know the required process.
                       </p>
                       <div class="kf-evidence">
@@ -6898,7 +7106,7 @@
                         </div>
                       </div>
                     </div>
-                    <button class="kf-action">View →</button>
+                    <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Script adherence is at 91% and stable. Any agents drifting below the team average that we should watch before it becomes a trend?')">View →</button>
                   </div>
                 </div>
               </div>
@@ -6995,6 +7203,7 @@
                         data-segment="pass"
                         onmouseenter="evalHover('pass')"
                         onmouseleave="scheduleEvalOut()"
+                        onclick="window.openOverlay && window.openOverlay('72% of tickets passed evaluation this period. What are the shared behaviours in the passing interactions and which agents are consistently above the pass threshold?')"
                       />
                       <circle
                         class="donut-hit"
@@ -7006,6 +7215,7 @@
                         data-segment="borderline"
                         onmouseenter="evalHover('borderline')"
                         onmouseleave="scheduleEvalOut()"
+                        onclick="window.openOverlay && window.openOverlay('313 tickets — 11% of evaluations — were borderline this period. Which specific KPI failures are keeping them below the pass threshold? What is the smallest coaching change that would move the most of them to a pass?')"
                       />
                       <circle
                         class="donut-hit"
@@ -7017,6 +7227,7 @@
                         data-segment="fail"
                         onmouseenter="evalHover('fail')"
                         onmouseleave="scheduleEvalOut()"
+                        onclick="window.openOverlay && window.openOverlay('17% of tickets failed evaluation this period — empathy during escalations and follow-up clarity are the primary drivers. List the agents with the highest fail rates and generate a targeted coaching brief for each.')"
                       />
                     </svg>
                     <div class="donut-center">
@@ -7145,6 +7356,9 @@
                     Pass rate ↑ 4% vs last period
                   </span>
                   <span class="eval-borderline-badge"
+                    onclick="window.openOverlay && window.openOverlay('313 tickets were evaluated as borderline this period \u2014 11% of total. Which KPIs are pushing them below the pass threshold and what small coaching change would move the most of them to a pass?')"
+                    tabindex="0" role="button"
+                    onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"
                     >313 borderline · review suggested</span
                   >
                 </div>
@@ -7174,7 +7388,7 @@
 
                 <!-- Action row -->
                 <div class="eval-action-row">
-                  <button class="eval-primary-btn">
+                  <button class="eval-primary-btn" onclick="window.openOverlay && window.openOverlay('Billing escalation handling has a 17% fail rate this shift driven by prolonged wait times. Show me the specific protocol steps being missed and recommend the fastest fix.')">
                     <svg viewBox="0 0 13 13" fill="none">
                       <path
                         d="M6.5 1.5A5 5 0 1 0 11.5 6.5"
@@ -7192,8 +7406,8 @@
                     </svg>
                     Review Billing Escalation Protocol
                   </button>
-                  <button class="eval-sec-btn">See 26 tickets</button>
-                  <button class="eval-sec-btn">Assign to team</button>
+                  <button class="eval-sec-btn" onclick="window.openOverlay && window.openOverlay('Show me the 26 tickets with the highest customer friction scores this shift. Sort by wait time and flag any with repeat contact within 24hrs.')">See 26 tickets</button>
+                  <button class="eval-sec-btn" onclick="window.openOverlay && window.openOverlay('Which team or queue should own the billing escalation issue? Suggest the right assignment based on capacity and skill match.')">Assign to team</button>
                 </div>
 
                 <!-- Friction feed -->
@@ -7203,10 +7417,10 @@
                       Other friction signals
                       <span class="eval-feed-count">4</span>
                     </span>
-                    <span class="eval-view-all">View all →</span>
+                    <span class="eval-view-all" onclick="window.openOverlay && window.openOverlay('Show me all friction signals detected this shift \u2014 repeat contacts, hold time issues, sentiment drops, and any positive outliers. Rank by customer impact.')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">View all &rarr;</span>
                   </div>
 
-                  <div class="feed-item">
+                  <div class="feed-item" tabindex="0" role="button" data-feed-prompt="Repeat contacts are spiking on plan upgrade failures in Account Management — 8 interactions, +22%, customers calling back within 24hrs. What’s causing the callback loop and how do we break it?">
                     <div class="sentiment-icon neg">😤</div>
                     <div class="feed-body">
                       <p class="feed-title">
@@ -7239,7 +7453,7 @@
                     </div>
                   </div>
 
-                  <div class="feed-item">
+                  <div class="feed-item" tabindex="0" role="button" data-feed-prompt="Long hold times are causing frustration in Technical Support — avg wait 12 min against a 5 min SLA, 14 interactions, +9%. What’s causing the queue backup and what’s the fastest path to SLA?">
                     <div class="sentiment-icon warn">😕</div>
                     <div class="feed-body">
                       <p class="feed-title">
@@ -7270,7 +7484,7 @@
                     </div>
                   </div>
 
-                  <div class="feed-item">
+                  <div class="feed-item" tabindex="0" role="button" data-feed-prompt="Neutral sentiment is dropping in Sales Support — customers shifting from neutral to frustrated, 7 interactions, −18%. What’s the leading indicator and which agents should we watch first?">
                     <div class="sentiment-icon warn">😐</div>
                     <div class="feed-body">
                       <p class="feed-title">
@@ -7302,7 +7516,7 @@
                     </div>
                   </div>
 
-                  <div class="feed-item">
+                  <div class="feed-item" tabindex="0" role="button" data-feed-prompt="Positive sentiment is up +31% in Returns &amp; Refunds after last week’s process update — 19 interactions. What specifically changed and how do we replicate it in other queues?">
                     <div class="sentiment-icon pos">😊</div>
                     <div class="feed-body">
                       <p class="feed-title">
@@ -7371,6 +7585,7 @@
               class="aimy-float-input"
               id="aimyFloatInput"
               type="text"
+              aria-label="Ask AiMY or describe a filter"
               placeholder="Ask AiMY anything, or describe what you&#8217;d like to filter&hellip;"
               autocomplete="off"
               spellcheck="false"
@@ -7438,34 +7653,19 @@
             </svg>
           </button>
 
+          <!-- Context continuity bar — driven by active scenario / open context -->
+          <div class="overlay-context-bar" id="overlayContextBar" aria-hidden="true">
+            <span class="overlay-context-label">Based on</span>
+            <div class="overlay-context-tags" id="overlayContextTags">
+              <!-- Tags injected by openOverlay() from active scenario -->
+            </div>
+          </div>
+
           <!-- Conversation thread -->
           <div class="overlay-thread" id="overlayThread" aria-live="polite">
             <!-- Suggested prompts — visible when thread is empty -->
             <div class="overlay-suggestions" id="overlaySuggestions">
-              <button
-                class="overlay-sugg-chip"
-                onclick="overlaySuggestion(this)"
-              >
-                Show me SLA breaches this week
-              </button>
-              <button
-                class="overlay-sugg-chip"
-                onclick="overlaySuggestion(this)"
-              >
-                Which agents are below target?
-              </button>
-              <button
-                class="overlay-sugg-chip"
-                onclick="overlaySuggestion(this)"
-              >
-                Summarise today&rsquo;s quality score
-              </button>
-              <button
-                class="overlay-sugg-chip"
-                onclick="overlaySuggestion(this)"
-              >
-                What&rsquo;s driving the empathy drop?
-              </button>
+              <!-- Populated dynamically by openOverlay() based on active scenario -->
             </div>
           </div>
 
@@ -7481,6 +7681,7 @@
                 class="overlay-input"
                 id="overlayInput"
                 rows="1"
+                aria-label="Ask AiMY"
                 placeholder="Ask AiMY anything&hellip;"
                 spellcheck="false"
                 autocomplete="off"
@@ -7513,8 +7714,18 @@
     <script>
       // Handlers for V2B interactive components
       function toggleCard(card) {
-        // Subtle visual feedback on click
+        // Clicking the card wrapper toggles the metric breakdown — same behavior
+        // as the expand-toggle button, so users don't hit a dead click.
+        const btn = card.querySelector(".expand-toggle");
+        if (btn) toggleData(btn);
       }
+      // Keyboard support for bcard role=button wrappers
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          const card = e.target.closest('.bcard[role="button"]');
+          if (card && e.target === card) { e.preventDefault(); toggleCard(card); }
+        }
+      });
       function toggleData(btn) {
         const card = btn.closest(".bcard");
         const data = card.querySelector(".bcard-data");
@@ -7564,12 +7775,134 @@
       }
 
       // ── Quality Score Chart ───────────────────────────────────
+      // Per-range data slices. Each entry: scores[], prevScores[], labels[],
+      // statAvg, statPeak, statPeakMonth, statLow, statLowMonth, deltaText
+      const RANGE_DATA = {
+        '7D': {
+          labels: ['MON','TUE','WED','THU','FRI','SAT','SUN'],
+          scores: [84,85,86,83,87,85,87],
+          prevScores: [80,82,81,79,83,81,82],
+          statAvg: '85.3%', statPeak: '87%', statPeakMonth: 'Fri',
+          statLow: '83%', statLowMonth: 'Thu',
+          delta: '↑ 2.1% vs prior week', deltaUp: true,
+          subtitle: 'Last 7 days · updated daily'
+        },
+        '30D': {
+          labels: ['W1','W2','W3','W4'],
+          scores: [84,86,83,87],
+          prevScores: [80,82,80,83],
+          statAvg: '85.0%', statPeak: '87%', statPeakMonth: 'W4',
+          statLow: '83%', statLowMonth: 'W3',
+          delta: '↑ 3.4% vs prior month', deltaUp: true,
+          subtitle: 'Last 30 days · updated daily'
+        },
+        '90D': {
+          labels: ['OCT','NOV','DEC'],
+          scores: [86,74,87],
+          prevScores: [83,81,82],
+          statAvg: '82.3%', statPeak: '87%', statPeakMonth: 'Dec',
+          statLow: '74%', statLowMonth: 'Nov',
+          delta: '↓ 0.8% vs prior quarter', deltaUp: false,
+          subtitle: 'Last 90 days · updated daily'
+        },
+        'YTD': {
+          labels: ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],
+          scores: [82,85,84,86,91,87,87,88,88,86,74,87],
+          prevScores: [78,80,79,82,84,82,83,84,83,81,80,82],
+          statAvg: '87.3%', statPeak: '91%', statPeakMonth: 'May',
+          statLow: '74%', statLowMonth: 'Nov',
+          delta: '↑ 5.2% vs last period', deltaUp: true,
+          subtitle: 'Year to date · updated daily'
+        }
+      };
+
+      function buildChartPath(scores, xStep, xStart, maxY) {
+        // Build a smooth polyline-style path through score points
+        const pts = scores.map((s, i) => [xStart + i * xStep, ((100 - s) / 100) * maxY]);
+        if (pts.length === 1) return 'M' + pts[0][0] + ',' + pts[0][1];
+        let d = 'M' + pts[0][0] + ',' + pts[0][1];
+        for (let i = 1; i < pts.length; i++) {
+          const cp1x = pts[i-1][0] + xStep * 0.4;
+          const cp1y = pts[i-1][1];
+          const cp2x = pts[i][0] - xStep * 0.4;
+          const cp2y = pts[i][1];
+          d += ' C' + cp1x + ',' + cp1y + ' ' + cp2x + ',' + cp2y + ' ' + pts[i][0] + ',' + pts[i][1];
+        }
+        return d;
+      }
+
+      function applyRangeToChart(range) {
+        const data = RANGE_DATA[range];
+        if (!data) return;
+        const n = data.scores.length;
+        const maxY = 200;
+        // Distribute points across x=40..800 (760px span)
+        const xStep = n === 1 ? 0 : 760 / (n - 1);
+        const xStart = 40;
+
+        // Rebuild main path and fill
+        const mainD = buildChartPath(data.scores, xStep, xStart, maxY);
+        const fillD = mainD + ' L' + (xStart + (n-1)*xStep) + ',205 L' + xStart + ',205Z';
+        const mainPath = document.getElementById('mainPath');
+        if (mainPath) mainPath.setAttribute('d', mainD);
+        // The fill is the sibling <path> — update its d too
+        if (mainPath && mainPath.nextElementSibling) {
+          mainPath.nextElementSibling.setAttribute('d', fillD);
+        }
+
+        // Rebuild prev path and area
+        const prevD = buildChartPath(data.prevScores, xStep, xStart, maxY);
+        const prevAreaD = prevD + ' L' + (xStart + (n-1)*xStep) + ',205 L' + xStart + ',205Z';
+        const prevPath = document.getElementById('prevPath');
+        const prevArea = document.getElementById('prevArea');
+        if (prevPath) prevPath.setAttribute('d', prevD);
+        if (prevArea) prevArea.setAttribute('d', prevAreaD);
+
+        // Update month labels — hide extras, show used
+        const allLabels = document.querySelectorAll('#mainChart text[data-month-idx]');
+        const monthXs = [];
+        allLabels.forEach(el => {
+          const idx = parseInt(el.dataset.monthIdx, 10);
+          if (idx < n) {
+            el.textContent = data.labels[idx];
+            el.style.display = '';
+            monthXs.push(xStart + idx * xStep);
+          } else {
+            el.style.display = 'none';
+            monthXs.push(null);
+          }
+        });
+
+        // Update stats row
+        const statEls = document.querySelectorAll('.v2-stat-value');
+        const deltaEls = document.querySelectorAll('.v2-stat-delta');
+        if (statEls[0]) statEls[0].textContent = data.statAvg;
+        if (statEls[1]) statEls[1].textContent = data.statPeak;
+        if (statEls[2]) statEls[2].textContent = data.statLow;
+        if (deltaEls[0]) {
+          deltaEls[0].textContent = data.delta;
+          deltaEls[0].className = 'v2-stat-delta ' + (data.deltaUp ? 'up' : 'down');
+        }
+        if (deltaEls[1]) deltaEls[1].textContent = 'Peak · ' + data.statPeakMonth;
+        if (deltaEls[2]) deltaEls[2].textContent = 'Low · ' + data.statLowMonth;
+
+        // Update subtitle
+        const subtitle = document.querySelector('.v2-subtitle');
+        if (subtitle) subtitle.textContent = data.subtitle;
+
+        // Patch hoverZone JS data arrays so tooltip stays accurate
+        window._chart_scores = data.scores;
+        window._chart_prev = data.prevScores;
+        window._chart_labels = data.labels;
+        window._chart_xStep = xStep;
+        window._chart_xStart = xStart;
+        window._chart_n = n;
+      }
+
       function setRange(range, el) {
-        document
-          .querySelectorAll(".range-tab")
-          .forEach((t) => t.classList.remove("active"));
-        el.classList.add("active");
-        // Subtitle stays fixed — the active tab communicates the range selection
+        document.querySelectorAll('.range-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        applyRangeToChart(range);
       }
 
       let compareActive = false;
@@ -7635,45 +7968,50 @@
         const tooltip = document.getElementById("tooltip");
         const chartArea = document.getElementById("chartArea");
         if (!hoverZone) return;
-        const monthXs = [
-          40, 106, 172, 238, 304, 370, 436, 502, 568, 634, 700, 766,
-        ];
+
         hoverZone.addEventListener("mousemove", (e) => {
+          // Use dynamic arrays that update with each range switch
+          const scores = window._chart_scores || chartScores;
+          const prev   = window._chart_prev   || chartPrevScores;
+          const labels = window._chart_labels  || chartMonths;
+          const xStep  = window._chart_xStep  != null ? window._chart_xStep  : 66;
+          const xStart = window._chart_xStart != null ? window._chart_xStart : 40;
+          const n      = window._chart_n      != null ? window._chart_n      : 12;
+
+          const monthXs = Array.from({length: n}, (_, i) => xStart + i * xStep);
+
           const svgEl = document.getElementById("mainChart");
           const rect = svgEl.getBoundingClientRect();
           const svgX = ((e.clientX - rect.left) / rect.width) * 800;
-          if (svgX < 40 || svgX > 800) return;
-          let closest = 0,
-            minDist = Infinity;
+          if (svgX < xStart || svgX > xStart + (n - 1) * xStep + 40) return;
+
+          let closest = 0, minDist = Infinity;
           monthXs.forEach((mx, i) => {
             const d = Math.abs(svgX - mx);
-            if (d < minDist) {
-              minDist = d;
-              closest = i;
-            }
+            if (d < minDist) { minDist = d; closest = i; }
           });
+
           const mx = monthXs[closest];
-          const my = scoreToY(chartScores[closest]);
+          const my = ((100 - scores[closest]) / 100) * 200;
           hoverLine.setAttribute("x1", mx);
           hoverLine.setAttribute("x2", mx);
           hoverLine.setAttribute("opacity", "0.6");
           hoverDot.setAttribute("cx", mx);
           hoverDot.setAttribute("cy", my);
           hoverDot.setAttribute("opacity", "1");
-          document.getElementById("ttMonth").textContent = chartMonths[closest];
-          document.getElementById("ttScore").textContent =
-            chartScores[closest] + "%";
-          document.getElementById("ttPrev").textContent =
-            chartPrevScores[closest] + "%";
+          document.getElementById("ttMonth").textContent = labels[closest];
+          document.getElementById("ttScore").textContent = scores[closest] + "%";
+          document.getElementById("ttPrev").textContent  = prev[closest]  + "%";
+
           const areaRect = chartArea.getBoundingClientRect();
           let tipX = e.clientX - areaRect.left + 14;
           let tipY = e.clientY - areaRect.top - 20;
-          if (tipX + 140 > areaRect.width)
-            tipX = e.clientX - areaRect.left - 140;
+          if (tipX + 140 > areaRect.width) tipX = e.clientX - areaRect.left - 140;
           tooltip.style.left = Math.max(0, tipX) + "px";
-          tooltip.style.top = Math.max(0, tipY) + "px";
+          tooltip.style.top  = Math.max(0, tipY) + "px";
           tooltip.classList.add("visible");
         });
+
         hoverZone.addEventListener("mouseleave", () => {
           hoverLine.setAttribute("opacity", "0");
           hoverDot.setAttribute("opacity", "0");
@@ -7687,6 +8025,11 @@
           detected: "3 KPIs failing, Nov dip unresolved",
           confidence: "high confidence",
           context: "· based on 3 failing KPIs and Nov quality dip",
+          signals: [
+            "SLA compliance at 61% — threshold is 65%",
+            "3 KPIs below target threshold this period",
+            "Quality dip of 12pts in November unresolved"
+          ],
           chips: [
             {
               type: "caution",
@@ -7730,6 +8073,11 @@
           detected: "All KPIs improving",
           confidence: "high confidence",
           context: "· all KPIs trending upward this period",
+          signals: [
+            "All 6 KPIs above threshold — first time this quarter",
+            "Quality score up 5.2% vs prior period",
+            "Empathy scores rose 12% this period"
+          ],
           chips: [
             {
               type: "explore",
@@ -7758,12 +8106,26 @@
               action: "Monitor trend →",
               actionClass: "caution-action",
             },
+            {
+              type: "explore",
+              badge: "explore-badge",
+              badgeText: "AiMY",
+              label: "Identify which agents are setting the quality standard",
+              sub: "With all KPIs improving, now is the right moment to extract and document what the top performers are doing differently.",
+              action: "View top agents →",
+              actionClass: "explore-action",
+            },
           ],
         },
         dispute: {
           detected: "5 open disputes, 2 past SLA window",
           confidence: "medium confidence",
           context: "· 5 open disputes, 2 past SLA window",
+          signals: [
+            "DISP-0441 and DISP-0438 overdue by 3+ days",
+            "3 disputes awaiting auditor — no reply 48hrs",
+            "7 of 9 recent disputes share one checklist item"
+          ],
           chips: [
             {
               type: "urgent",
@@ -7792,12 +8154,26 @@
               action: "See pattern →",
               actionClass: "explore-action",
             },
+            {
+              type: "caution",
+              badge: "caution-badge",
+              badgeText: "Watch",
+              label: "4 agents have filed more than 1 dispute this period",
+              sub: "Repeat disputes from the same agents often signal a scoring calibration issue or a misaligned checklist item.",
+              action: "Review agent disputes →",
+              actionClass: "caution-action",
+            },
           ],
         },
         explore: {
           detected: "Stable · explore mode",
           confidence: "high confidence",
           context: "· quality stable · no active alerts",
+          signals: [
+            "Quality stable at 89% for 14 days",
+            "No active P1 or P2 alerts",
+            "All SLA targets met this week"
+          ],
           chips: [
             {
               type: "explore",
@@ -7826,6 +8202,15 @@
               action: "Schedule review →",
               actionClass: "explore-action",
             },
+            {
+              type: "explore",
+              badge: "explore-badge",
+              badgeText: "AiMY",
+              label: "Surface agents at risk of drift before next period",
+              sub: "Quality is stable now but 2 agents have shown a slow decline over 6 weeks. Catching this early prevents a surprise dip.",
+              action: "View at-risk agents →",
+              actionClass: "explore-action",
+            },
           ],
         },
       };
@@ -7841,10 +8226,24 @@
         const lbl = document.getElementById("detectedStateLabel");
         const conf = document.getElementById("detectedStateConfidence");
         if (lbl) lbl.textContent = scenario.detected;
-        if (conf) conf.textContent = scenario.confidence;
+        if (conf) {
+          // Preserve tooltip child, update only text node
+          const textNode = [...conf.childNodes].find(n => n.nodeType === 3);
+          if (textNode) textNode.textContent = scenario.confidence;
+          else conf.firstChild && (conf.firstChild.textContent = scenario.confidence);
+        }
+        // Update confidence tooltip signals
+        const sigEls = document.getElementById("confSignals");
+        if (sigEls && scenario.signals) {
+          sigEls.innerHTML = scenario.signals
+            .map(s => '<div class="conf-signal">' + s + '</div>')
+            .join('');
+        }
         // Update chip context line
         const ctxEl = document.getElementById("chipsContext");
         if (ctxEl) ctxEl.textContent = scenario.context;
+        // Reset rotation offset for this scenario so the first 3 chips always show on switch
+        chipRotationOffset[key] = 0;
         // Re-render chips for this state
         renderChips(scenario.chips);
         // Re-render alt states, excluding the currently active one
@@ -7860,7 +8259,10 @@
         list.innerHTML = alts
           .map(
             ([key, s]) =>
-              `<button class="state-alt" onclick="setScenario('${key}', this)">${s.detected}</button>`,
+              `<button class="state-alt" onclick="setScenario('${key}', this)" title="Switch to this state">` +
+              `<svg width="9" height="9" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;opacity:0.55">` +
+              `<path d="M1 5h9M7 1l3 4-3 4"/><path d="M13 9H4M7 13l-3-4 3-4" opacity="0.6"/>` +
+              `</svg>${s.detected}</button>`,
           )
           .join("");
       }
@@ -7878,17 +8280,64 @@
         </div>
         <p class="v2-chip-sub">${chip.sub}</p>
         <div class="v2-chip-footer">
-          <span class="v2-chip-action ${chip.actionClass}">
+          <span class="v2-chip-action ${chip.actionClass}" data-chip-prompt="${chip.label.replace(/"/g,'&quot;')}" tabindex="0" role="button">
             ${chip.action}
           </span>
-          <span class="v2-chip-dismiss" onclick="dismissChip(${i})" title="Dismiss">✕</span>
+          <span class="v2-chip-dismiss" onclick="dismissChip(${i})" title="Dismiss">\u2715</span>
         </div>
       </div>`,
           )
           .join("");
       }
 
-      // ── Chip dismissal with undo + toast (trust-recovery pattern) ──
+      // Delegated handler for chip action spans — fires on click or Enter/Space.
+      // Routes all action types to openOverlay with a contextual prompt built from
+      // the chip label + scenario context so AiMY always starts from the right place.
+      (function wireChipActions() {
+        const row = document.getElementById("chipsRow");
+        if (!row) return;
+
+        function handleChipAction(el) {
+          if (!el.classList.contains("v2-chip-action")) return;
+          const chip = el.closest(".v2-chip");
+          if (!chip) return;
+          // Build a contextual prompt from the chip label + detected state
+          const label = el.dataset.chipPrompt || el.textContent.trim();
+          const detected = document.getElementById("detectedStateLabel");
+          const context = detected ? detected.textContent : "";
+          const prompt = label + (context ? " \u2014 current state: " + context : "");
+          if (typeof window.openOverlay === "function") window.openOverlay(prompt);
+        }
+
+        row.addEventListener("click", function(e) {
+          handleChipAction(e.target.closest(".v2-chip-action") || e.target);
+        });
+        row.addEventListener("keydown", function(e) {
+          if (e.key === "Enter" || e.key === " ") {
+            const target = e.target.closest(".v2-chip-action");
+            if (target) { e.preventDefault(); handleChipAction(target); }
+          }
+        });
+      })();
+
+      // Delegated handler for friction feed items — click or Enter/Space opens canvas
+      (function wireFeedItems() {
+        const feed = document.querySelector('.eval-feed');
+        if (!feed) return;
+        function handleFeedClick(el) {
+          const item = el.closest('[data-feed-prompt]');
+          if (!item) return;
+          const prompt = item.dataset.feedPrompt;
+          if (prompt && typeof window.openOverlay === 'function') window.openOverlay(prompt);
+        }
+        feed.addEventListener('click', function(e) { handleFeedClick(e.target); });
+        feed.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            const item = e.target.closest('[data-feed-prompt]');
+            if (item) { e.preventDefault(); handleFeedClick(e.target); }
+          }
+        });
+      })();
       // Dismissed chips are stashed (not destroyed) for 5 seconds. If the
       // user clicks Undo, the chip re-inserts at its original index. If the
       // window elapses, the dismissal is committed — AiMY would then learn
@@ -7982,9 +8431,37 @@
         lastDismissed = null;
       }
 
+      // Chip rotation state: tracks current display offset per scenario
+      const chipRotationOffset = {};
+
       function refreshChips() {
         const scenario = chipScenarios[activeScenario];
-        if (scenario) renderChips(scenario.chips);
+        if (!scenario || !scenario.chips.length) return;
+        const pool = scenario.chips;
+        if (pool.length <= 3) {
+          // Not enough chips to rotate — re-render same set (no-op visually, but keeps flow)
+          renderChips(pool);
+          return;
+        }
+        // Advance offset by 1, wrap around pool length
+        const prev = chipRotationOffset[activeScenario] || 0;
+        const next = (prev + 1) % pool.length;
+        chipRotationOffset[activeScenario] = next;
+        // Slice 3 chips starting from offset (wrapping)
+        const slice = [];
+        for (let i = 0; i < 3; i++) {
+          slice.push(pool[(next + i) % pool.length]);
+        }
+        // Brief fade-out then render
+        const row = document.getElementById("chipsRow");
+        if (row) {
+          row.style.transition = 'opacity 120ms ease';
+          row.style.opacity = '0';
+          setTimeout(function() {
+            renderChips(slice);
+            row.style.opacity = '1';
+          }, 130);
+        }
       }
 
       // Init chips + alt states on load
@@ -7994,6 +8471,14 @@
       if (document.getElementById("stateAltsList")) {
         renderStateAlts();
       }
+      // Seed initial confidence tooltip
+      (function() {
+        const sigEls = document.getElementById("confSignals");
+        const init = chipScenarios["critical"].signals;
+        if (sigEls && init) {
+          sigEls.innerHTML = init.map(s => '<div class="conf-signal">' + s + '</div>').join('');
+        }
+      })();
 
       // ── AiMY Daily Summary Card ────────────────────────────────────
       (function initSummaryCard() {
@@ -8383,10 +8868,65 @@
         }
 
         /* ── Open overlay ─────────────────────────────────────────────── */
+        // Scenario-keyed suggestion prompts for the canvas empty state
+        const OVERLAY_SUGGESTIONS = {
+          critical: [
+            'What\u2019s driving the SLA compliance drop to 61%?',
+            'Which 5 agents are below threshold and what\u2019s the common failure?',
+            'Generate a coaching plan for the 3 failing KPIs',
+            'Summarise today\u2019s quality score and the fastest fixes'
+          ],
+          improving: [
+            'What drove the quality improvement this period?',
+            'Which agents are setting the standard \u2014 and what are they doing?',
+            'Export a board-ready quality summary for this period',
+            'Is the first response time slip a risk to watch?'
+          ],
+          dispute: [
+            'What\u2019s the status of DISP-0441 and DISP-0438?',
+            'Which 3 disputes are awaiting auditor response?',
+            'What checklist item appears in 7 of 9 recent disputes?',
+            'Recommend a training intervention for the recurring dispute pattern'
+          ],
+          explore: [
+            'Compare Q3 vs Q4 quality drivers',
+            'Which agents are at risk of drift before next period?',
+            'Are any KPI thresholds due for recalibration before Q1?',
+            'Schedule a cycle review \u2014 what should it cover?'
+          ]
+        };
+
         function openOverlay(initialText) {
           overlayOpen = true;
           overlay.classList.add("open");
           floatBar.classList.add("hidden");
+
+          // Populate context continuity bar from the active scenario
+          (function populateContextBar() {
+            const tagsEl = document.getElementById('overlayContextTags');
+            if (!tagsEl) return;
+            const scenarioContextMap = {
+              critical:  ['today\u2019s KPI data', '3 KPIs failing', 'Nov score dip'],
+              improving: ['all KPIs trending up', 'today\u2019s quality data'],
+              dispute:   ['5 open disputes', '2 past SLA window', 'today\u2019s data'],
+              explore:   ['quality stable', 'no active alerts', 'today\u2019s data']
+            };
+            const tags = (typeof activeScenario !== 'undefined' && scenarioContextMap[activeScenario])
+              ? scenarioContextMap[activeScenario]
+              : ['today\u2019s quality data'];
+            tagsEl.innerHTML = tags.map(t => '<span class="overlay-context-tag">' + t + '</span>').join('');
+          })();
+
+          // Populate scenario-aware suggestion chips (only when thread is empty)
+          (function populateSuggestions() {
+            const sugEl = document.getElementById('overlaySuggestions');
+            if (!sugEl) return;
+            const key = (typeof activeScenario !== 'undefined') ? activeScenario : 'critical';
+            const prompts = OVERLAY_SUGGESTIONS[key] || OVERLAY_SUGGESTIONS.critical;
+            sugEl.innerHTML = prompts.map(p =>
+              '<button class="overlay-sugg-chip" onclick="overlaySuggestion(this)">' + p + '</button>'
+            ).join('');
+          })();
 
           if (initialText) {
             setTimeout(() => {
@@ -8529,6 +9069,19 @@
           },
         ];
 
+        /* Record-link map: prompt keywords -> {label, href} for the Go-to-record action link.
+           In production resolves to real deep-link URLs with filter params. */
+        var RECORD_LINKS = [
+          { keys: ['sla', 'first response', 'compliance', 'billing', '61%'],
+            link: { label: 'View breached tickets in Reviews', href: 'agent-scorecards.html' } },
+          { keys: ['agent', 'below threshold', '5 agents', 'omar', 'sara', 'khaled'],
+            link: { label: 'Open agent scorecards', href: 'agent-scorecards.html' } },
+          { keys: ['dispute', 'disp-0441', 'disp-0438', 'overdue', 'auditor'],
+            link: { label: 'Go to Disputes queue', href: 'disputes.html' } },
+          { keys: ['empathy', 'coaching plan', 'coaching brief', 'follow-up clarity', 'survey', 'script'],
+            link: { label: 'Review coaching evaluations', href: 'agent-scorecards.html' } },
+        ];
+
         function simulateAiResponse(userText) {
           if (isTyping) return;
           isTyping = true;
@@ -8536,6 +9089,8 @@
 
           var lo = (userText || "").toLowerCase();
           var matched = null;
+          var recordLink = null;
+
           for (var i = 0; i < CONTEXTUAL_RESPONSES.length; i++) {
             var entry = CONTEXTUAL_RESPONSES[i];
             if (entry.keys.some(function(k) { return lo.indexOf(k) !== -1; })) {
@@ -8549,10 +9104,27 @@
               "Active issues: SLA compliance at 61%, 5 agents below threshold, and 2 overdue disputes. " +
               "Would you like me to drill into any of these areas?";
           }
+
+          // Append a Go-to-record action link when the AI response references specific records.
+          // This closes the Knowledge-to-Action loop: the user got context and now has a direct path.
+          for (var j = 0; j < RECORD_LINKS.length; j++) {
+            var rl = RECORD_LINKS[j];
+            if (rl.keys.some(function(k) { return lo.indexOf(k) !== -1; })) {
+              recordLink = rl.link;
+              break;
+            }
+          }
+          if (recordLink) {
+            matched += '<br><a class="msg-action-link" href="' + recordLink.href + '" style="display:inline-flex;margin-top:10px;">' +
+              '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px">' +
+              '<path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>' +
+              '<polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>' +
+              recordLink.label + '</a>';
+          }
+
           var delay = 900 + Math.random() * 500;
           setTimeout(function() { appendAiMsg(matched); }, delay);
         }
-
         /* ── Overlay input: Enter to send (Shift+Enter = newline) ────── */
         function handleOverlaySend() {
           const text = overlayInput.value.trim();
@@ -8798,6 +9370,14 @@
         };
 
         /* ── Acknowledge alert ───────────────────────────────────────── */
+        // Maps bcard alertId to its corresponding summary signal element ID
+        var ALERT_TO_SIGNAL = {
+          'sla-breach':   'summarySignal1',
+          'kpi-failures': 'summarySignal2',
+          'sentiment':    'summarySignal2',  // both agent-related signals map to signal 2
+          'quality':      null               // no direct signal tile — quality is ambient
+        };
+
         window.acknowledgeAlert = function(btn, alertId) {
           const card = btn.closest('.bcard');
           const ackRow = btn.closest('.bcard-ack-row');
@@ -8809,6 +9389,18 @@
           card.classList.add('is-acknowledged');
           unreadAlertCount = Math.max(0, unreadAlertCount - 1); updateFloatBadge(unreadAlertCount);
           showToast({ title: 'Alert acknowledged', sub: 'Moved to alert history' });
+          // Dim the corresponding summary card signal tile
+          var signalId = ALERT_TO_SIGNAL[alertId];
+          if (signalId) {
+            var signalEl = document.getElementById(signalId);
+            if (signalEl) {
+              signalEl.style.transition = 'opacity 400ms ease, filter 400ms ease';
+              signalEl.style.opacity = '0.35';
+              signalEl.style.filter = 'saturate(0.3)';
+              signalEl.title = 'Acknowledged';
+              signalEl.setAttribute('aria-label', signalEl.getAttribute('aria-label') + ' (acknowledged)');
+            }
+          }
         };
 
         /* ── Bcard dismiss — injects prefilled text into float bar ─────── */
@@ -9051,11 +9643,41 @@
           const card = btn.closest('.coaching-card');
           const sp = card.querySelector('.coaching-state-pill');
           card.classList.add('state-accepted');
-          if (sp) sp.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Coaching workflow triggered — ref #CW-' + Math.floor(Math.random()*9000+1000);
+          const ref = 'CW-' + Math.floor(Math.random() * 9000 + 1000);
+          const agentEl = card.querySelector('.coaching-agent-name');
+          const agentName = agentEl ? agentEl.textContent.trim() : 'agent';
+
+          if (sp) {
+            sp.innerHTML =
+              '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>' +
+              ' Workflow triggered \u2014 ref #' + ref +
+              '<span class="coaching-next-links">' +
+                '<a class="coaching-next-link" href="agent-scorecards.html" title="Open coaching task">' +
+                  '<svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>' +
+                  'View task</a>' +
+                '<button class="coaching-next-link" onclick="window.openOverlay && window.openOverlay(\'Draft a coaching note for ' + agentName.replace(/'/g,'\u2019') + ' based on the accepted recommendation ref #' + ref + '\')" title="Draft notification to agent">' +
+                  '<svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' +
+                  'Notify agent</button>' +
+              '</span>';
+          }
+
           lastCoachingAction = null;
           showToast({ title: 'Workflow triggered', sub: 'Coaching task created and team lead notified' });
           const undoBtn = document.getElementById('aimyToastUndo');
           if (undoBtn) { undoBtn.style.display = 'none'; setTimeout(function() { undoBtn.style.display = ''; }, 5200); }
+          // Learning signal
+          try {
+            const whatEl = card.querySelector('.coaching-what');
+            window.dispatchEvent(new CustomEvent('aimy:coaching-accepted', {
+              detail: {
+                agentName:  agentName,
+                whatToDo:   whatEl ? whatEl.textContent : '',
+                ref:        ref,
+                scenarioKey: typeof activeScenario !== 'undefined' ? activeScenario : null,
+                timestamp:  Date.now()
+              }
+            }));
+          } catch (e) { /* no-op */ }
         };
                 window.coachDefer = function(btn) {
           const card = btn.closest('.coaching-card');
