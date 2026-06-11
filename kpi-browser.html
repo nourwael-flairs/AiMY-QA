@@ -4411,6 +4411,16 @@
             </button>
           </div>
 
+          <!-- A7: AiMY Hub Summary Bar — entry-point K→A for the full Hub -->
+          <div class="aimy-intelligence-bar" id="aimyHubSummaryBar" style="margin-bottom:0;margin-top:4px;display:none">
+            <div class="aib-left">
+              <svg width="14" height="16" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+              <span class="aib-label">AiMY</span>
+              <span class="aib-context" id="hubSummaryContext"></span>
+            </div>
+            <div class="aib-chips" id="hubSummaryChips"></div>
+          </div>
+
           <!-- Tab bar — role-gated: QA Manager sees Templates only; Admin sees all 4 -->
           <div class="kpi-tab-bar" id="kpiTabBar">
             <button class="kpi-tab active" data-tab="templates" onclick="switchKpiTab('templates')">
@@ -4508,7 +4518,7 @@
                   <span class="tpl-updated">Updated 3 days ago</span>
                 </div>
                 <div class="tpl-card-ai-actions">
-                  <button class="tpl-ai-btn primary" onclick="event.stopPropagation(); showToast('Deploying to Heliox Financial…')">
+                  <button class="tpl-ai-btn primary" onclick="event.stopPropagation(); currentPreviewTemplate=this.closest('.tpl-card').dataset.name; openActivationModal()">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="5 12 12 5 19 12"/><line x1="12" y1="19" x2="12" y2="5"/></svg>
                     Deploy to client
                   </button>
@@ -4589,6 +4599,18 @@
 
               <!-- Section: Custom -->
               <div class="template-section-label">Custom</div>
+              <div class="template-empty-state" id="customEmptyState" style="display:none;grid-column:1/-1;flex-direction:column;align-items:center;gap:16px;padding:32px 0;text-align:center">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:56px;height:56px">
+                  <rect x="8" y="12" width="32" height="28" rx="4" stroke="rgba(111,223,226,0.35)" stroke-width="1.5" fill="rgba(20,27,36,0.5)" stroke-dasharray="5 3"/>
+                  <path d="M24 20v8M20 24h8" stroke="rgba(111,223,226,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <p class="template-empty-title">No custom templates yet</p>
+                <p class="template-empty-sub">Fork a system template to tailor it for a specific client or channel.</p>
+                <button class="tpl-cta-fork" style="margin-top:4px" onclick="currentPreviewTemplate=null;openForkModalDirect()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h3"/><line x1="18" y1="9" x2="18" y2="15"/></svg>
+                  Fork a system template
+                </button>
+              </div>
 
               <div class="tpl-card" data-industry="Healthcare" data-channel="Email" data-type="Custom" data-name="Healthcare — Email (Custom)" onclick="openPreview(this)">
                 <div class="tpl-card-header">
@@ -4611,7 +4633,7 @@
                   <span class="tpl-updated">Updated 2 days ago</span>
                 </div>
                 <div class="tpl-card-ai-actions">
-                  <button class="tpl-ai-btn primary" onclick="event.stopPropagation(); showToast('Deploying to VitaCare Health…')">
+                  <button class="tpl-ai-btn primary" onclick="event.stopPropagation(); currentPreviewTemplate=this.closest('.tpl-card').dataset.name; openActivationModal()">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="5 12 12 5 19 12"/><line x1="12" y1="19" x2="12" y2="5"/></svg>
                     Deploy to client
                   </button>
@@ -4663,7 +4685,7 @@
                   <span class="tpl-updated">Updated yesterday</span>
                 </div>
                 <div class="tpl-card-ai-actions">
-                  <button class="tpl-ai-btn primary" onclick="event.stopPropagation(); showToast('Deploying to Heliox Financial…')">
+                  <button class="tpl-ai-btn primary" onclick="event.stopPropagation(); currentPreviewTemplate=this.closest('.tpl-card').dataset.name; openActivationModal()">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="5 12 12 5 19 12"/><line x1="12" y1="19" x2="12" y2="5"/></svg>
                     Deploy
                   </button>
@@ -4814,8 +4836,40 @@
               <button class="afs-clear-all" id="regClearAll">Clear all</button>
             </div>
 
+            <!-- AiMY Intelligence Bar for Registry tab -->
+            <div class="aimy-intelligence-bar" id="aimyRegistryBar">
+              <div class="aib-left">
+                <svg width="14" height="16" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                <span class="aib-label">AiMY recommends</span>
+                <span class="aib-context" id="regIntelContext">3 deprecated metrics in active templates — review before next evaluation run</span>
+              </div>
+              <div class="aib-chips">
+                <button class="aib-chip" onclick="applyRegFilter('Status','Deprecated');document.getElementById('aimyRegistryBar').style.display='none'">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Show Deprecated
+                </button>
+                <button class="aib-chip secondary" onclick="applyRegFilter('Type','Compliance');document.getElementById('aimyRegistryBar').style.display='none'">
+                  Compliance only
+                </button>
+                <button class="aib-dismiss" onclick="document.getElementById('aimyRegistryBar').style.display='none'" aria-label="Dismiss">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+            </div>
+
             <!-- No dropdowns: filters injected via AiMY bar chips -->
             <div class="kpi-tab-toolbar">
+              <!-- Inline search for Metric Registry -->
+              <div style="position:relative;flex:1;max-width:260px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--d500);pointer-events:none">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input id="metricSearchInput" class="filter-select" type="text" placeholder="Search metrics…"
+                  style="padding-left:30px;width:100%;font-family:'Urbanist',sans-serif"
+                  oninput="regActiveFilters['Search']=this.value.trim();renderActiveStrip('regActiveStrip',regActiveFilters);renderMetricCards()"
+                  autocomplete="off" spellcheck="false"/>
+              </div>
               <button class="tpl-cta-activate" style="flex:none;padding:8px 16px;font-size:11px;margin-left:auto" onclick="openCreateMetric()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 New metric
@@ -4836,7 +4890,18 @@
 
               <!-- Left: change request queue -->
               <div class="governance-main">
-                <div class="governance-section-header">
+                <!-- G7: AiMY intel bar for Governance tab -->
+              <div class="aimy-intelligence-bar" id="aimyGovBar" style="margin-bottom:16px">
+                <div class="aib-left">
+                  <svg width="14" height="16" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                  <span class="aib-label">AiMY</span>
+                  <span class="aib-context" id="govIntelContext">Governance queue summary loading…</span>
+                </div>
+                <div class="aib-chips" id="govIntelChips">
+                  <!-- Populated by renderGovernance() -->
+                </div>
+              </div>
+              <div class="governance-section-header">
                   <div class="governance-section-title">Change requests</div>
                   <div class="governance-status-filters">
                     <button class="gov-filter-chip active" data-status="all" onclick="filterChangeRequests(this)">All</button>
@@ -4855,10 +4920,22 @@
                 <div class="governance-section-header" style="margin-top:32px">
                   <div class="governance-section-title">Audit log</div>
                   <div style="margin-left:auto">
+                    <div style="display:flex;align-items:center;gap:8px">
+                    <div style="position:relative">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="position:absolute;left:8px;top:50%;transform:translateY(-50%);width:11px;height:11px;color:var(--d500);pointer-events:none">
+                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                      </svg>
+                      <input id="auditSearchInput" class="filter-select" type="text" placeholder="Filter by actor…"
+                        style="padding-left:26px;font-size:11px;width:160px;font-family:'Urbanist',sans-serif"
+                        oninput="auditActiveFilters['Actor']=this.value.trim()||undefined;if(!this.value.trim())delete auditActiveFilters['Actor'];renderActiveStrip('auditActiveStrip',auditActiveFilters);renderAuditLog()"
+                        autocomplete="off"/>
+                    </div>
                     <div class="kpi-active-strip" id="auditActiveStrip" style="margin-bottom:0;padding:3px 10px">
                       <span class="afs-label">Filter</span>
                       <button class="afs-clear-all" id="auditClearAll">Clear</button>
                     </div>
+                  </div>
                   </div>
                 </div>
                 <div class="audit-log-table-wrap">
@@ -4948,6 +5025,18 @@
             <div class="kpi-active-strip" id="healthActiveStrip">
               <span class="afs-label">Viewing</span>
               <button class="afs-clear-all" id="healthClearAll">Clear all</button>
+            </div>
+
+            <!-- AiMY Intelligence Bar for Health tab — G4 fix -->
+            <div class="aimy-intelligence-bar" id="aimyHealthBar">
+              <div class="aib-left">
+                <svg width="14" height="16" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                <span class="aib-label">AiMY triage</span>
+                <span class="aib-context" id="healthIntelContext">Loading health summary…</span>
+              </div>
+              <div class="aib-chips" id="healthIntelChips">
+                <!-- Populated on tab switch by updateHealthIntelBar() -->
+              </div>
             </div>
 
             <div class="kpi-tab-toolbar">
@@ -5045,7 +5134,7 @@
         <!-- ══════════════════════════════════════════════════════════════
              VERSION HISTORY OVERLAY (layered over template detail)
         ════════════════════════════════════════════════════════════════ -->
-        <div class="kpi-overlay-backdrop" id="versionBackdrop" onclick="closeVersionPanel()" style="z-index:461"></div>
+        <div class="kpi-overlay-backdrop" id="versionBackdrop" onclick="closeVersionPanel();event.stopPropagation();" style="z-index:461"></div>
         <div class="kdo-version-overlay" id="versionOverlay" role="dialog" aria-modal="true" aria-label="Version history">
           <div class="kdo-version-overlay-header">
             <button class="editor-back-btn" onclick="closeVersionPanel()">
@@ -5121,23 +5210,13 @@
               </div>
               <div class="kpi-modal-field">
                 <label class="kpi-modal-label">Type <span style="color:var(--err)">*</span></label>
-                <select class="filter-select kpi-modal-input" id="mfType">
-                  <option value="">Select type…</option>
-                  <option>Compliance</option>
-                  <option>Performance</option>
-                  <option>Sentiment</option>
-                  <option>Efficiency</option>
-                </select>
+                <select class="editor-select" id="mfType" tabindex="-1" aria-hidden="true"><option value="">Select type…</option><option>Compliance</option><option>Performance</option><option>Sentiment</option><option>Efficiency</option></select>
+                <div class="kpi-dropdown" id="mfTypeDropdown"><button class="kpi-dropdown-trigger placeholder" type="button" onclick="toggleDropdown('mfTypeDropdown')"><span id="mfTypeLabel">Select type…</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="kpi-dropdown-menu" id="mfTypeMenu" role="listbox"><div class="kpi-dropdown-option placeholder-opt" onclick="pickDropdown('mfTypeDropdown','')">Select type…</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfTypeDropdown','Compliance')">Compliance</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfTypeDropdown','Performance')">Performance</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfTypeDropdown','Sentiment')">Sentiment</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfTypeDropdown','Efficiency')">Efficiency</div></div></div>
               </div>
               <div class="kpi-modal-field">
                 <label class="kpi-modal-label">Data source <span style="color:var(--err)">*</span></label>
-                <select class="filter-select kpi-modal-input" id="mfSource">
-                  <option value="">Select source…</option>
-                  <option>AiMY Connect</option>
-                  <option>Zendesk</option>
-                  <option>S3 Transcripts</option>
-                  <option>AiMY QA Engine</option>
-                </select>
+                <select class="editor-select" id="mfSource" tabindex="-1" aria-hidden="true"><option value="">Select source…</option><option>AiMY Connect</option><option>Zendesk</option><option>S3 Transcripts</option><option>AiMY QA Engine</option></select>
+                <div class="kpi-dropdown" id="mfSourceDropdown"><button class="kpi-dropdown-trigger placeholder" type="button" onclick="toggleDropdown('mfSourceDropdown')"><span id="mfSourceLabel">Select source…</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="kpi-dropdown-menu" id="mfSourceMenu" role="listbox"><div class="kpi-dropdown-option" onclick="pickDropdown('mfSourceDropdown','AiMY Connect')">AiMY Connect</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfSourceDropdown','Zendesk')">Zendesk</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfSourceDropdown','S3 Transcripts')">S3 Transcripts</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfSourceDropdown','AiMY QA Engine')">AiMY QA Engine</div></div></div>
               </div>
               <div class="kpi-modal-field" style="grid-column:1/-1">
                 <label class="kpi-modal-label">Calculation method</label>
@@ -5149,12 +5228,8 @@
               </div>
               <div class="kpi-modal-field">
                 <label class="kpi-modal-label">Owner <span style="color:var(--err)">*</span></label>
-                <select class="filter-select kpi-modal-input" id="mfOwner">
-                  <option value="">Assign owner…</option>
-                  <option>Ahmed Mahfouz</option>
-                  <option>Nour Wael</option>
-                  <option>QA Team</option>
-                </select>
+                <select class="editor-select" id="mfOwner" tabindex="-1" aria-hidden="true"><option value="">Assign owner…</option><option>Ahmed Mahfouz</option><option>Nour Wael</option><option>QA Team</option></select>
+                <div class="kpi-dropdown" id="mfOwnerDropdown"><button class="kpi-dropdown-trigger placeholder" type="button" onclick="toggleDropdown('mfOwnerDropdown')"><span id="mfOwnerLabel">Assign owner…</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="kpi-dropdown-menu" id="mfOwnerMenu" role="listbox"><div class="kpi-dropdown-option" onclick="pickDropdown('mfOwnerDropdown','Ahmed Mahfouz')">Ahmed Mahfouz</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfOwnerDropdown','Nour Wael')">Nour Wael</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfOwnerDropdown','QA Team')">QA Team</div></div></div>
               </div>
             </div>
             <div class="kpi-modal-impact">
@@ -5696,6 +5771,11 @@
       }
 
       /* Template card */
+      .tpl-card.highlighted {
+        border-color: rgba(var(--qa-accent-rgb),0.55) !important;
+        box-shadow: 0 0 0 2px rgba(var(--qa-accent-rgb),0.18), 0 8px 32px rgba(0,0,0,0.3) !important;
+        transform: translateY(-2px) !important;
+      }
       .tpl-card {
         background: var(--card-bg);
         border: 1px solid var(--card-border);
@@ -6863,7 +6943,26 @@
       .editor-textarea:focus {
         border-color: rgba(var(--qa-accent-rgb),0.4);
       }
+      /* Native select — hidden, keeps value in sync */
       .editor-select {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+        width: 0;
+        height: 0;
+      }
+
+      /* ── Custom dropdown ──────────────────────────────────────── */
+      .kpi-dropdown {
+        position: relative;
+        width: 100%;
+        font-family: "Urbanist", sans-serif;
+      }
+      .kpi-dropdown-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
         background: rgba(255,255,255,0.04);
         border: 1px solid rgba(255,255,255,0.1);
         border-radius: 8px;
@@ -6871,14 +6970,106 @@
         font-family: "Urbanist", sans-serif;
         font-size: 13px;
         font-weight: 500;
-        color: var(--d50);
-        outline: none;
+        color: var(--d300);
         cursor: pointer;
-        -webkit-appearance: none;
         width: 100%;
+        text-align: left;
+        transition: border-color 150ms, background 150ms;
+        user-select: none;
       }
-      .editor-select:focus {
+      .kpi-dropdown-trigger.placeholder { color: var(--d600); }
+      .kpi-dropdown-trigger:hover {
+        background: rgba(255,255,255,0.07);
+        border-color: rgba(255,255,255,0.18);
+        color: var(--d100);
+      }
+      .kpi-dropdown-trigger.open {
         border-color: rgba(var(--qa-accent-rgb),0.4);
+        background: rgba(255,255,255,0.06);
+        color: var(--d50);
+      }
+      .kpi-dropdown-trigger svg {
+        width: 13px;
+        height: 13px;
+        flex-shrink: 0;
+        color: var(--d500);
+        transition: transform 150ms;
+      }
+      .kpi-dropdown-trigger.open svg { transform: rotate(180deg); }
+      .kpi-dropdown-menu {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        background: var(--d800, #1c2630);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 10px;
+        box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+        z-index: 900;
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+        pointer-events: none;
+        transition: opacity 140ms cubic-bezier(0.22,1,0.36,1),
+                    transform 140ms cubic-bezier(0.22,1,0.36,1);
+        max-height: 240px;
+        overflow-y: auto;
+      }
+      .kpi-dropdown-menu::-webkit-scrollbar { width: 3px; }
+      .kpi-dropdown-menu::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+      .kpi-dropdown-menu.open {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: all;
+      }
+      .kpi-dropdown-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 9px 14px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--d200);
+        cursor: pointer;
+        transition: background 100ms, color 100ms;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+      }
+      .kpi-dropdown-option:last-child { border-bottom: none; }
+      .kpi-dropdown-option:hover {
+        background: rgba(255,255,255,0.06);
+        color: var(--d50);
+      }
+      .kpi-dropdown-option.selected {
+        color: var(--qa-accent);
+        background: rgba(var(--qa-accent-rgb),0.08);
+      }
+      .kpi-dropdown-option.selected::after {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--qa-accent);
+        flex-shrink: 0;
+      }
+      .kpi-dropdown-option.placeholder-opt {
+        color: var(--d600);
+        font-style: italic;
+        font-size: 12px;
+      }
+      .kpi-dropdown-option .opt-sub {
+        font-size: 10px;
+        color: var(--d500);
+        font-weight: 400;
+        font-style: normal;
+        margin-top: 1px;
+      }
+      /* conflict/replace sub-label */
+      .kpi-dropdown-option .opt-replace {
+        font-size: 10px;
+        color: var(--warn);
+        font-weight: 600;
+        font-style: normal;
       }
 
       /* Weight summary bar */
@@ -7733,6 +7924,8 @@
 
       /* Audit log table */
       .audit-log-table-wrap {
+        max-height: 340px;
+        overflow-y: auto;
         border-radius: 10px;
         border: 1px solid rgba(255,255,255,0.06);
         overflow: hidden;
@@ -9125,6 +9318,61 @@
         label.textContent = isAdmin ? 'Admin' : 'QA Manager';
         if (!isAdmin && activeTab !== 'templates') switchKpiTab('templates');
         updateFilterTray();
+        syncActiveCardBadges();
+        syncCustomEmptyState();
+        updateHubSummaryBar();
+      }
+      // A7: KPI Hub page-level AiMY summary
+      function updateHubSummaryBar() {
+        const bar = document.getElementById('aimyHubSummaryBar');
+        const ctx = document.getElementById('hubSummaryContext');
+        const chips = document.getElementById('hubSummaryChips');
+        if (!bar || !ctx || !chips) return;
+        if (currentRole !== 'admin') { bar.style.display='none'; return; }
+        const pending = CHANGE_REQUESTS.filter(c=>c.status==='Pending Review');
+        const crits = typeof HEALTH_DATA !== 'undefined' ? HEALTH_DATA.filter(d=>d.severity==='crit') : [];
+        const parts = [];
+        if (pending.length) parts.push(pending.length + ' CR' + (pending.length>1?'s':'')+' pending review');
+        if (crits.length) parts.push(crits.length + ' critical health alert' + (crits.length>1?'s':''));
+        if (!parts.length) { bar.style.display='none'; return; }
+        ctx.textContent = parts.join(' · ');
+        chips.innerHTML = (pending.length
+          ? `<button class="aib-chip" onclick="switchKpiTab('governance');document.getElementById('aimyHubSummaryBar').style.display='none'">
+               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+               Review CR${pending.length>1?'s':''}
+             </button>` : '') +
+          (crits.length
+          ? `<button class="aib-chip secondary" onclick="switchKpiTab('health');document.getElementById('aimyHubSummaryBar').style.display='none'">
+               Health alerts
+             </button>` : '') +
+          `<button class="aib-dismiss" onclick="document.getElementById('aimyHubSummaryBar').style.display='none'" aria-label="Dismiss"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
+        bar.style.display = 'flex';
+      }
+      // G8: show/hide custom section empty state
+      function syncCustomEmptyState() {
+        const gallery = document.getElementById('templateGallery');
+        if (!gallery) return;
+        const emptyEl = document.getElementById('customEmptyState');
+        if (!emptyEl) return;
+        // Count custom cards: those with data-type="Custom" or in Custom section
+        const customCards = Array.from(gallery.querySelectorAll('.tpl-card[data-type="Custom"]'));
+        emptyEl.style.display = customCards.length === 0 ? 'flex' : 'none';
+      }
+      // G1: sync active badges on all template cards with live ACTIVE_CLIENT_TEMPLATES state
+      function syncActiveCardBadges() {
+        document.querySelectorAll('.tpl-card').forEach(card => {
+          const badge = card.querySelector('.tpl-active-badge');
+          if (!badge) return;
+          const name = card.dataset.name;
+          const isActive = name && Object.values(ACTIVE_CLIENT_TEMPLATES).includes(name);
+          badge.style.display = isActive ? 'flex' : 'none';
+          // Update quick action: replace "Deploy to client" with "Manage" when active
+          const deployBtn = card.querySelector('.tpl-ai-btn.primary');
+          if (deployBtn && isActive) {
+            deployBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="10" height="10"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Manage';
+            deployBtn.onclick = function(e) { e.stopPropagation(); currentPreviewTemplate = name; openPreview(card); };
+          }
+        });
       }
       function toggleRole() {
         currentRole = currentRole === 'manager' ? 'admin' : 'manager';
@@ -9134,9 +9382,13 @@
         activeTab = tab;
         document.querySelectorAll('.kpi-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
         document.querySelectorAll('.kpi-tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + tab));
-        if (tab === 'registry')   renderMetricCards();
-        if (tab === 'governance') renderGovernance();
-        if (tab === 'health')     renderHealth();
+        if (tab === 'registry') {
+          renderMetricCards();
+          const rb = document.getElementById('aimyRegistryBar');
+          if (rb) rb.style.display = 'flex';
+        }
+        if (tab === 'governance') { renderGovernance(); const gb=document.getElementById('aimyGovBar'); if(gb) gb.style.display='flex'; }
+        if (tab === 'health')     { renderHealth(); updateHealthIntelBar(); }
         updateFilterTray();
         closePreview(); closeMetricDetail();
       }
@@ -9222,8 +9474,20 @@
 
       function clearTabFilters() {
         if (activeTab==='templates')  { kpiActiveFilters  = {}; renderActiveStrip('tplActiveStrip', kpiActiveFilters); filterTemplatesByObj(); }
-        if (activeTab==='registry')   { regActiveFilters  = {}; renderActiveStrip('regActiveStrip', regActiveFilters); renderMetricCards(); }
-        if (activeTab==='governance') { auditActiveFilters = {}; renderActiveStrip('auditActiveStrip', auditActiveFilters); renderAuditLog(); }
+        if (activeTab==='registry')   {
+          regActiveFilters  = {};
+          renderActiveStrip('regActiveStrip', regActiveFilters);
+          renderMetricCards();
+          const si = document.getElementById('metricSearchInput');
+          if (si) si.value = '';
+        }
+        if (activeTab==='governance') {
+          auditActiveFilters = {};
+          renderActiveStrip('auditActiveStrip', auditActiveFilters);
+          renderAuditLog();
+          const asi = document.getElementById('auditSearchInput');
+          if (asi) asi.value = '';
+        }
         if (activeTab==='health')     { healthActiveFilters = {}; renderActiveStrip('healthActiveStrip', healthActiveFilters); renderHealth(); }
       }
 
@@ -9292,11 +9556,15 @@
       // AiMY intelligence bar — highlight recommended template card
       function highlightTemplate(name) {
         document.querySelectorAll(".tpl-card.aimy-highlight").forEach(c => c.classList.remove("aimy-highlight"));
-        const card = [...document.querySelectorAll(".tpl-card")].find(c => c.dataset.name === name);
+        const card = document.querySelector('.tpl-card[data-name="' + name + '"]');
         if (!card) return;
         card.classList.add("aimy-highlight");
         card.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        setTimeout(() => card.classList.remove("aimy-highlight"), 2400);
+        // A1: auto-open KDO overlay to complete the K→A loop
+        setTimeout(function() {
+          currentPreviewTemplate = name;
+          openPreview(card);
+        }, 400);
       }
 
       // ──────────────────────────────────────────────────────────
@@ -9406,13 +9674,13 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h3"/><line x1="18" y1="9" x2="18" y2="15"/></svg>
             Fork &amp; customize
           </button>
-          ${isActive ? `<button class="kdo-action-chip ghost" onclick="injectCanvasAction('Show me recent evaluations scored using ${tplShort} and flag any patterns worth reviewing.')">
+          ${isActive ? `<button class="kdo-action-chip ghost" data-tpl="${tplShort.replace(/"/g,'&quot;')}" onclick="(function(b){injectCanvasAction('Show me recent evaluations scored using '+b.dataset.tpl+' and flag any patterns worth reviewing.');})(this)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             View evaluations
           </button>` : ''}
-          <button class="kdo-action-chip ghost" onclick="injectCanvasAction('What do you think of the weight distribution in ${tplShort}? Are the priorities balanced well for this industry?')">
+          <button class="kdo-action-chip ghost" onclick="injectCanvasAction(${isActive ? '\`Analyse the live weight distribution in ${tplShort}. We have evaluation data — identify any categories where the current weight is causing score distortion or where agents are consistently underperforming relative to the weight assigned.\`' : '\`Estimate the impact of the weight distribution in ${tplShort} for this industry. No live evaluation data yet — give me your expert assessment on whether these priorities are well-balanced and flag any weight that looks miscalibrated.\`'})">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            Analyse weights
+            ${isActive ? 'Analyse live weights' : 'Estimate weight impact'}
           </button>
           <button class="kdo-action-chip ghost" onclick="openVersionPanel()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -9509,7 +9777,33 @@
       // ──────────────────────────────────────────────────────────
       // ACTIVATION & FORK MODALS
       // ──────────────────────────────────────────────────────────
-      function openActivationModal() { const t=(currentPreviewTemplate||'').replace(/ \(Custom\)| \(Forked\)/,''); injectCanvasAction(`I want to activate ${t} for a client. Which clients are available and what happens to evaluations already in progress?`); }
+      function openActivationModal() {
+        const tplName = (currentPreviewTemplate||'').replace(/ \(Custom\)| \(Forked\)/,'');
+        // Populate modal with template name
+        const nameEl = document.getElementById('activationTemplateName');
+        if (nameEl) nameEl.textContent = tplName || '—';
+        // Populate client select — mark clients that already have a template
+        const sel = document.getElementById('activationClientSelect');
+        if (sel) {
+          const ALL_CLIENTS = ['Heliox Financial','Meridian Telecom','VitaCare Health','Bloom Retail Group','SkyWay Travel'];
+          sel.innerHTML = '<option value="">Select a client…</option>' +
+            ALL_CLIENTS.map(c => {
+              const existing = ACTIVE_CLIENT_TEMPLATES[c];
+              const label = existing ? c + ' — replaces ' + existing.replace(/ \(Custom\)| \(Forked\)/,'') : c;
+              return `<option value="${c}">${label}</option>`;
+            }).join('');
+          sel.value = '';
+        }
+        // Reset confirm button and conflict warning
+        const confirmBtn = document.getElementById('activationConfirmBtn');
+        if (confirmBtn) { confirmBtn.disabled = true; confirmBtn.textContent = 'Activate for client'; }
+        const warn = document.getElementById('activationConflictWarn');
+        if (warn) warn.style.display = 'none';
+        const labelEl = document.getElementById('activationClientLabel');
+        if (labelEl) labelEl.textContent = 'client';
+        document.getElementById('activationBackdrop').classList.add('open');
+        document.getElementById('activationModal').classList.add('open');
+      }
       function openForkModal()       { const t=(currentPreviewTemplate||'').replace(/ \(Custom\)| \(Forked\)/,''); injectCanvasAction(`I want to fork ${t} and build a customised version. What should I name it and what changes make sense for my context?`); }
 
       function openRollbackModal(versionId, versionLabel, templateName) {
@@ -9529,8 +9823,43 @@
         pendingRollbackVersion = null;
       }
       function confirmRollback() {
-        closeRollbackModal(); closeVersionPanel(); closePreview();
-        if (typeof showToast==='function') showToast('Template rolled back', pendingRollbackVersion?.versionLabel + ' is now current');
+        const rv = pendingRollbackVersion;
+        closeRollbackModal();
+        closeVersionPanel();
+        if (!rv) return;
+        const tpl = TEMPLATES[rv.templateName];
+        if (tpl) {
+          // Update version state: set rolled-back version as current
+          tpl.versions.forEach(v => { v.current = (v.id === rv.versionId); });
+          // Update 'updated' timestamp on card
+          tpl.updated = 'Just now (rolled back to ' + rv.versionLabel + ')';
+          // Refresh card in gallery
+          document.querySelectorAll('.tpl-card').forEach(card => {
+            if (card.dataset.name === rv.templateName) {
+              const updatedEl = card.querySelector('.tpl-updated');
+              if (updatedEl) updatedEl.textContent = 'Just now';
+              // Pulse ok border
+              card.style.transition = 'border-color 0.3s ease, box-shadow 0.3s ease';
+              card.style.borderColor = 'rgba(23,178,106,0.5)';
+              card.style.boxShadow = '0 0 0 1px rgba(23,178,106,0.2)';
+              setTimeout(() => { card.style.borderColor = ''; card.style.boxShadow = ''; }, 2200);
+            }
+          });
+        }
+        // Keep preview open with refreshed version history
+        if (rv.templateName) {
+          setTimeout(() => {
+            if (currentPreviewTemplate === rv.templateName || !currentPreviewTemplate) {
+              currentPreviewTemplate = rv.templateName;
+              openPreview(document.querySelector('.tpl-card[data-name="' + rv.templateName + '"]'));
+            }
+          }, 100);
+        }
+        if (typeof showToast==='function') showToast('Template rolled back', rv.versionLabel + ' is now current');
+        pendingRollbackVersion = null;
+        // Audit log
+        AUDIT_LOG.unshift({ts: new Date().toLocaleString(), actor:'Nour Wael', action:'Rolled back', metric: rv.templateName, summary: 'Rolled back to ' + rv.versionLabel, reqId:'RB-'+Date.now().toString().slice(-5)});
+        renderAuditLog();
       }
 
       // ──────────────────────────────────────────────────────────
@@ -9818,6 +10147,30 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           }
         }
 
+        // ── GOVERNANCE branches ────────────────────────────────
+        if (p.includes('approv') && (p.includes('cr-') || p.includes('change request') || p.includes('request'))) {
+          return `Approving a change request promotes it to <strong>Approved</strong> status — it won’t affect live evaluations until deployed.<br><br><strong>Before approving, check:</strong><br>1. Blast radius — how many templates and clients are affected?<br>2. Is the change an improvement or a regression risk?<br>3. Has the submitter provided sufficient rationale?<br><br>Once approved, a <strong>Deploy</strong> button appears on the CR card.`;
+        }
+        if (p.includes('reject') && (p.includes('cr-') || p.includes('change request') || p.includes('reason') || p.includes('rejection'))) {
+          return `A rejection reason is required and is logged permanently in the audit trail.<br><br><strong>Good rejection reasons address:</strong><br>1. What specifically was wrong with the proposed change<br>2. What evidence would be needed to reconsider<br>3. Whether the submitter should try a different approach<br><br>The submitter will see your rationale in the CR detail view.`;
+        }
+        if (p.includes('deploy') && (p.includes('cr-') || p.includes('change') || p.includes('approved'))) {
+          const readyToDeploy = CHANGE_REQUESTS.filter(c=>c.status==='Approved');
+          return 'Deploying applies the change to <strong>future evaluations only</strong> — no historical re-scoring occurs.' + (readyToDeploy.length > 1 ? ' You currently have <strong>' + readyToDeploy.length + ' approved CRs</strong> ready to deploy.' : '') + '<br><br>Post-deploy: check Metric Health within the next evaluation cycle. If coverage drops, verify the Data Ingestion pipeline for the affected source.';
+        }
+        if (p.includes('permission') || (p.includes('role') && p.includes('access'))) {
+          return `The permission matrix controls what each role can do across KPI Hub. Changes take effect immediately and are audit-logged.<br><br><strong>Current model:</strong><br>• <em>QA Analyst</em> — view metrics only<br>• <em>QA Manager</em> — view and edit; cannot approve or deprecate<br>• <em>Admin</em> — full access, always on<br><br>Permission escalation (granting approve to Analyst) should be reviewed quarterly.`;
+        }
+
+        // ── METRIC HEALTH branches ──────────────────────────────
+        if (p.includes('coverage') || p.includes('missing data') || p.includes('data gap')) {
+          const crits = HEALTH_DATA.filter(d=>d.severity==='crit');
+          return 'Coverage gaps mean the metric isn’t receiving data from all expected sources.<br><br><strong>Most common causes:</strong><br>1. <strong>Data ingestion failure</strong> — pipeline from source (Zendesk, Freshdesk, S3) isn’t delivering. Check the Data page.<br>2. <strong>Metric not mapped</strong> — template uses this metric but source field isn’t configured for that client.<br>3. <strong>Client onboarding gap</strong> — new client hasn’t completed integration setup.<br><br>' + (crits.length ? 'Currently critical: <strong>' + crits.map(function(d){return d.name;}).join(', ') + '</strong>. Start there.' : 'No critical gaps right now.');
+        }
+        if (p.includes('variance') || p.includes('score dist') || p.includes('inconsistent')) {
+          return `High variance usually signals one of three things:<br><br>1. <strong>Ambiguous criteria</strong> — reviewers are interpreting the KPI differently. Tighten the scoring criteria in the template editor.<br>2. <strong>Genuine performance spread</strong> — coaching signal, not a data problem. Surface in the Reviews tab.<br>3. <strong>Source mismatch</strong> — metric is pulling from different channels for different clients.<br><br>Compare the template’s scoring criteria with the evaluation results in the Reviews tab for the affected agents.`;
+        }
+
         // ── FALLBACK ────────────────────────────────────────────
         return `I&#39;m scanning the KPI Hub for you… Here's a quick summary of current state:
 
@@ -9886,6 +10239,12 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           (!f['Owner']  || m.owner  === f['Owner'])  &&
           (!f['Search'] || m.name.toLowerCase().includes((f['Search']||'').toLowerCase())));
       }
+      // G3: Apply a registry filter from AiMY bar chip
+      function applyRegFilter(key, value) {
+        regActiveFilters[key] = value;
+        renderActiveStrip('regActiveStrip', regActiveFilters);
+        renderMetricCards();
+      }
 
       // Metric detail — opens centered overlay (no right panel)
       function openMetricDetail(id) {
@@ -9916,10 +10275,13 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
 
         // AiMY action chips
         document.getElementById('mdo-aimy-chips').innerHTML = `
-          <button class="kdo-action-chip primary" onclick="injectCanvasAction('I want to propose a change to ${m.name}. What are the implications and what do I need to include in the change request?')">Propose change</button>
-          ${m.status==='Draft' ? `<button class="kdo-action-chip secondary" onclick="injectCanvasAction('I want to submit ${m.name} for approval and promote it from Draft to Active. Is it ready?')">Submit for approval</button>` : ''}
-          ${m.status==='Active' && !m.deprecatedBy ? `<button class="kdo-action-chip ghost" onclick="injectCanvasAction('Which templates are currently using ${m.name} and how is it weighted in each?')">See templates using this</button>` : ''}
-          <button class="kdo-action-chip ghost" onclick="injectCanvasAction('How is ${m.name} calculated and what data does it pull from? Walk me through it.')">How is this calculated?</button>
+          <button class="kdo-action-chip primary" onclick="openMetricFormForEdit('${m.id}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Propose change
+          </button>
+          ${m.status==='Draft' ? `<button class="kdo-action-chip secondary" data-mname="${m.name.replace(/"/g,'&quot;')}" onclick="(function(b){injectCanvasAction('I want to submit '+b.dataset.mname+' for approval and promote it from Draft to Active. Is it ready?');})(this)">Submit for approval</button>` : ''}
+          ${m.status==='Active' && !m.deprecatedBy ? `<button class="kdo-action-chip ghost" data-mname="${m.name.replace(/"/g,'&quot;')}" onclick="(function(b){injectCanvasAction('Which templates are currently using '+b.dataset.mname+' and how is it weighted in each?');})(this)">See templates using this</button>` : ''}
+          <button class="kdo-action-chip ghost" data-mname="${m.name.replace(/"/g,'&quot;')}" onclick="(function(b){injectCanvasAction('How is '+b.dataset.mname+' calculated and what data does it pull from? Walk me through it.');})(this)">How is this calculated?</button>
         `;
 
         document.getElementById('mdoBackdrop').classList.add('open');
@@ -9975,7 +10337,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           </div>
           <div class="mdo-footer">
             <button class="sec-btn" onclick="closeMetricDetail()">Close</button>
-            <button class="editor-draft-btn" onclick="closeMetricDetail();openCreateMetric()">Edit</button>
+            <button class="editor-draft-btn" onclick="openEditMetric()">Edit</button>
           </div>`;
         return el;
       }
@@ -9987,6 +10349,28 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         renderChangeRequests();
         renderAuditLog();
         renderGovernanceClientsTable();
+        updateGovIntelBar();
+      }
+      // G7: update governance AiMY intel bar
+      function updateGovIntelBar() {
+        const ctx = document.getElementById('govIntelContext');
+        const chips = document.getElementById('govIntelChips');
+        if (!ctx || !chips) return;
+        const pending = CHANGE_REQUESTS.filter(c=>c.status==='Pending Review');
+        const approved = CHANGE_REQUESTS.filter(c=>c.status==='Approved');
+        ctx.textContent = pending.length
+          ? pending.length + ' pending review' + (approved.length ? ', ' + approved.length + ' approved and awaiting deployment' : '') + ' — review oldest first'
+          : approved.length
+          ? approved.length + ' approved CR' + (approved.length>1?'s':'') + ' ready to deploy'
+          : 'No pending changes — governance queue clear';
+        chips.innerHTML = (pending.length
+          ? `<button class="aib-chip" onclick="filterChangeRequests(document.querySelector('.gov-filter-chip[data-status=\'Pending Review\']'));document.getElementById('aimyGovBar').style.display='none'">
+               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+               ${pending.length} pending
+             </button>` : '') +
+          (approved.length
+          ? `<button class="aib-chip secondary" onclick="filterChangeRequests(document.querySelector('.gov-filter-chip[data-status=\'Approved\']'));document.getElementById('aimyGovBar').style.display='none'">Deploy ${approved.length} approved</button>` : '') +
+          `<button class="aib-dismiss" onclick="document.getElementById('aimyGovBar').style.display='none'" aria-label="Dismiss"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
       }
 
       function renderChangeRequests(statusFilter) {
@@ -10019,11 +10403,11 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
                </div>` : '';
           const actions = isPending
             ? `<div style="display:flex;gap:6px">
-                 <button class="tpl-ai-btn ghost" style="border-color:rgba(240,68,56,0.25);color:var(--err)" onclick="event.stopPropagation();injectCanvasAction('Reject ${cr.id} for ${cr.metric} — help me write my rejection reason')">Reject</button>
-                 <button class="tpl-ai-btn primary" style="background:rgba(23,178,106,0.12);color:var(--ok);border-color:rgba(23,178,106,0.25)" onclick="event.stopPropagation();injectCanvasAction('I want to approve ${cr.id} for ${cr.metric}. The proposed change is: ${cr.before} → ${cr.after}. What are the risks, and what should I write as my approval decision?')">Approve</button>
+                 <button class="tpl-ai-btn ghost" style="border-color:rgba(240,68,56,0.25);color:var(--err)" onclick="event.stopPropagation();openCRRejectModal('${cr.id}')">Reject</button>
+                 <button class="tpl-ai-btn primary" style="background:rgba(23,178,106,0.12);color:var(--ok);border-color:rgba(23,178,106,0.25)" onclick="event.stopPropagation();openCRApproveModal('${cr.id}')">Approve</button>
                </div>`
             : isApproved
-            ? `<button class="tpl-ai-btn primary" style="background:rgba(51,105,255,0.12);color:#61adf1;border-color:rgba(51,105,255,0.25)" onclick="event.stopPropagation();injectCanvasAction('Deploy ${cr.id} — show me the full impact before I confirm')">Deploy</button>`
+            ? `<button class="tpl-ai-btn primary" style="background:rgba(51,105,255,0.12);color:#61adf1;border-color:rgba(51,105,255,0.25)" onclick="event.stopPropagation();openCRDeployModal('${cr.id}')">Deploy</button>`
             : `<button class="cr-view-btn" onclick="event.stopPropagation();openCRDetail('${cr.id}')">View</button>`;
           return `<div class="cr-card${isPending?' pending':''}">
             <div class="cr-card-header">
@@ -10075,14 +10459,25 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       function applyAuditFilters(entries) {
         const f = auditActiveFilters;
         return entries.filter(e =>
-          (!f['Actor']  || e.actor  === f['Actor'])  &&
-          (!f['Action'] || e.action === f['Action']));
+          (!f['Actor']  || e.actor.toLowerCase().includes((f['Actor']||'').toLowerCase())) &&
+          (!f['Action'] || e.action === f['Action']) &&
+          (!f['Metric'] || e.metric.toLowerCase().includes((f['Metric']||'').toLowerCase())));
       }
 
       function filterAuditLog() { renderAuditLog(); }
 
       function exportAuditLog() {
-        if (typeof showToast==='function') showToast('Exporting audit log','CSV download will begin shortly');
+        const filtered = applyAuditFilters(AUDIT_LOG);
+        const headers = ['Timestamp','Actor','Action','Metric','Change summary','Request ID'];
+        const rows = filtered.map(e => [e.ts, e.actor, e.action, e.metric, e.summary, e.reqId]
+          .map(v => '"' + String(v||'').replace(/"/g,'""') + '"').join(','));
+        const csv = [headers.join(','), ...rows].join('\n');
+        const blob = new Blob([csv], {type:'text/csv'});
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url; a.download = 'kpi-hub-audit-log.csv'; a.click();
+        URL.revokeObjectURL(url);
+        if (typeof showToast==='function') showToast('Audit log exported', filtered.length + ' entries downloaded');
       }
 
       function renderGovernanceClientsTable() {
@@ -10100,31 +10495,303 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         }).join('');
       }
 
+      let _pendingPermEl = null;
       function togglePerm(el) {
         if (el.classList.contains('locked')) return;
-        el.classList.toggle('on');
+        _pendingPermEl = el;
+        const role = el.dataset.role;
+        const perm = el.dataset.perm;
+        const isGranting = !el.classList.contains('on');
+        const roleLabel = role === 'analyst' ? 'QA Analyst' : role === 'manager' ? 'QA Manager' : role;
+        const permLabel = perm === 'view' ? 'View metrics' : perm === 'edit' ? 'Edit metrics' : perm === 'approve' ? 'Approve changes' : perm === 'deprecate' ? 'Deprecate metrics' : perm;
+        const action = isGranting ? 'Grant' : 'Revoke';
+        const modal = document.getElementById('permConfirmModal');
+        const backdrop = document.getElementById('permConfirmBackdrop');
+        if (!modal || !backdrop) {
+          // Fallback: immediate toggle if modal not in DOM
+          el.classList.toggle('on');
+          if (typeof showToast==='function') showToast('Permission updated','Change logged in audit log');
+          return;
+        }
+        document.getElementById('permConfirmTitle').textContent = action + ' permission?';
+        document.getElementById('permConfirmBody').innerHTML =
+          `<strong>${action} “${permLabel}”</strong> for all <strong>${roleLabel}</strong> users.<br><br>This change takes effect immediately and is logged in the audit log.`;
+        document.getElementById('permConfirmBtn').textContent = action;
+        document.getElementById('permConfirmBtn').style.background = isGranting ? 'var(--ok)' : 'var(--err)';
+        document.getElementById('permConfirmBtn').style.boxShadow = isGranting ? '0 2px 10px rgba(23,178,106,0.3)' : '0 2px 10px rgba(240,68,56,0.3)';
+        backdrop.classList.add('open');
+        modal.classList.add('open');
+      }
+      function closePermConfirm() {
+        document.getElementById('permConfirmBackdrop')?.classList.remove('open');
+        document.getElementById('permConfirmModal')?.classList.remove('open');
+        _pendingPermEl = null;
+      }
+      function confirmPermChange() {
+        if (!_pendingPermEl) return;
+        _pendingPermEl.classList.toggle('on');
+        closePermConfirm();
+        // Log to audit
+        const perm = _pendingPermEl.dataset.perm;
+        const role = _pendingPermEl.dataset.role;
+        AUDIT_LOG.unshift({ts: new Date().toLocaleString(), actor:'Nour Wael', action:'Updated', metric:'Permission: '+perm, summary:'Role '+role+' permission changed', reqId:'PERM-'+Date.now().toString().slice(-5)});
+        renderAuditLog();
         if (typeof showToast==='function') showToast('Permission updated','Change logged in audit log');
+        _pendingPermEl = null;
       }
 
       function openCRDetail(id) {
         const cr = CHANGE_REQUESTS.find(c=>c.id===id);
         if (!cr) return;
-        let prompt;
-        if (cr.status === 'Pending Review') {
-          prompt = `I need to review ${cr.id} for ${cr.metric}. The proposed change is: ${cr.before} → ${cr.after}. It affects ${cr.affectedTemplates} template${cr.affectedTemplates!==1?'s':''}${cr.affectedClients.length ? ' and clients: ' + cr.affectedClients.join(', ') : ''}. What are the risks and what should I consider before approving or rejecting?`;
-        } else if (cr.status === 'Approved') {
-          prompt = `${cr.id} for ${cr.metric} has been approved. Decision: ${cr.decision} — should I deploy this change now?`;
-        } else {
-          prompt = `Tell me about ${cr.id} for ${cr.metric}: ${cr.desc}${cr.decision ? ' — Outcome: ' + cr.decision : ''}`;
+        // A3: show structured CR detail modal for resolved CRs (Rejected / Deployed)
+        const modal = document.getElementById('crDetailModal');
+        const backdrop = document.getElementById('crDetailBackdrop');
+        if (!modal || !backdrop) return;
+        const icon = document.getElementById('crDetailIcon');
+        const title = document.getElementById('crDetailTitle');
+        const subtitle = document.getElementById('crDetailSubtitle');
+        const body = document.getElementById('crDetailBody');
+        const footer = document.getElementById('crDetailFooter');
+        const statusColors = {
+          'Rejected': {bg:'var(--err-bg)',color:'var(--err)',border:'rgba(240,68,56,0.25)'},
+          'Deployed': {bg:'rgba(51,105,255,0.1)',color:'#61adf1',border:'rgba(51,105,255,0.25)'},
+          'Approved': {bg:'var(--ok-bg)',color:'var(--ok)',border:'rgba(23,178,106,0.25)'},
+        };
+        const sc = statusColors[cr.status] || statusColors['Deployed'];
+        if (icon) { icon.style.background=sc.bg; icon.style.color=sc.color; icon.style.border='1px solid '+sc.border;
+          icon.innerHTML = cr.status==='Rejected'
+            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+            : cr.status==='Deployed'
+            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><polyline points="5 12 12 5 19 12"/><line x1="12" y1="19" x2="12" y2="5"/></svg>'
+            : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><polyline points="20 6 9 17 4 12"/></svg>';
         }
-        injectCanvasAction(prompt);
+        if (title) title.textContent = cr.id + ' — ' + cr.status;
+        if (subtitle) subtitle.textContent = cr.metric;
+        if (body) body.innerHTML = `
+          <div class="kpi-modal-field">
+            <label class="kpi-modal-label">Description</label>
+            <div class="kpi-modal-value" style="font-size:12px">${cr.desc}</div>
+          </div>
+          <div class="kpi-modal-field">
+            <label class="kpi-modal-label">Change</label>
+            <div class="kpi-modal-value" style="display:flex;align-items:center;gap:8px;font-size:12px">
+              <span style="color:var(--d400);text-decoration:${cr.status==='Rejected'?'line-through':''}">${cr.before}</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <span style="color:${cr.status==='Rejected'?'var(--d600)':'#61adf1'};font-weight:700">${cr.after}</span>
+            </div>
+          </div>
+          ${cr.affectedClients.length ? `<div class="kpi-modal-field"><label class="kpi-modal-label">Affected clients</label><div class="kpi-modal-value" style="font-size:12px">${cr.affectedClients.join(', ')}</div></div>` : ''}
+          ${cr.decision ? `<div class="kpi-modal-field"><label class="kpi-modal-label">Decision rationale</label><div class="kpi-modal-value" style="font-size:12px;font-style:italic">${cr.decision}</div></div>` : ''}
+          <div class="kpi-modal-field">
+            <label class="kpi-modal-label">Submitted by</label>
+            <div class="kpi-modal-value" style="display:flex;align-items:center;gap:8px;font-size:12px">
+              <span class="cr-proposer-avatar">${cr.proposerInitials}</span>
+              ${cr.proposer} · ${cr.date}
+            </div>
+          </div>`;
+        if (footer) footer.innerHTML = `
+          <button class="sec-btn" onclick="closeCRDetail()">Close</button>
+          <button class="tpl-ai-btn ghost" style="font-size:11px;padding:6px 12px"
+            data-cr-id="${cr.id}" data-cr-metric="${cr.metric.replace(/"/g,'&quot;')}" data-cr-status="${cr.status}"
+            onclick="(function(b){closeCRDetail();injectCanvasAction('What does the change in '+b.dataset.crId+' for '+b.dataset.crMetric+' mean for evaluations currently in progress? Status: '+b.dataset.crStatus+'.');})(this)">
+            Ask AiMY
+          </button>`;
+        backdrop.classList.add('open');
+        modal.classList.add('open');
       }
 
-      function closeCRDetail() {}
+      function closeCRDetail() {
+        document.getElementById('crDetailBackdrop')?.classList.remove('open');
+        document.getElementById('crDetailModal')?.classList.remove('open');
+      }
+
+      // ── CR Approve Modal ────────────────────────────────────────
+      let _pendingCRAction = null;
+      function openCRApproveModal(id) {
+        const cr = CHANGE_REQUESTS.find(c=>c.id===id);
+        if (!cr) return;
+        _pendingCRAction = {id, type:'approve'};
+        const body = document.getElementById('crDetailBody');
+        const footer = document.getElementById('crDetailFooter');
+        const title = document.getElementById('crDetailTitle');
+        const subtitle = document.getElementById('crDetailSubtitle');
+        const icon = document.getElementById('crDetailIcon');
+        if (icon) { icon.style.background='var(--ok-bg)'; icon.style.color='var(--ok)'; icon.style.border='1px solid rgba(23,178,106,0.25)'; icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><polyline points="20 6 9 17 4 12"/></svg>'; }
+        if (title) title.textContent = 'Approve change request';
+        if (subtitle) subtitle.textContent = cr.id + ' — ' + cr.metric;
+        if (body) body.innerHTML = `
+          <div class="kpi-modal-field">
+            <label class="kpi-modal-label">Proposed change</label>
+            <div class="kpi-modal-value" style="display:flex;align-items:center;gap:8px;font-size:12px">
+              <span style="color:var(--err);font-weight:700">${cr.before}</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <span style="color:var(--ok);font-weight:700">${cr.after}</span>
+            </div>
+          </div>
+          <div class="kpi-modal-field">
+            <label class="kpi-modal-label">Decision rationale <span style="color:var(--d600);font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+            <textarea class="editor-textarea" id="crDecisionRationale" rows="3" placeholder="Explain your approval decision for the audit log…" style="font-size:12px"></textarea>
+          </div>
+          <div class="kpi-modal-impact">
+            <div class="kpi-impact-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span>Approved changes move to <strong>Approved</strong> status and await deployment. ${cr.affectedTemplates} template${cr.affectedTemplates!==1?'s':''} affected${cr.affectedClients.length?' — '+cr.affectedClients.join(', '):''}</span>
+            </div>
+          </div>`;
+        if (footer) footer.innerHTML = `
+          <button class="sec-btn" onclick="closeCRDetail()">Cancel</button>
+          <button class="tpl-cta-activate" style="background:var(--ok);box-shadow:0 2px 10px rgba(23,178,106,0.3)" onclick="confirmCRAction()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg>
+            Approve
+          </button>`;
+        document.getElementById('crDetailBackdrop').classList.add('open');
+        document.getElementById('crDetailModal').classList.add('open');
+      }
+
+      // ── CR Reject Modal ─────────────────────────────────────────
+      function openCRRejectModal(id) {
+        const cr = CHANGE_REQUESTS.find(c=>c.id===id);
+        if (!cr) return;
+        _pendingCRAction = {id, type:'reject'};
+        const body = document.getElementById('crDetailBody');
+        const footer = document.getElementById('crDetailFooter');
+        const title = document.getElementById('crDetailTitle');
+        const subtitle = document.getElementById('crDetailSubtitle');
+        const icon = document.getElementById('crDetailIcon');
+        if (icon) { icon.style.background='var(--err-bg)'; icon.style.color='var(--err)'; icon.style.border='1px solid rgba(240,68,56,0.25)'; icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'; }
+        if (title) title.textContent = 'Reject change request';
+        if (subtitle) subtitle.textContent = cr.id + ' — ' + cr.metric;
+        if (body) body.innerHTML = `
+          <div class="kpi-modal-field">
+            <label class="kpi-modal-label">Proposed change (will be rejected)</label>
+            <div class="kpi-modal-value" style="display:flex;align-items:center;gap:8px;font-size:12px;opacity:0.6;text-decoration:line-through">
+              <span>${cr.before}</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <span>${cr.after}</span>
+            </div>
+          </div>
+          <div class="kpi-modal-field">
+            <label class="kpi-modal-label">Rejection reason <span style="color:var(--err)">*</span></label>
+            <textarea class="editor-textarea" id="crDecisionRationale" rows="3" placeholder="Explain why this change is being rejected…" style="font-size:12px"></textarea>
+            <p class="kpi-field-error" id="crRejectReasonError" style="display:none">Rejection reason is required</p>
+          </div>`;
+        if (footer) footer.innerHTML = `
+          <button class="sec-btn" onclick="closeCRDetail()">Cancel</button>
+          <button class="tpl-cta-activate" style="background:var(--err);box-shadow:0 2px 10px rgba(240,68,56,0.3)" onclick="confirmCRAction()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Reject
+          </button>`;
+        document.getElementById('crDetailBackdrop').classList.add('open');
+        document.getElementById('crDetailModal').classList.add('open');
+      }
+
+      // ── CR Deploy Modal ─────────────────────────────────────────
+      function openCRDeployModal(id) {
+        const cr = CHANGE_REQUESTS.find(c=>c.id===id);
+        if (!cr) return;
+        _pendingCRAction = {id, type:'deploy'};
+        const body = document.getElementById('crDetailBody');
+        const footer = document.getElementById('crDetailFooter');
+        const title = document.getElementById('crDetailTitle');
+        const subtitle = document.getElementById('crDetailSubtitle');
+        const icon = document.getElementById('crDetailIcon');
+        if (icon) { icon.style.background='rgba(51,105,255,0.1)'; icon.style.color='#61adf1'; icon.style.border='1px solid rgba(51,105,255,0.25)'; icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><polyline points="5 12 12 5 19 12"/><line x1="12" y1="19" x2="12" y2="5"/></svg>'; }
+        if (title) title.textContent = 'Deploy approved change';
+        if (subtitle) subtitle.textContent = cr.id + ' — ' + cr.metric;
+        if (body) body.innerHTML = `
+          <div class="kpi-modal-field">
+            <label class="kpi-modal-label">Change</label>
+            <div class="kpi-modal-value" style="display:flex;align-items:center;gap:8px;font-size:12px">
+              <span style="color:var(--d400)">${cr.before}</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <span style="color:#61adf1;font-weight:700">${cr.after}</span>
+            </div>
+          </div>
+          <div class="kpi-modal-impact">
+            <div class="kpi-impact-row warn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>Applies to <strong>future evaluations only.</strong> Historical evaluations are not re-scored.</span>
+            </div>
+            <div class="kpi-impact-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span>${cr.affectedTemplates} template${cr.affectedTemplates!==1?'s':''} affected${cr.affectedClients.length?' — '+cr.affectedClients.join(', '):''}</span>
+            </div>
+          </div>`;
+        if (footer) footer.innerHTML = `
+          <button class="sec-btn" onclick="closeCRDetail()">Cancel</button>
+          <button class="tpl-cta-activate" style="background:var(--brand);box-shadow:0 2px 10px rgba(51,105,255,0.3)" onclick="confirmCRAction()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="5 12 12 5 19 12"/><line x1="12" y1="19" x2="12" y2="5"/></svg>
+            Deploy now
+          </button>`;
+        document.getElementById('crDetailBackdrop').classList.add('open');
+        document.getElementById('crDetailModal').classList.add('open');
+      }
+
+      // ── Confirm any CR action (approve / reject / deploy) ───────
+      function confirmCRAction() {
+        if (!_pendingCRAction) return;
+        const {id, type} = _pendingCRAction;
+        const cr = CHANGE_REQUESTS.find(c=>c.id===id);
+        if (!cr) return;
+        // Validate rejection reason
+        if (type === 'reject') {
+          const reason = document.getElementById('crDecisionRationale')?.value?.trim();
+          if (!reason) { document.getElementById('crRejectReasonError').style.display='block'; return; }
+          cr.decision = reason;
+        } else {
+          const rationale = document.getElementById('crDecisionRationale')?.value?.trim();
+          if (rationale) cr.decision = rationale;
+        }
+        const statusMap = {approve:'Approved', reject:'Rejected', deploy:'Deployed'};
+        cr.status = statusMap[type];
+        closeCRDetail();
+        renderChangeRequests();
+        const toastMap = {approve:'Change request approved', reject:'Change request rejected', deploy:'Change deployed'};
+        const subMap = {approve: cr.metric + ' change approved and queued for deployment', reject: cr.metric + ' change rejected', deploy: cr.metric + ' change is now live'};
+        if (typeof showToast==='function') showToast(toastMap[type], subMap[type]);
+        _pendingCRAction = null;
+        // Add to audit log
+        const actMap = {approve:'Approved', reject:'Rejected', deploy:'Deployed'};
+        AUDIT_LOG.unshift({ts: new Date().toLocaleString(), actor:'Nour Wael', action: actMap[type], metric: cr.metric, summary: cr.desc, reqId: cr.id});
+        renderAuditLog();
+        // Refresh hub summary bar so pending count updates
+        updateHubSummaryBar();
+        updateGovIntelBar();
+      }
 
       // ──────────────────────────────────────────────────────────
       // METRIC HEALTH
       // ──────────────────────────────────────────────────────────
+      // G4: AiMY intel bar for Health tab
+      function updateHealthIntelBar() {
+        const bar = document.getElementById('aimyHealthBar');
+        const ctx = document.getElementById('healthIntelContext');
+        const chips = document.getElementById('healthIntelChips');
+        if (!bar || !ctx || !chips) return;
+        const crits = HEALTH_DATA.filter(d=>d.severity==='crit');
+        const warns = HEALTH_DATA.filter(d=>d.severity==='warn');
+        const worst = crits[0] || warns[0];
+        ctx.textContent = crits.length
+          ? crits.length + ' critical metric' + (crits.length>1?'s':'') + ', ' + warns.length + ' warning' + (warns.length>1?'s':'') + ' — investigate ' + (worst?worst.name:'') + ' first'
+          : warns.length
+          ? warns.length + ' warning metric' + (warns.length>1?'s':'') + ' — review coverage gaps before next evaluation run'
+          : 'All metrics healthy — no coverage gaps detected';
+        const worstBtn = worst
+          ? ('<button class="aib-chip secondary" data-worst-name="' + worst.name.replace(/"/g,'&quot;') + '" data-worst-client="' + ((worst.alerts[0]?.client||'multiple clients').replace(/"/g,'&quot;')) + '" onclick="(function(b){var n=b.dataset.worstName,c=b.dataset.worstClient;injectCanvasAction(\'Investigate \'+n+\' \u2014 it has critical coverage gaps on \'+c+\'. Walk me through likely causes and give me a remediation checklist.\');document.getElementById(\'aimyHealthBar\').style.display=\'none\';})(this)">Investigate ' + worst.name + '</button>')
+          : '';
+        chips.innerHTML = crits.length
+          ? ('<button class="aib-chip" onclick="filterHealthBySeverity(\'crit\');document.getElementById(\'aimyHealthBar\').style.display=\'none\'">'
+             + '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
+             + ' Show ' + crits.length + ' critical</button>'
+             + worstBtn
+             + '<button class="aib-dismiss" onclick="document.getElementById(\'aimyHealthBar\').style.display=\'none\'" aria-label="Dismiss"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>')
+          : warns.length
+          ? ('<button class="aib-chip" onclick="filterHealthBySeverity(\'warn\');document.getElementById(\'aimyHealthBar\').style.display=\'none\'">Show ' + warns.length + ' warning</button>'
+             + '<button class="aib-dismiss" onclick="document.getElementById(\'aimyHealthBar\').style.display=\'none\'" aria-label="Dismiss"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>')
+          : '<button class="aib-dismiss" onclick="document.getElementById(\'aimyHealthBar\').style.display=\'none\'" aria-label="Dismiss"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+        bar.style.display = 'flex';
+      }
+
       function renderHealth(data) {
         data = data || applyHealthFilters(HEALTH_DATA);
         const healthy  = data.filter(d=>d.severity==='ok').length;
@@ -10151,13 +10818,15 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
             : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
 
           // Action chip — AI Native: every issue has an action
+          const worstClient = d.alerts[0]?.client || 'multiple clients';
+          const missingPct = d.alerts[0]?.pct || 'significant gaps';
           const actionLabel = sev==='crit'
-            ? `${d.name} coverage is critically low at ${d.coverage}%. What's causing this and how do I fix it?`
+            ? `${d.name} has ${missingPct} missing data on ${worstClient}. Walk me through the likely data ingestion failure cause and give me a step-by-step remediation checklist I can action today.`
             : sev==='warn'
-            ? `${d.name} has some missing data. Which clients are affected and what should I do?`
-            : `Walk me through the ${d.name} metric coverage and recent evaluation quality.`;
+            ? `${d.name} has ${missingPct} missing on ${worstClient}. What are the specific gaps, the likely root cause, and what should I prioritise fixing first?`
+            : `Give me a full health breakdown for ${d.name}: coverage trend, any anomalies, and whether it is at risk of deteriorating.`;
 
-          return `<div class="health-card ${sev==='warn'?'warn':sev==='crit'?'crit':''}" onclick="injectCanvasAction('${actionLabel.replace(/'/g,'\\\'')}')" style="cursor:pointer">
+          return `<div class="health-card ${sev==='warn'?'warn':sev==='crit'?'crit':''}" data-action="${actionLabel.replace(/"/g,'&quot;').replace(/'/g,'&#39;')}" onclick="(function(el){injectCanvasAction(el.dataset.action);})(this)" style="cursor:pointer">
             <div class="health-card-header">
               <div><div class="health-metric-name">${d.name}</div><div class="health-metric-source">${d.source}</div></div>
               <div class="health-severity-icon ${sev}">${iconSvg}</div>
@@ -10172,7 +10841,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
             ${d.variance!=='—' ? `<div class="health-variance-row">Variance: <span class="health-variance-chip ${varCls}">${d.variance}</span></div>` : ''}
             ${d.alerts.length ? `<div class="health-alerts">${d.alerts.map(a=>`<div class="health-alert-row"><span class="health-alert-client">${a.client}</span><span class="health-alert-pct ${a.level}">${a.pct} missing</span></div>`).join('')}</div>` : `<div style="font-size:10px;color:var(--ok);font-weight:600">No missing data alerts</div>`}
             <div class="kdo-action-chips" style="margin-top:4px">
-              <button class="kdo-action-chip ${sev==='crit'?'primary':sev==='warn'?'secondary':'ghost'}" onclick="event.stopPropagation();injectCanvasAction('${actionLabel.replace(/'/g,'\\\'')}')" style="font-size:11px;padding:6px 12px">
+              <button class="kdo-action-chip ${sev==='crit'?'primary':sev==='warn'?'secondary':'ghost'}" data-action="${actionLabel.replace(/"/g,'&quot;').replace(/'/g,'&#39;')}" onclick="event.stopPropagation();(function(b){injectCanvasAction(b.closest('[data-action]').dataset.action);})(this)" style="font-size:11px;padding:6px 12px">
                 ${sev==='crit'?'Investigate now':sev==='warn'?'Review gaps':'View detail'}
               </button>
               ${sev==='crit' ? `<button class="kdo-action-chip ghost" onclick="event.stopPropagation();showToast('Opening Data Ingestion monitor…');switchPage && switchPage('data-ingestion')" style="font-size:11px;padding:6px 12px">Data Ingestion</button>` : ''}
@@ -10199,18 +10868,129 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       // ──────────────────────────────────────────────────────────
       // METRIC CREATE / EDIT FORM
       // ──────────────────────────────────────────────────────────
+      // A5: "New metric" opens the form modal directly
       function openCreateMetric() {
-        injectCanvasAction('I want to define a new metric for the platform. What information do I need to provide and how do I make sure it integrates well with existing templates?');
+        const modal = document.getElementById('metricFormModal');
+        const backdrop = document.getElementById('metricFormBackdrop');
+        if (!modal || !backdrop) return;
+        // Reset form
+        const titleEl = document.getElementById('metricFormTitle');
+        if (titleEl) titleEl.textContent = 'New metric';
+        const nameEl = document.getElementById('mfName'); if (nameEl) { nameEl.value=''; }
+        const typeEl = document.getElementById('mfType'); if (typeEl) { typeEl.value=''; }
+        const srcEl  = document.getElementById('mfSource'); if (srcEl) { srcEl.value=''; }
+        const calcEl = document.getElementById('mfCalc'); if (calcEl) { calcEl.value=''; }
+        const descEl = document.getElementById('mfDesc'); if (descEl) { descEl.value=''; }
+        const ownEl  = document.getElementById('mfOwner'); if (ownEl) { ownEl.value=''; }
+        const errEl  = document.getElementById('mfNameError'); if (errEl) errEl.style.display='none';
+        backdrop.classList.add('open');
+        modal.classList.add('open');
+        setTimeout(() => nameEl && nameEl.focus(), 100);
+      }
+      // A4: "Propose change" pre-fills the form with existing metric data
+      function openMetricFormForEdit(id) {
+        const m = METRICS.find(x=>x.id===id);
+        if (!m) return;
+        closeMetricDetail();
+        const modal = document.getElementById('metricFormModal');
+        const backdrop = document.getElementById('metricFormBackdrop');
+        if (!modal || !backdrop) return;
+        const titleEl = document.getElementById('metricFormTitle');
+        if (titleEl) titleEl.textContent = 'Propose change to ' + m.name;
+        const nameEl = document.getElementById('mfName'); if (nameEl) nameEl.value = m.name;
+        const typeEl = document.getElementById('mfType'); if (typeEl) typeEl.value = m.type || '';
+        const srcEl  = document.getElementById('mfSource'); if (srcEl) srcEl.value = m.source || '';
+        const calcEl = document.getElementById('mfCalc'); if (calcEl) calcEl.value = m.formula || '';
+        const descEl = document.getElementById('mfDesc'); if (descEl) descEl.value = m.desc || '';
+        const ownEl  = document.getElementById('mfOwner'); if (ownEl) ownEl.value = m.owner || '';
+        backdrop.classList.add('open');
+        modal.classList.add('open');
       }
 
       function openEditMetric() {
+        // Find metric by name currently shown in overlay
         const name = document.getElementById('mdo-name')?.textContent;
-        if (name) injectCanvasAction(`I want to update the definition of ${name}. What parts of it can I change and what will be affected downstream?`);
+        if (!name) return;
+        const m = METRICS.find(x => x.name === name);
+        if (m) {
+          closeMetricDetail();
+          openMetricFormForEdit(m.id);
+        } else {
+          // Fallback for metrics not in local data
+          closeMetricDetail();
+          openCreateMetric();
+        }
       }
 
-      function closeMetricForm() {}
-      function saveMetricDraft()         { if (typeof showToast==='function') showToast('Saved as draft','Not yet submitted'); }
-      function submitMetricForApproval() { if (typeof showToast==='function') showToast('Submitted for approval','Reviewers notified'); }
+      function closeMetricForm() {
+        document.getElementById('metricFormBackdrop')?.classList.remove('open');
+        document.getElementById('metricFormModal')?.classList.remove('open');
+      }
+      function saveMetricDraft() {
+        const name = document.getElementById('mfName')?.value?.trim();
+        if (!name) { const e=document.getElementById('mfNameError'); if(e){ e.style.display='block'; e.textContent='Name is required'; } return; }
+        const type   = document.getElementById('mfType')?.value  || 'Compliance';
+        const source = document.getElementById('mfSource')?.value || 'AiMY QA Engine';
+        const formula= document.getElementById('mfCalc')?.value?.trim() || '';
+        const desc   = document.getElementById('mfDesc')?.value?.trim() || '';
+        const owner  = document.getElementById('mfOwner')?.value  || 'QA Team';
+        // Check if updating existing
+        const titleEl = document.getElementById('metricFormTitle');
+        const isEdit  = titleEl && titleEl.textContent.startsWith('Propose change to ');
+        const existing = METRICS.find(m => m.name === name);
+        if (existing) {
+          // Update in place as draft
+          existing.formula = formula; existing.desc = desc; existing.owner = owner; existing.status = 'Draft';
+          renderMetricCards();
+        } else {
+          // Add new metric as Draft
+          METRICS.push({
+            id: 'm' + (METRICS.length + 1), name, type, source, owner,
+            templates: 0, status: 'Draft', desc, formula,
+            dependencies: [], usageCount: 0, deprecatedBy: null
+          });
+          renderMetricCards();
+        }
+        closeMetricForm();
+        if (typeof showToast==='function') showToast('Saved as draft', name + ' is in Draft — not yet submitted for approval');
+      }
+      function submitMetricForApproval() {
+        const name = document.getElementById('mfName')?.value?.trim();
+        if (!name) { const e=document.getElementById('mfNameError'); if(e){ e.style.display='block'; e.textContent='Name is required'; } return; }
+        const type   = document.getElementById('mfType')?.value  || 'Compliance';
+        const source = document.getElementById('mfSource')?.value || 'AiMY QA Engine';
+        const formula= document.getElementById('mfCalc')?.value?.trim() || '';
+        const desc   = document.getElementById('mfDesc')?.value?.trim() || '';
+        const owner  = document.getElementById('mfOwner')?.value  || 'QA Team';
+        // Add or update in METRICS as pending
+        const existing = METRICS.find(m => m.name === name);
+        if (existing) {
+          existing.formula = formula; existing.desc = desc; existing.owner = owner;
+          existing.status = 'Pending';
+        } else {
+          METRICS.push({
+            id: 'm' + (METRICS.length + 1), name, type, source, owner,
+            templates: 0, status: 'Pending', desc, formula,
+            dependencies: [], usageCount: 0, deprecatedBy: null
+          });
+        }
+        // Raise governance CR
+        const crId = 'CR-' + String(CHANGE_REQUESTS.length + 1).padStart(3,'0');
+        CHANGE_REQUESTS.unshift({
+          id: crId, metric: name, status: 'Pending Review',
+          desc: desc || 'New/updated metric definition submitted for approval.',
+          before: '—', after: 'Promote “' + name + '” to Active',
+          affectedTemplates: 0, affectedClients: [],
+          proposer: 'Nour Wael', proposerInitials: 'NW',
+          date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),
+          decision: ''
+        });
+        renderMetricCards();
+        closeMetricForm();
+        if (typeof showToast==='function') showToast('Submitted for approval', name + ' is pending admin review');
+        if (activeTab === 'governance') renderGovernance();
+        else updateGovIntelBar();
+      }
 
       // ──────────────────────────────────────────────────────────
       // EDITOR (fork flow)
@@ -10218,9 +10998,30 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       // "New template" from toolbar — blank-slate fork
       function openNewTemplateModal() {
         currentPreviewTemplate = null;
-        document.getElementById('forkSourceName').textContent = 'Blank slate (no source)';
+        // Switch the fork modal to "New template" mode
+        const titleEl = document.querySelector('#forkModal .kpi-modal-title');
+        const subtitleEl = document.querySelector('#forkModal .kpi-modal-subtitle');
+        const sourceField = document.querySelector('#forkModal .kpi-modal-field:first-child');
+        const iconEl = document.querySelector('#forkModal .kpi-modal-icon');
+        const confirmBtn = document.querySelector('#forkModal .tpl-cta-fork');
+        if (titleEl) titleEl.textContent = 'New template';
+        if (subtitleEl) subtitleEl.textContent = 'Create a blank scoring template from scratch.';
+        if (sourceField) sourceField.style.display = 'none';
+        if (iconEl) {
+          iconEl.className = 'kpi-modal-icon';
+          iconEl.style.background = 'var(--brand-dim)';
+          iconEl.style.color = 'var(--brand)';
+          iconEl.style.border = '1px solid rgba(51,105,255,0.25)';
+          iconEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+        }
+        if (confirmBtn) {
+          confirmBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Open editor';
+          confirmBtn.className = 'tpl-cta-activate';
+          confirmBtn.style.flex = '1';
+        }
         document.getElementById('forkNameError').style.display = 'none';
         document.getElementById('forkNewName').value = '';
+        document.getElementById('forkNewName').placeholder = 'e.g. Healthcare — Email (Custom)';
         document.getElementById('forkBackdrop').classList.add('open');
         document.getElementById('forkModal').classList.add('open');
         setTimeout(() => document.getElementById('forkNewName').focus(), 100);
@@ -10228,9 +11029,31 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
 
       function openForkModalDirect() {
         const sourceName = (currentPreviewTemplate || '').replace(/ \(Custom\)| \(Forked\)/,'');
+        // Restore fork-mode UI (in case new-template mode changed it)
+        const titleEl = document.querySelector('#forkModal .kpi-modal-title');
+        const subtitleEl = document.querySelector('#forkModal .kpi-modal-subtitle');
+        const sourceField = document.querySelector('#forkModal .kpi-modal-field:first-child');
+        const iconEl = document.querySelector('#forkModal .kpi-modal-icon');
+        const confirmBtn = document.querySelector('#forkModal button[onclick="confirmFork()"]') ||
+                           document.querySelector('#forkModal .tpl-cta-fork') ||
+                           document.querySelector('#forkModal .tpl-cta-activate');
+        if (titleEl) titleEl.textContent = 'Fork & Customize';
+        if (subtitleEl) subtitleEl.textContent = 'Creates an editable copy. The original is never modified.';
+        if (sourceField) sourceField.style.display = '';
+        if (iconEl) {
+          iconEl.removeAttribute('style');
+          iconEl.className = 'kpi-modal-icon brand';
+          iconEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h3"/><line x1="18" y1="9" x2="18" y2="15"/></svg>';
+        }
+        if (confirmBtn) {
+          confirmBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h3"/><line x1="18" y1="9" x2="18" y2="15"/></svg> Open editor';
+          confirmBtn.className = 'tpl-cta-fork';
+          confirmBtn.style.flex = '1';
+        }
         document.getElementById('forkSourceName').textContent = sourceName || '—';
-        document.getElementById('forkNameError').style.display='none';
+        document.getElementById('forkNameError').style.display = 'none';
         document.getElementById('forkNewName').value = sourceName ? sourceName + ' (Copy)' : '';
+        document.getElementById('forkNewName').placeholder = 'e.g. Financial Services — Voice (MENA)';
         document.getElementById('forkBackdrop').classList.add('open');
         document.getElementById('forkModal').classList.add('open');
         setTimeout(()=>document.getElementById('forkNewName').focus(),100);
@@ -10258,6 +11081,63 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         document.getElementById('editorOverlay').classList.add('open');
       }
       function closeEditor() { document.getElementById('editorOverlay').classList.remove('open'); }
+      // G2: gate publish based on role — admin = direct publish, manager = submit CR
+      function editorPublish() {
+        const name = document.getElementById('editorName')?.value?.trim();
+        if (!name) { if(typeof showToast==='function') showToast('Template name required',''); return; }
+        const desc = document.getElementById('editorDesc')?.value?.trim() || '';
+        const industry = document.getElementById('editorIndustry')?.value || 'General';
+        const channel = document.getElementById('editorChannel')?.value || 'All';
+        if (currentRole === 'admin') {
+          // Direct publish
+          const sourceKey = document.getElementById('editorForkSource')?.textContent;
+          TEMPLATES[name] = {
+            industry, channel, desc,
+            type: sourceKey && sourceKey !== '—' ? 'Custom' : 'Custom',
+            kpiCount: '0 KPIs', updated: 'Just now',
+            categories: [], activeClients: [], versions: [{id:'v1',label:'v1 — Current',current:true,author:'Nour Wael',date:'Just now',diff:'Initial version.'}]
+          };
+          // Inject new card HTML before the empty state
+          const gallery = document.getElementById('templateGallery');
+          if (gallery) {
+            // Find or create custom section
+            let customLabel = gallery.querySelector('[data-section="custom"]');
+            if (!customLabel) {
+              customLabel = document.createElement('div');
+              customLabel.className = 'template-section-label';
+              customLabel.dataset.section = 'custom';
+              customLabel.textContent = 'Custom Templates';
+              gallery.appendChild(customLabel);
+            }
+            const emptyState = gallery.querySelector('#templateEmptyState');
+            const card = document.createElement('div');
+            card.className = 'tpl-card';
+            card.dataset.industry = industry; card.dataset.channel = channel; card.dataset.type = 'Custom'; card.dataset.name = name;
+            card.setAttribute('onclick','openPreview(this)');
+            card.innerHTML = `<div class="tpl-card-header"><div class="tpl-type-badge" style="background:rgba(111,223,226,0.1);color:var(--teal);border:1px solid rgba(111,223,226,0.25)">Custom</div><div class="tpl-active-badge" style="display:none"><span class="tpl-active-dot"></span> Active</div></div><div class="tpl-card-name">${name}</div><div class="tpl-card-desc">${desc||'Custom template'}</div><div class="tpl-card-meta"><span class="tpl-industry-tag">${industry}</span><span class="tpl-channel-tag">${channel}</span></div><div class="tpl-card-footer"><span class="tpl-kpi-count">0 KPIs</span><span class="tpl-updated">Just now</span></div><div class="tpl-card-ai-actions"><button class="tpl-ai-btn ghost" onclick="event.stopPropagation();openPreview(this.closest('.tpl-card'))">Preview</button></div>`;
+            if (emptyState) gallery.insertBefore(card, emptyState);
+            else gallery.appendChild(card);
+          }
+          closeEditor();
+          if(typeof showToast==='function') showToast('Template published', name + ' added to Custom Templates');
+          syncActiveCardBadges();
+        } else {
+          // QA Manager: raise governance CR
+          const crId = 'CR-' + String(CHANGE_REQUESTS.length + 1).padStart(3,'0');
+          CHANGE_REQUESTS.unshift({
+            id: crId, metric: name, status: 'Pending Review',
+            desc: 'New custom template submitted for admin approval.',
+            before: '—', after: 'Publish “' + name + '”',
+            affectedTemplates: 0, affectedClients: [],
+            proposer: 'Nour Wael', proposerInitials: 'NW',
+            date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),
+            decision: ''
+          });
+          closeEditor();
+          if(typeof showToast==='function') showToast('Submitted for approval', name + ' is pending admin review');
+          if (activeTab === 'governance') renderChangeRequests();
+        }
+      }
       function syncEditorBreadcrumb() {
         const v = document.getElementById('editorName').value.trim();
         document.getElementById('editorBreadcrumb').textContent = v || 'Untitled template';
@@ -10368,6 +11248,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         if (document.getElementById('forkModal')?.classList.contains('open'))              { closeForkModal(); return; }
         if (document.getElementById('tplDetailOverlay')?.classList.contains('open'))       { closePreview(); return; }
         if (document.getElementById('metricDetailOverlay')?.classList.contains('open'))    { closeMetricDetail(); return; }
+        if (document.getElementById('permConfirmModal')?.classList.contains('open'))      { closePermConfirm(); return; }
         if (document.getElementById('activationModal')?.classList.contains('open'))        { closeActivationModal(); return; }
         if (document.getElementById('metricFormModal')?.classList.contains('open'))        { closeMetricForm(); return; }
         if (document.getElementById('crDetailModal')?.classList.contains('open'))          { closeCRDetail(); return; }
@@ -10379,8 +11260,57 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         document.getElementById('activationBackdrop')?.classList.remove('open');
         document.getElementById('activationModal')?.classList.remove('open');
       }
-      function confirmActivation() { const c=document.getElementById('activationClientSelect')?.value; if(!c)return; closeActivationModal(); closePreview(); if(typeof showToast==='function') showToast('Template activated for '+c,''); }
+      function confirmActivation() {
+        const c = document.getElementById('activationClientSelect')?.value;
+        if (!c) return;
+        const tplName = (currentPreviewTemplate||'').replace(/ \(Custom\)| \(Forked\)/,'');
+        // Update state
+        ACTIVE_CLIENT_TEMPLATES[c] = currentPreviewTemplate || tplName;
+        // Update template data
+        if (TEMPLATES[currentPreviewTemplate]) {
+          const existing = TEMPLATES[currentPreviewTemplate].activeClients;
+          if (!existing.find(cl => cl.name === c)) {
+            existing.push({name: c, date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}), evals:'0'});
+          }
+        }
+        // Refresh active badge on all template cards
+        document.querySelectorAll('.tpl-card').forEach(card => {
+          const badge = card.querySelector('.tpl-active-badge');
+          if (!badge) return;
+          const isNowActive = ACTIVE_CLIENT_TEMPLATES[Object.values(ACTIVE_CLIENT_TEMPLATES).find(v => v === card.dataset.name) ? c : ''] === card.dataset.name;
+          const cardActive = Object.values(ACTIVE_CLIENT_TEMPLATES).includes(card.dataset.name);
+          badge.style.display = cardActive ? 'flex' : 'none';
+        });
+        // Re-render gallery to show updated active badges
+        document.querySelectorAll('.tpl-card').forEach(card => {
+          const badge = card.querySelector('.tpl-active-badge');
+          if (!badge) return;
+          badge.style.display = Object.values(ACTIVE_CLIENT_TEMPLATES).includes(card.dataset.name) ? 'flex' : 'none';
+        });
+        closeActivationModal();
+        closePreview();
+        if (typeof showToast==='function') showToast('Template activated', tplName + ' is now live for ' + c);
+      }
       document.addEventListener('DOMContentLoaded', function() {
+        // Batch 10: sync card badges from ACTIVE_CLIENT_TEMPLATES on first paint
+        syncActiveCardBadges();
+        syncCustomEmptyState();
+        // Batch 13: clear metric form name error on input
+        const mfNameEl = document.getElementById('mfName');
+        if (mfNameEl) {
+          mfNameEl.addEventListener('input', function() {
+            const errEl = document.getElementById('mfNameError');
+            if (errEl) errEl.style.display = 'none';
+          });
+        }
+        // Batch 13: clear fork name error on input
+        const forkNameEl = document.getElementById('forkNewName');
+        if (forkNameEl) {
+          forkNameEl.addEventListener('input', function() {
+            const errEl = document.getElementById('forkNameError');
+            if (errEl) errEl.style.display = 'none';
+          });
+        }
         const _sel = document.getElementById('activationClientSelect');
         if (_sel) _sel.addEventListener('change', function() {
         const c=this.value;
@@ -10439,12 +11369,263 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
 
       // ── Init ──────────────────────────────────────────────────
       applyRole();
+      syncCustomEmptyState();
+      updateHubSummaryBar();
 
+      // ══════════════════════════════════════════════════════════════
+      // CUSTOM DROPDOWN ENGINE
+      // ══════════════════════════════════════════════════════════════
+      let _openDropdown = null;
 
-    
+      function toggleDropdown(id) {
+        const wrap    = document.getElementById(id);
+        const trigger = wrap.querySelector('.kpi-dropdown-trigger');
+        const menu    = wrap.querySelector('.kpi-dropdown-menu');
+        const isOpen  = menu.classList.contains('open');
+        // Close any other open dropdown
+        if (_openDropdown && _openDropdown !== id) closeDropdown(_openDropdown);
+        if (isOpen) {
+          closeDropdown(id);
+        } else {
+          trigger.classList.add('open');
+          menu.classList.add('open');
+          wrap.setAttribute('aria-expanded', 'true');
+          _openDropdown = id;
+        }
+      }
+
+      function closeDropdown(id) {
+        const wrap    = document.getElementById(id);
+        if (!wrap) return;
+        wrap.querySelector('.kpi-dropdown-trigger')?.classList.remove('open');
+        wrap.querySelector('.kpi-dropdown-menu')?.classList.remove('open');
+        wrap.setAttribute('aria-expanded', 'false');
+        if (_openDropdown === id) _openDropdown = null;
+      }
+
+      // Close on outside click
+      document.addEventListener('click', function(e) {
+        if (!_openDropdown) return;
+        const wrap = document.getElementById(_openDropdown);
+        if (wrap && !wrap.contains(e.target)) closeDropdown(_openDropdown);
+      });
+
+      // Close on Escape (add to existing key handler via separate listener)
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && _openDropdown) closeDropdown(_openDropdown);
+      });
+
+      // pickDropdown: selects a value, syncs the hidden <select>, fires change event
+      function pickDropdown(dropdownId, value) {
+        const wrap      = document.getElementById(dropdownId);
+        const trigger   = wrap.querySelector('.kpi-dropdown-trigger');
+        const labelEl   = trigger.querySelector('span');
+        const menu      = wrap.querySelector('.kpi-dropdown-menu');
+        const options   = menu.querySelectorAll('.kpi-dropdown-option');
+        const isEmpty   = !value;
+
+        // Update label and placeholder styling
+        labelEl.textContent = isEmpty
+          ? (labelEl.dataset.placeholder || 'Select…')
+          : value;
+        trigger.classList.toggle('placeholder', isEmpty);
+
+        // Update option selected state
+        options.forEach(opt => {
+          const isMatch = opt.textContent.trim() === value ||
+                          (isEmpty && opt.classList.contains('placeholder-opt'));
+          opt.classList.toggle('selected', isMatch && !opt.classList.contains('placeholder-opt'));
+        });
+
+        // Sync hidden native select
+        const nativeSelId = dropdownId.replace('Dropdown', '').replace('dropdown', '');
+        // Try direct ID match patterns
+        const idCandidates = [
+          nativeSelId,
+          dropdownId.replace('Dropdown',''),
+          dropdownId.replace('Dropdown','').charAt(0).toLowerCase() + dropdownId.replace('Dropdown','').slice(1),
+        ];
+        let nativeSel = null;
+        for (const cid of idCandidates) {
+          nativeSel = document.getElementById(cid);
+          if (nativeSel && nativeSel.tagName === 'SELECT') break;
+        }
+        if (nativeSel) {
+          nativeSel.value = value;
+          nativeSel.dispatchEvent(new Event('change', {bubbles: true}));
+        }
+
+        closeDropdown(dropdownId);
+      }
+
+      // initDropdown: builds a dropdown from a hidden <select> element programmatically
+      // Used by openActivationModal to populate the client list dynamically
+      function initDropdownFromSelect(dropdownId, selectEl, selectedValue) {
+        const wrap  = document.getElementById(dropdownId);
+        if (!wrap) return;
+        const menu    = wrap.querySelector('.kpi-dropdown-menu');
+        const trigger = wrap.querySelector('.kpi-dropdown-trigger');
+        const labelEl = trigger.querySelector('span');
+        if (!menu) return;
+
+        menu.innerHTML = '';
+        Array.from(selectEl.options).forEach(opt => {
+          if (!opt.value && !opt.textContent.trim()) return;
+          const div = document.createElement('div');
+          div.className = 'kpi-dropdown-option' + (!opt.value ? ' placeholder-opt' : '');
+          if (opt.value === selectedValue) div.classList.add('selected');
+
+          // Check if the option text has a replacement note (contains ' — replaces ')
+          const text = opt.textContent;
+          const replaceIdx = text.indexOf(' — replaces ');
+          if (replaceIdx !== -1 && opt.value) {
+            const clientName = text.slice(0, replaceIdx);
+            const replacesText = text.slice(replaceIdx + 3); // ' — replaces X'
+            div.innerHTML = '<div><div style="font-size:13px;font-weight:500;color:var(--d100)">' + clientName + '</div><div class="opt-replace">↺ replaces ' + replacesText.replace('replaces ','') + '</div></div>';
+            div.addEventListener('click', function() { pickDropdownDirect(dropdownId, opt.value, clientName); });
+          } else {
+            div.textContent = text;
+            div.addEventListener('click', function() { pickDropdownDirect(dropdownId, opt.value, text); });
+          }
+          menu.appendChild(div);
+        });
+
+        // Set trigger label
+        if (selectedValue) {
+          const matchOpt = Array.from(selectEl.options).find(o => o.value === selectedValue);
+          const label = matchOpt ? matchOpt.textContent.split(' — ')[0] : selectedValue;
+          labelEl.textContent = label;
+          trigger.classList.remove('placeholder');
+        } else {
+          labelEl.textContent = selectEl.options[0]?.textContent || 'Select…';
+          trigger.classList.add('placeholder');
+        }
+      }
+
+      // pickDropdownDirect: pick with explicit label (used when label != value)
+      function pickDropdownDirect(dropdownId, value, label) {
+        const wrap    = document.getElementById(dropdownId);
+        const trigger = wrap.querySelector('.kpi-dropdown-trigger');
+        const labelEl = trigger.querySelector('span');
+        const menu    = wrap.querySelector('.kpi-dropdown-menu');
+
+        labelEl.textContent = label || value || 'Select…';
+        trigger.classList.toggle('placeholder', !value);
+
+        menu.querySelectorAll('.kpi-dropdown-option').forEach(opt => {
+          opt.classList.remove('selected');
+        });
+        // Can't reliably match by text when labels differ from values — just clear all
+        // The hidden select is the source of truth
+
+        // Sync native select
+        const selectCandidates = ['activationClientSelect','mfType','mfSource','mfOwner','editorIndustry','editorChannel'];
+        for (const sid of selectCandidates) {
+          const sel = document.getElementById(sid);
+          if (sel && sel.closest('[id="' + dropdownId + '"]') === null) {
+            // check if this dropdown wraps this select (sibling relationship)
+            const dropWrap = document.getElementById(dropdownId);
+            const selectEl = dropWrap?.previousElementSibling;
+            if (selectEl && selectEl.tagName === 'SELECT') {
+              selectEl.value = value;
+              selectEl.dispatchEvent(new Event('change', {bubbles: true}));
+              break;
+            }
+          }
+        }
+        // Direct sibling approach (most reliable)
+        const dropWrap = document.getElementById(dropdownId);
+        if (dropWrap) {
+          const prev = dropWrap.previousElementSibling;
+          if (prev && prev.tagName === 'SELECT') {
+            prev.value = value;
+            prev.dispatchEvent(new Event('change', {bubbles: true}));
+          }
+        }
+
+        closeDropdown(dropdownId);
+      }
+
+      // Patch openActivationModal to also init the custom dropdown
+      const _origOpenActivationModal = openActivationModal;
+      openActivationModal = function() {
+        _origOpenActivationModal();
+        // After the native select is populated, init the custom dropdown from it
+        requestAnimationFrame(function() {
+          const sel = document.getElementById('activationClientSelect');
+          if (sel) initDropdownFromSelect('activationDropdown', sel, '');
+        });
+      };
+
+      // Patch editor openEditor to sync custom dropdowns with template data
+      const _origOpenEditor = openEditor;
+      openEditor = function(name, sourceKey) {
+        _origOpenEditor(name, sourceKey);
+        requestAnimationFrame(function() {
+          const indSel = document.getElementById('editorIndustry');
+          const chSel  = document.getElementById('editorChannel');
+          if (indSel) {
+            document.getElementById('editorIndustryLabel').textContent = indSel.value || 'Financial Services';
+            document.getElementById('editorIndustryDropdown').querySelectorAll('.kpi-dropdown-option').forEach(o => {
+              o.classList.toggle('selected', o.textContent.trim() === indSel.value);
+            });
+          }
+          if (chSel) {
+            document.getElementById('editorChannelLabel').textContent = chSel.value || 'Voice';
+            document.getElementById('editorChannelDropdown').querySelectorAll('.kpi-dropdown-option').forEach(o => {
+              o.classList.toggle('selected', o.textContent.trim() === chSel.value);
+            });
+          }
+        });
+      };
+
+      // Patch openCreateMetric / openMetricFormForEdit to reset custom dropdowns
+      const _origOpenCreateMetric = openCreateMetric;
+      openCreateMetric = function() {
+        _origOpenCreateMetric();
+        requestAnimationFrame(function() {
+          ['mfTypeDropdown','mfSourceDropdown','mfOwnerDropdown'].forEach(function(id) {
+            const wrap = document.getElementById(id);
+            if (!wrap) return;
+            const trigger = wrap.querySelector('.kpi-dropdown-trigger');
+            const labelEl = trigger.querySelector('span');
+            const menu    = wrap.querySelector('.kpi-dropdown-menu');
+            if (trigger) trigger.classList.add('placeholder');
+            if (menu) menu.querySelectorAll('.kpi-dropdown-option').forEach(o => o.classList.remove('selected'));
+            // Reset label to placeholder
+            const defaults = {mfTypeDropdown:'Select type…', mfSourceDropdown:'Select source…', mfOwnerDropdown:'Assign owner…'};
+            if (labelEl) labelEl.textContent = defaults[id] || 'Select…';
+          });
+        });
+      };
+
     </script>
 
         <!-- ════ FORK NAME MODAL ══════════════════════════════════════════ -->
+        <!-- ════ PERMISSION CONFIRM MODAL ══════════════════════════════ -->
+        <div class="kpi-modal-backdrop" id="permConfirmBackdrop" onclick="closePermConfirm()" style="z-index:620"></div>
+        <div class="kpi-modal" id="permConfirmModal" role="dialog" aria-modal="true" aria-label="Confirm permission change" style="z-index:630">
+          <div class="kpi-modal-header">
+            <div class="kpi-modal-icon" id="permConfirmIcon" style="background:var(--warn-bg);color:var(--warn);border:1px solid rgba(247,144,9,0.25)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div>
+              <h3 class="kpi-modal-title" id="permConfirmTitle">Grant permission?</h3>
+              <p class="kpi-modal-subtitle">This affects all users in the selected role.</p>
+            </div>
+            <button class="tpl-preview-close" onclick="closePermConfirm()" style="margin-left:auto">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div class="kpi-modal-body">
+            <p id="permConfirmBody" style="font-size:13px;color:var(--d300);line-height:1.6"></p>
+          </div>
+          <div class="kpi-modal-footer">
+            <button class="sec-btn" onclick="closePermConfirm()">Cancel</button>
+            <button class="tpl-cta-activate" id="permConfirmBtn" onclick="confirmPermChange()" style="background:var(--ok);box-shadow:0 2px 10px rgba(23,178,106,0.3)">Confirm</button>
+          </div>
+        </div>
+
         <div class="kpi-modal-backdrop" id="forkBackdrop" onclick="closeForkModal()"></div>
         <div class="kpi-modal" id="forkModal" role="dialog" aria-modal="true" aria-label="Fork template">
           <div class="kpi-modal-header">
@@ -10501,14 +11682,17 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
             </div>
             <div class="kpi-modal-field">
               <label class="kpi-modal-label">Assign to client</label>
-              <select class="editor-select" id="activationClientSelect">
-                <option value="">Select a client…</option>
-                <option>Heliox Financial</option>
-                <option>Meridian Telecom</option>
-                <option>VitaCare Health</option>
-                <option>Bloom Retail Group</option>
-                <option>SkyWay Travel</option>
-              </select>
+              <select class="editor-select" id="activationClientSelect" tabindex="-1" aria-hidden="true"></select>
+              <div class="kpi-dropdown" id="activationDropdown">
+                <button class="kpi-dropdown-trigger placeholder" type="button" id="activationDropdownTrigger"
+                  onclick="toggleDropdown('activationDropdown')" aria-label="Select a client">
+                  <span id="activationDropdownLabel">Select a client…</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="kpi-dropdown-menu" id="activationDropdownMenu" role="listbox">
+                  <!-- Populated by openActivationModal() -->
+                </div>
+              </div>
             </div>
             <div class="kpi-modal-impact">
               <div class="kpi-impact-row">
@@ -10551,7 +11735,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
               </div>
               <div class="editor-topbar-right">
                 <button class="editor-draft-btn" onclick="saveEditorDraft()">Save draft</button>
-                <button class="editor-publish-btn" id="editorPublishBtn" onclick="publishEditor()">
+                <button class="editor-publish-btn" id="editorPublishBtn" onclick="editorPublish()">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
                   Publish
                 </button>
@@ -10564,8 +11748,8 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
                   <div class="editor-field"><label class="editor-label">Template name</label><input class="editor-input" id="editorName" type="text" placeholder="Template name" oninput="syncEditorBreadcrumb()"/></div>
                   <div class="editor-field"><label class="editor-label">Description</label><textarea class="editor-textarea" id="editorDesc" rows="3" placeholder="Describe what this template is optimised for…"></textarea></div>
                   <div class="editor-field-row">
-                    <div class="editor-field"><label class="editor-label">Industry</label><select class="editor-select" id="editorIndustry"><option>Financial Services</option><option>Telecom</option><option>Healthcare</option><option>Retail</option><option>Travel</option></select></div>
-                    <div class="editor-field"><label class="editor-label">Channel</label><select class="editor-select" id="editorChannel"><option>Voice</option><option>Chat</option><option>Email</option><option>Ticket</option></select></div>
+                    <div class="editor-field"><label class="editor-label">Industry</label><select class="editor-select" id="editorIndustry" tabindex="-1" aria-hidden="true"><option>Financial Services</option><option>Telecom</option><option>Healthcare</option><option>Retail</option><option>Travel</option></select><div class="kpi-dropdown" id="editorIndustryDropdown"><button class="kpi-dropdown-trigger" type="button" id="editorIndustryTrigger" onclick="toggleDropdown('editorIndustryDropdown')"><span id="editorIndustryLabel">Financial Services</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="kpi-dropdown-menu" id="editorIndustryMenu" role="listbox"><div class="kpi-dropdown-option selected" onclick="pickDropdown('editorIndustryDropdown','Financial Services')">Financial Services</div><div class="kpi-dropdown-option" onclick="pickDropdown('editorIndustryDropdown','Telecom')">Telecom</div><div class="kpi-dropdown-option" onclick="pickDropdown('editorIndustryDropdown','Healthcare')">Healthcare</div><div class="kpi-dropdown-option" onclick="pickDropdown('editorIndustryDropdown','Retail')">Retail</div><div class="kpi-dropdown-option" onclick="pickDropdown('editorIndustryDropdown','Travel')">Travel</div></div></div></div>
+                    <div class="editor-field"><label class="editor-label">Channel</label><select class="editor-select" id="editorChannel" tabindex="-1" aria-hidden="true"><option>Voice</option><option>Chat</option><option>Email</option><option>Ticket</option></select><div class="kpi-dropdown" id="editorChannelDropdown"><button class="kpi-dropdown-trigger" type="button" id="editorChannelTrigger" onclick="toggleDropdown('editorChannelDropdown')"><span id="editorChannelLabel">Voice</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="kpi-dropdown-menu" id="editorChannelMenu" role="listbox"><div class="kpi-dropdown-option selected" onclick="pickDropdown('editorChannelDropdown','Voice')">Voice</div><div class="kpi-dropdown-option" onclick="pickDropdown('editorChannelDropdown','Chat')">Chat</div><div class="kpi-dropdown-option" onclick="pickDropdown('editorChannelDropdown','Email')">Email</div><div class="kpi-dropdown-option" onclick="pickDropdown('editorChannelDropdown','Ticket')">Ticket</div></div></div></div>
                   </div>
                 </div>
                 <div class="editor-weight-summary" id="editorWeightSummary">
