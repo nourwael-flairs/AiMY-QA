@@ -5094,7 +5094,13 @@
 
                 <!-- Radial weight chart -->
                 <div class="kdo-radial-wrap">
-                  <svg class="kdo-radial-svg" id="kdoRadialSvg" viewBox="0 0 220 220"></svg>
+                  <div class="kdo-radial-svg-wrap">
+                    <svg class="kdo-radial-svg" id="kdoRadialSvg" viewBox="0 0 220 220"></svg>
+                    <div class="kdo-radial-center" id="kdoRadialCenter">
+                      <span class="kdo-radial-center-pct" id="kdoRadialCenterPct">—</span>
+                      <span class="kdo-radial-center-label" id="kdoRadialCenterLabel">Weight</span>
+                    </div>
+                  </div>
                   <div class="kdo-radial-legend" id="kdoRadialLegend"></div>
                 </div>
 
@@ -8430,22 +8436,116 @@
       .kdo-weight-badge.err { color:var(--err); }
 
       /* Radial weight viz */
+      /* ── Radial weight viz ─────────────────────────────────────── */
       .kdo-radial-wrap {
         display:flex; flex-direction:column; align-items:center; gap:16px;
         margin-bottom:20px;
       }
-      .kdo-radial-svg { display:block; }
+      /* SVG container with center label overlay */
+      .kdo-radial-svg-wrap {
+        position:relative;
+        width:180px; height:180px;
+        flex-shrink:0;
+      }
+      .kdo-radial-svg {
+        display:block;
+        width:100%; height:100%;
+        /* SVG internally rotated to start at 12 o'clock */
+      }
+      /* Center label floated over the SVG hole */
+      .kdo-radial-center {
+        position:absolute;
+        inset:0;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        pointer-events:none;
+      }
+      .kdo-radial-center-pct {
+        font-family:'Urbanist',sans-serif;
+        font-size:28px; font-weight:800;
+        color:var(--d50);
+        letter-spacing:-0.04em;
+        line-height:1;
+        transition: color 160ms cubic-bezier(0.23,1,0.32,1),
+                    opacity 160ms cubic-bezier(0.23,1,0.32,1);
+      }
+      .kdo-radial-center-label {
+        font-family:'Urbanist',sans-serif;
+        font-size:9px; font-weight:700;
+        color:var(--d500);
+        letter-spacing:0.07em;
+        text-transform:uppercase;
+        margin-top:3px;
+        line-height:1;
+        transition: color 160ms cubic-bezier(0.23,1,0.32,1),
+                    opacity 160ms cubic-bezier(0.23,1,0.32,1);
+      }
+      /* Arc segments */
+      .kdo-radial-arc {
+        fill:none;
+        stroke-linecap:butt;
+        cursor:pointer;
+        transition:
+          stroke-width 180ms cubic-bezier(0.23,1,0.32,1),
+          opacity 160ms cubic-bezier(0.23,1,0.32,1),
+          filter 200ms cubic-bezier(0.23,1,0.32,1);
+      }
+      .kdo-radial-arc.arc-active {
+        stroke-width:18;
+      }
+      .kdo-radial-arc.arc-dimmed {
+        opacity:0.22;
+      }
+      /* Legend */
       .kdo-radial-legend {
-        display:flex; flex-direction:column; gap:6px; width:100%;
+        display:flex; flex-direction:column; gap:5px; width:100%;
       }
       .kdo-legend-row {
-        display:flex; align-items:center; gap:8px; font-size:11px;
+        display:flex; align-items:center; gap:9px;
+        padding:5px 7px;
+        border-radius:7px;
+        cursor:pointer;
+        transition: background 160ms cubic-bezier(0.23,1,0.32,1);
+      }
+      .kdo-legend-row:hover {
+        background:rgba(255,255,255,0.04);
+      }
+      .kdo-legend-row.legend-active {
+        background:rgba(255,255,255,0.055);
       }
       .kdo-legend-dot {
-        width:8px; height:8px; border-radius:50%; flex-shrink:0;
+        width:7px; height:7px; border-radius:50%; flex-shrink:0;
+        transition: transform 160ms cubic-bezier(0.23,1,0.32,1);
       }
-      .kdo-legend-name { flex:1; color:var(--d300); font-weight:500; }
-      .kdo-legend-pct { font-weight:800; color:var(--d50); font-size:12px; letter-spacing:-0.01em; }
+      .kdo-legend-row.legend-active .kdo-legend-dot,
+      .kdo-legend-row:hover .kdo-legend-dot {
+        transform: scale(1.35);
+      }
+      .kdo-legend-body { flex:1; min-width:0; display:flex; flex-direction:column; gap:3px; }
+      .kdo-legend-name {
+        color:var(--d300); font-weight:600; font-size:11px; line-height:1;
+        white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+        transition: color 160ms;
+      }
+      .kdo-legend-row.legend-active .kdo-legend-name,
+      .kdo-legend-row:hover .kdo-legend-name { color:var(--d100); }
+      /* Mini bar track under each legend label */
+      .kdo-legend-bar-track {
+        height:2px; border-radius:1px;
+        background:rgba(255,255,255,0.07);
+        overflow:hidden;
+      }
+      .kdo-legend-bar-fill {
+        height:100%; border-radius:1px;
+        transform-origin:left center;
+        transition: transform 550ms cubic-bezier(0.23,1,0.32,1);
+      }
+      .kdo-legend-pct {
+        font-weight:800; color:var(--d50); font-size:12px; letter-spacing:-0.02em;
+        flex-shrink:0;
+      }
 
       /* KPI category rows in overlay */
       .kdo-kpi-cats { display:flex; flex-direction:column; gap:8px; }
@@ -9708,39 +9808,193 @@
 
       // Radial donut chart for template weights
       function buildRadialChart(cats) {
-        const svg = document.getElementById('kdoRadialSvg');
+        const svg    = document.getElementById('kdoRadialSvg');
         const legend = document.getElementById('kdoRadialLegend');
+        const ctrPct = document.getElementById('kdoRadialCenterPct');
+        const ctrLbl = document.getElementById('kdoRadialCenterLabel');
         if (!svg) return;
-        const cx=110, cy=110, r=80, stroke=22;
+
+        const cx = 110, cy = 110, r = 82;
+        const strokeW    = 14;          // segment thickness
+        const strokeWHov = 18;          // expanded on hover
+        const GAP_DEG    = 2.8;         // degrees of visual gap between segments
         const circumference = 2 * Math.PI * r;
-        const total = cats.reduce((s,c)=>s+c.weight,0) || 100;
-        let offset = 0;
-        svg.innerHTML = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="${stroke}"/>`;
-        cats.forEach((c,i) => {
-          const pct  = c.weight / total;
-          const dash = pct * circumference;
-          const gap  = circumference - dash;
+        const total = cats.reduce((s, c) => s + c.weight, 0) || 100;
+
+        // Build SVG
+        svg.innerHTML = '';
+        // Rotate entire SVG so arcs start at 12 o'clock
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `rotate(-90 ${cx} ${cy})`);
+        svg.appendChild(g);
+
+        // Track ring
+        const track = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        track.setAttribute('cx', cx); track.setAttribute('cy', cy); track.setAttribute('r', r);
+        track.setAttribute('fill', 'none');
+        track.setAttribute('stroke', 'rgba(255,255,255,0.055)');
+        track.setAttribute('stroke-width', strokeW);
+        g.appendChild(track);
+
+        // Defs for glow filters
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        cats.forEach((c, i) => {
           const color = CAT_COLORS[i % CAT_COLORS.length];
-          const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-          circle.setAttribute('cx', cx);
-          circle.setAttribute('cy', cy);
-          circle.setAttribute('r', r);
-          circle.setAttribute('fill', 'none');
-          circle.setAttribute('stroke', color);
-          circle.setAttribute('stroke-width', stroke);
-          circle.setAttribute('stroke-dasharray', `${dash} ${gap}`);
-          circle.setAttribute('stroke-dashoffset', circumference * (0.25 - offset));
-          circle.setAttribute('stroke-linecap', 'round');
-          circle.style.transition = `stroke-dashoffset 0.5s ease`;
-          svg.appendChild(circle);
-          offset += pct;
+          const filt = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+          filt.setAttribute('id', `kdo-arc-glow-${i}`);
+          filt.setAttribute('x', '-30%'); filt.setAttribute('y', '-30%');
+          filt.setAttribute('width', '160%'); filt.setAttribute('height', '160%');
+          const fe = document.createElementNS('http://www.w3.org/2000/svg', 'feDropShadow');
+          fe.setAttribute('dx', '0'); fe.setAttribute('dy', '0');
+          fe.setAttribute('stdDeviation', '5');
+          fe.setAttribute('flood-color', color); fe.setAttribute('flood-opacity', '0.7');
+          filt.appendChild(fe);
+          defs.appendChild(filt);
         });
-        legend.innerHTML = cats.map((c,i) => `
-          <div class="kdo-legend-row">
-            <div class="kdo-legend-dot" style="background:${CAT_COLORS[i%CAT_COLORS.length]}"></div>
-            <div class="kdo-legend-name">${c.name}</div>
-            <div class="kdo-legend-pct">${c.weight}%</div>
-          </div>`).join('');
+        svg.insertBefore(defs, g);
+
+        const arcEls = [];
+        // GAP in stroke-dash units
+        const gapUnits = (GAP_DEG / 360) * circumference;
+
+        let angleSoFar = 0; // fraction of full circle used so far
+        cats.forEach((c, i) => {
+          const pct   = c.weight / total;
+          const color = CAT_COLORS[i % CAT_COLORS.length];
+
+          // Shrink each arc by one gap on each end
+          const arcLen  = Math.max(0, pct * circumference - gapUnits);
+          const gapLen  = circumference - arcLen;
+
+          // Offset: position arc past all previous arcs, then add half-gap for centering
+          const offsetFrac = angleSoFar + (gapUnits / 2 / circumference);
+          const dashOffset  = -(offsetFrac * circumference);
+
+          const arc = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          arc.setAttribute('cx', cx); arc.setAttribute('cy', cy); arc.setAttribute('r', r);
+          arc.setAttribute('fill', 'none');
+          arc.setAttribute('stroke', color);
+          arc.setAttribute('stroke-width', strokeW);
+          arc.setAttribute('stroke-linecap', 'butt');
+          arc.setAttribute('stroke-dasharray', `0 ${circumference}`);  // start at 0 for animation
+          arc.setAttribute('stroke-dashoffset', dashOffset);
+          arc.classList.add('kdo-radial-arc');
+          arc.dataset.idx   = i;
+          arc.dataset.pct   = c.weight;
+          arc.dataset.name  = c.name;
+          arc.dataset.arcLen = arcLen;
+          arc.dataset.gapLen = gapLen;
+          arc.dataset.color  = color;
+          g.appendChild(arc);
+          arcEls.push(arc);
+
+          // Hover hit ring (transparent, wider)
+          const hit = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          hit.setAttribute('cx', cx); hit.setAttribute('cy', cy); hit.setAttribute('r', r);
+          hit.setAttribute('fill', 'none');
+          hit.setAttribute('stroke', 'transparent');
+          hit.setAttribute('stroke-width', strokeW + 18);
+          hit.setAttribute('stroke-linecap', 'butt');
+          hit.setAttribute('stroke-dasharray', `${arcLen} ${gapLen}`);
+          hit.setAttribute('stroke-dashoffset', dashOffset);
+          hit.style.cursor = 'pointer';
+          g.appendChild(hit);
+
+          // Hover wiring on hit ring
+          hit.addEventListener('mouseenter', () => {
+            arcEls.forEach((a, j) => {
+              a.setAttribute('stroke-width', j === i ? strokeWHov : strokeW);
+              a.style.filter = j === i ? `url(#kdo-arc-glow-${j})` : '';
+              a.classList.toggle('arc-dimmed', j !== i);
+            });
+            ctrPct.textContent = c.weight + '%';
+            ctrLbl.textContent = c.name;
+            // Highlight corresponding legend row
+            document.querySelectorAll('.kdo-legend-row').forEach((row, j) => {
+              row.classList.toggle('legend-active', j === i);
+            });
+          });
+          hit.addEventListener('mouseleave', () => {
+            arcEls.forEach((a) => {
+              a.setAttribute('stroke-width', strokeW);
+              a.style.filter = '';
+              a.classList.remove('arc-dimmed');
+            });
+            ctrPct.textContent = total + '%';
+            ctrLbl.textContent = 'Total weight';
+            document.querySelectorAll('.kdo-legend-row').forEach(row => row.classList.remove('legend-active'));
+          });
+
+          angleSoFar += pct;
+        });
+
+        // Set initial center label
+        ctrPct.textContent = total + '%';
+        ctrLbl.textContent = 'Total weight';
+
+        // ── Entrance animation: draw arcs in staggered ──────────────
+        arcEls.forEach((arc, i) => {
+          const arcLen = parseFloat(arc.dataset.arcLen);
+          const gapLen = parseFloat(arc.dataset.gapLen);
+          const delay  = 60 + i * 55; // stagger 55ms per arc
+          setTimeout(() => {
+            arc.style.transition = `stroke-dasharray 520ms cubic-bezier(0.23,1,0.32,1)`;
+            arc.setAttribute('stroke-dasharray', `${arcLen} ${gapLen}`);
+          }, delay);
+        });
+
+        // ── Legend ───────────────────────────────────────────────────
+        legend.innerHTML = cats.map((c, i) => {
+          const color   = CAT_COLORS[i % CAT_COLORS.length];
+          const fillPct = (c.weight / total);
+          return `
+          <div class="kdo-legend-row" data-legend-idx="${i}"
+               data-name="${c.name}" data-pct="${c.weight}">
+            <div class="kdo-legend-dot" style="background:${color}"></div>
+            <div class="kdo-legend-body">
+              <div class="kdo-legend-name">${c.name}</div>
+              <div class="kdo-legend-bar-track">
+                <div class="kdo-legend-bar-fill" style="background:${color}; transform:scaleX(0)"
+                     data-scale="${fillPct}"></div>
+              </div>
+            </div>
+            <div class="kdo-legend-pct" style="color:${color}">${c.weight}%</div>
+          </div>`;
+        }).join('');
+
+        // Animate legend bars on a slight delay after arcs
+        setTimeout(() => {
+          legend.querySelectorAll('.kdo-legend-bar-fill').forEach((bar, i) => {
+            setTimeout(() => {
+              bar.style.transition = `transform 550ms cubic-bezier(0.23,1,0.32,1)`;
+              bar.style.transform  = `scaleX(${bar.dataset.scale})`;
+            }, i * 55);
+          });
+        }, 120);
+
+        // Legend row hover wiring
+        legend.querySelectorAll('.kdo-legend-row').forEach((row, i) => {
+          row.addEventListener('mouseenter', () => {
+            arcEls.forEach((a, j) => {
+              a.setAttribute('stroke-width', j === i ? strokeWHov : strokeW);
+              a.style.filter = j === i ? `url(#kdo-arc-glow-${j})` : '';
+              a.classList.toggle('arc-dimmed', j !== i);
+            });
+            ctrPct.textContent = cats[i].weight + '%';
+            ctrLbl.textContent = cats[i].name;
+            legend.querySelectorAll('.kdo-legend-row').forEach((r, j) => r.classList.toggle('legend-active', j === i));
+          });
+          row.addEventListener('mouseleave', () => {
+            arcEls.forEach(a => {
+              a.setAttribute('stroke-width', strokeW);
+              a.style.filter = '';
+              a.classList.remove('arc-dimmed');
+            });
+            ctrPct.textContent = total + '%';
+            ctrLbl.textContent = 'Total weight';
+            legend.querySelectorAll('.kdo-legend-row').forEach(r => r.classList.remove('legend-active'));
+          });
+        });
       }
 
       // ──────────────────────────────────────────────────────────
