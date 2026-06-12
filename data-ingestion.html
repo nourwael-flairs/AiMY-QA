@@ -4517,13 +4517,16 @@
           </div>
 
           <!-- ── BODY ────────────────────────────────────────────────── -->
+          <!-- Proactive AiMY alert — rendered when any source is in error/warn -->
+          <div id="diProactiveBanner" style="display:none"></div>
+
           <div class="di-body">
 
             <!-- LEFT NAV PANEL ──────────────────────────────────────── -->
             <div class="di-left-nav">
               <div class="di-nav-section">
                 <div class="di-nav-label">Actions</div>
-                <button class="di-nav-item di-nav-active" data-tab="upload" onclick="diTab('upload',this)">
+                <button class="di-nav-item" data-tab="upload" onclick="diTab('upload',this)">
                   <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M8 10V4M8 4L5 7M8 4l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12v1a1 1 0 001 1h8a1 1 0 001-1v-1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
                   Upload files
                 </button>
@@ -4535,7 +4538,7 @@
               <div class="di-nav-section">
                 <div class="di-nav-label">Sources</div>
                 <div id="diNavSources">
-                  <button class="di-nav-item di-nav-src di-nav-src-active" data-src="zendesk" data-tab="sourcedetail" onclick="diTab('sourcedetail',this);diSelectSrc('zendesk',null)">
+                  <button class="di-nav-item di-nav-src di-nav-src-active di-nav-active" data-src="zendesk" data-tab="sourcedetail" onclick="diTab('sourcedetail',this);diSelectSrc('zendesk',null)">
                     <span class="di-nav-src-dot dot-active"></span>
                     Zendesk
                   </button>
@@ -4563,7 +4566,7 @@
             <div class="di-content">
 
               <!-- Upload pane ──────────────────────────────────────── -->
-              <div class="di-pane di-pane-active" id="pUpload">
+              <div class="di-pane" id="pUpload">
                 <div class="di-pane-header">
                   <h2 class="di-pane-title">Upload Voice Files</h2>
                   <p class="di-pane-desc">Upload files manually when automated S3 ingestion is unavailable. Files are sent to S3 for processing.</p>
@@ -4610,9 +4613,11 @@
                     <div id="diQueue" style="display:none">
                       <div class="di-queue-header">
                         <span class="di-section-title" id="diQueueLabel">Uploading&hellip;</span>
-                        <button class="di-text-btn" onclick="diCancelAll()">Cancel all</button>
+                        <button class="di-text-btn" id="diCancelAllBtn" onclick="diCancelAll()">Cancel all</button>
                       </div>
                       <div id="diQueueList"></div>
+                      <!-- Completion footer: shown only when all items are done/failed -->
+                      <div id="diQueueFooter" style="display:none;margin-top:14px;padding:14px 0 0;border-top:1px solid rgba(255,255,255,0.06)"></div>
                     </div>
                     <div class="di-upload-idle" id="diUploadIdle">
                       <svg viewBox="0 0 20 20" fill="none" width="20" height="20" style="opacity:.2"><path d="M10 2v10M10 2L7 5M10 2l3 3M4 18h12" stroke="var(--d300)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -4627,18 +4632,33 @@
                 <div class="di-pane-header">
                   <h2 class="di-pane-title">Upload History</h2>
                   <div class="di-pane-header-controls">
-                    <select class="di-select" id="histStatus" onchange="diFilterHist()">
-                      <option value="all">All statuses</option>
-                      <option value="complete">Complete</option>
-                      <option value="processing">Processing</option>
-                      <option value="queued">Queued</option>
-                      <option value="failed">Failed</option>
-                    </select>
-                    <select class="di-select" id="histDate" onchange="diFilterHist()">
-                      <option value="7d">Last 7 days</option>
-                      <option value="30d">Last 30 days</option>
-                      <option value="all">All time</option>
-                    </select>
+
+                    <div class="v2-dropdown" data-dd="hist-status">
+                      <button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="dd-label-text">All statuses</span>
+                        <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg>
+                      </button>
+                      <div class="v2-dropdown-panel" role="listbox" aria-label="Upload status">
+                        <div class="v2-dropdown-option selected" role="option" data-value="all">All statuses</div>
+                        <div class="v2-dropdown-option" role="option" data-value="complete">Complete</div>
+                        <div class="v2-dropdown-option" role="option" data-value="processing">Processing</div>
+                        <div class="v2-dropdown-option" role="option" data-value="queued">Queued</div>
+                        <div class="v2-dropdown-option" role="option" data-value="failed">Failed</div>
+                      </div>
+                    </div>
+
+                    <div class="v2-dropdown" data-dd="hist-date">
+                      <button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="dd-label-text">Last 7 days</span>
+                        <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg>
+                      </button>
+                      <div class="v2-dropdown-panel" role="listbox" aria-label="Date range">
+                        <div class="v2-dropdown-option selected" role="option" data-value="7d">Last 7 days</div>
+                        <div class="v2-dropdown-option" role="option" data-value="30d">Last 30 days</div>
+                        <div class="v2-dropdown-option" role="option" data-value="all">All time</div>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
 
@@ -4656,7 +4676,7 @@
               </div>
 
               <!-- Source detail pane ───────────────────────────────── -->
-              <div class="di-pane" id="pSourcedetail">
+              <div class="di-pane di-pane-active" id="pSourcedetail">
                 <div id="diDetail"></div>
               </div>
 
@@ -4700,7 +4720,8 @@
               <button class="di-modal-x" onclick="diCloseDelete(null)" aria-label="Close"><svg viewBox="0 0 12 12" fill="none" width="11"><path d="M10 2L2 10M2 2l8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
             </div>
             <div class="di-modal-bd">
-              <p class="di-del-warn">Ingestion will stop immediately. Already-ingested interactions remain in QA.</p>
+              <div id="diDelStats"></div>
+              <p class="di-del-warn">Stopping this source means no new interactions will be ingested or scored until it is reconnected. Already-ingested interactions remain in QA.</p>
               <p class="di-del-inst">Type <strong id="diDelName"></strong> to confirm:</p>
               <input class="di-field" id="diDelInput" type="text" placeholder="Source name" oninput="diCheckDel()" autocomplete="off" spellcheck="false">
             </div>
@@ -4793,33 +4814,8 @@
 
           <!-- Conversation thread -->
           <div class="overlay-thread" id="overlayThread" aria-live="polite">
-            <!-- Suggested prompts — visible when thread is empty -->
-            <div class="overlay-suggestions" id="overlaySuggestions">
-              <button
-                class="overlay-sugg-chip"
-                onclick="overlaySuggestion(this)"
-              >
-                Why is S3 Voice failing to sync?
-              </button>
-              <button
-                class="overlay-sugg-chip"
-                onclick="overlaySuggestion(this)"
-              >
-                Which source has the most errors this week?
-              </button>
-              <button
-                class="overlay-sugg-chip"
-                onclick="overlaySuggestion(this)"
-              >
-                Compare ingestion volume across all sources
-              </button>
-              <button
-                class="overlay-sugg-chip"
-                onclick="overlaySuggestion(this)"
-              >
-                What&rsquo;s driving the empathy drop?
-              </button>
-            </div>
+            <!-- Suggested prompts — populated dynamically based on current source/status -->
+            <div class="overlay-suggestions" id="overlaySuggestions"></div>
           </div>
 
           <!-- Input bar inside overlay -->
@@ -4883,7 +4879,6 @@
         justify-content: space-between;
         padding: 18px 28px 16px;
         flex-shrink: 0;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
       }
       .di-page-header-left {
         display: flex;
@@ -4908,7 +4903,6 @@
       .di-health-strip {
         flex-shrink: 0;
         padding: 16px 28px 18px;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
       }
       .di-src-cards {
         display: grid;
@@ -5314,6 +5308,56 @@
         align-items: center;
         margin-bottom: 12px;
       }
+      /* Upload completion footer */
+      .di-upload-complete {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .di-upload-complete-msg {
+        font-size: 12px;
+        color: var(--ok);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .di-upload-complete-msg svg { flex-shrink: 0; }
+      .di-upload-complete-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .di-upload-next-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 13px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: background 150ms, border-color 150ms;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.04);
+        color: var(--d200);
+        text-decoration: none;
+      }
+      .di-upload-next-btn:hover {
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(255,255,255,0.18);
+        color: var(--d50);
+      }
+      .di-upload-next-btn.ai-btn {
+        background: rgba(0,102,255,0.08);
+        border-color: rgba(0,102,255,0.22);
+        color: #61adf1;
+      }
+      .di-upload-next-btn.ai-btn:hover {
+        background: rgba(0,102,255,0.14);
+        border-color: rgba(0,102,255,0.36);
+      }
       .di-section-title {
         font-size: 11px;
         font-weight: 700;
@@ -5599,6 +5643,181 @@
       .di-sync-out.ok   { color: var(--ok); }
       .di-sync-out.fail { color: var(--err); }
 
+      /* ── Proactive AiMY degradation banner ──────────────────────── */
+      #diProactiveBanner {
+        flex-shrink: 0;
+      }
+      .di-proactive-banner {
+        display: flex;
+        align-items: stretch;
+        gap: 0;
+        font-size: 12px;
+      }
+      /* Left severity accent bar */
+      .di-pb-accent {
+        width: 3px;
+        flex-shrink: 0;
+        border-radius: 0;
+      }
+      .di-pb-error .di-pb-accent { background: var(--err); }
+      .di-pb-warn  .di-pb-accent { background: var(--warn); }
+      /* Inner content row */
+      .di-pb-inner {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 11px 20px 11px 16px;
+        flex-wrap: wrap;
+        border-radius: 10px 0 0 10px;
+      }
+      .di-pb-error .di-pb-inner {
+        background: rgba(240,68,56,0.06);
+        border-top: 1px solid rgba(240,68,56,0.12);
+        border-bottom: 1px solid rgba(240,68,56,0.12);
+        border-left: 1px solid rgba(240,68,56,0.12);
+                border-radius: 10px 0 0 10px;
+
+
+      }
+      .di-pb-warn .di-pb-inner {
+        background: rgba(247,144,9,0.05);
+        border-top: 1px solid rgba(247,144,9,0.1);
+        border-bottom: 1px solid rgba(247,144,9,0.1);
+        border-left: 1px solid rgba(247,144,9,0.1);
+                border-radius: 10px 0 0 10px;
+
+      }
+      /* AiMY avatar + label */
+      .di-pb-avatar {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .di-pb-avatar-icon {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        background: rgba(0,102,255,0.12);
+        border: 1px solid rgba(0,102,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .di-pb-aimy-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        color: #61adf1;
+      }
+      /* Divider between avatar and message */
+      .di-pb-divider {
+        width: 1px;
+        height: 20px;
+        background: rgba(255,255,255,0.08);
+        flex-shrink: 0;
+      }
+      /* Source chip */
+      .di-pb-src-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 8px;
+        border-radius: 5px;
+        font-size: 10px;
+        font-weight: 700;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .di-pb-error .di-pb-src-chip {
+        background: rgba(240,68,56,0.1);
+        color: var(--err);
+        border: 1px solid rgba(240,68,56,0.2);
+      }
+      .di-pb-warn .di-pb-src-chip {
+        background: rgba(247,144,9,0.1);
+        color: var(--warn);
+        border: 1px solid rgba(247,144,9,0.18);
+      }
+      /* Message text */
+      .di-pb-body {
+        flex: 1;
+        min-width: 180px;
+      }
+      .di-pb-msg {
+        color: var(--d300);
+        line-height: 1.5;
+      }
+      .di-pb-msg strong { color: var(--d100); font-weight: 600; }
+      .di-pb-other {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d500);
+        margin-top: 1px;
+      }
+      /* Action buttons */
+      .di-pb-actions {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+        align-items: center;
+      }
+      .di-pb-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 12px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: background 150ms, border-color 150ms, color 150ms;
+        white-space: nowrap;
+        letter-spacing: .01em;
+      }
+      .di-pb-btn-primary {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: var(--d200);
+      }
+      .di-pb-btn-primary:hover {
+        background: rgba(255,255,255,0.09);
+        border-color: rgba(255,255,255,0.18);
+        color: var(--d50);
+      }
+      .di-pb-error .di-pb-btn-fix {
+        background: rgba(240,68,56,0.1);
+        border: 1px solid rgba(240,68,56,0.24);
+        color: #f87171;
+      }
+      .di-pb-error .di-pb-btn-fix:hover {
+        background: rgba(240,68,56,0.18);
+        border-color: rgba(240,68,56,0.38);
+        color: #fca5a5;
+      }
+      .di-pb-warn .di-pb-btn-fix {
+        background: rgba(247,144,9,0.09);
+        border: 1px solid rgba(247,144,9,0.22);
+        color: #fbbf24;
+      }
+      .di-pb-warn .di-pb-btn-fix:hover {
+        background: rgba(247,144,9,0.16);
+        border-color: rgba(247,144,9,0.36);
+        color: #fcd34d;
+      }
+      .di-pb-btn-ai {
+        background: rgba(0,102,255,0.07);
+        border: 1px solid rgba(0,102,255,0.18);
+        color: #61adf1;
+      }
+      .di-pb-btn-ai:hover {
+        background: rgba(0,102,255,0.13);
+        border-color: rgba(0,102,255,0.32);
+      }
+
       /* ── Shared buttons ─────────────────────────────────────────── */
       .di-btn {
         display: inline-flex;
@@ -5753,6 +5972,121 @@
       .di-select:focus-visible { border-color: var(--brand); }
       .di-select option { background: #1a2330; color: var(--d100); }
 
+      /* ── History filter strip (v2-dropdown) ─────────────────────────── */
+      /* ── v2-dropdown engine ──────────────────────────────────────────── */
+      .v2-dropdown {
+        position: relative;
+        display: inline-flex;
+        flex-shrink: 0;
+      }
+      .v2-dropdown-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 6px;
+        padding: 4px 8px 4px 10px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--d200, #e8edf2);
+        font-family: "Urbanist", sans-serif;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+        line-height: 1.4;
+      }
+      .v2-dropdown-btn:hover {
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(255,255,255,0.16);
+      }
+      .v2-dropdown-btn.open {
+        background: rgba(51,105,255,0.08);
+        border-color: rgba(99,169,255,0.28);
+        color: #c5dcff;
+      }
+      .v2-dropdown-btn.active-filter {
+        background: rgba(51,105,255,0.10);
+        border-color: rgba(99,169,255,0.32);
+        color: #a8ccff;
+      }
+      .v2-dropdown-btn svg {
+        width: 10px;
+        height: 10px;
+        flex-shrink: 0;
+        transition: transform 150ms cubic-bezier(0.22,1,0.36,1);
+        color: var(--d400);
+      }
+      .v2-dropdown-btn.open svg { transform: rotate(180deg); }
+      .v2-dropdown-btn .dd-label-text {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      /* Dropdown panel */
+      .v2-dropdown-panel {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        min-width: 100%;
+        background: var(--d800, #1a2330);
+        border: 1px solid rgba(255,255,255,0.10);
+        border-radius: 10px;
+        padding: 4px;
+        box-shadow:
+          0 8px 32px rgba(0,0,0,0.5),
+          0 0 0 1px rgba(0,0,0,0.2),
+          inset 0 1px 0 rgba(255,255,255,0.06);
+        z-index: 200;
+        opacity: 0;
+        transform: translateY(-4px) scale(0.98);
+        transform-origin: top left;
+        pointer-events: none;
+        transition:
+          opacity 150ms cubic-bezier(0.22,1,0.36,1),
+          transform 150ms cubic-bezier(0.22,1,0.36,1);
+        white-space: nowrap;
+      }
+      .v2-dropdown-panel.open {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+      }
+      .v2-dropdown-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--d200, #e8edf2);
+        font-family: "Urbanist", sans-serif;
+        cursor: pointer;
+        transition: background 120ms ease, color 120ms ease;
+      }
+      .v2-dropdown-option:hover {
+        background: rgba(255,255,255,0.06);
+        color: var(--d50, #f5f8fb);
+      }
+      .v2-dropdown-option.selected {
+        background: rgba(51,105,255,0.10);
+        color: #a8ccff;
+      }
+      .v2-dropdown-option.selected::before {
+        content: '';
+        width: 5px; height: 5px;
+        border-radius: 50%;
+        background: #61adf1;
+        flex-shrink: 0;
+      }
+      .v2-dropdown-option:not(.selected)::before {
+        content: '';
+        width: 5px; height: 5px;
+        flex-shrink: 0;
+      }
+
+
       .di-cfg-select {
         width: 100%;
         background: #141b24;
@@ -5823,6 +6157,36 @@
       .di-del-warn { font-size: 13px; color: var(--d300); margin-bottom: 18px; line-height: 1.65; }
       .di-del-inst { font-size: 12px; color: var(--d400); margin-bottom: 10px; }
       .di-del-inst strong { color: var(--d100); }
+      /* Delete modal impact stats */
+      .di-del-stats {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 18px;
+        padding: 12px 14px;
+        background: rgba(240,68,56,0.05);
+        border: 1px solid rgba(240,68,56,0.14);
+        border-radius: 9px;
+      }
+      .di-del-stat { display: flex; flex-direction: column; gap: 2px; }
+      .di-del-stat-val { font-size: 18px; font-weight: 700; color: var(--err); letter-spacing: -0.02em; }
+      .di-del-stat-lbl { font-size: 10px; color: var(--d500); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
+      /* Pause confirmation popover */
+      .di-pause-wrap { position: relative; display: inline-block; }
+      .di-pause-tip {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        width: 260px;
+        background: var(--d850, #141b24);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 10px;
+        padding: 12px 14px;
+        z-index: 200;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+      }
+      .di-pause-tip-msg { font-size: 12px; color: var(--d200); margin-bottom: 10px; line-height: 1.5; }
+      .di-pause-tip-msg strong { color: var(--d50); }
+      .di-pause-tip-actions { display: flex; gap: 8px; justify-content: flex-end; }
 
       /* Scrollbars */
       .di-content::-webkit-scrollbar,
@@ -5976,16 +6340,87 @@
       ];
 
       var currentSrc = 'zendesk';
-      var currentTab = 'upload';
+      var currentTab = 'sourcedetail';
       var wizardStep = 1;
       var wizardSrcType = '';
       var deletingSource = '';
       var cfgActiveTab = 'connection';
 
+      /* ── PROACTIVE AIMY BANNER ─────────────────────────────────────────── */
+      function renderProactiveBanner() {
+        var el = document.getElementById('diProactiveBanner');
+        if (!el) return;
+        /* Collect all degraded sources */
+        var errors = [], warns = [];
+        Object.keys(SOURCES).forEach(function(id) {
+          var s = SOURCES[id];
+          if (s.status === 'error' && !s.paused) errors.push(s);
+          else if (s.status === 'warn' && !s.paused) warns.push(s);
+        });
+        if (!errors.length && !warns.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
+
+        /* Pick the highest-priority item to feature */
+        var featured = errors[0] || warns[0];
+        var isError = featured.status === 'error';
+        var otherCount = (errors.length + warns.length) - 1;
+
+        var msg = isError
+          ? featured.name + ' has failed <strong>' + featured.errCount + ' consecutive sync' + (featured.errCount !== 1 ? 's' : '') + '</strong> — interactions are not being scored.'
+          : featured.name + ' is <strong>stale</strong> — last synced ' + featured.lastSync + '. New interactions may be missing.';
+
+
+
+        var actionId = isError ? 'error' : 'warn';
+        var query = isError
+          ? 'Why is ' + featured.name + ' failing to sync and how do I fix it?'
+          : 'Why is ' + featured.name + ' stale and what should I do?';
+
+        el.style.display = 'block';
+        var srcChipLabel = featured.name;
+        el.innerHTML =
+          '<div class="di-proactive-banner di-pb-' + actionId + '">'
+          // + '<div class="di-pb-accent"></div>'
+          + '<div class="di-pb-inner">'
+          + '<div class="di-pb-avatar">'
+          + '<div class="di-pb-avatar-icon"><svg width="11" height="12" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg></div>'
+          + '<span class="di-pb-aimy-label">AiMY</span>'
+          + '</div>'
+          + '<div class="di-pb-divider"></div>'
+          + '<span class="di-pb-src-chip">' + srcChipLabel + '</span>'
+          + '<div class="di-pb-body">'
+          + '<div class="di-pb-msg">' + msg + '</div>'
+          + (otherCount > 0 ? '<div class="di-pb-other">+' + otherCount + ' more source' + (otherCount > 1 ? 's' : '') + ' need attention</div>' : '')
+          + '</div>'
+          + '<div class="di-pb-actions">'
+          + '<button class="di-pb-btn di-pb-btn-fix" onclick="diProactiveFix()">'
+          + (isError ? 'Fix connection' : 'Investigate') + '</button>'
+          + '<button class="di-pb-btn di-pb-btn-ai" onclick="diProactiveAsk()">'
+          + '<svg width="10" height="11" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>Ask AiMY</button>'
+          + '</div>'
+          + '</div>'
+          + '</div>';
+        /* Store context for named helpers to avoid nested-quote issues in onclick attrs */
+        window._diProactiveSrc   = featured.type;
+        window._diProactiveQuery = query;
+      }
+
+      window.diProactiveFix = function() {
+        var src = window._diProactiveSrc;
+        if (!src) return;
+        var btn = document.querySelector('[data-src="' + src + '"]');
+        diTab('sourcedetail', btn);
+        diSelectSrc(src, null);
+      };
+      window.diProactiveAsk = function() {
+        var q = window._diProactiveQuery || 'What is the current pipeline health status?';
+        window.diAskAiMY(q);
+      };
+
       /* ── INIT ──────────────────────────────────────────────────────────── */
       document.addEventListener('DOMContentLoaded', function() {
         renderHistory();
         renderDetail('zendesk');
+        renderProactiveBanner();
 
         /* Delegated listener for dynamically-rendered di-aimy-chip buttons.
            Can't use inline onclick because JSON.stringify produces double quotes
@@ -6030,10 +6465,10 @@
         if (!s) { el.innerHTML = ''; return; }
 
         var statusBadge = '';
-        if (s.status === 'active') statusBadge = '<span class="di-sc-badge badge-active" style="font-size:11px"><span class="di-sc-dot"></span>Active</span>';
-        else if (s.status === 'warn') statusBadge = '<span class="di-sc-badge badge-warn" style="font-size:11px"><span class="di-sc-dot"></span>Stale</span>';
-        else if (s.status === 'error') statusBadge = '<span class="di-sc-badge badge-error" style="font-size:11px"><span class="di-sc-dot"></span>Error</span>';
-        else if (s.status === 'paused') statusBadge = '<span class="di-sc-badge" style="font-size:11px;background:rgba(255,255,255,.06);color:var(--d400)"><span class="di-sc-dot" style="background:var(--d500)"></span>Paused</span>';
+        if (s.status === 'active') statusBadge = '<span class="di-sc-badge badge-active" style="font-size:11px">Active</span>';
+        else if (s.status === 'warn') statusBadge = '<span class="di-sc-badge badge-warn" style="font-size:11px">Stale</span>';
+        else if (s.status === 'error') statusBadge = '<span class="di-sc-badge badge-error" style="font-size:11px">Error</span>';
+        else if (s.status === 'paused') statusBadge = '<span class="di-sc-badge" style="font-size:11px;background:rgba(255,255,255,.06);color:var(--d400)">Paused</span>';
 
         var pausedBanner = s.paused ? '<div class="di-paused-banner"><svg viewBox="0 0 16 16" fill="none" width="14" style="flex-shrink:0"><path d="M6 4v8M10 4v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="di-paused-banner-text">Ingestion is paused for this source. No new data will be processed until resumed.</span><button class="di-resume-btn" onclick="diResumeSource(\''+srcId+'\')"><svg viewBox="0 0 12 12" fill="none" width="10"><path d="M3 2l8 4-8 4V2z" fill="currentColor"/></svg>Resume ingestion</button></div>' : '';
 
@@ -6072,8 +6507,20 @@
           + '<div class="di-detail-actions">'
           + (s.paused
               ? '<button class="di-btn di-btn-warn" onclick="diResumeSource(\''+srcId+'\')">Resume ingestion</button>'
-              : '<button class="di-btn di-btn-ghost" onclick="diPauseSource(\''+srcId+'\')">Pause</button>')
-          + '<button class="di-btn di-btn-primary" onclick="diOpenConfig(\''+srcId+'\',null)">Configure</button>'
+              : '<span class="di-pause-wrap" id="pauseWrap-'+srcId+'">'
+                + '<button class="di-btn di-btn-ghost" onclick="diShowPauseConfirm(\''+srcId+'\')">Pause</button>'
+                + '<div class="di-pause-tip" id="pauseTip-'+srcId+'" style="display:none">'
+                + '<p class="di-pause-tip-msg">Pause '+s.name+'? ~<strong>'+s.vol24h.toLocaleString()+'</strong> interactions/day will stop ingesting.</p>'
+                + '<div class="di-pause-tip-actions">'
+                + '<button class="di-btn di-btn-ghost di-btn-sm" onclick="diHidePauseConfirm(\''+srcId+'\')">Cancel</button>'
+                + '<button class="di-btn di-btn-danger di-btn-sm" onclick="diPauseSource(\''+srcId+'\')">Pause ingestion</button>'
+                + '</div></div>'
+                + '</span>')
+          + (s.status === 'error'
+              ? '<button class="di-btn di-btn-danger" onclick="diOpenConfig(\''+srcId+'\',null,\'connection\')">'
+                + '<svg viewBox="0 0 12 12" fill="none" width="11" style="margin-right:3px"><path d="M6 2v4M6 8h.01" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/></svg>'
+                + 'Fix connection</button>'
+              : '<button class="di-btn di-btn-primary" onclick="diOpenConfig(\''+srcId+'\',null)">Configure</button>')
           + '</div>'
           + '</div>'
           + pausedBanner
@@ -6426,9 +6873,56 @@
         var failed = document.querySelectorAll('#diQueueList .di-qitem-progbar.failed').length;
         var total = items.length;
         var label = document.getElementById('diQueueLabel');
+        var footer = document.getElementById('diQueueFooter');
+        var cancelBtn = document.getElementById('diCancelAllBtn');
+        var allFinished = (done + failed === total && total > 0);
+
         if (label) {
-          if (done + failed === total) label.textContent = done + ' of '+total+' uploaded';
-          else label.textContent = 'Uploading ' + (done+failed) + ' of ' + total + '\u2026';
+          if (allFinished) {
+            label.textContent = done + ' of ' + total + ' uploaded';
+          } else {
+            label.textContent = 'Uploading ' + (done + failed) + ' of ' + total + '\u2026';
+          }
+        }
+
+        /* Show Cancel all only while in-progress; hide once all finished */
+        if (cancelBtn) cancelBtn.style.display = allFinished ? 'none' : '';
+
+        /* Completion footer */
+        if (footer) {
+          if (allFinished) {
+            var hasOk = done > 0;
+            var hasFail = failed > 0;
+            var msg = hasOk
+              ? done + ' file' + (done > 1 ? 's' : '') + ' sent to QA pipeline for evaluation'
+              : failed + ' file' + (failed > 1 ? 's' : '') + ' failed to upload';
+            var msgColor = hasOk ? 'var(--ok)' : 'var(--err)';
+            var aiQuery = hasOk
+              ? 'The upload of ' + done + ' voice file' + (done > 1 ? 's' : '') + ' just completed. When will these be evaluated and scored in QA?'
+              : 'Upload of ' + failed + ' file' + (failed > 1 ? 's' : '') + ' failed. What are the likely causes and how do I fix them?';
+            footer.style.display = 'block';
+            footer.innerHTML =
+              '<div class="di-upload-complete">'
+              + '<div class="di-upload-complete-msg" style="color:' + msgColor + '">'
+              + (hasOk
+                  ? '<svg viewBox="0 0 14 14" fill="none" width="13"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 7l2 2 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+                  : '<svg viewBox="0 0 14 14" fill="none" width="13"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4.5v3M7 9.5h.01" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>')
+              + msg
+              + '</div>'
+              + '<div class="di-upload-complete-actions">'
+              + '<button class="di-upload-next-btn" onclick="diTab(\'history\', document.querySelector(\'[data-tab=history]\'))">'
+              + '<svg viewBox="0 0 12 12" fill="none" width="11"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.2"/><path d="M6 3.5V6l1.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+              + 'See in Upload History</button>'
+              + '<button class="di-upload-next-btn ai-btn" onclick="window.diAskAiMY(\'' + aiQuery.replace(/'/g, '\u2019') + '\')">'
+              + '<svg width="11" height="12" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>'
+              + (hasOk ? 'When will these be scored?' : 'Diagnose upload failure')
+              + '</button>'
+              + '</div>'
+              + '</div>';
+          } else {
+            footer.style.display = 'none';
+            footer.innerHTML = '';
+          }
         }
       }
 
@@ -6450,11 +6944,109 @@
       }
 
       /* ── HISTORY ───────────────────────────────────────────────────────── */
+
+      /* v2-dropdown engine for the Upload History filter strip */
+      (function() {
+        var activeDropdown = null;
+
+        function closeAllHistDd(except) {
+          document.querySelectorAll('#pHistory .v2-dropdown').forEach(function(dd) {
+            if (dd === except) return;
+            var btn = dd.querySelector('.v2-dropdown-btn');
+            var panel = dd.querySelector('.v2-dropdown-panel');
+            if (btn)   { btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+            if (panel) panel.classList.remove('open');
+          });
+          if (!except) activeDropdown = null;
+        }
+
+        function initHistDropdown(dd) {
+          var btn     = dd.querySelector('.v2-dropdown-btn');
+          var panel   = dd.querySelector('.v2-dropdown-panel');
+          var labelEl = btn && btn.querySelector('.dd-label-text');
+          if (!btn || !panel) return;
+
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var isOpen = panel.classList.contains('open');
+            closeAllHistDd(isOpen ? null : dd);
+            if (!isOpen) {
+              btn.classList.add('open');
+              btn.setAttribute('aria-expanded','true');
+              panel.classList.add('open');
+              activeDropdown = dd;
+              /* Flip panel up if clipped at bottom */
+              var rect = panel.getBoundingClientRect();
+              if (rect.bottom > window.innerHeight - 8) {
+                panel.style.top = 'auto';
+                panel.style.bottom = 'calc(100% + 4px)';
+                panel.style.transformOrigin = 'bottom left';
+              } else {
+                panel.style.top = '';
+                panel.style.bottom = '';
+                panel.style.transformOrigin = 'top left';
+              }
+            }
+          });
+
+          btn.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { closeAllHistDd(); btn.focus(); }
+            if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              var first = panel.querySelector('.v2-dropdown-option');
+              if (first) { panel.classList.add('open'); btn.setAttribute('aria-expanded','true'); first.focus(); }
+            }
+          });
+
+          panel.querySelectorAll('.v2-dropdown-option').forEach(function(opt) {
+            opt.setAttribute('tabindex', '-1');
+            opt.addEventListener('click', function(e) {
+              e.stopPropagation();
+              panel.querySelectorAll('.v2-dropdown-option').forEach(function(o) { o.classList.remove('selected'); });
+              opt.classList.add('selected');
+              if (labelEl) labelEl.textContent = opt.textContent.trim();
+              var isDefault = opt === panel.querySelector('.v2-dropdown-option:first-child');
+              btn.classList.toggle('active-filter', !isDefault);
+              closeAllHistDd();
+              btn.focus();
+              window.diFilterHist();
+            });
+            opt.addEventListener('keydown', function(e) {
+              if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); opt.click(); }
+              if (e.key === 'Escape') { closeAllHistDd(); btn.focus(); }
+              if (e.key === 'ArrowDown') { e.preventDefault(); var next = opt.nextElementSibling; if (next) next.focus(); }
+              if (e.key === 'ArrowUp')   { e.preventDefault(); var prev = opt.previousElementSibling; if (prev) prev.focus(); else btn.focus(); }
+            });
+          });
+        }
+
+        /* Init runs after DOM is ready — use DOMContentLoaded or defer */
+        function initAllHistDropdowns() {
+          document.querySelectorAll('#pHistory .v2-dropdown').forEach(initHistDropdown);
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initAllHistDropdowns);
+        } else {
+          initAllHistDropdowns();
+        }
+
+        document.addEventListener('click', function() { closeAllHistDd(); });
+      })();
+
+      /* Helper: read active v2-dropdown selection in a given scope */
+      function getHistFilterVal(ddKey) {
+        var dd = document.querySelector('[data-dd="' + ddKey + '"]');
+        if (!dd) return null;
+        var sel = dd.querySelector('.v2-dropdown-option.selected');
+        return sel ? sel.dataset.value : null;
+      }
+
       function renderHistory() {
         diFilterHist();
       }
       window.diFilterHist = function() {
-        var status = document.getElementById('histStatus').value;
+        var status = getHistFilterVal('hist-status') || 'all';
         var list = document.getElementById('diHistList');
         var items = UPLOAD_HISTORY.filter(function(h) {
           return status === 'all' || h.status === status;
@@ -6462,14 +7054,26 @@
         if (!items.length) { list.innerHTML = '<div class="di-tr"><span style="font-size:12px;color:var(--d500)">No items match this filter.</span></div>'; return; }
         list.innerHTML = items.map(function(h, i) {
           var badgeCls = 'hb-'+h.status;
-          var retryBtn = h.status === 'failed' ? '<button class="di-retry-link" onclick="diHistRetry('+i+')">Retry</button>' : '';
+          var actionBtn = '';
+          if (h.status === 'failed') {
+            /* Size/format errors can't be retried as-is — show Re-upload.
+               Auth/server errors can be retried directly. */
+            var isSizeOrFormat = h.err && (h.err.toLowerCase().includes('size') || h.err.toLowerCase().includes('format') || h.err.toLowerCase().includes('limit'));
+            if (isSizeOrFormat) {
+              actionBtn = '<button class="di-retry-link" onclick="diGoUpload()" title="Go to upload pane to re-upload this file">Re-upload</button>';
+            } else {
+              actionBtn = '<button class="di-retry-link" onclick="diHistRetry('+i+')">Retry</button>';
+            }
+          } else if (h.status === 'processing') {
+            actionBtn = '<span style="font-size:10px;color:var(--brand);font-weight:600;letter-spacing:.04em">Processing…</span>';
+          }
           return '<div class="di-tr">'
             + '<div class="di-td di-td-fn" title="'+h.name+'" style="flex:2">'+h.name+'</div>'
             + '<div class="di-td">'+h.size+'</div>'
             + '<div class="di-td">'+h.date+'</div>'
             + '<div class="di-td">'+(h.duration || (h.err ? '<span style="color:var(--d500);font-size:11px">'+h.err+'</span>' : '&mdash;'))+'</div>'
             + '<div class="di-td"><span class="di-badge '+badgeCls+'">'+h.status.charAt(0).toUpperCase()+h.status.slice(1)+'</span></div>'
-            + '<div class="di-td di-td-action">'+retryBtn+'</div>'
+            + '<div class="di-td di-td-action">'+actionBtn+'</div>'
             + '</div>';
         }).join('');
       };
@@ -6478,15 +7082,31 @@
         diFilterHist();
         showToast({title:'Retry queued', sub:UPLOAD_HISTORY[i].name});
       };
+      window.diGoUpload = function() {
+        var btn = document.querySelector('[data-tab="upload"]');
+        diTab('upload', btn);
+      };
 
       /* ── SOURCE CONFIG ─────────────────────────────────────────────────── */
-      window.diOpenConfig = function(srcId, e) {
-        if (e) e.stopPropagation();
+      window.diOpenConfig = function(srcId, e, startTab) {
+        if (e && e.stopPropagation) e.stopPropagation();
         var s = SOURCES[srcId];
         var bd = document.getElementById('diCfgBd');
         bd.classList.add('open');
-        document.getElementById('diCfgTitle').textContent = 'Configure ' + s.name;
-        cfgActiveTab = 'connection';
+        /* When the source is in error, pre-route to Connection tab so the
+           user lands on the credential fix fields immediately, not Sync settings. */
+        cfgActiveTab = startTab || (s.status === 'error' ? 'connection' : 'connection');
+        var titleEl = document.getElementById('diCfgTitle');
+        titleEl.textContent = 'Configure ' + s.name;
+        if (s.status === 'error') {
+          titleEl.insertAdjacentHTML('afterend',
+            '<p id="diCfgErrHint" style="font-size:11px;color:var(--err);margin-top:4px;padding:0 22px 0">'
+            + '\u26a0\ufe0f Connection error detected \u2014 update credentials in the Connection tab below.'
+            + '</p>');
+        } else {
+          var prev = document.getElementById('diCfgErrHint');
+          if (prev) prev.remove();
+        }
         renderConfigModal(srcId);
       };
       window.diCloseConfig = function(e) {
@@ -6573,25 +7193,46 @@
       };
 
       /* ── PAUSE / RESUME ────────────────────────────────────────────────── */
+      window.diShowPauseConfirm = function(srcId) {
+        var tip = document.getElementById('pauseTip-'+srcId);
+        if (tip) tip.style.display = 'block';
+      };
+      window.diHidePauseConfirm = function(srcId) {
+        var tip = document.getElementById('pauseTip-'+srcId);
+        if (tip) tip.style.display = 'none';
+      };
       window.diPauseSource = function(srcId) {
         SOURCES[srcId].paused = true;
         SOURCES[srcId].status = 'paused';
         renderDetail(srcId);
+        renderProactiveBanner();
         showToast({title: SOURCES[srcId].name+' paused', sub:'Ingestion stopped. Configuration preserved.'});
       };
       window.diResumeSource = function(srcId) {
         SOURCES[srcId].paused = false;
         SOURCES[srcId].status = 'active';
         renderDetail(srcId);
+        renderProactiveBanner();
         showToast({title: SOURCES[srcId].name+' resumed', sub:'Ingestion restarted from last sync point.'});
       };
 
       /* ── DELETE ────────────────────────────────────────────────────────── */
       window.diOpenDelete = function(srcId) {
         deletingSource = srcId;
-        document.getElementById('diDelName').textContent = SOURCES[srcId].name;
+        var s = SOURCES[srcId];
+        document.getElementById('diDelName').textContent = s.name;
         document.getElementById('diDelInput').value = '';
         document.getElementById('diDelBtn').disabled = true;
+        /* Inject impact stats above the warning text so the admin sees
+           the consequence before they type the confirmation name */
+        var statsEl = document.getElementById('diDelStats');
+        if (statsEl) {
+          statsEl.innerHTML =
+            '<div class="di-del-stats">'
+            + '<div class="di-del-stat"><span class="di-del-stat-val">'+s.vol24h.toLocaleString()+'</span><span class="di-del-stat-lbl">interactions / day</span></div>'
+            + '<div class="di-del-stat"><span class="di-del-stat-val">'+s.vol7d.toLocaleString()+'</span><span class="di-del-stat-lbl">interactions / 7 days</span></div>'
+            + '</div>';
+        }
         document.getElementById('diDelBd').classList.add('open');
         setTimeout(function() { document.getElementById('diDelInput').focus(); }, 120);
       };
@@ -6794,42 +7435,61 @@
 
         var overlayOpen = false, msgCount = 0, isTyping = false;
 
-        var FILTER_KWS = ['filter','show only','show me','hide','only','last week','this week','last month','today','this month','last quarter','this quarter','sort','group','compare','date','time period','period','source','zendesk','freshdesk','s3','connect','ingestion','sync','error','volume','stale'];
-
-        function detectIntent(text) {
-          var lo = text.toLowerCase().trim();
-          for (var i=0;i<FILTER_KWS.length;i++) { if (lo.includes(FILTER_KWS[i])) return 'filter'; }
-          return 'chat';
-        }
-
         if (floatInput) floatInput.addEventListener('input', function() { if(floatHint) floatHint.style.opacity = floatInput.value.length ? '0' : '1'; });
 
         function handleFloatSubmit() {
           var text = floatInput ? floatInput.value.trim() : '';
           if (!text) return;
-          if (detectIntent(text) === 'filter') { applyFilter(text); } else { openOverlay(text); }
+          openOverlay(text);
         }
 
         if (floatInput) floatInput.addEventListener('keydown', function(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleFloatSubmit();} });
         if (floatSend) floatSend.addEventListener('click', handleFloatSubmit);
 
-        function applyFilter(text) {
-          if (floatSend) floatSend.classList.add('thinking');
-          if (floatInput) floatInput.disabled = true;
-          setTimeout(function() {
-            if (floatSend) floatSend.classList.remove('thinking');
-            if (floatInput) { floatInput.disabled=false; floatInput.value=''; }
-            if (floatHint) floatHint.style.opacity='1';
-            if (floatBar) { floatBar.classList.remove('filter-applied'); void floatBar.offsetWidth; floatBar.classList.add('filter-applied'); }
-            showToast({ title:'Filters updated', sub: '“' + text.slice(0,50) + (text.length>50?'…':'') + '”' });
-            if (floatInput) floatInput.focus();
-          }, 900);
+        function buildContextualSuggestions() {
+          /* Generate chips relevant to the currently-selected source and its status */
+          var src = typeof currentSrc !== 'undefined' && window.SOURCES && window.SOURCES[currentSrc]
+            ? window.SOURCES[currentSrc] : null;
+          var chips = [];
+          if (src) {
+            if (src.status === 'error') {
+              chips.push('Why is ' + src.name + ' failing to sync?');
+              chips.push('How do I fix an IAM credential error?');
+              chips.push('How many interactions have been missed while ' + src.name + ' was down?');
+            } else if (src.status === 'warn') {
+              chips.push('Why is ' + src.name + ' stale?');
+              chips.push('Analyse the ingestion volume trend for ' + src.name);
+              chips.push('How does ' + src.name + ' this week compare to last week?');
+            } else {
+              chips.push('Analyse the ingestion volume trend for ' + src.name);
+              chips.push('Across interactions ingested today from ' + src.name + ', which have the lowest quality scores and why?');
+              chips.push('How does ' + src.name + ' this week compare to last week?');
+            }
+          } else {
+            chips.push('Which source has the most errors this week?');
+            chips.push('Compare ingestion volume across all sources');
+            chips.push('What is the overall pipeline health right now?');
+          }
+          /* Always include a cross-source chip */
+          chips.push('Compare ingestion volume across all sources');
+          return chips.slice(0, 4);
+        }
+
+        function refreshSuggestions() {
+          var el = document.getElementById('overlaySuggestions');
+          if (!el || el.classList.contains('hidden')) return;
+          var chips = buildContextualSuggestions();
+          el.innerHTML = chips.map(function(text) {
+            return '<button class="overlay-sugg-chip" onclick="overlaySuggestion(this)">' + text + '</button>';
+          }).join('');
         }
 
         function openOverlay(initialText) {
           overlayOpen = true;
           if (overlay) overlay.classList.add('open');
           if (floatBar) floatBar.classList.add('hidden');
+          /* Rebuild suggestions for the currently-selected source before showing */
+          if (!initialText) refreshSuggestions();
           if (initialText) {
             setTimeout(function() {
               appendUserMsg(initialText);
