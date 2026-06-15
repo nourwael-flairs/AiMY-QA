@@ -684,6 +684,30 @@
           0 0 10px rgba(51,105,255,0.12);
       }
       .filter-chip:active  { transform: translateY(0) scale(0.97); }
+      /* Back chip in contextual mode */
+      .filter-chip-back {
+        color: var(--d400);
+        border-color: rgba(255,255,255,0.08);
+        font-size: 10px;
+        padding: 4px 10px;
+        flex-shrink: 0;
+      }
+      .filter-chip-back:hover {
+        color: var(--d200);
+        background: rgba(255,255,255,0.05);
+        transform: none;
+      }
+      /* Suggestion pills — product/agent/time names */
+      .filter-chip-sugg {
+        color: var(--d200);
+        border-color: rgba(255,255,255,0.10);
+      }
+      .filter-chip-sugg:hover {
+        color: var(--d50);
+        background: rgba(var(--qa-accent-rgb), 0.12);
+        border-color: rgba(var(--qa-accent-rgb), 0.3);
+        transform: translateY(-1px);
+      }
       .filter-chip.pressed {
         background: rgba(139,79,244,0.10);
         border-color: rgba(139,79,244,0.28);
@@ -956,6 +980,54 @@
       .summary-evaluated-line strong {
         color: var(--d300);
         font-weight: 700;
+      }
+
+      /* ── Scoreboard strip: Total · Pass · Fail · QScore vs target ── */
+      .summary-scoreboard {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        padding: 8px 0 4px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        margin-top: 10px;
+      }
+      .sb-stat {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 0 16px 0 0;
+        margin-right: 16px;
+        border-right: 1px solid rgba(255,255,255,0.07);
+        flex-shrink: 0;
+      }
+      .sb-stat:last-child {
+        border-right: none;
+        margin-right: 0;
+        padding-right: 0;
+      }
+      .sb-stat-label {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+        color: var(--d500);
+        white-space: nowrap;
+      }
+      .sb-stat-value {
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        color: var(--d100);
+      }
+      .sb-stat-value.ok  { color: var(--ok); }
+      .sb-stat-value.err { color: var(--err); }
+      .sb-stat-value.warn { color: var(--warn); }
+      .sb-vs-target {
+        font-size: 9px;
+        font-weight: 600;
+        color: var(--d500);
+        margin-top: 1px;
       }
 
       /* ══ END AIMY DAILY SUMMARY CARD ═══════════════════════════════════════════════ */
@@ -1478,6 +1550,16 @@
         flex: 1;
         min-width: 0;
       }
+      .kf-name {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        margin-bottom: 2px;
+        line-height: 1.2;
+      }
+      .kf-err .kf-name  { color: var(--err); }
+      .kf-warn .kf-name { color: var(--warn); }
+      .kf-ok .kf-name   { color: var(--ok); }
       .kf-conclusion {
         font-size: 11px;
         font-weight: 700;
@@ -5695,6 +5777,31 @@
               </div>
           </div>
 
+          <!-- Scoreboard strip: Total Reviewed · Pass · Fail · Overall Score -->
+          <div class="summary-scoreboard" aria-label="Quality summary numbers">
+            <div class="sb-stat">
+              <span class="sb-stat-label">Reviewed</span>
+              <span class="sb-stat-value" id="sbTotal">3,363</span>
+            </div>
+            <div class="sb-stat">
+              <span class="sb-stat-label">Pass</span>
+              <span class="sb-stat-value ok" id="sbPass">3,018</span>
+            </div>
+            <div class="sb-stat">
+              <span class="sb-stat-label">Fail</span>
+              <span class="sb-stat-value err" id="sbFail">345</span>
+            </div>
+            <div class="sb-stat">
+              <span class="sb-stat-label">Pass Rate</span>
+              <span class="sb-stat-value ok" id="sbPassRate">89.7%</span>
+            </div>
+            <div class="sb-stat">
+              <span class="sb-stat-label">Quality Score</span>
+              <span class="sb-stat-value warn" id="sbQScore">87.3%</span>
+              <span class="sb-vs-target" id="sbVsTarget">vs 90% target</span>
+            </div>
+          </div>
+
           <!-- Row 2: 3 signal tiles spanning full width -->
           <div class="summary-bottom-row">
             <div class="summary-signals-row" id="summarySignalsRow">
@@ -5759,9 +5866,7 @@
                   <span class="priority-badge">P1 · Critical</span>
                 </div>
                 <p class="bcard-conclusion">
-                  First response SLA compliance collapsed to
-                  <span style="color: var(--err); font-weight: 700">61%</span>
-                  — 29pts below the 90% threshold. 23 breaches this week, up from 14.
+                  SLA compliance at <span style="color: var(--err); font-weight: 700">61%</span> — 29pts below target, 23 breaches this week.
                 </p>
                 <div class="evidence-row">
                   <div class="evidence-pill">
@@ -5782,7 +5887,7 @@
                 </div>
                 <div class="bcard-divider"></div>
                 <div class="bcard-action">
-                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('SLA compliance is at 61%. Show me the 23 breached tickets from this week, sorted by wait time, and tell me which agents and queues are responsible.')">
+                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('SLA compliance is at 61% — 29pts below the 90% target. Break this down by product: compare Objectif Lune, Qvidian, InterFax, and Adestra on breach count, average first response time, and current vs 90% target. Then list the top 5 agents driving the most breaches with their individual compliance rates and the queues they operate in. Flag any product where compliance has been below target for more than 2 consecutive weeks.')">
                     View breached tickets
                     <svg viewBox="0 0 13 13" fill="none">
                       <path
@@ -5848,8 +5953,7 @@
                   <span class="priority-badge">P1 · Urgent</span>
                 </div>
                 <p class="bcard-conclusion">
-                  3 KPIs are actively failing and one is on the edge — empathy
-                  is your biggest gap, dropping 8% this period.
+                  3 KPIs failing — empathy at <span style="color: var(--err); font-weight: 700">32%</span> is the critical gap, down 8% this period.
                 </p>
                 <div class="evidence-row">
                   <div class="evidence-pill">
@@ -5870,7 +5974,7 @@
                 </div>
                 <div class="bcard-divider"></div>
                 <div class="bcard-action">
-                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('3 KPIs are actively failing. Generate a coaching plan targeting empathy during escalations, follow-up clarity, and survey promotion — prioritised by impact and grouped by agent.')">
+                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('3 KPIs are actively failing. Show a breakdown by product for each: Incorrect status (150 failures) across Objectif Lune and Qvidian, Grammar mistakes (55 failures) in InterFax and Second Street, and Time between updates (47 failures) in Qvidian and RightAnswers. For each KPI show: current rate vs target, which agents are responsible for the most failures, and a current vs target bar comparison per product. Then generate a prioritised coaching plan grouped by agent — rank by failure count impact.')">
                     Start coaching plan
                     <svg viewBox="0 0 13 13" fill="none">
                       <path
@@ -5944,9 +6048,7 @@
                   <span class="priority-badge">P1 · Urgent</span>
                 </div>
                 <p class="bcard-conclusion">
-                  Negative sentiment is rising week over week even as quality
-                  scores improve — 3 Customer Support agents are driving most of
-                  it.
+                  Negative sentiment rising — 3 agents driving 39 flagged interactions this week.
                 </p>
                 <div class="evidence-row">
                   <div class="evidence-pill">
@@ -5966,7 +6068,7 @@
                 </div>
                 <div class="bcard-divider"></div>
                 <div class="bcard-action">
-                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('Negative sentiment is rising week over week with 3 agents flagged. Show me the escalation interactions with the lowest sentiment scores and identify the common failure pattern.')">
+                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('Negative sentiment is rising week over week — 39 flagged interactions, 3 agents responsible for most of it. Break this down by product: which of Objectif Lune, Adestra, Qvidian, and InterFax have the highest negative sentiment rates, and show current vs previous week for each. List the 3 flagged agents with their sentiment scores, ticket volumes, and the specific escalation types triggering negative responses. Identify the common failure pattern and suggest the single fastest intervention to reverse the trend.')">
                     Review escalation handling
                     <svg viewBox="0 0 13 13" fill="none">
                       <path
@@ -6129,13 +6231,7 @@
                   <span class="priority-badge">P2 · Watch</span>
                 </div>
                 <p class="bcard-conclusion">
-                  Quality is at
-                  <span style="color: var(--warn); font-weight: 700"
-                    >87.3%</span
-                  >
-                  — 2.7% below the 90% SLA target and improving, but the 3
-                  failing KPIs are the primary drag preventing target from being
-                  reached this quarter.
+                  Quality at <span style="color: var(--warn); font-weight: 700">87.3%</span> — 2.7% below 90% target. 3 failing KPIs are the drag.
                 </p>
                 <div class="evidence-row">
                   <div class="evidence-pill">
@@ -6155,7 +6251,7 @@
                 </div>
                 <div class="bcard-divider"></div>
                 <div class="bcard-action">
-                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('Quality is at 87.3%, 2.7% below the 90% SLA target. Break down exactly which KPI failures account for that gap and rank the fastest fixes.')">
+                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('Overall quality is at 87.3% — 2.7% below the 90% target. Show a product-by-product quality breakdown: rank Objectif Lune, Adestra, InterFax, Qvidian, RightAnswers, and Second Street by current quality score, pass rate, and fail count. Flag which products are above target and which are below with the gap to close. Then show the top 3 KPI failures (Incorrect status 150, Grammar mistakes 55, Time between updates 47) and how eliminating each would move the overall quality score. Recommend the highest-leverage fix.')">
                     See what's blocking target
                     <svg viewBox="0 0 13 13" fill="none">
                       <path
@@ -6356,20 +6452,20 @@
                   <!-- Row 2: range tabs + Compare + query input, all on a clean toolbar line -->
                   <div class="v2-controls">
                     <div class="range-tabs">
-                      <button class="range-tab" onclick="setRange('7D', this)">
-                        7D
+                      <button
+                        class="range-tab active"
+                        onclick="setRange('All', this)"
+                      >
+                        All
+                      </button>
+                      <button class="range-tab" onclick="setRange('90D', this)">
+                        90D
                       </button>
                       <button class="range-tab" onclick="setRange('30D', this)">
                         30D
                       </button>
-                      <button
-                        class="range-tab active"
-                        onclick="setRange('90D', this)"
-                      >
-                        90D
-                      </button>
-                      <button class="range-tab" onclick="setRange('YTD', this)">
-                        YTD
+                      <button class="range-tab" onclick="setRange('7D', this)">
+                        7D
                       </button>
                     </div>
                     <button
@@ -6900,6 +6996,54 @@
                     >
                       DEC
                     </text>
+                    <!-- Extra axis label slots for weekly ranges (idx 12-20, hidden by default) -->
+                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="12" style="display:none">W13</text>
+                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="13" style="display:none">W14</text>
+                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="14" style="display:none">W15</text>
+                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="15" style="display:none">W16</text>
+                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="16" style="display:none">W17</text>
+                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="17" style="display:none">W18</text>
+                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="18" style="display:none">W19</text>
+                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="19" style="display:none">W20</text>
+                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="20" style="display:none">W21</text>
+                    <!-- Persistent value labels — Peak / Low / Current -->
+                    <!-- Positions updated by applyRangeToChart() via JS -->
+                    <g id="chartValueLabels" clip-path="url(#chartClip)">
+                      <!-- Peak label -->
+                      <text
+                        id="chartLabelPeak"
+                        x="355"
+                        y="62"
+                        text-anchor="middle"
+                        font-size="10"
+                        font-weight="700"
+                        font-family="Urbanist,sans-serif"
+                        fill="#17B26A"
+                      >91.4%</text>
+                      <!-- Low Point label -->
+                      <text
+                        id="chartLabelLow"
+                        x="636"
+                        y="144"
+                        text-anchor="middle"
+                        font-size="10"
+                        font-weight="700"
+                        font-family="Urbanist,sans-serif"
+                        fill="#F04438"
+                      >74.2%</text>
+                      <!-- Current / endpoint label -->
+                      <text
+                        id="chartLabelCurrent"
+                        x="800"
+                        y="90"
+                        text-anchor="end"
+                        font-size="10"
+                        font-weight="700"
+                        font-family="Urbanist,sans-serif"
+                        fill="#C4A8FF"
+                      >87.3%</text>
+                    </g>
+
                     <rect
                       id="hoverZone"
                       x="40"
@@ -6942,76 +7086,66 @@
                 <div class="kpi-brief kf-err">
                   <div class="kf-rank">#1</div>
                   <div class="kf-body">
+                    <div class="kf-name">Incorrect status &middot; 150 failures</div>
                     <p class="kf-conclusion">
-                      Empathy during escalations is at
-                      <span class="kf-score-err">32%</span> — your biggest
-                      coaching gap, and it's still getting worse.
+                      Top failure driver across <strong>Objectif Lune</strong> and <strong>Qvidian</strong> — agents closing tickets with wrong status codes.
                     </p>
                     <div class="kf-evidence">
                       <div class="kf-ev-item">
-                        <span class="trend-dn">↓ 8%</span
-                        ><span>worsening this period</span>
+                        <span class="trend-dn">↓ worsening</span><span>this period</span>
                       </div>
                       <div class="kf-ev-item">
-                        <span class="v">184</span
-                        ><span>failed interactions</span>
+                        <span class="v">103</span><span>in Objectif Lune</span>
                       </div>
                     </div>
                   </div>
-                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Empathy during escalations is at 32% — down 8% this period. Which agents are contributing most to this failure and what\u2019s the fastest coaching intervention?')">Coach these agents →</button>
+                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Incorrect status is the #1 failure KPI with 150 occurrences — 103 in Objectif Lune, the rest in Qvidian. Show me the agents responsible, the ticket types most affected, and a targeted coaching brief to fix status accuracy.')">Coach on status →</button>
                 </div>
 
                 <div class="kpi-brief kf-err">
                   <div class="kf-rank">#2</div>
                   <div class="kf-body">
+                    <div class="kf-name">Grammar mistake &middot; 55 failures</div>
                     <p class="kf-conclusion">
-                      Follow-up clarity sits at
-                      <span class="kf-score-err">48%</span> and has been flat
-                      for two periods — agents resolve but don't set next steps.
+                      Concentrated in <strong>InterFax</strong> and <strong>Second Street</strong> — written responses not meeting quality bar.
                     </p>
                     <div class="kf-evidence">
                       <div class="kf-ev-item">
-                        <span style="color: var(--d300)">→ stable</span
-                        ><span>not improving</span>
+                        <span style="color: var(--d300)">→ stable</span><span>not improving</span>
                       </div>
                       <div class="kf-ev-item">
-                        <span class="v">142</span
-                        ><span>failed interactions</span>
+                        <span class="v">55</span><span>failed interactions</span>
                       </div>
                     </div>
                   </div>
-                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Follow-up clarity is at 48% and flat for two periods. Show me the evaluations where agents resolved the issue but failed to set next steps \u2014 and suggest a script fix.')">See failed calls →</button>
+                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Grammar mistakes account for 55 KPI failures — mostly in InterFax and Second Street. Show me the agents with the highest grammar failure rates, sample the worst-scoring responses, and suggest a writing quality checklist for coaching.')">Review responses →</button>
                 </div>
 
                 <div class="kpi-brief kf-err">
                   <div class="kf-rank">#3</div>
                   <div class="kf-body">
+                    <div class="kf-name">Time between updates &middot; 47 failures</div>
                     <p class="kf-conclusion">
-                      Survey promotion is at
-                      <span class="kf-score-err">49%</span> and slowly improving
-                      — still needs to more than double to reach target.
+                      Agents in <strong>Qvidian</strong> and <strong>RightAnswers</strong> leaving customers without updates past SLA window.
                     </p>
                     <div class="kf-evidence">
                       <div class="kf-ev-item">
-                        <span class="trend-up">↑ 3%</span
-                        ><span>improving slowly</span>
+                        <span class="trend-up">↑ 3%</span><span>slowly improving</span>
                       </div>
                       <div class="kf-ev-item">
-                        <span class="v">130</span
-                        ><span>failed interactions</span>
+                        <span class="v">47</span><span>failed interactions</span>
                       </div>
                     </div>
                   </div>
-                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Survey promotion is at 49%, slowly improving at +3%. What pattern do the successful interactions share and how do we replicate it across the team?')">See pattern →</button>
+                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Time between updates has 47 failures — primarily in Qvidian and RightAnswers. Show me the tickets where update delay exceeded SLA, identify the agents most frequently missing the window, and suggest a follow-up cadence fix.')">See delayed tickets →</button>
                 </div>
 
                 <div class="kpi-brief kf-warn">
                   <div class="kf-rank">#4</div>
                   <div class="kf-body">
+                    <div class="kf-name">First response time &middot; 71% compliance</div>
                     <p class="kf-conclusion">
-                      First response time is at
-                      <span class="kf-score-warn">71%</span> — 4 points below
-                      the 75% threshold and declining. Watch closely.
+                      Declining in <strong>Objectif Lune</strong> and <strong>Adestra</strong> — 4pts below the 75% threshold and still falling.
                     </p>
                     <div class="kf-evidence">
                       <div class="kf-ev-item">
@@ -7022,7 +7156,7 @@
                       </div>
                     </div>
                   </div>
-                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('First response time is at 71%, declining 2pts. At this trajectory when do we breach the 75% threshold and what are the top 3 interventions to reverse it?')">Monitor →</button>
+                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('First response time is at 71% compliance — down 2pts, failing in Objectif Lune and Adestra. At this trajectory when do we breach the 75% threshold? Show me the agents and queues driving the delay and recommend the top 3 interventions.')">Monitor →</button>
                 </div>
 
                 <button
@@ -7777,23 +7911,16 @@
       // Per-range data slices. Each entry: scores[], prevScores[], labels[],
       // statAvg, statPeak, statPeakMonth, statLow, statLowMonth, deltaText
       const RANGE_DATA = {
-        '7D': {
-          labels: ['MON','TUE','WED','THU','FRI','SAT','SUN'],
-          scores: [84,85,86,83,87,85,87],
-          prevScores: [80,82,81,79,83,81,82],
-          statAvg: '85.3%', statPeak: '87%', statPeakMonth: 'Fri',
-          statLow: '83%', statLowMonth: 'Thu',
-          delta: '↑ 2.1% vs prior week', deltaUp: true,
-          subtitle: 'Last 7 days · updated daily'
-        },
-        '30D': {
-          labels: ['W1','W2','W3','W4'],
-          scores: [84,86,83,87],
-          prevScores: [80,82,80,83],
-          statAvg: '85.0%', statPeak: '87%', statPeakMonth: 'W4',
-          statLow: '83%', statLowMonth: 'W3',
-          delta: '↑ 3.4% vs prior month', deltaUp: true,
-          subtitle: 'Last 30 days · updated daily'
+        'All': {
+          labels: ['W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W14','W15','W16','W17','W18','W19','W20','W21'],
+          scores: [94,95,98,97,93,96,96,97,97,96,96,97,97,96,98,99,97,97,96],
+          prevScores: [89,90,92,91,88,91,91,92,92,91,91,92,91,91,93,94,92,92,91],
+          statAvg: '95.9%', statPeak: '99.0%', statPeakMonth: 'W18',
+          statLow: '93.7%', statLowMonth: 'W05',
+          delta: '↑ 2.1% vs prior period', deltaUp: true,
+          subtitle: 'Weekly quality average · Real workbook data when imported',
+          peakIdx: 15,
+          lowIdx: 4,
         },
         '90D': {
           labels: ['OCT','NOV','DEC'],
@@ -7802,7 +7929,31 @@
           statAvg: '82.3%', statPeak: '87%', statPeakMonth: 'Dec',
           statLow: '74%', statLowMonth: 'Nov',
           delta: '↓ 0.8% vs prior quarter', deltaUp: false,
-          subtitle: 'Last 90 days · updated daily'
+          subtitle: 'Last 90 days · updated daily',
+          peakIdx: 2,
+          lowIdx: 1,
+        },
+        '30D': {
+          labels: ['W1','W2','W3','W4'],
+          scores: [84,86,83,87],
+          prevScores: [80,82,80,83],
+          statAvg: '85.0%', statPeak: '87%', statPeakMonth: 'W4',
+          statLow: '83%', statLowMonth: 'W3',
+          delta: '↑ 3.4% vs prior month', deltaUp: true,
+          subtitle: 'Last 30 days · updated daily',
+          peakIdx: 3,
+          lowIdx: 2,
+        },
+        '7D': {
+          labels: ['MON','TUE','WED','THU','FRI','SAT','SUN'],
+          scores: [84,85,86,83,87,85,87],
+          prevScores: [80,82,81,79,83,81,82],
+          statAvg: '85.3%', statPeak: '87%', statPeakMonth: 'Fri',
+          statLow: '83%', statLowMonth: 'Thu',
+          delta: '↑ 2.1% vs prior week', deltaUp: true,
+          subtitle: 'Last 7 days · updated daily',
+          peakIdx: 4,
+          lowIdx: 3,
         },
         'YTD': {
           labels: ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],
@@ -7811,7 +7962,9 @@
           statAvg: '87.3%', statPeak: '91%', statPeakMonth: 'May',
           statLow: '74%', statLowMonth: 'Nov',
           delta: '↑ 5.2% vs last period', deltaUp: true,
-          subtitle: 'Year to date · updated daily'
+          subtitle: 'Year to date · updated daily',
+          peakIdx: 4,
+          lowIdx: 10,
         }
       };
 
@@ -7857,15 +8010,22 @@
         if (prevPath) prevPath.setAttribute('d', prevD);
         if (prevArea) prevArea.setAttribute('d', prevAreaD);
 
-        // Update month labels — hide extras, show used
+        // Update axis labels — reposition x, set text, hide extras
         const allLabels = document.querySelectorAll('#mainChart text[data-month-idx]');
         const monthXs = [];
+        // For dense weekly ranges, thin out labels to avoid crowding
+        // Show every Nth label when n > 12
+        const labelInterval = n > 15 ? 3 : (n > 8 ? 2 : 1);
         allLabels.forEach(el => {
           const idx = parseInt(el.dataset.monthIdx, 10);
           if (idx < n) {
+            const xPos = xStart + idx * xStep;
+            el.setAttribute('x', xPos);
             el.textContent = data.labels[idx];
-            el.style.display = '';
-            monthXs.push(xStart + idx * xStep);
+            // Show every Nth, always show first and last
+            const show = (idx === 0) || (idx === n - 1) || (idx % labelInterval === 0);
+            el.style.display = show ? '' : 'none';
+            monthXs.push(xPos);
           } else {
             el.style.display = 'none';
             monthXs.push(null);
@@ -7882,12 +8042,72 @@
           deltaEls[0].textContent = data.delta;
           deltaEls[0].className = 'v2-stat-delta ' + (data.deltaUp ? 'up' : 'down');
         }
-        if (deltaEls[1]) deltaEls[1].textContent = 'Peak · ' + data.statPeakMonth;
-        if (deltaEls[2]) deltaEls[2].textContent = 'Low · ' + data.statLowMonth;
+        if (deltaEls[1]) deltaEls[1].textContent = 'Peak \u00b7 ' + data.statPeakMonth;
+        if (deltaEls[2]) deltaEls[2].textContent = 'Low \u00b7 ' + data.statLowMonth;
 
         // Update subtitle
         const subtitle = document.querySelector('.v2-subtitle');
         if (subtitle) subtitle.textContent = data.subtitle;
+
+        // ── Persistent value labels: Peak / Low / Current ─────────────────
+        // Compute pixel positions from score values and indices
+        const peakIdx  = (data.peakIdx  !== undefined) ? data.peakIdx  : data.scores.indexOf(Math.max(...data.scores));
+        const lowIdx   = (data.lowIdx   !== undefined) ? data.lowIdx   : data.scores.indexOf(Math.min(...data.scores));
+        const lastIdx  = n - 1;
+
+        function scoreToY(s) { return ((100 - s) / 100) * maxY; }
+
+        const peakX    = xStart + peakIdx  * xStep;
+        const peakY    = scoreToY(data.scores[peakIdx]);
+        const lowX     = xStart + lowIdx   * xStep;
+        const lowY     = scoreToY(data.scores[lowIdx]);
+        const currentX = xStart + lastIdx  * xStep;
+        const currentY = scoreToY(data.scores[lastIdx]);
+
+        const labelPeak    = document.getElementById('chartLabelPeak');
+        const labelLow     = document.getElementById('chartLabelLow');
+        const labelCurrent = document.getElementById('chartLabelCurrent');
+
+        if (labelPeak) {
+          labelPeak.setAttribute('x', peakX);
+          labelPeak.setAttribute('y', Math.max(10, peakY - 8));
+          labelPeak.textContent = data.scores[peakIdx] + '%';
+        }
+        if (labelLow) {
+          labelLow.setAttribute('x', lowX);
+          labelLow.setAttribute('y', Math.min(195, lowY + 14));
+          labelLow.textContent = data.scores[lowIdx] + '%';
+        }
+        if (labelCurrent) {
+          // Right-align to endpoint; shift left slightly if at edge
+          const anchorX = currentX >= 790 ? currentX : currentX + 4;
+          labelCurrent.setAttribute('x', anchorX);
+          labelCurrent.setAttribute('y', Math.max(10, currentY - 8));
+          labelCurrent.setAttribute('text-anchor', currentX >= 790 ? 'end' : 'start');
+          labelCurrent.textContent = data.scores[lastIdx] + '%';
+        }
+
+        // Hide peak label if it overlaps low or current (within 40px x-distance)
+        if (labelPeak && labelLow) {
+          const tooClose = Math.abs(peakX - lowX) < 40 || Math.abs(peakX - currentX) < 40;
+          labelPeak.style.display = tooClose ? 'none' : '';
+        }
+
+        // ── Annotation cards: show only on YTD (they reference specific months) ──
+        const annotations = document.querySelectorAll('.chart-annotation');
+        annotations.forEach(a => {
+          a.style.display = (range === 'YTD') ? '' : 'none';
+        });
+
+        // Move the anomaly highlight band off-screen on non-YTD ranges
+        const anomalyRect = document.querySelector('#mainChart rect[fill="url(#anomalyFill)"]');
+        const anomalyLine = document.querySelector('#mainChart line[stroke="#F04438"]');
+        if (anomalyRect) anomalyRect.style.display = (range === 'YTD') ? '' : 'none';
+        if (anomalyLine) anomalyLine.style.display = (range === 'YTD') ? '' : 'none';
+
+        // Also hide the anomaly circle dot on non-YTD ranges
+        const anomalyDot = document.querySelector('#mainChart circle[fill="#F04438"]');
+        if (anomalyDot) anomalyDot.style.display = (range === 'YTD') ? '' : 'none';
 
         // Patch hoverZone JS data arrays so tooltip stays accurate
         window._chart_scores = data.scores;
@@ -7897,6 +8117,11 @@
         window._chart_xStart = xStart;
         window._chart_n = n;
       }
+
+      // Initialise chart on load — default to "All" weekly view
+      document.addEventListener('DOMContentLoaded', function() {
+        applyRangeToChart('All');
+      });
 
       function setRange(range, el) {
         document.querySelectorAll('.range-tab').forEach(t => t.classList.remove('active'));
@@ -8750,6 +8975,13 @@
         /* ── Floating bar: hint visibility ──────── */
         floatInput.addEventListener("input", () => {
           floatHint.style.opacity = floatInput.value.length ? "0" : "1";
+          // Reset tray if user deleted the dimension prefix
+          if (activeDimension) {
+            const expectedPrefix = FILTER_PREFIXES[activeDimension];
+            if (expectedPrefix && !floatInput.value.startsWith(expectedPrefix)) {
+              resetTrayToDefault();
+            }
+          }
         });
 
         /* ── Floating bar: Enter / Send ──────────── */
@@ -8772,6 +9004,8 @@
           if (intent === "filter") {
             applyFilter(text);
           } else {
+            // Reset filter tray before opening canvas
+            if (typeof resetTrayToDefault === 'function') resetTrayToDefault();
             openOverlay(text);
           }
         }
@@ -8834,6 +9068,8 @@
             floatInput.disabled = false;
             floatInput.value = "";
             floatHint.style.opacity = "1";
+            // Reset filter tray to default chip state after send
+            if (typeof resetTrayToDefault === 'function') resetTrayToDefault();
 
             // Update active filter strip
             const parsed = parseFilterFromText(text);
@@ -9189,9 +9425,13 @@
         filterTray.addEventListener("focusin", showTray);
         filterTray.addEventListener("focusout", hideTray);
 
-        /* ── Filter chip click — inject dimension prompt into input ────
-       Injects "Filter by Company: " with cursor at end so user can
-       type the value (e.g. "Upland") then press Enter.              */
+        /* ── Filter chip click — contextual suggestions ──────────────
+       Clicking a dimension chip:
+         1. Pre-fills the input with the dimension prefix
+         2. Swaps the chip row to suggestion pills for that dimension
+         3. Clicking a suggestion pill appends the value and fires
+         4. Deleting the prefix text resets the tray to default chips */
+
         const FILTER_PREFIXES = {
           "Company":     "Filter by Company: ",
           "Product":     "Filter by Product: ",
@@ -9200,32 +9440,88 @@
           "All":         "Reset all filters",
         };
 
-        filterTray.querySelectorAll(".filter-chip").forEach(chip => {
-          chip.addEventListener("click", () => {
-            const key = chip.dataset.filter;
-            const prefix = FILTER_PREFIXES[key] || `Filter by ${key}: `;
+        const FILTER_SUGGESTIONS = {
+          "Company":     ["Upland", "MacPractice"],
+          "Product":     ["Objectif Lune", "Adestra", "InterFax", "Qvidian", "RightAnswers", "Second Street"],
+          "Agents":      ["Salma Gameel", "Omar Adel", "Sara Hassan", "Karim Nour", "Ahmed Mohamed"],
+          "Time Period":  ["This week", "Last 30 days", "Last 90 days", "Q2 2026", "Custom range"],
+        };
 
-            if (key === "All") {
-              // Reset — clear input and active filters
-              floatInput.value = "";
-              floatInput.dispatchEvent(new Event("input"));
-              clearAllFilters();
-              floatInput.focus();
-              return;
-            }
+        // Cache the default inner HTML so we can restore it
+        const filterTrayInner = filterTray.querySelector(".filter-tray-inner");
+        const defaultTrayHTML = filterTrayInner.innerHTML;
+        let activeDimension = null; // currently expanded dimension key
 
-            floatInput.value = prefix;
+        function renderSuggestionChips(key) {
+          const prefix   = FILTER_PREFIXES[key];
+          const suggs    = FILTER_SUGGESTIONS[key] || [];
+          activeDimension = key;
+
+          // Build new inner HTML: label → back chip → suggestion chips
+          let html = `<span class="filter-tray-label">${key}</span>`;
+          html += `<button class="filter-chip filter-chip-back" data-action="reset-tray" aria-label="Back to filters">← Back</button>`;
+          suggs.forEach(s => {
+            html += `<button class="filter-chip filter-chip-sugg" data-suggestion="${s}" data-prefix="${prefix}">${s}</button>`;
+          });
+          filterTrayInner.innerHTML = html;
+
+          // Wire back button
+          filterTrayInner.querySelector("[data-action='reset-tray']").addEventListener("click", () => {
+            resetTrayToDefault();
+            floatInput.value = "";
             floatInput.dispatchEvent(new Event("input"));
             floatInput.focus();
-            // Position cursor at end
-            const len = prefix.length;
-            floatInput.setSelectionRange(len, len);
-
-            // Brief press state on chip
-            chip.classList.add("pressed");
-            setTimeout(() => chip.classList.remove("pressed"), 400);
           });
-        });
+
+          // Wire suggestion pills
+          filterTrayInner.querySelectorAll(".filter-chip-sugg").forEach(pill => {
+            pill.addEventListener("click", () => {
+              const val = pill.dataset.suggestion;
+              const pfx = pill.dataset.prefix;
+              floatInput.value = pfx + val;
+              floatInput.dispatchEvent(new Event("input"));
+              floatInput.focus();
+              const len = floatInput.value.length;
+              floatInput.setSelectionRange(len, len);
+              // Brief press state
+              pill.classList.add("pressed");
+              setTimeout(() => pill.classList.remove("pressed"), 300);
+            });
+          });
+        }
+
+        function resetTrayToDefault() {
+          activeDimension = null;
+          filterTrayInner.innerHTML = defaultTrayHTML;
+          // Re-wire the default dimension chips
+          wireDimensionChips();
+        }
+
+        function wireDimensionChips() {
+          filterTrayInner.querySelectorAll(".filter-chip[data-filter]").forEach(chip => {
+            chip.addEventListener("click", () => {
+              const key = chip.dataset.filter;
+              if (key === "All") {
+                floatInput.value = "";
+                floatInput.dispatchEvent(new Event("input"));
+                clearAllFilters();
+                floatInput.focus();
+                return;
+              }
+              const prefix = FILTER_PREFIXES[key] || `Filter by ${key}: `;
+              floatInput.value = prefix;
+              floatInput.dispatchEvent(new Event("input"));
+              floatInput.focus();
+              const len = prefix.length;
+              floatInput.setSelectionRange(len, len);
+              // Render contextual suggestion chips
+              renderSuggestionChips(key);
+            });
+          });
+        }
+
+        // Initial wire-up of default chips
+        wireDimensionChips();
 
         /* ── Active filter strip management ────────────────────────────
        When a filter is *sent* (applyFilter called), parse the text
@@ -9817,42 +10113,36 @@
           showToast({ title:'Workflow triggered', sub:'Ref: ' + refId });
         };
 
-        /* ── Wire bcard "Start coaching plan" CTA ─────────────────────── */
+        /* ── Wire all 4 bcard action buttons to rich canvas cards ──────────── */
+        function openCanvasCard(alertId, loadingMsg) {
+          if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); }
+          suggestions.classList.add('hidden');
+          appendSystemMsg(loadingMsg);
+          setTimeout(function() { appendAlertDetailCard(alertId); }, 600);
+        }
+
         document.querySelectorAll('.action-btn').forEach(btn => {
           const label = btn.textContent.trim();
-          if (label.startsWith('Start coaching')) {
-            btn.addEventListener('click', e => { e.stopPropagation();
-              window.openCanvasWithCoaching('Omar Adel','OA','Run a targeted empathy coaching session focusing on billing escalation calls.','Omar has failed the <strong>Empathy during escalations</strong> KPI in 4 of his last 5 evaluated calls. His score has dropped from 68\u0025 to 32\u0025 over 3 weeks.','High');
-            });
-          }
           if (label.startsWith('View breached tickets')) {
             btn.addEventListener('click', function(e) { e.stopPropagation();
-              if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); }
-              suggestions.classList.add('hidden');
-              appendSystemMsg('Loading breached SLA tickets…');
-              setTimeout(function() { appendAlertDetailCard('sla-breach'); }, 600);
+              openCanvasCard('sla-breach', 'Pulling SLA breach breakdown by product…');
+            });
+          }
+          if (label.startsWith('Start coaching plan')) {
+            btn.addEventListener('click', function(e) { e.stopPropagation();
+              openCanvasCard('kpi-failures', 'Loading KPI failure breakdown across products…');
             });
           }
           if (label.startsWith('Review escalation handling')) {
             btn.addEventListener('click', function(e) { e.stopPropagation();
-              if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); }
-              suggestions.classList.add('hidden');
-              appendSystemMsg('Loading escalation handling details…');
-              setTimeout(function() { appendAlertDetailCard('sentiment'); }, 600);
+              openCanvasCard('sentiment', 'Pulling sentiment breakdown by product and agent…');
             });
           }
-          if (label.startsWith("See what's blocking target")) {
+          if (label.startsWith('Address quality') || label.startsWith("See what's blocking")) {
             btn.addEventListener('click', function(e) { e.stopPropagation();
-              if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); }
-              suggestions.classList.add('hidden');
-              appendSystemMsg('Loading quality target analysis…');
-              setTimeout(function() { appendAlertDetailCard('quality'); }, 600);
+              openCanvasCard('quality', 'Loading quality breakdown across all products…');
             });
           }
-        });
-
-        document.addEventListener('click', e => {
-          if (e.target?.id === 'empathy-action-btn') window.triggerAction(e.target, 'Send coaching brief to team lead', 'n8n-empathy-brief');
         });
 
         /* ── Error state ─────────────────────────────────────────────── */
@@ -9993,39 +10283,63 @@
           'sla-breach': {
             priority: 'p1', title: 'SLA Breach Analysis',
             badge: 'P1 · Critical',
-            summary: '23 tickets breached first response SLA this week. The primary driver is billing escalation tickets arriving Wednesday afternoons when staffing dips below threshold.',
+            summary: '23 tickets breached first response SLA this week across 4 products. Objectif Lune and Qvidian account for 78% of all breaches. Primary driver is billing escalation tickets on Wednesday afternoons.',
             rows: [
-              { label: 'Tickets breached this week', val: '23', badge: 'adr-badge-err', badgeText: '↑14 last week' },
+              { label: 'Objectif Lune', val: '61% compliance', badge: 'adr-badge-err', badgeText: '↓29pts vs target' },
+              { label: 'Qvidian', val: '67% compliance', badge: 'adr-badge-err', badgeText: '↓23pts vs target' },
+              { label: 'InterFax', val: '84% compliance', badge: 'adr-badge-warn', badgeText: '→6pts vs target' },
+              { label: 'Adestra', val: '91% compliance', badge: 'adr-badge-ok', badgeText: '+1pt above target' },
               { label: 'Avg first response time', val: '45 min', badge: 'adr-badge-err', badgeText: 'target: 15 min' },
-              { label: 'SLA compliance rate', val: '61%', badge: 'adr-badge-err', badgeText: '↑29pts vs target' },
-              { label: 'Worst performing team', val: 'Team Cairo', badge: 'adr-badge-warn', badgeText: '58% compliance' },
+              { label: 'Top agent — Omar Adel', val: '11 breaches', badge: 'adr-badge-err', badgeText: '48% personal compliance' },
+              { label: 'Top agent — Sara Hassan', val: '7 breaches', badge: 'adr-badge-warn', badgeText: '61% personal compliance' },
               { label: 'Peak breach window', val: 'Wed 2–5 PM', badge: null, badgeText: null },
             ],
             actions: [{ label: 'View all breached tickets', cls: 'ada-primary' }, { label: 'Trigger SLA recovery plan', cls: 'ada-secondary' }]
           },
-          'sentiment': {
-            priority: 'p1', title: 'Negative Sentiment Analysis',
+          'kpi-failures': {
+            priority: 'p1', title: 'KPI Failure Breakdown',
             badge: 'P1 · Urgent',
-            summary: '3 agents account for 71% of all negative sentiment this week. The pattern correlates with billing escalation calls and after-hour shifts.',
+            summary: '3 KPIs are actively failing across the portfolio. Incorrect status alone accounts for 150 incidents — 103 in Objectif Lune. Coaching plan grouped by agent impact below.',
             rows: [
-              { label: 'Total negative interactions', val: '39', badge: 'adr-badge-err', badgeText: '↑ rising trend' },
-              { label: 'Primary driver', val: 'Billing escalations', badge: 'adr-badge-warn', badgeText: '62% of cases' },
+              { label: 'Incorrect status — Objectif Lune', val: '103 failures', badge: 'adr-badge-err', badgeText: '#1 driver' },
+              { label: 'Incorrect status — Qvidian', val: '47 failures', badge: 'adr-badge-err', badgeText: 'combined: 150' },
+              { label: 'Grammar mistake — InterFax', val: '38 failures', badge: 'adr-badge-err', badgeText: 'of 55 total' },
+              { label: 'Grammar mistake — Second Street', val: '17 failures', badge: 'adr-badge-warn', badgeText: 'of 55 total' },
+              { label: 'Time between updates — Qvidian', val: '29 failures', badge: 'adr-badge-warn', badgeText: 'of 47 total' },
+              { label: 'Highest-impact agent', val: 'Omar Adel', badge: 'adr-badge-err', badgeText: '34 combined failures' },
+              { label: 'Fastest fix', val: 'Status accuracy coaching', badge: 'adr-badge-warn', badgeText: 'est. −48 failures removed' },
+            ],
+            actions: [{ label: 'Generate coaching plan', cls: 'ada-primary' }, { label: 'Open KPI Hub', cls: 'ada-secondary' }]
+          },
+          'sentiment': {
+            priority: 'p1', title: 'Negative Sentiment Breakdown',
+            badge: 'P1 · Urgent',
+            summary: '39 negative interactions this week — 3 agents driving 71% of them. Objectif Lune and Qvidian show the highest product-level negative rates, both up week-over-week.',
+            rows: [
+              { label: 'Objectif Lune neg rate', val: '19%', badge: 'adr-badge-err', badgeText: '↑ vs 14% last week' },
+              { label: 'Qvidian neg rate', val: '17%', badge: 'adr-badge-err', badgeText: '↑ vs 12% last week' },
+              { label: 'InterFax neg rate', val: '9%', badge: 'adr-badge-warn', badgeText: 'stable' },
+              { label: 'Adestra neg rate', val: '6%', badge: 'adr-badge-ok', badgeText: '↓ improving' },
               { label: 'Agent 1 — Omar Adel', val: '14 neg interactions', badge: 'adr-badge-err', badgeText: '36% of total' },
               { label: 'Agent 2 — Sara Hassan', val: '9 neg interactions', badge: 'adr-badge-warn', badgeText: '23% of total' },
               { label: 'Agent 3 — Karim Nour', val: '5 neg interactions', badge: 'adr-badge-warn', badgeText: '13% of total' },
+              { label: 'Common pattern', val: 'Billing escalations', badge: 'adr-badge-warn', badgeText: '62% of neg cases' },
             ],
             actions: [{ label: 'Open escalation review', cls: 'ada-primary' }, { label: 'Start coaching for flagged agents', cls: 'ada-secondary' }]
           },
           'quality': {
-            priority: 'p2', title: 'Quality Target Gap Analysis',
+            priority: 'p2', title: 'Quality Score Breakdown by Product',
             badge: 'P2 · Watch',
-            summary: 'Quality is 2.7% below the 90% SLA target. 3 failing KPIs account for the entire gap. If empathy scoring recovers to 70%, quality crosses the threshold.',
+            summary: 'Overall quality at 87.3% — 2.7% below the 90% target. Objectif Lune (20.8% fail rate) and Qvidian (19–21% fail rate) are the primary drag. Fixing Incorrect status alone would close ~1.8% of the gap.',
             rows: [
-              { label: 'Current quality score', val: '87.3%', badge: 'adr-badge-warn', badgeText: '↑+5.2% this period' },
-              { label: 'Gap to close', val: '−2.7%', badge: 'adr-badge-warn', badgeText: '≈77 more passes needed' },
-              { label: 'Empathy during escalations', val: '32%', badge: 'adr-badge-err', badgeText: 'threshold: 70%' },
-              { label: 'Follow-up clarity', val: '48%', badge: 'adr-badge-warn', badgeText: 'threshold: 65%' },
-              { label: 'Survey promotion', val: '49%', badge: 'adr-badge-warn', badgeText: 'threshold: 60%' },
+              { label: 'Objectif Lune', val: '79.2% quality', badge: 'adr-badge-err', badgeText: '20.8% fail rate' },
+              { label: 'Qvidian', val: '80.1% quality', badge: 'adr-badge-err', badgeText: '19.9% fail rate' },
+              { label: 'InterFax', val: '88.4% quality', badge: 'adr-badge-warn', badgeText: '→1.6pts vs target' },
+              { label: 'Second Street', val: '90.1% quality', badge: 'adr-badge-ok', badgeText: '↑ above target' },
+              { label: 'RightAnswers', val: '91.3% quality', badge: 'adr-badge-ok', badgeText: '↑ above target' },
+              { label: 'Adestra', val: '93.7% quality', badge: 'adr-badge-ok', badgeText: 'best performer' },
+              { label: 'Gap driver #1', val: 'Incorrect status', badge: 'adr-badge-err', badgeText: '150 failures → −1.8%' },
+              { label: 'Gap driver #2', val: 'Grammar mistakes', badge: 'adr-badge-warn', badgeText: '55 failures → −0.6%' },
             ],
             actions: [{ label: 'Open KPI breakdown', cls: 'ada-primary' }, { label: 'Create improvement plan', cls: 'ada-secondary' }]
           }
