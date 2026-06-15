@@ -732,6 +732,7 @@
         gap: 16px;
       }
 
+
       /* ══ AIMY DAILY SUMMARY CARD ═══════════════════════════════════════════════════════
          Full-width ambient intelligence strip. Sits above the briefing card grid.
          Communicates: today's headline number · top 3 signals · primary action.
@@ -1028,6 +1029,80 @@
         font-weight: 600;
         color: var(--d500);
         margin-top: 1px;
+      }
+
+      /* ── AiMY Detected Strip ──────────────────────────────────────────
+         Slim collapsed bar replacing the full context panel.
+         One line: logo · label · detected state · confidence · CTA
+      ── */
+      .aimy-detected-strip {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 14px;
+        background: rgba(var(--ai-rgb, 0,102,255), 0.06);
+        border: 1px solid rgba(var(--ai-rgb, 0,102,255), 0.14);
+        border-radius: 10px;
+        margin-bottom: 12px;
+      }
+      .ads-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        flex: 1;
+      }
+      .ads-logo {
+        flex-shrink: 0;
+        opacity: 0.85;
+      }
+      .ads-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+        color: var(--ai, #0066ff);
+        flex-shrink: 0;
+      }
+      .ads-state {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--d100);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .ads-confidence {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--ok);
+        background: var(--ok-bg);
+        border: 1px solid rgba(23,178,106,.2);
+        border-radius: 20px;
+        padding: 2px 8px;
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
+      .ads-cta {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--ai, #0066ff);
+        background: rgba(var(--ai-rgb, 0,102,255), 0.10);
+        border: 1px solid rgba(var(--ai-rgb, 0,102,255), 0.22);
+        border-radius: 20px;
+        padding: 5px 12px;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background var(--t-fast), border-color var(--t-fast);
+        white-space: nowrap;
+      }
+      .ads-cta:hover {
+        background: rgba(var(--ai-rgb, 0,102,255), 0.18);
+        border-color: rgba(var(--ai-rgb, 0,102,255), 0.35);
       }
 
       /* ══ END AIMY DAILY SUMMARY CARD ═══════════════════════════════════════════════ */
@@ -4143,7 +4218,54 @@
       }
 
       /* ══ MERGED: Evaluation & Friction Panel ═══════════════════ */
-      .eval-panel {
+      /* ── Performance Snapshot bar sections ──────────────────────────── */
+      .snap-section { padding: 10px 0 4px; }
+      .snap-section-label {
+        font-size: 9px; font-weight: 700; letter-spacing: .07em;
+        text-transform: uppercase; color: var(--d500); margin-bottom: 8px;
+      }
+      .snap-bars { display: flex; flex-direction: column; gap: 7px; }
+      .snap-bar-row { display: flex; align-items: center; gap: 8px; }
+      .snap-bar-name {
+        font-size: 11px; font-weight: 500; color: var(--d300);
+        width: 118px; flex-shrink: 0;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .snap-bar-track {
+        flex: 1; height: 6px;
+        background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden;
+      }
+      .snap-bar-fill {
+        height: 100%; border-radius: 3px; background: var(--ok);
+        transform-origin: left;
+        animation: snapBarGrow 500ms var(--ease-out) both;
+      }
+      .snap-bar-fill.err  { background: var(--err); }
+      .snap-bar-fill.warn { background: var(--warn); }
+      @keyframes snapBarGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+      @media (prefers-reduced-motion: reduce) { .snap-bar-fill { animation: none; } }
+      .snap-bar-val {
+        font-size: 11px; font-weight: 700; color: var(--d200);
+        width: 28px; text-align: right; flex-shrink: 0;
+      }
+      .snap-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 4px 0; }
+      .snap-canvas-cta {
+        display: flex; align-items: center; gap: 6px;
+        width: 100%; margin-top: 10px; padding: 8px 12px;
+        font-size: 11px; font-weight: 600; color: var(--d400);
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.07); border-radius: 8px;
+        cursor: pointer; text-align: left;
+        transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+      }
+      .snap-canvas-cta svg:first-child { opacity: 0.6; flex-shrink: 0; }
+      .snap-canvas-cta svg:last-child  { margin-left: auto; opacity: 0.5; flex-shrink: 0; }
+      .snap-canvas-cta:hover {
+        background: rgba(255,255,255,0.06); color: var(--d200);
+        border-color: rgba(255,255,255,0.12);
+      }
+
+            .eval-panel {
         background: var(--card-bg);
         border-radius: 16px;
         border: 1px solid var(--card-border);
@@ -4214,9 +4336,9 @@
       /* ── Donut + bars section ────────────────────────────────── */
       .eval-chart-section {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 20px;
-        padding: 16px 20px 16px;
+        padding: 14px 16px 14px;
         position: relative; /* anchor for floating causes panel */
       }
 
@@ -4240,9 +4362,10 @@
         align-items: center;
         justify-content: center;
         pointer-events: none;
+        gap: 1px;
       }
       .donut-pct {
-        font-size: 20px;
+        font-size: 17px;
         font-weight: 800;
         color: var(--d50);
         letter-spacing: -0.03em;
@@ -4250,12 +4373,13 @@
         transition: color var(--transition-base);
       }
       .donut-label {
-        font-size: 9px;
-        font-weight: 600;
+        font-size: 8px;
+        font-weight: 700;
         color: var(--d400);
         text-transform: uppercase;
-        letter-spacing: 0.06em;
-        margin-top: 2px;
+        letter-spacing: 0.05em;
+        line-height: 1;
+        white-space: nowrap;
         transition: color var(--transition-base);
       }
 
@@ -4296,8 +4420,15 @@
       }
 
       /* Bar rows on the right of donut */
-      .eval-bars {
+      /* Right-side column: label stacked above bars */
+      .eval-bars-col {
         flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        min-width: 0;
+      }
+      .eval-bars {
         display: flex;
         flex-direction: column;
         gap: 10px;
@@ -4556,6 +4687,86 @@
       }
 
       /* ── Friction feed (bottom section) ─────────────────────── */
+      /* ── Eval panel sub-sections (Products + KPIs) ─────────────────── */
+      /* Bar row right-side stats: review count + avg quality score */
+      .eval-bar-count {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--d300);
+      }
+      .eval-bar-avg {
+        font-size: 11px;
+        font-weight: 700;
+        min-width: 40px;
+        text-align: right;
+      }
+      .eval-bar-avg.ok   { color: var(--ok); }
+      .eval-bar-avg.warn { color: var(--warn); }
+      .eval-bar-avg.err  { color: var(--err); }
+
+            .eval-products-section {
+        padding: 10px 20px 4px;
+      }
+      .eval-bars-section-label {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+        color: var(--d500);
+        padding: 4px 0 6px;
+      }
+            /* KPI rows — pointer cursor + canvas-fire indicator */
+      .eval-kpi-row {
+        cursor: pointer;
+      }
+      .eval-kpi-row:hover {
+        background: rgba(255,255,255,0.04);
+        border-radius: 6px;
+      }
+      .eval-kpi-row:hover .eval-bar-label {
+        color: var(--d100);
+      }
+
+            .eval-sub-section {
+        padding: 10px 14px 4px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        margin-top: 4px;
+        position: relative;
+      }
+      .eval-sub-label {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+        color: var(--d500);
+        margin-bottom: 8px;
+      }
+      .eval-bar-val-err  { color: var(--err);  font-weight: 700; }
+      .eval-bar-val-warn { color: var(--warn); font-weight: 700; }
+
+      /* Canvas CTA at bottom of eval panel */
+      .eval-canvas-cta {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin: 4px 14px 12px;
+        padding: 8px 12px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--d400);
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+      }
+      .eval-canvas-cta svg:first-child { opacity: 0.55; flex-shrink: 0; }
+      .eval-canvas-cta:hover {
+        background: rgba(255,255,255,0.06);
+        color: var(--d200);
+        border-color: rgba(255,255,255,0.12);
+      }
+
       .eval-feed {
         border-top: 1px solid rgba(255, 255, 255, 0.06);
         overflow: hidden;
@@ -5055,49 +5266,207 @@
       }
 
       /* ── Alert detail canvas cards ─────────────────────────────────── */
+      /* ── Alert Detail Card — panel style ──────────────────────────────
+         Breaks out of bubble wrapper. Full-width panel feel,
+         structured like the reference screenshot.
+      ── */
       .alert-detail-card {
-        background: rgba(20,27,36,0.6); border: 1px solid rgba(255,255,255,0.09);
-        border-radius: 12px; overflow: hidden; max-width: 540px;
+        background: var(--card-bg);
+        border: 1px solid rgba(255,255,255,0.10);
+        border-radius: 14px;
+        overflow: hidden;
+        width: 100%;
       }
-      .alert-detail-card.p1 { border-color: rgba(240,68,56,0.22); }
-      .alert-detail-card.p2 { border-color: rgba(247,144,9,0.18); }
+      .alert-detail-card.p1 { border-color: rgba(240,68,56,0.28); }
+      .alert-detail-card.p2 { border-color: rgba(247,144,9,0.22); }
+
+      /* Header */
       .alert-detail-header {
         display: flex; align-items: center; gap: 10px;
-        padding: 12px 16px 10px; border-bottom: 1px solid rgba(255,255,255,0.06);
+        padding: 14px 18px 12px;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+        background: rgba(255,255,255,0.02);
       }
-      .alert-detail-title { font-size: 13px; font-weight: 700; color: var(--d50); flex: 1; }
-      .alert-detail-body { padding: 12px 16px 14px; }
-      .alert-detail-summary { font-size: 13px; color: var(--d200,#c7cdd1); line-height: 1.55; margin-bottom: 12px; }
-      .alert-detail-rows { display: flex; flex-direction: column; gap: 6px; }
+      .alert-detail-header .notif-severity-dot {
+        width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+      }
+      .p1 .alert-detail-header .notif-severity-dot { background: var(--err); }
+      .p2 .alert-detail-header .notif-severity-dot { background: var(--warn); }
+      .alert-detail-title { font-size: 15px; font-weight: 700; color: var(--d50); flex: 1; letter-spacing: -0.01em; }
+
+      /* Sub-metric cards row */
+      .adc-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: rgba(255,255,255,0.06);
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+      }
+      .adc-metric {
+        display: flex; flex-direction: column; gap: 4px;
+        padding: 14px 16px;
+        background: rgba(15,18,21,0.7);
+      }
+      .adc-metric-label {
+        font-size: 9px; font-weight: 700; letter-spacing: .07em;
+        text-transform: uppercase; color: var(--d500);
+      }
+      .adc-metric-value {
+        font-size: 22px; font-weight: 800; letter-spacing: -0.03em; line-height: 1;
+      }
+      .adc-metric-value.err  { color: var(--err); }
+      .adc-metric-value.warn { color: var(--warn); }
+      .adc-metric-value.ok   { color: var(--ok); }
+      .adc-metric-target {
+        font-size: 10px; font-weight: 500; color: var(--d500);
+      }
+
+      /* Body */
+      .alert-detail-body { padding: 14px 18px 16px; }
+      .alert-detail-summary {
+        font-size: 12px; color: var(--d300); line-height: 1.6;
+        margin-bottom: 14px; padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+      }
+      .alert-detail-rows { display: flex; flex-direction: column; gap: 0; }
       .alert-detail-row {
-        display: flex; align-items: center; gap: 10px;
-        padding: 7px 10px; border-radius: 8px;
-        background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+        display: flex; align-items: center; gap: 12px;
+        padding: 9px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
       }
-      .adr-label { font-size: 12px; color: var(--d300); flex: 1; }
-      .adr-val   { font-size: 12px; font-weight: 700; color: var(--d50); }
+      .alert-detail-row:last-child { border-bottom: none; }
+      .adr-label { font-size: 12px; color: var(--d400); flex: 1; }
+      .adr-val   { font-size: 13px; font-weight: 700; color: var(--d50); }
       .adr-badge {
-        font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px;
-        letter-spacing: .04em; text-transform: uppercase;
+        font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 20px;
+        letter-spacing: .04em; text-transform: uppercase; white-space: nowrap;
       }
       .adr-badge-err  { background: var(--err-bg);  color: var(--err);  border: 1px solid rgba(240,68,56,.2); }
+      .adr-badge-ai   { background: rgba(var(--ai-rgb,0,102,255),.12); color: var(--ai,#0066ff); border: 1px solid rgba(var(--ai-rgb,0,102,255),.22); }
+
+      /* Suggestion / friction response cards in canvas */
+      .sugg-response-card {
+        background: var(--card-bg);
+        border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 12px;
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .src-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .src-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--d50);
+        line-height: 1.3;
+        letter-spacing: -0.01em;
+        flex: 1;
+      }
+      .src-body {
+        font-size: 12px;
+        color: var(--d300);
+        line-height: 1.55;
+        margin: 0;
+      }
+      .src-meta {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d500);
+        padding: 6px 8px;
+        background: rgba(255,255,255,0.03);
+        border-radius: 6px;
+        border: 1px solid rgba(255,255,255,0.06);
+      }
+      .src-action {
+        align-self: flex-start;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--qa-accent);
+        background: rgba(var(--qa-accent-rgb),.10);
+        border: 1px solid rgba(var(--qa-accent-rgb),.22);
+        border-radius: 8px;
+        padding: 6px 12px;
+        cursor: pointer;
+        font-family: "Urbanist", sans-serif;
+        transition: background var(--t-fast), border-color var(--t-fast);
+      }
+      .src-action:hover {
+        background: rgba(var(--qa-accent-rgb),.18);
+        border-color: rgba(var(--qa-accent-rgb),.35);
+      }
       .adr-badge-warn { background: var(--warn-bg); color: var(--warn); border: 1px solid rgba(247,144,9,.2); }
       .adr-badge-ok   { background: var(--ok-bg);   color: var(--ok);   border: 1px solid rgba(23,178,106,.2); }
+
+      /* Trend bar chart section */
+      .adc-chart {
+        margin-top: 14px; padding-top: 12px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+      }
+      .adc-chart-label {
+        font-size: 9px; font-weight: 700; letter-spacing: .07em;
+        text-transform: uppercase; color: var(--d500); margin-bottom: 12px;
+      }
+      .adc-chart-legend {
+        display: flex; gap: 12px; margin-bottom: 10px;
+      }
+      .adc-legend-item {
+        display: flex; align-items: center; gap: 5px;
+        font-size: 10px; color: var(--d400);
+      }
+      .adc-legend-dot {
+        width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0;
+      }
+      .adc-bars-group {
+        display: grid; gap: 14px;
+      }
+      .adc-bar-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+      .adc-bar-col-label {
+        font-size: 9px; color: var(--d500); text-align: center;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;
+      }
+      .adc-bar-pair { display: flex; gap: 3px; align-items: flex-end; height: 64px; }
+      .adc-bar {
+        width: 18px; border-radius: 3px 3px 0 0;
+        transform-origin: bottom;
+        animation: adcBarGrow 500ms var(--ease-out) both;
+      }
+      @keyframes adcBarGrow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+      @media (prefers-reduced-motion: reduce) { .adc-bar { animation: none; } }
+      .adc-bar.current { background: var(--qa-accent); }
+      .adc-bar.target  { background: rgba(255,255,255,0.12); }
+
+      /* Disclaimer strip */
+      .adc-disclaimer {
+        display: flex; align-items: flex-start; gap: 8px;
+        padding: 10px 16px;
+        background: rgba(var(--ai-rgb,0,102,255),0.06);
+        border-top: 1px solid rgba(var(--ai-rgb,0,102,255),0.10);
+        font-size: 10px; color: var(--d500); line-height: 1.5;
+      }
+      .adc-disclaimer svg { flex-shrink: 0; margin-top: 1px; opacity: 0.6; }
+
+      /* Footer */
       .alert-detail-footer {
         display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-        padding: 8px 14px; border-top: 1px solid rgba(255,255,255,0.06);
-        background: rgba(0,0,0,0.1);
+        padding: 12px 18px; border-top: 1px solid rgba(255,255,255,0.06);
+        background: rgba(0,0,0,0.12);
       }
       .alert-detail-action {
-        font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 8px;
+        font-size: 12px; font-weight: 700; padding: 8px 16px; border-radius: 8px;
         cursor: pointer; font-family: "Urbanist",sans-serif;
-        transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+        transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
         border: 1px solid transparent;
       }
-      .ada-primary { background: rgba(var(--qa-accent-rgb),.1); color: var(--qa-accent); border-color: rgba(var(--qa-accent-rgb),.22); }
-      .ada-primary:hover { background: rgba(var(--qa-accent-rgb),.18); }
-      .ada-secondary { background: rgba(255,255,255,.03); color: var(--d400); border-color: rgba(255,255,255,.07); }
-      .ada-secondary:hover { background: rgba(255,255,255,.07); color: var(--d200,#e8edf2); }
+      .ada-primary { background: rgba(var(--qa-accent-rgb),.12); color: var(--qa-accent); border-color: rgba(var(--qa-accent-rgb),.28); }
+      .ada-primary:hover { background: rgba(var(--qa-accent-rgb),.20); }
+      .ada-secondary { background: rgba(255,255,255,.03); color: var(--d400); border-color: rgba(255,255,255,.08); }
+      .ada-secondary:hover { background: rgba(255,255,255,.07); color: var(--d200); }
 </style>
   </head>
   <body>
@@ -5857,452 +6226,109 @@
         <!-- /aimySummaryCard -->
 
         <div class="tier-1-grid">
-            <div class="bcard p1 tier-primary" onclick="toggleCard(this)" role="button" tabindex="0">
+            <div class="bcard p1 tier-primary" role="region" tabindex="0">
               <div class="bcard-accent"></div>
               <div class="bcard-body">
                 <div class="bcard-meta">
-                  <!-- <span class="severity-dot"></span> -->
                   <span class="type-label">SLA Breach</span>
                   <span class="priority-badge">P1 · Critical</span>
                 </div>
                 <p class="bcard-conclusion">
                   SLA compliance at <span style="color: var(--err); font-weight: 700">61%</span> — 29pts below target, 23 breaches this week.
                 </p>
-                <div class="evidence-row">
-                  <div class="evidence-pill">
-                    <span class="ev-value">61%</span><span>SLA compliance</span>
-                  </div>
-                  <div class="evidence-pill">
-                    <span class="ev-delta dn">↓ −29pts</span
-                    ><span>vs target</span>
-                  </div>
-                  <div class="evidence-pill">
-                    <span class="ev-value">23</span
-                    ><span>breaches this week</span>
-                  </div>
-                  <div class="evidence-pill">
-                    <span class="ev-value">45 min</span
-                    ><span>avg first response</span>
-                  </div>
-                </div>
                 <div class="bcard-divider"></div>
                 <div class="bcard-action">
                   <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('SLA compliance is at 61% — 29pts below the 90% target. Break this down by product: compare Objectif Lune, Qvidian, InterFax, and Adestra on breach count, average first response time, and current vs 90% target. Then list the top 5 agents driving the most breaches with their individual compliance rates and the queues they operate in. Flag any product where compliance has been below target for more than 2 consecutive weeks.')">
                     View breached tickets
                     <svg viewBox="0 0 13 13" fill="none">
-                      <path
-                        d="M2 6.5H11M7 2.5L11 6.5L7 10.5"
-                        stroke="currentColor"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
+                      <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </button>
-                  <button
-                    class="expand-toggle"
-                    onclick="
-                      event.stopPropagation();
-                      toggleData(this);
-                    "
-                  >
-                    Metric Breakdown
-                    <svg viewBox="0 0 12 12" fill="none">
-                      <path
-                        d="M3 4.5L6 7.5L9 4.5"
-                        stroke="currentColor"
-                        stroke-width="1.3"
-                        stroke-linecap="round"
-                      />
-                    </svg>
-                  </button>
-                <div class="bcard-ack-row" id="ack-row-sla-breach">
-                  <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'sla-breach')">On it</button>
-                  <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'sla-breach')">Not relevant</button>
-                  <div class="bcard-dismiss-picker" id="bdp-sla-breach"></div>
-                </div>
-                </div>
-              </div>
-              <div class="bcard-data">
-                <div class="data-grid">
-                  <div class="data-cell">
-                    <span class="dc-label">Compliance</span
-                    ><span class="dc-val" style="color: var(--err)">61%</span
-                    ><span class="dc-sub">Target: 90%</span>
-                  </div>
-                  <div class="data-cell">
-                    <span class="dc-label">Breaches</span
-                    ><span class="dc-val" style="color: var(--err)">23</span
-                    ><span class="dc-sub">↑ 9 vs last week</span>
-                  </div>
-                  <div class="data-cell">
-                    <span class="dc-label">Avg First Response</span
-                    ><span class="dc-val" style="color: var(--warn)">45 min</span
-                    ><span class="dc-sub">Target: 15 min</span>
+                  <div class="bcard-ack-row" id="ack-row-sla-breach">
+                    <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'sla-breach')">On it</button>
+                    <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'sla-breach')">Not relevant</button>
+                    <div class="bcard-dismiss-picker" id="bdp-sla-breach"></div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="bcard p1" onclick="toggleCard(this)" role="button" tabindex="0">
+            <div class="bcard p1" role="region" tabindex="0">
               <div class="bcard-accent"></div>
               <div class="bcard-body">
                 <div class="bcard-meta">
-                  <!-- <span class="severity-dot"></span> -->
                   <span class="type-label">KPI Failures</span>
                   <span class="priority-badge">P1 · Urgent</span>
                 </div>
                 <p class="bcard-conclusion">
                   3 KPIs failing — empathy at <span style="color: var(--err); font-weight: 700">32%</span> is the critical gap, down 8% this period.
                 </p>
-                <div class="evidence-row">
-                  <div class="evidence-pill">
-                    <span class="ev-value">3</span
-                    ><span>KPIs below threshold</span>
-                  </div>
-                  <div class="evidence-pill">
-                    <span class="ev-value">32%</span><span>empathy score</span>
-                  </div>
-                  <div class="evidence-pill">
-                    <span class="ev-delta dn">↓ −8%</span
-                    ><span>vs last period</span>
-                  </div>
-                  <div class="evidence-pill">
-                    <span class="ev-value">184</span
-                    ><span>failed interactions</span>
-                  </div>
-                </div>
                 <div class="bcard-divider"></div>
                 <div class="bcard-action">
                   <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('3 KPIs are actively failing. Show a breakdown by product for each: Incorrect status (150 failures) across Objectif Lune and Qvidian, Grammar mistakes (55 failures) in InterFax and Second Street, and Time between updates (47 failures) in Qvidian and RightAnswers. For each KPI show: current rate vs target, which agents are responsible for the most failures, and a current vs target bar comparison per product. Then generate a prioritised coaching plan grouped by agent — rank by failure count impact.')">
                     Start coaching plan
                     <svg viewBox="0 0 13 13" fill="none">
-                      <path
-                        d="M2 6.5H11M7 2.5L11 6.5L7 10.5"
-                        stroke="currentColor"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
+                      <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </button>
-                  <button
-                    class="expand-toggle"
-                    onclick="
-                      event.stopPropagation();
-                      toggleData(this);
-                    "
-                  >
-                    Metric Breakdown
-                    <svg viewBox="0 0 12 12" fill="none">
-                      <path
-                        d="M3 4.5L6 7.5L9 4.5"
-                        stroke="currentColor"
-                        stroke-width="1.3"
-                        stroke-linecap="round"
-                      />
-                    </svg>
-                  </button>
-                <div class="bcard-ack-row" id="ack-row-kpi-failures">
-                  <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'kpi-failures')">On it</button>
-                  <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'kpi-failures')">Not relevant</button>
-                  <div class="bcard-dismiss-picker" id="bdp-kpi-failures"></div>
-                </div>
-                </div>
-              </div>
-              <div class="bcard-data">
-                <div
-                  class="data-grid"
-                  style="grid-template-columns: repeat(4, 1fr)"
-                >
-                  <div class="data-cell">
-                    <span class="dc-label">Empathy</span
-                    ><span class="dc-val" style="color: var(--err)">32%</span
-                    ><span class="dc-sub">↓ 8% worsening</span>
-                  </div>
-                  <div class="data-cell">
-                    <span class="dc-label">Follow-up</span
-                    ><span class="dc-val" style="color: var(--err)">48%</span
-                    ><span class="dc-sub">→ stable</span>
-                  </div>
-                  <div class="data-cell">
-                    <span class="dc-label">Survey promo</span
-                    ><span class="dc-val" style="color: var(--err)">49%</span
-                    ><span class="dc-sub">↑ 3% improving</span>
-                  </div>
-                  <div class="data-cell">
-                    <span class="dc-label">Response SLA</span
-                    ><span class="dc-val" style="color: var(--warn)">71%</span
-                    ><span class="dc-sub">↓ 2% watch</span>
+                  <div class="bcard-ack-row" id="ack-row-kpi-failures">
+                    <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'kpi-failures')">On it</button>
+                    <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'kpi-failures')">Not relevant</button>
+                    <div class="bcard-dismiss-picker" id="bdp-kpi-failures"></div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="bcard p1" onclick="toggleCard(this)" role="button" tabindex="0">
+            <div class="bcard p1" role="region" tabindex="0">
               <div class="bcard-accent"></div>
               <div class="bcard-body">
                 <div class="bcard-meta">
-                  <!-- <span class="severity-dot"></span> -->
                   <span class="type-label">Sentiment</span>
                   <span class="priority-badge">P1 · Urgent</span>
                 </div>
                 <p class="bcard-conclusion">
                   Negative sentiment rising — 3 agents driving 39 flagged interactions this week.
                 </p>
-                <div class="evidence-row">
-                  <div class="evidence-pill">
-                    <span class="ev-value">39</span
-                    ><span>negative interactions</span>
-                  </div>
-                  <div class="evidence-pill">
-                    <span class="ev-delta dn">↑ rising</span
-                    ><span>7-day trend</span>
-                  </div>
-                  <div class="evidence-pill">
-                    <span class="ev-value">3</span><span>agents flagged</span>
-                  </div>
-                  <div class="evidence-pill">
-                    <span class="ev-value">197</span><span>total analyzed</span>
-                  </div>
-                </div>
                 <div class="bcard-divider"></div>
                 <div class="bcard-action">
                   <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('Negative sentiment is rising week over week — 39 flagged interactions, 3 agents responsible for most of it. Break this down by product: which of Objectif Lune, Adestra, Qvidian, and InterFax have the highest negative sentiment rates, and show current vs previous week for each. List the 3 flagged agents with their sentiment scores, ticket volumes, and the specific escalation types triggering negative responses. Identify the common failure pattern and suggest the single fastest intervention to reverse the trend.')">
                     Review escalation handling
                     <svg viewBox="0 0 13 13" fill="none">
-                      <path
-                        d="M2 6.5H11M7 2.5L11 6.5L7 10.5"
-                        stroke="currentColor"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
+                      <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </button>
-                  <button
-                    class="expand-toggle"
-                    onclick="
-                      event.stopPropagation();
-                      toggleData(this);
-                    "
-                  >
-                    Metric Breakdown
-                    <svg viewBox="0 0 12 12" fill="none">
-                      <path
-                        d="M3 4.5L6 7.5L9 4.5"
-                        stroke="currentColor"
-                        stroke-width="1.3"
-                        stroke-linecap="round"
-                      />
-                    </svg>
-                  </button>
-                <div class="bcard-ack-row" id="ack-row-sentiment">
-                  <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'sentiment')">On it</button>
-                  <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'sentiment')">Not relevant</button>
-                  <div class="bcard-dismiss-picker" id="bdp-sentiment"></div>
-                </div>
-                </div>
-              </div>
-              <div class="bcard-data">
-                <div class="mini-chart">
-                  <svg viewBox="0 0 300 40" preserveAspectRatio="none">
-                    <text
-                      x="0"
-                      y="38"
-                      font-size="7"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                    >
-                      Mon
-                    </text>
-                    <text
-                      x="40"
-                      y="38"
-                      font-size="7"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                    >
-                      Tue
-                    </text>
-                    <text
-                      x="80"
-                      y="38"
-                      font-size="7"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                    >
-                      Wed
-                    </text>
-                    <text
-                      x="120"
-                      y="38"
-                      font-size="7"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                    >
-                      Thu
-                    </text>
-                    <text
-                      x="160"
-                      y="38"
-                      font-size="7"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                    >
-                      Fri
-                    </text>
-                    <text
-                      x="200"
-                      y="38"
-                      font-size="7"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                    >
-                      Sat
-                    </text>
-                    <text
-                      x="240"
-                      y="38"
-                      font-size="7"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                    >
-                      Sun
-                    </text>
-                    <path
-                      d="M8,22 C50,20 90,16 130,17 C170,18 210,14 260,10 C275,9 290,9 300,8"
-                      fill="none"
-                      stroke="#17B26A"
-                      stroke-width="1.5"
-                      opacity="0.8"
-                    />
-                    <path
-                      d="M8,18 C50,20 90,22 130,19 C170,16 210,22 260,26 C275,27 290,28 300,29"
-                      fill="none"
-                      stroke="#F04438"
-                      stroke-width="1.5"
-                      opacity="0.9"
-                      stroke-dasharray="4 2"
-                    />
-                    <circle
-                      cx="300"
-                      cy="8"
-                      r="2.5"
-                      fill="#17B26A"
-                      stroke="#2E3438"
-                      stroke-width="1.5"
-                    />
-                    <circle
-                      cx="300"
-                      cy="29"
-                      r="2.5"
-                      fill="#F04438"
-                      stroke="#2E3438"
-                      stroke-width="1.5"
-                    />
-                  </svg>
-                </div>
-                <div class="data-grid">
-                  <div class="data-cell">
-                    <span class="dc-label">Positive</span
-                    ><span class="dc-val" style="color: var(--ok)">46</span
-                    ><span class="dc-sub">+65% vs 30d</span>
-                  </div>
-                  <div class="data-cell">
-                    <span class="dc-label">Neutral</span
-                    ><span class="dc-val">112</span
-                    ><span class="dc-sub">−55% vs 30d</span>
-                  </div>
-                  <div class="data-cell">
-                    <span class="dc-label">Negative</span
-                    ><span class="dc-val" style="color: var(--err)">39</span
-                    ><span class="dc-sub">↑ trending up</span>
+                  <div class="bcard-ack-row" id="ack-row-sentiment">
+                    <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'sentiment')">On it</button>
+                    <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'sentiment')">Not relevant</button>
+                    <div class="bcard-dismiss-picker" id="bdp-sentiment"></div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="bcard p2" onclick="toggleCard(this)" role="button" tabindex="0">
+
+            <div class="bcard p2" role="region" tabindex="0">
               <div class="bcard-accent"></div>
               <div class="bcard-body">
                 <div class="bcard-meta">
-                  <!-- <span class="severity-dot"></span> -->
                   <span class="type-label">Quality Score</span>
                   <span class="priority-badge">P2 · Watch</span>
                 </div>
                 <p class="bcard-conclusion">
                   Quality at <span style="color: var(--warn); font-weight: 700">87.3%</span> — 2.7% below 90% target. 3 failing KPIs are the drag.
                 </p>
-                <div class="evidence-row">
-                  <div class="evidence-pill">
-                    <span class="ev-delta up">↑ +5.2%</span
-                    ><span>vs last period</span>
-                  </div>
-                  <div class="evidence-pill">
-                    <span class="ev-value">−2.7%</span><span>gap to SLA</span>
-                  </div>
-                  <div class="evidence-pill">
-                    <span class="ev-value">3</span><span>KPIs failing</span>
-                  </div>
-                  <div class="evidence-pill">
-                    <span class="ev-value">2,847</span
-                    ><span>audits this period</span>
-                  </div>
-                </div>
                 <div class="bcard-divider"></div>
                 <div class="bcard-action">
                   <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('Overall quality is at 87.3% — 2.7% below the 90% target. Show a product-by-product quality breakdown: rank Objectif Lune, Adestra, InterFax, Qvidian, RightAnswers, and Second Street by current quality score, pass rate, and fail count. Flag which products are above target and which are below with the gap to close. Then show the top 3 KPI failures (Incorrect status 150, Grammar mistakes 55, Time between updates 47) and how eliminating each would move the overall quality score. Recommend the highest-leverage fix.')">
                     See what's blocking target
                     <svg viewBox="0 0 13 13" fill="none">
-                      <path
-                        d="M2 6.5H11M7 2.5L11 6.5L7 10.5"
-                        stroke="currentColor"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
+                      <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </button>
-                  <button
-                    class="expand-toggle"
-                    onclick="
-                      event.stopPropagation();
-                      toggleData(this);
-                    "
-                  >
-                    Metric Breakdown
-                    <svg viewBox="0 0 12 12" fill="none">
-                      <path
-                        d="M3 4.5L6 7.5L9 4.5"
-                        stroke="currentColor"
-                        stroke-width="1.3"
-                        stroke-linecap="round"
-                      />
-                    </svg>
-                  </button>
-                <div class="bcard-ack-row" id="ack-row-quality">
-                  <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'quality')">On it</button>
-                  <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'quality')">Not relevant</button>
-                  <div class="bcard-dismiss-picker" id="bdp-quality"></div>
-                </div>
-                </div>
-              </div>
-              <div class="bcard-data">
-                <div class="data-grid">
-                  <div class="data-cell">
-                    <span class="dc-label">Current avg</span
-                    ><span class="dc-val">87.3%</span
-                    ><span class="dc-sub">+5.2% this period</span>
-                  </div>
-                  <div class="data-cell">
-                    <span class="dc-label">SLA target</span
-                    ><span class="dc-val" style="color: var(--warn)">90%</span
-                    ><span class="dc-sub">threshold</span>
-                  </div>
-                  <div class="data-cell">
-                    <span class="dc-label">Gap to close</span
-                    ><span class="dc-val" style="color: var(--warn)">−2.7%</span
-                    ><span class="dc-sub">≈ 77 more passes needed</span>
+                  <div class="bcard-ack-row" id="ack-row-quality">
+                    <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'quality')">On it</button>
+                    <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'quality')">Not relevant</button>
+                    <div class="bcard-dismiss-picker" id="bdp-quality"></div>
                   </div>
                 </div>
               </div>
@@ -6310,71 +6336,22 @@
 
           </div>
 
-          <!-- AiMY Context Panel: state detection (top zone) + suggestions (bottom zone).
-         One card, two zones, linked by the AiMY detection — the detected state
-         drives which suggestions appear. Alt states are always visible so the
-         user sees what AiMY is choosing between. -->
-          <div class="aimy-context-panel">
-            <!-- Zone 1: State detection -->
-            <div class="context-zone context-zone--state">
-              <div class="context-zone-header">
-                <div class="state-bar-label">
-                  <svg width="18" height="20" viewBox="0 0 18 20">
-                <use href="#aimy-logo-small" />
+          <!-- AiMY Detected strip — collapsed by default, full detail in canvas -->
+          <div class="aimy-detected-strip" id="aimyDetectedStrip" role="complementary" aria-label="AiMY detection summary">
+            <div class="ads-left">
+              <svg class="ads-logo" width="14" height="16" viewBox="0 0 18 20">
+                <use href="#aimy-logo-small"/>
               </svg>
-                  <span class="label-text">AiMY detected</span>
-                </div>
-
-                <div class="state-detected-pill" id="detectedPill">
-                  <span id="detectedStateLabel"
-                    >3 KPIs failing, Nov dip unresolved</span
-                  >
-                  <span class="state-confidence" id="detectedStateConfidence" tabindex="0"
-                    >high confidence<div class="conf-tooltip" id="confTooltip"><div class="conf-tooltip-title">Why AiMY is confident</div><div id="confSignals"></div></div></span
-                  >
-                </div>
-              </div>
-
-              <div class="state-alts" id="stateAlts">
-                <span class="state-alts-label">Also considered</span>
-                <div class="state-alts-list" id="stateAltsList">
-                  <!-- Populated dynamically; excludes the currently-detected state -->
-                </div>
-              </div>
+              <span class="ads-label">AiMY detected</span>
+              <span class="ads-state" id="adsStateText">3 KPIs failing, Nov dip unresolved</span>
+              <span class="ads-confidence" id="adsConfidence">high confidence</span>
             </div>
-
-            <!-- Zone 2: Suggestions -->
-            <div class="context-zone context-zone--suggestions">
-              <div class="context-zone-header">
-                <div class="v2-chips-header-left">
-                  <div class="v2-chips-suggested">
-                    <span>Suggested by AiMY</span>
-                  </div>
-                  <span class="v2-chips-context" id="chipsContext"
-                    >· based on 3 failing KPIs and Nov quality dip</span
-                  >
-                </div>
-                <button class="v2-refresh-btn" onclick="refreshChips()">
-                  <svg viewBox="0 0 11 11" fill="none">
-                    <path
-                      d="M9.5 2A5 5 0 1 0 10 5.5"
-                      stroke="currentColor"
-                      stroke-width="1.2"
-                      stroke-linecap="round"
-                    />
-                    <path
-                      d="M10 2V5H7"
-                      stroke="currentColor"
-                      stroke-width="1.2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  Refresh
-                </button>
-              </div>
-              <div class="v2-chips" id="chipsRow"></div>
-            </div>
+            <button class="ads-cta" onclick="appendSuggestionCardsResponse()">
+              Explore in canvas
+              <svg viewBox="0 0 13 13" fill="none" width="11" height="11">
+                <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
           </div>
 
           <div class="tier-2-grid">
@@ -7251,248 +7228,81 @@
                 <div class="eval-header">
                   <div class="eval-header-left">
                     <span class="eval-title">Evaluation &amp; Friction</span>
-                    <span class="eval-subtitle"
-                      >2,847 tickets evaluated · Updated 4 min ago</span
-                    >
+                    <span class="eval-subtitle">3,363 tickets · Week of June 2–8, 2026</span>
                   </div>
-                  <span class="eval-live-badge spike">
-                    <span class="eval-live-dot"></span>
-                    Live · Spike detected
-                  </span>
                 </div>
 
-                <!-- Donut + bar rows -->
-                <div class="eval-chart-section">
-                  <!-- SVG Donut -->
-                  <div class="donut-wrap">
-                    <svg
-                      viewBox="0 0 100 100"
-                      role="img"
-                      aria-label="Ticket evaluation breakdown: 72% pass, 11% borderline, 17% fail"
-                    >
-                      <title>
-                        Ticket evaluation: 72% pass, 11% borderline, 17% fail
-                      </title>
-                      <defs>
-                        <linearGradient
-                          id="passGrad"
-                          x1="0"
-                          y1="0"
-                          x2="1"
-                          y2="1"
-                        >
-                          <stop offset="0%" stop-color="#17B26A" />
-                          <stop offset="100%" stop-color="#22C55E" />
-                        </linearGradient>
-                      </defs>
-                      <!-- Track -->
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        fill="none"
-                        stroke="rgba(255,255,255,0.06)"
-                        stroke-width="10"
-                      />
-                      <!-- Visible arcs — pointer-events:none, hit rings handle interaction -->
-                      <circle
-                        class="donut-arc arc-pass"
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke="url(#passGrad)"
-                        stroke-dasharray="181 251.3"
-                        stroke-dashoffset="0"
-                        data-segment="pass"
-                      />
-                      <circle
-                        class="donut-arc arc-border"
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke="#F79009"
-                        stroke-dasharray="27.6 251.3"
-                        stroke-dashoffset="-181"
-                        data-segment="borderline"
-                      />
-                      <circle
-                        class="donut-arc arc-fail"
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke="#F04438"
-                        stroke-dasharray="42.7 251.3"
-                        stroke-dashoffset="-208.6"
-                        data-segment="fail"
-                      />
-                      <!-- Invisible hit rings (stroke-width:28, transparent) -->
-                      <circle
-                        class="donut-hit"
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke-dasharray="181 251.3"
-                        stroke-dashoffset="0"
-                        data-segment="pass"
-                        onmouseenter="evalHover('pass')"
-                        onmouseleave="scheduleEvalOut()"
-                        onclick="window.openOverlay && window.openOverlay('72% of tickets passed evaluation this period. What are the shared behaviours in the passing interactions and which agents are consistently above the pass threshold?')"
-                      />
-                      <circle
-                        class="donut-hit"
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke-dasharray="27.6 251.3"
-                        stroke-dashoffset="-181"
-                        data-segment="borderline"
-                        onmouseenter="evalHover('borderline')"
-                        onmouseleave="scheduleEvalOut()"
-                        onclick="window.openOverlay && window.openOverlay('313 tickets — 11% of evaluations — were borderline this period. Which specific KPI failures are keeping them below the pass threshold? What is the smallest coaching change that would move the most of them to a pass?')"
-                      />
-                      <circle
-                        class="donut-hit"
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke-dasharray="42.7 251.3"
-                        stroke-dashoffset="-208.6"
-                        data-segment="fail"
-                        onmouseenter="evalHover('fail')"
-                        onmouseleave="scheduleEvalOut()"
-                        onclick="window.openOverlay && window.openOverlay('17% of tickets failed evaluation this period — empathy during escalations and follow-up clarity are the primary drivers. List the agents with the highest fail rates and generate a targeted coaching brief for each.')"
-                      />
-                    </svg>
-                    <div class="donut-center">
-                      <span class="donut-pct" id="donutPct">72%</span>
-                      <span class="donut-label" id="donutLabel">Pass rate</span>
-                    </div>
-                  </div>
-
-                  <!-- Bar rows — no inline expansion, float panel handles causes -->
+                <!-- Top Products by Volume -->
+                <div class="eval-products-section" style="position:relative">
+                  <div class="eval-bars-section-label">Top Products by Volume</div>
                   <div class="eval-bars">
-                    <div
-                      class="eval-bar-row"
-                      data-segment="pass"
-                      onmouseenter="evalHover('pass')"
-                      onmouseleave="scheduleEvalOut()"
-                    >
+                    <div class="eval-bar-row" data-segment="objectif-lune"
+                      onmouseenter="evalHover('objectif-lune')" onmouseleave="scheduleEvalOut()"
+                      onclick="window.openOverlay && window.openOverlay('Objectif Lune has the highest review volume at 411 with a 79.2% avg quality — worst in portfolio. Show top failing KPIs, agent attribution, and the fastest intervention.')">
                       <div class="eval-bar-top">
-                        <span class="eval-bar-label">
-                          <span
-                            class="eval-dot"
-                            style="background: var(--ok)"
-                          ></span>
-                          Pass
-                        </span>
-                        <div class="eval-bar-right">
-                          <span>2,050</span>
-                          <span class="eval-bar-pct">72%</span>
-                        </div>
+                        <span class="eval-bar-label"><span class="eval-dot" style="background:var(--warn)"></span>Objectif Lune</span>
+                        <div class="eval-bar-right"><span class="eval-bar-count">411</span><span class="eval-bar-avg warn">79.2%</span></div>
                       </div>
-                      <div class="eval-bar-track">
-                        <div
-                          class="eval-bar-fill"
-                          style="
-                            width: 72%;
-                            background: linear-gradient(
-                              90deg,
-                              #17b26a,
-                              #22c55e
-                            );
-                          "
-                        ></div>
-                      </div>
+                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:91%;background:var(--warn)"></div></div>
                     </div>
-
-                    <div
-                      class="eval-bar-row"
-                      data-segment="borderline"
-                      onmouseenter="evalHover('borderline')"
-                      onmouseleave="scheduleEvalOut()"
-                    >
+                    <div class="eval-bar-row" data-segment="adestra"
+                      onmouseenter="evalHover('adestra')" onmouseleave="scheduleEvalOut()"
+                      onclick="window.openOverlay && window.openOverlay('Adestra has 398 reviews at 93.7% avg quality — best performer in the portfolio. Show what agents are driving this and what behaviors we can replicate elsewhere.')">
                       <div class="eval-bar-top">
-                        <span class="eval-bar-label">
-                          <span
-                            class="eval-dot"
-                            style="background: var(--warn)"
-                          ></span>
-                          Borderline
-                        </span>
-                        <div class="eval-bar-right">
-                          <span>313</span>
-                          <span class="eval-bar-pct">11%</span>
-                        </div>
+                        <span class="eval-bar-label"><span class="eval-dot" style="background:var(--ok)"></span>Adestra</span>
+                        <div class="eval-bar-right"><span class="eval-bar-count">398</span><span class="eval-bar-avg ok">93.7%</span></div>
                       </div>
-                      <div class="eval-bar-track">
-                        <div
-                          class="eval-bar-fill"
-                          style="width: 11%; background: var(--warn)"
-                        ></div>
-                      </div>
+                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:88%;background:linear-gradient(90deg,#17b26a,#22c55e)"></div></div>
                     </div>
-
-                    <div
-                      class="eval-bar-row"
-                      data-segment="fail"
-                      onmouseenter="evalHover('fail')"
-                      onmouseleave="scheduleEvalOut()"
-                    >
+                    <div class="eval-bar-row" data-segment="interfax"
+                      onmouseenter="evalHover('interfax')" onmouseleave="scheduleEvalOut()"
+                      onclick="window.openOverlay && window.openOverlay('InterFax has 334 reviews at 88.4% avg quality — 1.6pts below the 90% target. Show which KPIs are dragging it under and what coaching action would close the gap.')">
                       <div class="eval-bar-top">
-                        <span class="eval-bar-label">
-                          <span
-                            class="eval-dot"
-                            style="background: var(--err)"
-                          ></span>
-                          Fail
-                        </span>
-                        <div class="eval-bar-right">
-                          <span>484</span>
-                          <span class="eval-bar-pct">17%</span>
-                        </div>
+                        <span class="eval-bar-label"><span class="eval-dot" style="background:var(--ok)"></span>InterFax</span>
+                        <div class="eval-bar-right"><span class="eval-bar-count">334</span><span class="eval-bar-avg warn">88.4%</span></div>
                       </div>
-                      <div class="eval-bar-track">
-                        <div
-                          class="eval-bar-fill"
-                          style="width: 17%; background: var(--err)"
-                        ></div>
+                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:74%;background:linear-gradient(90deg,#17b26a,#22c55e)"></div></div>
+                    </div>
+                    <div class="eval-bar-row" data-segment="rightanswers"
+                      onmouseenter="evalHover('rightanswers')" onmouseleave="scheduleEvalOut()"
+                      onclick="window.openOverlay && window.openOverlay('RightAnswers has 274 reviews at 91.3% avg quality — above target. Show quality trend and whether it is stable or improving.')">
+                      <div class="eval-bar-top">
+                        <span class="eval-bar-label"><span class="eval-dot" style="background:var(--ok)"></span>RightAnswers</span>
+                        <div class="eval-bar-right"><span class="eval-bar-count">274</span><span class="eval-bar-avg ok">91.3%</span></div>
                       </div>
+                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:61%;background:linear-gradient(90deg,#17b26a,#22c55e)"></div></div>
+                    </div>
+                    <div class="eval-bar-row" data-segment="qvidian"
+                      onmouseenter="evalHover('qvidian')" onmouseleave="scheduleEvalOut()"
+                      onclick="window.openOverlay && window.openOverlay('Qvidian has 221 reviews at 80.1% avg quality — second worst in portfolio. Show top failure KPIs, agent attribution, and the fastest intervention to bring it above target.')">
+                      <div class="eval-bar-top">
+                        <span class="eval-bar-label"><span class="eval-dot" style="background:var(--err)"></span>Qvidian</span>
+                        <div class="eval-bar-right"><span class="eval-bar-count">221</span><span class="eval-bar-avg err">80.1%</span></div>
+                      </div>
+                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:49%;background:var(--err)"></div></div>
                     </div>
                   </div>
-                  <!-- /eval-bars -->
-
-                  <!-- Floating causes panel — absolutely positioned, zero layout impact -->
+                  <!-- Causes float — anchored to products section -->
                   <div class="eval-causes-float" id="causeFloat">
-                    <div class="eval-causes-float-title" id="causeFloatTitle">
-                      Why this rate
-                    </div>
-                    <div
-                      class="eval-causes-float-list"
-                      id="causeFloatList"
-                    ></div>
+                    <div class="eval-causes-float-title" id="causeFloatTitle">Details</div>
+                    <div class="eval-causes-float-list" id="causeFloatList"></div>
                   </div>
                 </div>
-                <!-- /eval-chart-section -->
+
 
                 <!-- Trend strip -->
                 <div class="eval-trend-strip">
                   <span class="eval-trend-ok">
                     <svg viewBox="0 0 11 11" fill="none">
-                      <path
-                        d="M1 7L4 4L6.5 6.5L10 2"
-                        stroke="currentColor"
-                        stroke-width="1.4"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
+                      <path d="M1 7L4 4L6.5 6.5L10 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    Pass rate ↑ 4% vs last period
+                    Avg quality ↑ 2.1% vs prior period
                   </span>
                   <span class="eval-borderline-badge"
-                    onclick="window.openOverlay && window.openOverlay('313 tickets were evaluated as borderline this period \u2014 11% of total. Which KPIs are pushing them below the pass threshold and what small coaching change would move the most of them to a pass?')"
+                    onclick="window.openOverlay && window.openOverlay('Quality score is at 87.3% across 3,363 reviewed tickets this week — 2.7pts below the 90% target. Show me the product breakdown and the top 3 KPI levers that would close the gap fastest.')"
                     tabindex="0" role="button"
                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"
-                    >313 borderline · review suggested</span
+                    >2.7pts below target · view breakdown</span
                   >
                 </div>
 
@@ -7543,146 +7353,72 @@
                   <button class="eval-sec-btn" onclick="window.openOverlay && window.openOverlay('Which team or queue should own the billing escalation issue? Suggest the right assignment based on capacity and skill match.')">Assign to team</button>
                 </div>
 
-                <!-- Friction feed -->
-                <div class="eval-feed">
-                  <div class="eval-feed-header">
-                    <span class="eval-feed-label">
-                      Other friction signals
-                      <span class="eval-feed-count">4</span>
-                    </span>
-                    <span class="eval-view-all" onclick="window.openOverlay && window.openOverlay('Show me all friction signals detected this shift \u2014 repeat contacts, hold time issues, sentiment drops, and any positive outliers. Rank by customer impact.')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">View all &rarr;</span>
-                  </div>
-
-                  <div class="feed-item" tabindex="0" role="button" data-feed-prompt="Repeat contacts are spiking on plan upgrade failures in Account Management — 8 interactions, +22%, customers calling back within 24hrs. What’s causing the callback loop and how do we break it?">
-                    <div class="sentiment-icon neg">😤</div>
-                    <div class="feed-body">
-                      <p class="feed-title">
-                        Repeat contacts spiking on
-                        <span style="color: var(--d50)"
-                          >plan upgrade failures</span
-                        >
-                      </p>
-                      <p class="feed-detail">
-                        Customers calling back within 24hrs.
-                        <span class="category">Account Management</span> · 8
-                        interactions
-                      </p>
-                    </div>
-                    <div class="feed-right">
-                      <span class="feed-delta neg">+22%</span>
-                      <span class="feed-agents">2 agents</span>
-                      <div class="feed-spark">
-                        <svg viewBox="0 0 72 16" preserveAspectRatio="none">
-                          <path
-                            d="M0,12 C12,11 24,10 36,11 C48,12 56,9 64,7 C67,6 69,5 72,4"
-                            fill="none"
-                            stroke="#F04438"
-                            stroke-width="1.3"
-                            opacity="0.8"
-                          />
-                          <circle cx="72" cy="4" r="2.2" fill="#F04438" />
-                        </svg>
+                <!-- Top Failed KPIs -->
+                <div class="eval-sub-section">
+                  <div class="eval-sub-label">Top Failed KPIs</div>
+                  <div class="eval-bars">
+                    <div class="eval-bar-row eval-kpi-row" data-segment="incorrect-status"
+                      onmouseenter="evalHover('incorrect-status')" onmouseleave="scheduleEvalOut()"
+                      onclick="window.openOverlay && window.openOverlay('Incorrect status has 150 failures — the #1 KPI this week, concentrated in Objectif Lune (103) and Qvidian. Show me the agents responsible and generate a coaching brief.')">
+                      <div class="eval-bar-top">
+                        <span class="eval-bar-label">Incorrect status</span>
+                        <div class="eval-bar-right eval-bar-val-err">150</div>
                       </div>
+                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:100%;background:var(--err)"></div></div>
                     </div>
-                  </div>
-
-                  <div class="feed-item" tabindex="0" role="button" data-feed-prompt="Long hold times are causing frustration in Technical Support — avg wait 12 min against a 5 min SLA, 14 interactions, +9%. What’s causing the queue backup and what’s the fastest path to SLA?">
-                    <div class="sentiment-icon warn">😕</div>
-                    <div class="feed-body">
-                      <p class="feed-title">
-                        Long hold times causing frustration in
-                        <span style="color: var(--d50)">Technical Support</span>
-                      </p>
-                      <p class="feed-detail">
-                        Avg wait 12 min, SLA is 5 min.
-                        <span class="category">Technical Support</span> · 14
-                        interactions
-                      </p>
-                    </div>
-                    <div class="feed-right">
-                      <span class="feed-delta warn">+9%</span>
-                      <span class="feed-agents">5 agents</span>
-                      <div class="feed-spark">
-                        <svg viewBox="0 0 72 16" preserveAspectRatio="none">
-                          <path
-                            d="M0,9 C14,9 28,8 42,9 C52,10 60,8 68,7 C70,6 71,7 72,7"
-                            fill="none"
-                            stroke="#F79009"
-                            stroke-width="1.3"
-                            opacity="0.7"
-                          />
-                          <circle cx="72" cy="7" r="2.2" fill="#F79009" />
-                        </svg>
+                    <div class="eval-bar-row eval-kpi-row" data-segment="grammar-mistake"
+                      onmouseenter="evalHover('grammar-mistake')" onmouseleave="scheduleEvalOut()"
+                      onclick="window.openOverlay && window.openOverlay('Grammar mistakes account for 55 KPI failures in InterFax and Second Street. Show me the worst-scoring responses and suggest a writing quality fix.')">
+                      <div class="eval-bar-top">
+                        <span class="eval-bar-label">Grammar mistake</span>
+                        <div class="eval-bar-right eval-bar-val-warn">55</div>
                       </div>
+                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:37%;background:var(--warn)"></div></div>
+                    </div>
+                    <div class="eval-bar-row eval-kpi-row" data-segment="time-updates"
+                      onmouseenter="evalHover('time-updates')" onmouseleave="scheduleEvalOut()"
+                      onclick="window.openOverlay && window.openOverlay('Time between updates has 47 failures in Qvidian and RightAnswers — agents leaving customers past the SLA update window. Show the tickets and suggest a follow-up cadence fix.')">
+                      <div class="eval-bar-top">
+                        <span class="eval-bar-label">Time between updates</span>
+                        <div class="eval-bar-right eval-bar-val-warn">47</div>
+                      </div>
+                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:31%;background:var(--warn)"></div></div>
+                    </div>
+                    <div class="eval-bar-row eval-kpi-row" data-segment="no-eta"
+                      onmouseenter="evalHover('no-eta')" onmouseleave="scheduleEvalOut()"
+                      onclick="window.openOverlay && window.openOverlay('No specific ETA provided has 36 failures. Which agents and products are most affected and what script change would fix this?')">
+                      <div class="eval-bar-top">
+                        <span class="eval-bar-label">No specific ETA</span>
+                        <div class="eval-bar-right">36</div>
+                      </div>
+                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:24%;background:var(--teal)"></div></div>
+                    </div>
+                    <div class="eval-bar-row eval-kpi-row" data-segment="article-id"
+                      onmouseenter="evalHover('article-id')" onmouseleave="scheduleEvalOut()"
+                      onclick="window.openOverlay && window.openOverlay('Article ID missing has 20 failures. Show me the affected tickets and the agents most frequently missing this step.')">
+                      <div class="eval-bar-top">
+                        <span class="eval-bar-label">Article ID missing</span>
+                        <div class="eval-bar-right">20</div>
+                      </div>
+                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:13%;background:var(--teal)"></div></div>
                     </div>
                   </div>
-
-                  <div class="feed-item" tabindex="0" role="button" data-feed-prompt="Neutral sentiment is dropping in Sales Support — customers shifting from neutral to frustrated, 7 interactions, −18%. What’s the leading indicator and which agents should we watch first?">
-                    <div class="sentiment-icon warn">😐</div>
-                    <div class="feed-body">
-                      <p class="feed-title">
-                        Neutral sentiment dropping in
-                        <span style="color: var(--d50)">Sales Support</span>
-                      </p>
-                      <p class="feed-detail">
-                        Customers shifting from neutral to frustrated.
-                        <span class="category">Sales Support</span> · 7
-                        interactions
-                      </p>
-                    </div>
-                    <div class="feed-right">
-                      <span class="feed-delta warn">−18%</span>
-                      <span class="feed-agents">3 agents</span>
-                      <div class="feed-spark">
-                        <svg viewBox="0 0 72 16" preserveAspectRatio="none">
-                          <path
-                            d="M0,5 C14,6 28,7 42,8 C52,9 60,11 66,12 C69,13 70,13 72,14"
-                            fill="none"
-                            stroke="#F79009"
-                            stroke-width="1.3"
-                            opacity="0.7"
-                            stroke-dasharray="3 2"
-                          />
-                          <circle cx="72" cy="14" r="2.2" fill="#F79009" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="feed-item" tabindex="0" role="button" data-feed-prompt="Positive sentiment is up +31% in Returns &amp; Refunds after last week’s process update — 19 interactions. What specifically changed and how do we replicate it in other queues?">
-                    <div class="sentiment-icon pos">😊</div>
-                    <div class="feed-body">
-                      <p class="feed-title">
-                        Positive sentiment improving for
-                        <span style="color: var(--d50)"
-                          >Returns &amp; Refunds</span
-                        >
-                      </p>
-                      <p class="feed-detail">
-                        After last week&#39;s process update.
-                        <span class="category">Returns &amp; Refunds</span> · 19
-                        interactions
-                      </p>
-                    </div>
-                    <div class="feed-right">
-                      <span class="feed-delta pos">+31%</span>
-                      <span class="feed-agents">4 agents</span>
-                      <div class="feed-spark">
-                        <svg viewBox="0 0 72 16" preserveAspectRatio="none">
-                          <path
-                            d="M0,14 C14,13 28,11 42,9 C52,7 60,5 66,4 C69,3 70,3 72,3"
-                            fill="none"
-                            stroke="#17B26A"
-                            stroke-width="1.3"
-                            opacity="0.7"
-                          />
-                          <circle cx="72" cy="3" r="2.2" fill="#17B26A" />
-                        </svg>
-                      </div>
-                    </div>
+                  <!-- KPI causes float — anchored to KPI section -->
+                  <div class="eval-causes-float" id="kpiFloat" style="position:absolute;right:0;">
+                    <div class="eval-causes-float-title" id="kpiFloatTitle">Details</div>
+                    <div class="eval-causes-float-list" id="kpiFloatList"></div>
                   </div>
                 </div>
-                <!-- /eval-feed -->
+
+                <!-- Friction signals → canvas CTA -->
+                <div class="eval-canvas-cta" onclick="appendFrictionCardsResponse()">
+                  <svg width="12" height="14" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                  <span>View all friction signals in canvas</span>
+                  <svg viewBox="0 0 13 13" fill="none" width="10" height="10" style="margin-left:auto;opacity:.5">
+                    <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+
               </div>
               <!-- /eval-panel -->
             </div>
@@ -8750,22 +8486,113 @@
           title: "Root causes",
           color: "#F04438",
           items: [
-            { kpi: "Empathy during escalations", val: "32% ↓8%", cls: "bad" },
+            { kpi: "Empathy during escalations", val: "32% ℇ8%", cls: "bad" },
             { kpi: "Follow-up clarity", val: "48% — flat", cls: "bad" },
-            {
-              kpi: "Billing ticket handling",
-              val: "primary driver",
-              cls: "bad",
-            },
+            { kpi: "Billing ticket handling", val: "primary driver", cls: "bad" },
+          ],
+        },
+        "objectif-lune": {
+          title: "Objectif Lune — top failures",
+          color: "#F79009",
+          items: [
+            { kpi: "Incorrect status", val: "103 failures", cls: "bad" },
+            { kpi: "Time between updates", val: "29 failures", cls: "warn" },
+            { kpi: "Grammar mistake", val: "18 failures", cls: "warn" },
+          ],
+        },
+        "adestra": {
+          title: "Adestra — top drivers",
+          color: "#17B26A",
+          items: [
+            { kpi: "Script adherence", val: "96% ↑", cls: "good" },
+            { kpi: "First contact resolution", val: "92% ↑", cls: "good" },
+            { kpi: "Response time SLA", val: "91% ↑", cls: "good" },
+          ],
+        },
+        "interfax": {
+          title: "InterFax — gap to target",
+          color: "#F79009",
+          items: [
+            { kpi: "Grammar mistake", val: "38 failures", cls: "warn" },
+            { kpi: "No specific ETA", val: "14 failures", cls: "warn" },
+            { kpi: "Quality score", val: "88.4% — 1.6pts below", cls: "warn" },
+          ],
+        },
+        "rightanswers": {
+          title: "RightAnswers — above target",
+          color: "#17B26A",
+          items: [
+            { kpi: "Quality score", val: "91.3% ↑", cls: "good" },
+            { kpi: "Pass rate", val: "94% ↑", cls: "good" },
+            { kpi: "Ticket progress", val: "stable", cls: "good" },
+          ],
+        },
+        "qvidian": {
+          title: "Qvidian — top failures",
+          color: "#F04438",
+          items: [
+            { kpi: "Incorrect status", val: "47 failures", cls: "bad" },
+            { kpi: "Time between updates", val: "29 failures", cls: "bad" },
+            { kpi: "Quality score", val: "80.1% — 9.9pts below", cls: "bad" },
+          ],
+        },
+        "incorrect-status": {
+          title: "Incorrect status · 150 failures",
+          color: "#F04438",
+          items: [
+            { kpi: "Objectif Lune", val: "103 failures", cls: "bad" },
+            { kpi: "Qvidian", val: "47 failures", cls: "bad" },
+            { kpi: "Top agent", val: "Omar Adel · 34 cases", cls: "bad" },
+          ],
+        },
+        "grammar-mistake": {
+          title: "Grammar mistake · 55 failures",
+          color: "#F79009",
+          items: [
+            { kpi: "InterFax", val: "38 failures", cls: "warn" },
+            { kpi: "Second Street", val: "17 failures", cls: "warn" },
+            { kpi: "Fix", val: "Writing quality checklist", cls: "warn" },
+          ],
+        },
+        "time-updates": {
+          title: "Time between updates · 47 failures",
+          color: "#F79009",
+          items: [
+            { kpi: "Qvidian", val: "29 failures", cls: "warn" },
+            { kpi: "RightAnswers", val: "18 failures", cls: "warn" },
+            { kpi: "Fix", val: "Follow-up cadence SLA", cls: "warn" },
+          ],
+        },
+        "no-eta": {
+          title: "No specific ETA · 36 failures",
+          color: "#36BFFA",
+          items: [
+            { kpi: "InterFax", val: "14 failures", cls: "warn" },
+            { kpi: "Objectif Lune", val: "12 failures", cls: "warn" },
+            { kpi: "Fix", val: "Script update needed", cls: "warn" },
+          ],
+        },
+        "article-id": {
+          title: "Article ID missing · 20 failures",
+          color: "#36BFFA",
+          items: [
+            { kpi: "Adestra", val: "11 failures", cls: "warn" },
+            { kpi: "Second Street", val: "9 failures", cls: "warn" },
+            { kpi: "Fix", val: "Process reminder step", cls: "warn" },
           ],
         },
       };
 
       const evalCenterData = {
-        pass: { pct: "72%", label: "Pass rate", color: "#17B26A" },
-        borderline: { pct: "11%", label: "Borderline", color: "#F79009" },
-        fail: { pct: "17%", label: "Fail rate", color: "#F04438" },
-        default: { pct: "72%", label: "Pass rate", color: "" },
+        pass:             { pct: "72%",   label: "Pass rate",    color: "#17B26A" },
+        borderline:       { pct: "11%",   label: "Borderline",   color: "#F79009" },
+        fail:             { pct: "17%",   label: "Fail rate",    color: "#F04438" },
+        "objectif-lune":  { pct: "79.2%", label: "Avg quality",  color: "#F79009" },
+        "adestra":        { pct: "93.7%", label: "Avg quality",  color: "#17B26A" },
+        "interfax":       { pct: "88.4%", label: "Avg quality",  color: "#F79009" },
+        "rightanswers":   { pct: "91.3%", label: "Avg quality",  color: "#17B26A" },
+        "qvidian":        { pct: "80.1%", label: "Avg quality",  color: "#F04438" },
+        default:          { pct: "87.3%", label: "Avg quality",  color: "" },
       };
 
       let evalOutTimer = null; // debounce timer
@@ -8792,7 +8619,8 @@
           labelEl.textContent = data.label;
         }
 
-        // Visible arcs: dim others, activate hovered
+        // Visible arcs: dim others, activate hovered (only for pass/borderline/fail)
+        const isProductSegment = !["pass","borderline","fail"].includes(segment);
         document.querySelectorAll(".donut-arc").forEach((arc) => {
           arc.classList.remove(
             "dimmed",
@@ -8800,21 +8628,34 @@
             "active-border",
             "active-fail",
           );
-          if (arc.dataset.segment !== segment) {
-            arc.classList.add("dimmed");
-          } else {
-            arc.classList.add(
-              "active-" + (segment === "borderline" ? "border" : segment),
-            );
+          if (!isProductSegment) {
+            if (arc.dataset.segment !== segment) {
+              arc.classList.add("dimmed");
+            } else {
+              arc.classList.add(
+                "active-" + (segment === "borderline" ? "border" : segment),
+              );
+            }
           }
         });
 
-        // Populate + show floating causes panel
-        const floatPanel = document.getElementById("causeFloat");
-        const floatTitle = document.getElementById("causeFloatTitle");
-        const floatList = document.getElementById("causeFloatList");
+        // Route to correct float panel based on segment type
+        const kpiSegments = ["incorrect-status","grammar-mistake","time-updates","no-eta","article-id"];
+        const isKpiSegment = kpiSegments.includes(segment);
+        const floatId     = isKpiSegment ? "kpiFloat"     : "causeFloat";
+        const titleId     = isKpiSegment ? "kpiFloatTitle" : "causeFloatTitle";
+        const listId      = isKpiSegment ? "kpiFloatList"  : "causeFloatList";
+        const floatPanel  = document.getElementById(floatId);
+        const floatTitle  = document.getElementById(titleId);
+        const floatList   = document.getElementById(listId);
+
+        // Hide the other float
+        const otherFloat = document.getElementById(isKpiSegment ? "causeFloat" : "kpiFloat");
+        if (otherFloat) otherFloat.classList.remove("visible");
+
         if (floatPanel && floatTitle && floatList) {
           const causeData = evalCausesData[segment];
+          if (!causeData) return;
           floatTitle.textContent = causeData.title;
           floatTitle.style.color = causeData.color;
           floatList.innerHTML = causeData.items
@@ -8830,13 +8671,11 @@
           const barRow = document.querySelector(
             '.eval-bar-row[data-segment="' + segment + '"]',
           );
-          const chartSection = document.querySelector(".eval-chart-section");
-          if (barRow && chartSection) {
+          const container = barRow ? barRow.closest(".eval-products-section, .eval-sub-section") : null;
+          if (barRow && container) {
             const rowRect = barRow.getBoundingClientRect();
-            const sectionRect = chartSection.getBoundingClientRect();
-            const topOffset =
-              rowRect.top - sectionRect.top + rowRect.height / 2;
-            floatPanel.style.top = topOffset + "px";
+            const containerRect = container.getBoundingClientRect();
+            floatPanel.style.top = (rowRect.top - containerRect.top + rowRect.height / 2) + "px";
           }
           floatPanel.classList.add("visible");
         }
@@ -8878,6 +8717,8 @@
         });
         const fp = document.getElementById("causeFloat");
         if (fp) fp.classList.remove("visible");
+        const fp2 = document.getElementById("kpiFloat");
+        if (fp2) fp2.classList.remove("visible");
         document.querySelectorAll(".eval-bar-row").forEach((row) => {
           row.style.background = "";
         });
@@ -9389,6 +9230,8 @@
         /* ── Suggestion chips inside overlay ────────────────────────── */
         // Expose openOverlay so external IIFEs (summary card signals) can call it
         window.openOverlay = openOverlay;
+        window.appendSuggestionCardsResponse = appendSuggestionCardsResponse;
+        window.appendFrictionCardsResponse = appendFrictionCardsResponse;
 
         window.overlaySuggestion = function (btn) {
           const text = btn.textContent.trim();
@@ -9443,7 +9286,7 @@
         const FILTER_SUGGESTIONS = {
           "Company":     ["Upland", "MacPractice"],
           "Product":     ["Objectif Lune", "Adestra", "InterFax", "Qvidian", "RightAnswers", "Second Street"],
-          "Agents":      ["Salma Gameel", "Omar Adel", "Sara Hassan", "Karim Nour", "Ahmed Mohamed"],
+          "Agents":      ["Salma Ehab", "Omar Adel", "Sara Hassan", "Karim Nour", "Ahmed Mahfouz"],
           "Time Period":  ["This week", "Last 30 days", "Last 90 days", "Q2 2026", "Custom range"],
         };
 
@@ -10113,6 +9956,115 @@
           showToast({ title:'Workflow triggered', sub:'Ref: ' + refId });
         };
 
+        /* ── Suggestion cards + friction cards renderers ────────────── */
+        const SUGGESTION_CARDS_DATA = [
+          {
+            badge: 'Watch', badgeCls: 'adr-badge-warn',
+            title: 'Review 313 borderline tickets',
+            body: '11% of total evaluated as borderline this period. Small coaching changes on survey promotion and empathy scoring could move most of them to a pass.',
+            meta: '313 tickets · 11% of total',
+            action: 'See borderline tickets →',
+            prompt: '313 tickets were borderline this period. List them ranked by closeness to pass threshold, identify the 1–2 KPI failures per ticket, and show the fastest coaching intervention per agent.'
+          },
+          {
+            badge: 'Watch', badgeCls: 'adr-badge-warn',
+            title: 'Survey promotion slipping — monitor before it becomes a failure',
+            body: 'Survey promo sits at 49%, just below the 50% threshold. Trending up 3% but not yet stable.',
+            meta: '49% current · 50% threshold',
+            action: 'Track KPI trend →',
+            prompt: 'Survey promotion is at 49% — 1pt below threshold. Show week-by-week trend for 6 weeks, agents dragging the rate down, and the single most effective prompt change to stabilise it.'
+          },
+          {
+            badge: 'Watch', badgeCls: 'adr-badge-warn',
+            title: 'Response SLA drifting — 4pts below target',
+            body: 'SLA compliance at 71% — down 2pts from last period. Objectif Lune and Adestra are the primary drivers.',
+            meta: '71% compliance · 75% target',
+            action: 'Monitor trend →',
+            prompt: 'Response SLA is at 71% — 4pts below target and declining. Show trend over 4 weeks, which products contribute most, and project when we breach the critical threshold.'
+          },
+          {
+            badge: 'AiMY', badgeCls: 'adr-badge-ai',
+            title: 'Compare team performance this period',
+            body: 'Customer Support trailing Technical Support by 9pts on average quality score. Gap widened 3pts since last period.',
+            meta: 'CS: 82% · TS: 91% · −9pts gap',
+            action: 'Open AiMY canvas →',
+            prompt: 'Customer Support trails Technical Support by 9pts — 82% vs 91%. Side-by-side breakdown: top failing KPIs per team, agents dragging each team, and coaching actions to close the gap.'
+          }
+        ];
+
+        const FRICTION_CARDS_DATA = [
+          {
+            badge: '+22%', badgeCls: 'adr-badge-err',
+            title: 'Repeat contacts spiking on plan upgrade failures',
+            body: '8 interactions flagged in Account Management. 2 agents responsible for most repeat contacts. Customers cycling back after unresolved upgrade queries.',
+            meta: 'Account Management · 8 interactions · 2 agents',
+            action: 'Review interactions →',
+            prompt: 'Repeat contacts up +22% on plan upgrade failures — 8 flagged, 2 agents. Show the tickets, what resolution was attempted, and recommend a process fix.'
+          },
+          {
+            badge: '+9%', badgeCls: 'adr-badge-warn',
+            title: 'Long hold times causing frustration in Technical Support',
+            body: 'Agents placing customers on hold during escalation lookups. Average hold time up 9%, correlating with negative sentiment spikes.',
+            meta: 'Technical Support · hold time ↑ 9%',
+            action: 'See flagged tickets →',
+            prompt: 'Hold times in Technical Support up 9%. Show agents with longest hold times, ticket types triggering escalation lookups, and whether this needs a knowledge base fix or staffing change.'
+          },
+          {
+            badge: 'Rising', badgeCls: 'adr-badge-warn',
+            title: 'Negative sentiment cluster in Objectif Lune billing tickets',
+            body: 'Negative sentiment at 19% in Objectif Lune — up from 14% last week. Billing escalations are the driver. 3 agents flagged.',
+            meta: 'Objectif Lune · 19% neg rate · ↑14% last week',
+            action: 'View sentiment analysis →',
+            prompt: 'Negative sentiment in Objectif Lune billing risen from 14% to 19%. Show 3 flagged agents, escalation types driving negative responses, fastest intervention to reverse the trend.'
+          }
+        ];
+
+        function appendSuggestionCardsResponse() {
+          if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); }
+          suggestions.classList.add('hidden');
+          appendSystemMsg('Loading AiMY situation briefing…');
+          setTimeout(function() {
+            var wrap = document.createElement('div');
+            wrap.className = 'chat-msg aimy adc-panel-wrap';
+            wrap.style.cssText = 'flex-direction:column;align-items:stretch;gap:10px;padding:0 0 12px 0;';
+            SUGGESTION_CARDS_DATA.forEach(function(d) { wrap.appendChild(buildInfoCard(d)); });
+            thread.appendChild(wrap);
+            thread.scrollTop = thread.scrollHeight;
+          }, 700);
+        }
+
+        function appendFrictionCardsResponse() {
+          if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); }
+          suggestions.classList.add('hidden');
+          appendSystemMsg('Loading friction signals…');
+          setTimeout(function() {
+            var wrap = document.createElement('div');
+            wrap.className = 'chat-msg aimy adc-panel-wrap';
+            wrap.style.cssText = 'flex-direction:column;align-items:stretch;gap:10px;padding:0 0 12px 0;';
+            FRICTION_CARDS_DATA.forEach(function(d) { wrap.appendChild(buildInfoCard(d)); });
+            thread.appendChild(wrap);
+            thread.scrollTop = thread.scrollHeight;
+          }, 700);
+        }
+
+        function buildInfoCard(d) {
+          var card = document.createElement('div');
+          card.className = 'sugg-response-card';
+          var btn = document.createElement('button');
+          btn.className = 'src-action';
+          btn.textContent = d.action;
+          btn.addEventListener('click', function() { openOverlay(d.prompt); });
+          card.innerHTML =
+            '<div class="src-header">' +
+              '<span class="src-title">' + d.title + '</span>' +
+              '<span class="adr-badge ' + d.badgeCls + '">' + d.badge + '</span>' +
+            '</div>' +
+            '<p class="src-body">' + d.body + '</p>' +
+            '<div class="src-meta">' + d.meta + '</div>';
+          card.appendChild(btn);
+          return card;
+        }
+
         /* ── Wire all 4 bcard action buttons to rich canvas cards ──────────── */
         function openCanvasCard(alertId, loadingMsg) {
           if (!overlayOpen) { overlayOpen = true; overlay.classList.add('open'); floatBar.classList.add('hidden'); }
@@ -10294,6 +10246,21 @@
               { label: 'Top agent — Sara Hassan', val: '7 breaches', badge: 'adr-badge-warn', badgeText: '61% personal compliance' },
               { label: 'Peak breach window', val: 'Wed 2–5 PM', badge: null, badgeText: null },
             ],
+            metrics: [
+              { label: 'SLA COMPLIANCE', value: '61%',   state: 'err',  target: 'Target: 90%' },
+              { label: 'FIRST RESPONSE', value: '45 min', state: 'err',  target: 'Target: 15 min' },
+              { label: 'AVG HANDLE TIME',value: '6.4 hrs',state: 'warn', target: 'Target: 8 hrs' }
+            ],
+            chart: {
+              title: 'SLA TREND — CURRENT VS TARGET',
+              bars: [
+                { label: 'SLA Compliance', current: 61,  target: 90 },
+                { label: 'Pass Rate',       current: 90,  target: 90 },
+                { label: 'Reviewed (×100)', current: 34,  target: 40 },
+                { label: 'Fail Rate',       current: 11,  target: 5  }
+              ]
+            },
+            disclaimer: 'SLA Compliance is estimated from review pass/fail ratio. AHT is calculated from ticket timestamps. First Response Time requires SLA sheet data.',
             actions: [{ label: 'View all breached tickets', cls: 'ada-primary' }, { label: 'Trigger SLA recovery plan', cls: 'ada-secondary' }]
           },
           'kpi-failures': {
@@ -10309,6 +10276,21 @@
               { label: 'Highest-impact agent', val: 'Omar Adel', badge: 'adr-badge-err', badgeText: '34 combined failures' },
               { label: 'Fastest fix', val: 'Status accuracy coaching', badge: 'adr-badge-warn', badgeText: 'est. −48 failures removed' },
             ],
+            metrics: [
+              { label: 'TOTAL FAILURES', value: '252',   state: 'err',  target: 'Across 3 KPIs' },
+              { label: 'TOP KPI',        value: '150',   state: 'err',  target: 'Incorrect status' },
+              { label: 'AGENTS AT RISK', value: '7',     state: 'warn', target: 'Below threshold' }
+            ],
+            chart: {
+              title: 'FAILURE COUNT — CURRENT VS TARGET',
+              bars: [
+                { label: 'Incorrect status', current: 100, target: 0  },
+                { label: 'Grammar mistake',  current: 37,  target: 0  },
+                { label: 'Time updates',     current: 31,  target: 0  },
+                { label: 'No ETA',           current: 24,  target: 0  }
+              ]
+            },
+            disclaimer: 'Failure counts reflect this week’s evaluated tickets. Target bars represent zero-failure goal. Coaching impact estimated from historical recovery rates.',
             actions: [{ label: 'Generate coaching plan', cls: 'ada-primary' }, { label: 'Open KPI Hub', cls: 'ada-secondary' }]
           },
           'sentiment': {
@@ -10325,6 +10307,21 @@
               { label: 'Agent 3 — Karim Nour', val: '5 neg interactions', badge: 'adr-badge-warn', badgeText: '13% of total' },
               { label: 'Common pattern', val: 'Billing escalations', badge: 'adr-badge-warn', badgeText: '62% of neg cases' },
             ],
+            metrics: [
+              { label: 'NEGATIVE INTERACTIONS', value: '39',    state: 'err',  target: '↑ rising trend' },
+              { label: 'AGENTS FLAGGED',         value: '3',     state: 'err',  target: 'Of 12 active' },
+              { label: 'RESPONSE RATE',          value: '27%',   state: 'warn', target: 'Below 40% target' }
+            ],
+            chart: {
+              title: 'SENTIMENT BY PRODUCT — CURRENT VS PRIOR WEEK',
+              bars: [
+                { label: 'Objectif Lune', current: 79, target: 60 },
+                { label: 'Qvidian',       current: 68, target: 55 },
+                { label: 'InterFax',      current: 36, target: 38 },
+                { label: 'Adestra',       current: 24, target: 30 }
+              ]
+            },
+            disclaimer: 'Negative sentiment rate estimated from failed reviews and escalation patterns. Direct CSAT data not in workbook.',
             actions: [{ label: 'Open escalation review', cls: 'ada-primary' }, { label: 'Start coaching for flagged agents', cls: 'ada-secondary' }]
           },
           'quality': {
@@ -10341,6 +10338,22 @@
               { label: 'Gap driver #1', val: 'Incorrect status', badge: 'adr-badge-err', badgeText: '150 failures → −1.8%' },
               { label: 'Gap driver #2', val: 'Grammar mistakes', badge: 'adr-badge-warn', badgeText: '55 failures → −0.6%' },
             ],
+            metrics: [
+              { label: 'QUALITY SCORE', value: '87.3%', state: 'warn', target: 'vs 90% target' },
+              { label: 'PASS RATE',     value: '89.7%', state: 'ok',   target: '3,018 passed' },
+              { label: 'GAP TO CLOSE', value: '−2.7%', state: 'warn', target: '≈77 more passes' }
+            ],
+            chart: {
+              title: 'QUALITY SCORE BY PRODUCT — VS 90% TARGET',
+              bars: [
+                { label: 'Objectif Lune', current: 79, target: 90 },
+                { label: 'Qvidian',       current: 80, target: 90 },
+                { label: 'InterFax',      current: 88, target: 90 },
+                { label: 'Second Street', current: 90, target: 90 },
+                { label: 'Adestra',       current: 94, target: 90 }
+              ]
+            },
+            disclaimer: 'Quality scores are calculated from evaluated tickets in this period. Products with fewer than 50 tickets may show variance.',
             actions: [{ label: 'Open KPI breakdown', cls: 'ada-primary' }, { label: 'Create improvement plan', cls: 'ada-secondary' }]
           }
         };
@@ -10349,18 +10362,32 @@
           const data = ALERT_DETAIL_DATA[alertId];
           if (!data) return;
 
-          const outer = document.createElement('div'); outer.style.maxWidth = '540px';
           const card = document.createElement('div');
           card.className = 'alert-detail-card ' + data.priority;
 
-          /* Header */
+          /* ── Header ── */
           const hdr = document.createElement('div'); hdr.className = 'alert-detail-header';
           const dot = document.createElement('span'); dot.className = 'notif-severity-dot';
           const titleEl = document.createElement('span'); titleEl.className = 'alert-detail-title'; titleEl.textContent = data.title;
           const bdg = document.createElement('span'); bdg.className = 'notif-priority-badge'; bdg.textContent = data.badge;
           hdr.appendChild(dot); hdr.appendChild(titleEl); hdr.appendChild(bdg);
+          card.appendChild(hdr);
 
-          /* Body */
+          /* ── Metric sub-cards row (3 cards) ── */
+          if (data.metrics && data.metrics.length) {
+            const metricsRow = document.createElement('div'); metricsRow.className = 'adc-metrics';
+            data.metrics.forEach(function(m) {
+              const mc = document.createElement('div'); mc.className = 'adc-metric';
+              const lbl = document.createElement('div'); lbl.className = 'adc-metric-label'; lbl.textContent = m.label;
+              const val = document.createElement('div'); val.className = 'adc-metric-value ' + (m.state || ''); val.textContent = m.value;
+              const tgt = document.createElement('div'); tgt.className = 'adc-metric-target'; tgt.textContent = m.target;
+              mc.appendChild(lbl); mc.appendChild(val); mc.appendChild(tgt);
+              metricsRow.appendChild(mc);
+            });
+            card.appendChild(metricsRow);
+          }
+
+          /* ── Body: summary + rows ── */
           const body = document.createElement('div'); body.className = 'alert-detail-body';
           const summary = document.createElement('div'); summary.className = 'alert-detail-summary'; summary.textContent = data.summary;
           const rows = document.createElement('div'); rows.className = 'alert-detail-rows';
@@ -10377,7 +10404,44 @@
           });
           body.appendChild(summary); body.appendChild(rows);
 
-          /* Footer actions */
+          /* ── CSS bar chart (trend section) ── */
+          if (data.chart && data.chart.bars && data.chart.bars.length) {
+            const chartEl = document.createElement('div'); chartEl.className = 'adc-chart';
+            const chartLbl = document.createElement('div'); chartLbl.className = 'adc-chart-label'; chartLbl.textContent = data.chart.title || 'Trend';
+            const legend = document.createElement('div'); legend.className = 'adc-chart-legend';
+            [['Current', 'var(--qa-accent)'], ['Target', 'rgba(255,255,255,0.15)']].forEach(function(l) {
+              const li = document.createElement('div'); li.className = 'adc-legend-item';
+              const dot = document.createElement('div'); dot.className = 'adc-legend-dot'; dot.style.background = l[1];
+              const lbl = document.createElement('span'); lbl.textContent = l[0];
+              li.appendChild(dot); li.appendChild(lbl); legend.appendChild(li);
+            });
+            const barsGroup = document.createElement('div'); barsGroup.className = 'adc-bars-group';
+            barsGroup.style.gridTemplateColumns = 'repeat(' + data.chart.bars.length + ', 1fr)';
+            data.chart.bars.forEach(function(b) {
+              const col = document.createElement('div'); col.className = 'adc-bar-col';
+              const pair = document.createElement('div'); pair.className = 'adc-bar-pair';
+              const curr = document.createElement('div'); curr.className = 'adc-bar current';
+              curr.style.height = Math.round(b.current * 0.64) + 'px';
+              const tgt = document.createElement('div'); tgt.className = 'adc-bar target';
+              tgt.style.height = Math.round(b.target * 0.64) + 'px';
+              pair.appendChild(curr); pair.appendChild(tgt);
+              const lbl = document.createElement('div'); lbl.className = 'adc-bar-col-label'; lbl.textContent = b.label;
+              col.appendChild(pair); col.appendChild(lbl); barsGroup.appendChild(col);
+            });
+            chartEl.appendChild(chartLbl); chartEl.appendChild(legend); chartEl.appendChild(barsGroup);
+            body.appendChild(chartEl);
+          }
+
+          card.appendChild(body);
+
+          /* ── Disclaimer strip ── */
+          if (data.disclaimer) {
+            const disc = document.createElement('div'); disc.className = 'adc-disclaimer';
+            disc.innerHTML = '<svg width="12" height="12" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg><span>' + data.disclaimer + '</span>';
+            card.appendChild(disc);
+          }
+
+          /* ── Footer actions ── */
           const footer = document.createElement('div'); footer.className = 'alert-detail-footer';
           data.actions.forEach(function(a) {
             const btn = document.createElement('button');
@@ -10385,15 +10449,15 @@
             btn.addEventListener('click', function() { appendSystemMsg('Action triggered: ' + a.label + '…'); });
             footer.appendChild(btn);
           });
+          card.appendChild(footer);
 
-          card.appendChild(hdr); card.appendChild(body); card.appendChild(footer);
-          outer.appendChild(card);
-
-          const wrap = document.createElement('div'); wrap.className = 'chat-msg aimy';
-          const av = document.createElement('div'); av.className = 'msg-avatar aimy-av';
-          av.innerHTML = '<svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>';
-          wrap.appendChild(av); wrap.appendChild(outer);
-          thread.appendChild(wrap); thread.scrollTop = thread.scrollHeight;
+          /* ── Mount as full-width panel, not inside a bubble ── */
+          const panelWrap = document.createElement('div');
+          panelWrap.className = 'chat-msg aimy adc-panel-wrap';
+          panelWrap.style.cssText = 'flex-direction:column;align-items:stretch;gap:0;padding:0 0 12px 0;';
+          panelWrap.appendChild(card);
+          thread.appendChild(panelWrap);
+          thread.scrollTop = thread.scrollHeight;
         }
 
       })();
