@@ -790,6 +790,31 @@
         width: 100%;
       }
 
+      /* AiMY narrative line — sits between scoreboard and signal tiles.
+         Reuses .ai-insight-text typography token; adds AiMY logo + divider rhythm. */
+      .summary-ai-line {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 14px 0;
+        border-top: 1px solid var(--card-border);
+        margin-top: 4px;
+      }
+      .summary-ai-line svg {
+        flex-shrink: 0;
+        margin-top: 2px;
+        color: var(--teal);
+      }
+      .summary-ai-line p {
+        font-size: 13px;
+        color: var(--d300);
+        line-height: 1.6;
+      }
+      .summary-ai-line p strong {
+        color: var(--d50);
+        font-weight: 600;
+      }
+
       .aimy-summary-card::before {
         content: "";
         position: absolute;
@@ -989,7 +1014,6 @@
         align-items: center;
         gap: 0;
         padding: 8px 0 4px;
-        border-top: 1px solid rgba(255,255,255,0.06);
         margin-top: 10px;
       }
       .sb-stat {
@@ -4855,7 +4879,6 @@
         gap: 6px;
         padding-top: 10px;
         margin-top: 10px;
-        border-top: 1px solid rgba(255,255,255,0.06);
       }
       .bcard-ack-btn {
         font-size: 10px;
@@ -6169,6 +6192,12 @@
               <span class="sb-stat-value warn" id="sbQScore">87.3%</span>
               <span class="sb-vs-target" id="sbVsTarget">vs 90% target</span>
             </div>
+          </div>
+
+          <!-- AiMY one-line narrative summary -->
+          <div class="summary-ai-line" id="summaryAiLine">
+            <svg width="13" height="15" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+            <p id="summaryAiLineText">Quality dipped <strong>4 points</strong> on an SLA breach and <strong>5 agents</strong> below threshold — both tied to the same coaching backlog driving today's <strong>2 overdue disputes</strong>.</p>
           </div>
 
           <!-- Row 2: 3 signal tiles spanning full width -->
