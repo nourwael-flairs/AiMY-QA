@@ -780,9 +780,22 @@
       /* Row 1: score + date/CTA side by side */
       .summary-top-row {
         display: flex;
+        align-items: stretch;
+        gap: 24px;
+      }
+
+      /* Column 1: score block (number + meta stack incl. eval-count) */
+      .summary-col-1 {
+        display: flex;
+        flex-shrink: 0;
+      }
+
+      /* Column 2: scoreboard stats, pushed to the rightmost edge of the row */
+      .summary-col-2 {
+        display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 16px;
+        margin-left: auto;
+        padding-left: 24px;
       }
 
       /* Row 2: signals full width */
@@ -1013,8 +1026,7 @@
         display: flex;
         align-items: center;
         gap: 0;
-        padding: 8px 0 4px;
-        margin-top: 10px;
+        width: 100%;
       }
       .sb-stat {
         display: flex;
@@ -4879,6 +4891,7 @@
         gap: 6px;
         padding-top: 10px;
         margin-top: 10px;
+        border-top: 1px solid rgba(255,255,255,0.06);
       }
       .bcard-ack-btn {
         font-size: 10px;
@@ -6144,53 +6157,56 @@
         ════════════════════════════════════════════════════════════════════════ -->
         <div class="aimy-summary-card" id="aimySummaryCard" role="region" aria-label="AiMY today summary">
 
-          <!-- Row 1: score (left) + date/CTA (right) -->
+          <!-- Row 1: two columns — [score + meta] | [scoreboard, pushed right] -->
           <div class="summary-top-row">
-            <div class="summary-left">
-              <!-- Big number -->
-              <div class="summary-headline-score" id="summaryHeadlineScore">
-                83<span class="score-unit">%</span>
-              </div>
-              <!-- Meta stack: eyebrow / label / delta -->
-              <div class="summary-score-meta">
-                <div class="summary-eyebrow">
-                  <span>Today</span>
+            <div class="summary-col-1">
+              <div class="summary-left">
+                <!-- Big number -->
+                <div class="summary-headline-score" id="summaryHeadlineScore">
+                  83<span class="score-unit">%</span>
                 </div>
-                <div class="summary-headline-label">Overall Quality Score</div>
-                <div class="summary-score-delta down" id="summaryScoreDelta">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                  <span id="summaryDeltaText">&#8722;4 pts vs yesterday</span>
+                <!-- Meta stack: eyebrow / label / delta / eval-count -->
+                <div class="summary-score-meta">
+                  <div class="summary-eyebrow">
+                    <span>Today</span>
+                  </div>
+                  <div class="summary-headline-label">Overall Quality Score</div>
+                  <div class="summary-score-delta down" id="summaryScoreDelta">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    <span id="summaryDeltaText">&#8722;4 pts vs yesterday</span>
+                  </div>
+                  <div class="summary-evaluated-line">
+                    <strong id="summaryEvalCount">2,847</strong> tickets evaluated today
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="summary-evaluated-line">
-                <strong id="summaryEvalCount">2,847</strong> tickets evaluated today
+            <div class="summary-col-2">
+              <!-- Scoreboard strip: Total Reviewed · Pass · Fail · Overall Score -->
+              <div class="summary-scoreboard" aria-label="Quality summary numbers">
+                <div class="sb-stat">
+                  <span class="sb-stat-label">Reviewed</span>
+                  <span class="sb-stat-value" id="sbTotal">3,363</span>
+                </div>
+                <div class="sb-stat">
+                  <span class="sb-stat-label">Pass</span>
+                  <span class="sb-stat-value ok" id="sbPass">3,018</span>
+                </div>
+                <div class="sb-stat">
+                  <span class="sb-stat-label">Fail</span>
+                  <span class="sb-stat-value err" id="sbFail">345</span>
+                </div>
+                <div class="sb-stat">
+                  <span class="sb-stat-label">Pass Rate</span>
+                  <span class="sb-stat-value ok" id="sbPassRate">89.7%</span>
+                </div>
+                <div class="sb-stat">
+                  <span class="sb-stat-label">Quality Score</span>
+                  <span class="sb-stat-value warn" id="sbQScore">87.3%</span>
+                  <span class="sb-vs-target" id="sbVsTarget">vs 90% target</span>
+                </div>
               </div>
-          </div>
-
-          <!-- Scoreboard strip: Total Reviewed · Pass · Fail · Overall Score -->
-          <div class="summary-scoreboard" aria-label="Quality summary numbers">
-            <div class="sb-stat">
-              <span class="sb-stat-label">Reviewed</span>
-              <span class="sb-stat-value" id="sbTotal">3,363</span>
-            </div>
-            <div class="sb-stat">
-              <span class="sb-stat-label">Pass</span>
-              <span class="sb-stat-value ok" id="sbPass">3,018</span>
-            </div>
-            <div class="sb-stat">
-              <span class="sb-stat-label">Fail</span>
-              <span class="sb-stat-value err" id="sbFail">345</span>
-            </div>
-            <div class="sb-stat">
-              <span class="sb-stat-label">Pass Rate</span>
-              <span class="sb-stat-value ok" id="sbPassRate">89.7%</span>
-            </div>
-            <div class="sb-stat">
-              <span class="sb-stat-label">Quality Score</span>
-              <span class="sb-stat-value warn" id="sbQScore">87.3%</span>
-              <span class="sb-vs-target" id="sbVsTarget">vs 90% target</span>
             </div>
           </div>
 
