@@ -3679,6 +3679,35 @@
         transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
+      /* Collapsible section (Batch 2) — native <details>, styled to match .behav-card */
+      .sc-collapse {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        overflow: hidden;
+      }
+      .sc-collapse > summary {
+        list-style: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px 20px;
+      }
+      .sc-collapse > summary::-webkit-details-marker { display: none; }
+      .sc-collapse > summary:hover { background: rgba(255, 255, 255, 0.02); }
+      .sc-collapse-chevron {
+        flex-shrink: 0;
+        color: var(--d400);
+        transition: transform var(--transition-base);
+      }
+      .sc-collapse[open] .sc-collapse-chevron { transform: rotate(180deg); }
+      .sc-collapse-body { padding: 0 20px 20px; }
+      @media (prefers-reduced-motion: reduce) {
+        .sc-collapse-chevron { transition: none; }
+      }
+
       /* Floating causes tooltip — absolutely positioned, no layout shift */
       .eval-causes-float {
         position: absolute;
@@ -6239,187 +6268,367 @@
             </div>
           </div>
 
-          <!-- ══ COMPARISON BRIEF ══════════════════════════════════════ -->
-          <style>
-            .cmp-brief {
-              background: var(--card-bg);
-              border: 1px solid rgba(255,255,255,0.07);
-              border-radius: 16px;
-              padding: 18px 22px 18px;
-              margin-top: 10px;
-              display: grid;
-              grid-template-columns: 1fr auto;
-              gap: 20px;
-              align-items: stretch;
-            }
-            .cmp-attr {
-              display: flex; align-items: center; gap: 7px; margin-bottom: 12px;
-            }
-            .cmp-attr-label {
-              font-size: 10px; font-weight: 700; color: var(--d500);
-              letter-spacing: 0.07em; text-transform: uppercase;
-            }
-            .cmp-statement {
-              font-size: 13px; font-weight: 600; color: var(--d100);
-              line-height: 1.65; letter-spacing: -0.01em; margin-bottom: 14px;
-            }
-            .cmp-statement .hl-warn { color: var(--warn); font-weight: 700; }
-            .cmp-statement .hl-err  { color: var(--err);  font-weight: 700; }
-            .cmp-statement .hl-ok   { color: var(--ok);   font-weight: 700; }
-            .cmp-statement .hl-dim  { color: var(--d400); }
-            /* Inline team rank bars */
-            .cmp-teams {
-              display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px;
-            }
-            .cmp-team-row {
-              display: grid;
-              grid-template-columns: 100px 1fr 36px;
-              align-items: center; gap: 10px;
-            }
-            .cmp-team-name {
-              font-size: 11px; font-weight: 600; color: var(--d300);
-              white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-              display: flex; align-items: center; gap: 6px;
-            }
-            .cmp-team-name.is-current { color: var(--d50); font-weight: 700; }
-            /* .cmp-team-dot {
-              width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
-            } */
-            .cmp-team-bar-track {
-              height: 5px; background: rgba(255,255,255,0.06);
-              border-radius: 999px; overflow: hidden;
-            }
-            .cmp-team-bar-fill {
-              height: 100%; border-radius: 999px;
-              width: 100%;
-              transform-origin: left;
-              transform: scaleX(var(--bar-val, 0));
-              transition: transform 500ms var(--ease-out);
-            }
-            .cmp-team-val {
-              font-size: 11px; font-weight: 800; text-align: right; white-space: nowrap;
-            }
-            .cmp-team-val.ok   { color: var(--ok); }
-            .cmp-team-val.warn { color: var(--warn); }
-            /* Benchmark row */
-            .cmp-benchmark {
-              display: flex; align-items: center; gap: 8px;
-              padding: 9px 12px;
-              background: rgba(255,255,255,0.025);
-              border: 1px solid rgba(255,255,255,0.06);
-              border-radius: 10px; margin-bottom: 14px;
-            }
-            .cmp-bm-label {
-              font-size: 11px; font-weight: 600; color: var(--d400); flex: 1;
-            }
-            .cmp-bm-label strong { color: var(--d100); font-weight: 700; }
-            .cmp-bm-delta {
-              font-size: 11px; font-weight: 700;
-            }
-            .cmp-bm-delta.warn { color: var(--warn); }
-            .cmp-bm-delta.ok   { color: var(--ok); }
-          </style>
-
-          <div class="cmp-brief">
-            <div style="display:flex;flex-direction:column;">
-              <div class="cmp-attr">
-                <span class="cmp-attr-label">Team comparison</span>
-                <span style="font-size:10px;color:var(--d600)">·</span>
-                <span style="font-size:10px;font-weight:500;color:var(--d500)">last 30 days · quality score</span>
-              </div>
-
-              <div class="cmp-statement">
-                Product Support is <span class="hl-warn">#3 of 4 teams</span>, <span class="hl-warn">7pts behind Onboarding</span> — the gap is entirely in FCR and Quality. <span class="hl-dim">Onboarding's playbook emphasises resolution confirmation on every call, which is exactly the KPI this team is failing.</span> Against the org benchmark of 88%, <span class="hl-err">this team is 4pts short</span> with no upward trend.
-              </div>
-
-              <!-- Team rank bars -->
-              <div class="cmp-teams">
-                <div class="cmp-team-row">
-                  <span class="cmp-team-name"><span class="cmp-team-dot" style="background:#6fdfe2"></span>Onboarding</span>
-                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="--bar-val:0.91;background:#17b26a"></div></div>
-                  <span class="cmp-team-val ok">91%</span>
-                </div>
-                <div class="cmp-team-row">
-                  <span class="cmp-team-name"><span class="cmp-team-dot" style="background:#8b4ff4"></span>Tier-2 Escal.</span>
-                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="--bar-val:0.87;background:#17b26a"></div></div>
-                  <span class="cmp-team-val ok">87%</span>
-                </div>
-                <div class="cmp-team-row">
-                  <span class="cmp-team-name is-current"><span class="cmp-team-dot" style="background:var(--qa-accent)"></span>Product Support</span>
-                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="--bar-val:0.84;background:#f79009"></div></div>
-                  <span class="cmp-team-val warn">84%</span>
-                </div>
-                <div class="cmp-team-row">
-                  <span class="cmp-team-name"><span class="cmp-team-dot" style="background:#f79009"></span>Billing Support</span>
-                  <div class="cmp-team-bar-track"><div class="cmp-team-bar-fill" style="--bar-val:0.78;background:#f79009"></div></div>
-                  <span class="cmp-team-val warn">78%</span>
-                </div>
-              </div>
-
-              <!-- Benchmark -->
-              <div class="cmp-benchmark">
-                <span class="cmp-bm-label">Org benchmark <strong>88%</strong> · 30-day rolling</span>
-                <span class="cmp-bm-delta warn">↓ 4pts below target</span>
-              </div>
-
-              <!-- Actions -->
-              <div class="mb-actions" style="margin-top:auto;padding-top:18px;">
-                <button class="mb-action secondary" type="button" onclick="openCanvasQuery('What is Onboarding doing differently on resolution confirmation? Compare their playbook to Product Support and show the KPI gap.')">
-                  What is Onboarding doing differently?
-                </button>
-                <button class="mb-action ghost" type="button" onclick="openCanvasQuery('Show me Product Support\'s trajectory against the 88% org benchmark — what would it take to close the gap in 30 days?')">
-                  Close the benchmark gap
-                </button>
-              </div>
-            </div>
-
-            <!-- Right: benchmark visual -->
-            <div class="mb-since" style="min-width:160px">
-              <div class="mb-since-label">vs benchmark</div>
-              <div class="mb-since-row">
-                <div class="mb-since-dot err"></div>
-                <div class="mb-since-text">Quality 84% <span class="mb-since-sub">Benchmark 88% · ↓ 4pts</span></div>
-              </div>
-              <div class="mb-since-row">
-                <div class="mb-since-dot warn"></div>
-                <div class="mb-since-text">FCR 76% <span class="mb-since-sub">Benchmark 81% · ↓ 5pts</span></div>
-              </div>
-              <div class="mb-since-row">
-                <div class="mb-since-dot ok"></div>
-                <div class="mb-since-text">CSAT 87% <span class="mb-since-sub">Benchmark 85% · ↑ 2pts</span></div>
-              </div>
-              <div class="mb-since-row">
-                <div class="mb-since-dot ok"></div>
-                <div class="mb-since-text">Adherence 92% <span class="mb-since-sub">Benchmark 85% · ↑ 7pts</span></div>
-              </div>
-            </div>
-          </div>
-
           <!-- ══════════════════════════════════════════════════════════
                ████  TEAM VIEW (default)  ██████████████████████████████
                ══════════════════════════════════════════════════════════ -->
           <div class="view-pane is-active" id="viewTeam" role="tabpanel" aria-labelledby="toggleTeam">
 
-            <!-- ── MEMBER BREAKDOWN ── -->
+            <!-- ── OPERATIONAL AI SUMMARY (Batch 1 · #1) ── -->
+            <div class="aimy-suggest-strip" style="margin-top: 16px;">
+              <div class="aimy-suggest-row1">
+                <div class="aimy-suggest-icon">
+                  <svg width="14" height="16" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                </div>
+                <div class="aimy-suggest-body">
+                  <div class="aimy-suggest-prefix">AiMY operations summary</div>
+                  <div class="aimy-suggest-text">Quality is <strong>96.0%</strong> across <strong>3,363 reviews</strong> — 89.7% pass rate, 345 failures. Repeated status/ETA misses in Objectif Lune and Qvidian, plus time-between-updates failures, are the main drivers.</div>
+                </div>
+                <span class="conf-badge-label conf-high aimy-suggest-confidence"><span class="conf-bars"><span class="conf-bar"></span><span class="conf-bar"></span><span class="conf-bar"></span></span>High — AiMY confidence</span>
+              </div>
+              <div class="aimy-suggest-actions">
+                <button class="k-action-primary" type="button" onclick="openCanvasQuery('Review agents with repeated status and ETA failures in Objectif Lune and Qvidian')">Review status/ETA failures</button>
+                <button class="k-row-action" type="button" onclick="openCanvasQuery('Audit tickets with time-between-updates KPI failures — 68+ occurrences')">Audit update-time misses</button>
+                <button class="k-row-action" type="button" onclick="openCanvasQuery('Target grammar and readability coaching across high-volume product lines')">Coach grammar &amp; readability</button>
+                <button class="k-row-action" type="button" onclick="openCanvasQuery('Check reviewer calibration — show review volume and avg score assigned for Harazem, Salma and Yomna, and flag any scoring bias')">Check reviewer calibration</button>
+              </div>
+            </div>
+
+            <!-- ── OPERATIONAL SNAPSHOT — 3-tier hierarchy (Batch 5) ──────────
+                 Tier 1 hero  : Avg Quality (the one number that matters most)
+                 Tier 2 primary: Total Reviews · Active Reviewers · Products at Risk
+                 Tier 3 secondary: Passed/Failed (subordinate to Avg Quality) + SLA cluster
+                 Every card click opens a scoped canvas query (#2/#5 dead-end fix). ── -->
             <div class="behav-card" style="margin-top: 16px;">
               <div class="behav-card-header">
                 <div>
-                  <div class="behav-card-title">Member breakdown</div>
-                  <div class="behav-card-sub">All 12 agents on Product Support · ranked by quality · click an agent to see their full scorecard</div>
+                  <div class="behav-card-title">Operational snapshot</div>
+                  <div class="behav-card-sub">Current period vs previous · click any metric to drill in</div>
                 </div>
-                <div class="breakdown-header-actions">
-                  <button class="breakdown-plan-btn" type="button" id="generateTeamPlanBtn" onclick="openCanvasQuery('Generate a prioritised coaching plan for Product Support — 2 at-risk, 4 watch agents')">
-                    <svg width="12" height="13" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-                    Generate team plan
+              </div>
+
+              <div class="snap-tiered" style="margin-top: 14px;">
+
+                <!-- TIER 1 — hero stat -->
+                <button type="button" class="snap-hero" onclick="openCanvasQuery('Break down the 96.0% average quality score by product and reviewer this period, and explain what is driving it vs the 90% target')">
+                  <div class="snap-hero-label">Avg quality score</div>
+                  <div class="snap-hero-value ok">96.0<span class="km-unit">%</span></div>
+                  <div class="snap-hero-meta">
+                    <span class="kpi-mini-delta ok">↑ 1.4pts</span>
+                    <span class="kpi-mini-target">tgt 90%</span>
+                  </div>
+                  <div class="snap-hero-trend">
+                    <svg viewBox="0 0 160 40" preserveAspectRatio="none">
+                      <line x1="0" y1="22" x2="160" y2="22" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="3 3"/>
+                      <polyline points="0,17 18,15 36,17 53,13 71,15 89,11 107,13 124,9 142,9 160,7" fill="none" stroke="#17b26a" stroke-width="2"/>
+                    </svg>
+                  </div>
+                </button>
+
+                <!-- TIER 2 — primary operational counts -->
+                <div class="snap-primary-row">
+
+                  <button type="button" class="kpi-mini" onclick="openCanvasQuery('Break down the 3,363 total reviews by product and reviewer for this period')">
+                    <div class="kpi-mini-label">Total reviews</div>
+                    <div class="kpi-mini-value">3,363</div>
+                    <div class="kpi-mini-meta">
+                      <span class="kpi-mini-delta ok">↑ 124</span>
+                      <span class="kpi-mini-target">vs prev</span>
+                    </div>
                   </button>
-                  <div class="team-time-range" role="group" aria-label="Time range">
+
+                  <button type="button" class="kpi-mini" onclick="openCanvasQuery('Check reviewer calibration — show review volume and avg score assigned for Harazem, Salma and Yomna')">
+                    <div class="kpi-mini-label">Active reviewers</div>
+                    <div class="kpi-mini-value">3</div>
+                    <div class="kpi-mini-meta">
+                      <span class="kpi-mini-delta neu">→ QA team</span>
+                      <span class="kpi-mini-target">check calibration</span>
+                    </div>
+                  </button>
+
+                  <button type="button" class="kpi-mini" onclick="openCanvasQuery('List the products above 15% fail rate and their top failure reasons')">
+                    <div class="kpi-mini-label">Products at risk</div>
+                    <div class="kpi-mini-value ok">0</div>
+                    <div class="kpi-mini-meta">
+                      <span class="kpi-mini-delta ok">→ none</span>
+                      <span class="kpi-mini-target">&gt;15% fail rate</span>
+                    </div>
+                  </button>
+
+                </div>
+
+                <!-- TIER 3 — secondary: pass/fail split (subordinate to the hero) + SLA cluster -->
+                <div class="snap-secondary-row">
+
+                  <button type="button" class="snap-mini" onclick="openCanvasQuery('Show the 345 failed reviews this period grouped by KPI and product')">
+                    <span class="snap-mini-label">Passed</span>
+                    <span class="snap-mini-val ok">3,018<span class="snap-mini-sub">89.7%</span></span>
+                  </button>
+                  <button type="button" class="snap-mini" onclick="openCanvasQuery('Show the 345 failed reviews this period grouped by KPI and product')">
+                    <span class="snap-mini-label">Failed</span>
+                    <span class="snap-mini-val err">345<span class="snap-mini-sub">10.3%</span></span>
+                  </button>
+
+                  <span class="snap-mini-divider" aria-hidden="true"></span>
+
+                  <button type="button" class="snap-mini" onclick="openCanvasQuery('First response time is 38 minutes against a 30 minute target — show which products are driving the overage')">
+                    <span class="snap-mini-label">First response</span>
+                    <span class="snap-mini-val err">38<span class="snap-mini-sub">min · tgt 30</span></span>
+                  </button>
+                  <button type="button" class="snap-mini" onclick="openCanvasQuery('Avg handle time is 11.2 hours against an 8 hour target — show which products are driving the overage')">
+                    <span class="snap-mini-label">Avg handle time</span>
+                    <span class="snap-mini-val err">11.2<span class="snap-mini-sub">hrs · tgt 8</span></span>
+                  </button>
+                  <button type="button" class="snap-mini" onclick="openCanvasQuery('Resolution SLA is at 93% against a 90% target — show the trend over the last 12 weeks')">
+                    <span class="snap-mini-label">Resolution SLA</span>
+                    <span class="snap-mini-val ok">93<span class="snap-mini-sub">% · tgt 90</span></span>
+                  </button>
+                  <button type="button" class="snap-mini" onclick="openCanvasQuery('Reopen rate is 7% against a target of under 5% — show which agents and products have the most reopened tickets')">
+                    <span class="snap-mini-label">Reopen rate</span>
+                    <span class="snap-mini-val warn">7<span class="snap-mini-sub">% · tgt &lt;5</span></span>
+                  </button>
+
+                </div>
+
+              </div>
+            </div>
+
+            <!-- ── PRODUCT / AGENT PERFORMANCE — merged with switcher (Batch 6 · #1) ──
+                 Same ranked-lollipop pattern on two axes (product vs agent). One card,
+                 one title slot, local pill switcher reusing .view-toggle-btn styling. ── -->
+            <div class="behav-card" style="margin-top: 16px;">
+              <div class="behav-card-header">
+                <div>
+                  <div class="behav-card-title" id="perfSwitchTitle">Product performance</div>
+                  <div class="behav-card-sub" id="perfSwitchSub">Pass rate by product · ranked · weakest at the bottom · click a product to audit its failures</div>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
+                  <div class="perf-switch" role="tablist" aria-label="Performance breakdown">
+                    <button class="perf-switch-btn is-active" type="button" role="tab" aria-selected="true" id="perfTabProducts" onclick="setPerfTab('products')">Products</button>
+                    <button class="perf-switch-btn" type="button" role="tab" aria-selected="false" id="perfTabAgents" onclick="setPerfTab('agents')">Agents</button>
+                  </div>
+                  <div class="team-time-range" id="perfTimeRange" role="group" aria-label="Time range" style="display:none;">
                     <button class="team-time-btn" type="button" onclick="onTimeRange(this,'7d')">7d</button>
                     <button class="team-time-btn is-active" type="button" onclick="onTimeRange(this,'30d')">30d</button>
                     <button class="team-time-btn" type="button" onclick="onTimeRange(this,'90d')">90d</button>
                   </div>
+                  <button class="breakdown-plan-btn" type="button" id="perfViewAllBtn" onclick="openCanvasQuery('Show full product performance — reviews, avg score, pass rate and failures for all 10 products')">
+                    <svg width="12" height="13" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                    <span id="perfViewAllLabel">View all products</span>
+                  </button>
+                  <button class="breakdown-plan-btn" type="button" id="perfTeamPlanBtn" style="display:none;" onclick="openCanvasQuery('Generate a prioritised coaching plan for Product Support — 2 at-risk, 4 watch agents')">
+                    <svg width="12" height="13" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                    Generate team plan
+                  </button>
+                  <button class="breakdown-plan-btn" type="button" id="perfHeatmapBtn" style="display:none;" onclick="openCanvasQuery('Show the 12-week quality score trend per agent, plus the KPI category breakdown — which KPIs are weakest team-wide and which agents are critical')">
+                    <svg width="12" height="13" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                    Quality trend &amp; KPI heatmap
+                  </button>
                 </div>
               </div>
-              <div class="lollipop-wrap">
+
+              <div class="perf-tab-pane is-active" id="perfPaneProducts">
+<div class="lollipop-wrap">
+                <div class="lollipop-axis">
+                  <span></span>
+                  <span></span>
+                  <span class="lollipop-axis-track">
+                    <span class="lollipop-axis-track-line"></span>
+                    <span class="lollipop-axis-tick" style="left: 0%;">60%</span>
+                    <span class="lollipop-axis-tick" style="left: 25%;">70%</span>
+                    <span class="lollipop-axis-tick" style="left: 50%;">80%</span>
+                    <span class="lollipop-axis-tick" style="left: 75%;">90%</span>
+                    <span class="lollipop-axis-tick" style="left: 100%;">100%</span>
+                  </span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+
+                <div class="lollipop-row">
+                  <span class="lollipop-rank top">#1</span>
+                  <span class="lollipop-name-cell">
+                    <span class="lollipop-avatar" style="background: linear-gradient(135deg,#1a2a3a,#2d5c8e);">SS</span>
+                    <span class="lollipop-name">Second Street</span>
+                  </span>
+                  <span class="lollipop-track">
+                    <span class="lollipop-track-line"></span>
+                    <span class="lollipop-target-tick" style="left: 75%;"></span>
+                    <span class="lollipop-stem ok" style="left: 0%; width: 92.0%;"></span>
+                    <span class="lollipop-dot ok-up" style="left: 92.0%;"></span>
+                  </span>
+                  <span class="lollipop-score">96.8%</span>
+                  <span class="lollipop-delta neu">8 fails</span>
+                  <div class="lollipop-actions k-row-hover-reveal">
+                    <button class="k-row-action" type="button" onclick="openCanvasQuery('Audit Second Street — 247 reviews, 97.9% avg score, 8 failures driving a 96.8% pass rate. What are the top KPI misses?')">Audit failures</button>
+                  </div>
+                </div>
+                <div class="lollipop-row">
+                  <span class="lollipop-rank">#2</span>
+                  <span class="lollipop-name-cell">
+                    <span class="lollipop-avatar" style="background: linear-gradient(135deg,#1a2a3a,#2d5c8e);">AD</span>
+                    <span class="lollipop-name">Adestra</span>
+                  </span>
+                  <span class="lollipop-track">
+                    <span class="lollipop-track-line"></span>
+                    <span class="lollipop-target-tick" style="left: 75%;"></span>
+                    <span class="lollipop-stem ok" style="left: 0%; width: 86.0%;"></span>
+                    <span class="lollipop-dot ok-stable" style="left: 86.0%;"></span>
+                  </span>
+                  <span class="lollipop-score">94.4%</span>
+                  <span class="lollipop-delta neu">23 fails</span>
+                  <div class="lollipop-actions k-row-hover-reveal">
+                    <button class="k-row-action" type="button" onclick="openCanvasQuery('Audit Adestra — 409 reviews, 97.6% avg score, 23 failures driving a 94.4% pass rate. What are the top KPI misses?')">Audit failures</button>
+                  </div>
+                </div>
+                <div class="lollipop-row">
+                  <span class="lollipop-rank">#3</span>
+                  <span class="lollipop-name-cell">
+                    <span class="lollipop-avatar" style="background: linear-gradient(135deg,#1a2a3a,#2d5c8e);">AR</span>
+                    <span class="lollipop-name">AccuRoute</span>
+                  </span>
+                  <span class="lollipop-track">
+                    <span class="lollipop-track-line"></span>
+                    <span class="lollipop-target-tick" style="left: 75%;"></span>
+                    <span class="lollipop-stem ok" style="left: 0%; width: 79.5%;"></span>
+                    <span class="lollipop-dot ok-stable" style="left: 79.5%;"></span>
+                  </span>
+                  <span class="lollipop-score">91.8%</span>
+                  <span class="lollipop-delta neu">21 fails</span>
+                  <div class="lollipop-actions k-row-hover-reveal">
+                    <button class="k-row-action" type="button" onclick="openCanvasQuery('Audit AccuRoute — 256 reviews, 97.0% avg score, 21 failures driving a 91.8% pass rate. What are the top KPI misses?')">Audit failures</button>
+                  </div>
+                </div>
+                <div class="lollipop-row">
+                  <span class="lollipop-rank">#4</span>
+                  <span class="lollipop-name-cell">
+                    <span class="lollipop-avatar" style="background: linear-gradient(135deg,#1a2a3a,#2d5c8e);">FB</span>
+                    <span class="lollipop-name">Filebound</span>
+                  </span>
+                  <span class="lollipop-track">
+                    <span class="lollipop-track-line"></span>
+                    <span class="lollipop-target-tick" style="left: 75%;"></span>
+                    <span class="lollipop-stem ok" style="left: 0%; width: 79.0%;"></span>
+                    <span class="lollipop-dot ok-stable" style="left: 79.0%;"></span>
+                  </span>
+                  <span class="lollipop-score">91.7%</span>
+                  <span class="lollipop-delta neu">17 fails</span>
+                  <div class="lollipop-actions k-row-hover-reveal">
+                    <button class="k-row-action" type="button" onclick="openCanvasQuery('Audit Filebound — 204 reviews, 96.6% avg score, 17 failures driving a 91.7% pass rate. What are the top KPI misses?')">Audit failures</button>
+                  </div>
+                </div>
+                <div class="lollipop-row">
+                  <span class="lollipop-rank">#5</span>
+                  <span class="lollipop-name-cell">
+                    <span class="lollipop-avatar" style="background: linear-gradient(135deg,#1a2a3a,#2d5c8e);">PV</span>
+                    <span class="lollipop-name">Panviva</span>
+                  </span>
+                  <span class="lollipop-track">
+                    <span class="lollipop-track-line"></span>
+                    <span class="lollipop-target-tick" style="left: 75%;"></span>
+                    <span class="lollipop-stem ok" style="left: 0%; width: 77.0%;"></span>
+                    <span class="lollipop-dot ok-stable" style="left: 77.0%;"></span>
+                  </span>
+                  <span class="lollipop-score">90.7%</span>
+                  <span class="lollipop-delta neu">21 fails</span>
+                  <div class="lollipop-actions k-row-hover-reveal">
+                    <button class="k-row-action" type="button" onclick="openCanvasQuery('Audit Panviva — 226 reviews, 96.7% avg score, 21 failures driving a 90.7% pass rate. What are the top KPI misses?')">Audit failures</button>
+                  </div>
+                </div>
+                <div class="lollipop-row">
+                  <span class="lollipop-rank">#6</span>
+                  <span class="lollipop-name-cell">
+                    <span class="lollipop-avatar" style="background: linear-gradient(135deg,#1a2a3a,#2d5c8e);">PS</span>
+                    <span class="lollipop-name">PSA</span>
+                  </span>
+                  <span class="lollipop-track">
+                    <span class="lollipop-track-line"></span>
+                    <span class="lollipop-target-tick" style="left: 75%;"></span>
+                    <span class="lollipop-stem warn" style="left: 0%; width: 73.0%;"></span>
+                    <span class="lollipop-dot warn-stable" style="left: 73.0%;"></span>
+                  </span>
+                  <span class="lollipop-score warn">89.2%</span>
+                  <span class="lollipop-delta neu">25 fails</span>
+                  <div class="lollipop-actions k-row-hover-reveal">
+                    <button class="k-row-action" type="button" onclick="openCanvasQuery('Audit PSA — 231 reviews, 95.8% avg score, 25 failures driving a 89.2% pass rate. What are the top KPI misses?')">Audit failures</button>
+                  </div>
+                </div>
+                <div class="lollipop-row">
+                  <span class="lollipop-rank">#7</span>
+                  <span class="lollipop-name-cell">
+                    <span class="lollipop-avatar" style="background: linear-gradient(135deg,#1a2a3a,#2d5c8e);">RA</span>
+                    <span class="lollipop-name">RightAnswers</span>
+                  </span>
+                  <span class="lollipop-track">
+                    <span class="lollipop-track-line"></span>
+                    <span class="lollipop-target-tick" style="left: 75%;"></span>
+                    <span class="lollipop-stem warn" style="left: 0%; width: 70.0%;"></span>
+                    <span class="lollipop-dot warn-stable" style="left: 70.0%;"></span>
+                  </span>
+                  <span class="lollipop-score warn">87.8%</span>
+                  <span class="lollipop-delta neu">41 fails</span>
+                  <div class="lollipop-actions k-row-hover-reveal">
+                    <button class="k-row-action" type="button" onclick="openCanvasQuery('Audit RightAnswers — 335 reviews, 95.6% avg score, 41 failures driving a 87.8% pass rate. What are the top KPI misses?')">Audit failures</button>
+                  </div>
+                </div>
+                <div class="lollipop-row">
+                  <span class="lollipop-rank">#8</span>
+                  <span class="lollipop-name-cell">
+                    <span class="lollipop-avatar" style="background: linear-gradient(135deg,#1a2a3a,#2d5c8e);">IF</span>
+                    <span class="lollipop-name">InterFax</span>
+                  </span>
+                  <span class="lollipop-track">
+                    <span class="lollipop-track-line"></span>
+                    <span class="lollipop-target-tick" style="left: 75%;"></span>
+                    <span class="lollipop-stem warn" style="left: 0%; width: 65.0%;"></span>
+                    <span class="lollipop-dot warn-down" style="left: 65.0%;"></span>
+                  </span>
+                  <span class="lollipop-score warn">85.9%</span>
+                  <span class="lollipop-delta neu">52 fails</span>
+                  <div class="lollipop-actions k-row-hover-reveal">
+                    <button class="k-row-action" type="button" onclick="openCanvasQuery('Audit InterFax — 368 reviews, 94.6% avg score, 52 failures driving a 85.9% pass rate. What are the top KPI misses?')">Audit failures</button>
+                  </div>
+                </div>
+                <div class="lollipop-row">
+                  <span class="lollipop-rank">#9</span>
+                  <span class="lollipop-name-cell">
+                    <span class="lollipop-avatar" style="background: linear-gradient(135deg,#1a2a3a,#2d5c8e);">OL</span>
+                    <span class="lollipop-name">Objectif Lune</span>
+                  </span>
+                  <span class="lollipop-track">
+                    <span class="lollipop-track-line"></span>
+                    <span class="lollipop-target-tick" style="left: 75%;"></span>
+                    <span class="lollipop-stem warn" style="left: 0%; width: 57.0%;"></span>
+                    <span class="lollipop-dot warn-down" style="left: 57.0%;"></span>
+                  </span>
+                  <span class="lollipop-score warn">82.7%</span>
+                  <span class="lollipop-delta neu">72 fails</span>
+                  <div class="lollipop-actions k-row-hover-reveal">
+                    <button class="k-row-action" type="button" onclick="openCanvasQuery('Audit Objectif Lune — 415 reviews, 93.8% avg score, 72 failures driving a 82.7% pass rate. What are the top KPI misses?')">Audit failures</button>
+                  </div>
+                </div>
+                <div class="lollipop-row">
+                  <span class="lollipop-rank bot">#10</span>
+                  <span class="lollipop-name-cell">
+                    <span class="lollipop-avatar" style="background: linear-gradient(135deg,#1a2a3a,#2d5c8e);">BA</span>
+                    <span class="lollipop-name">BA Insights</span>
+                  </span>
+                  <span class="lollipop-track">
+                    <span class="lollipop-track-line"></span>
+                    <span class="lollipop-target-tick" style="left: 75%;"></span>
+                    <span class="lollipop-stem warn" style="left: 0%; width: 56.0%;"></span>
+                    <span class="lollipop-dot warn-down" style="left: 56.0%;"></span>
+                  </span>
+                  <span class="lollipop-score warn">82.6%</span>
+                  <span class="lollipop-delta neu">19 fails</span>
+                  <div class="lollipop-actions k-row-hover-reveal">
+                    <button class="k-row-action" type="button" onclick="openCanvasQuery('Audit BA Insights — 109 reviews, 93.2% avg score, 19 failures driving a 82.6% pass rate. What are the top KPI misses?')">Audit failures</button>
+                  </div>
+                </div>
+              </div>
+              </div>
+
+              <div class="perf-tab-pane" id="perfPaneAgents" style="display:none;">
+<div class="lollipop-wrap">
                 <!-- Axis with tick marks — auto-aligned to row grid -->
                 <div class="lollipop-axis">
                   <span></span>
@@ -6710,517 +6919,86 @@
                   </button>
                 </div>
               </div>
+              </div>
             </div>
 
-            <!-- ── KPI CATEGORY HEATMAP ── -->
+            <!-- ── COACHING PRIORITIES (Batch 3 · #4/#10 · failure patterns + coaching merged) ── -->
             <div class="behav-card" style="margin-top: 16px;">
               <div class="behav-card-header">
                 <div>
-                  <div class="behav-card-title">Quality score heatmap · per agent · per week</div>
-                  <div class="behav-card-sub">12 weeks · darker = higher score · gaps mean no evaluations that week</div>
+                  <div class="behav-card-title">Coaching priorities</div>
+                  <div class="behav-card-sub">KPI failures ranked by impact · top 3 shown · generate a plan or assign coaching — the rest open in AiMY</div>
                 </div>
-                <button class="brief-sec-btn" type="button" id="heatmapToggleBtn" style="padding: 6px 12px; font-size: 11px;" onclick="toggleHeatmapView()">
-                  Switch to KPI category view
+                <button class="breakdown-plan-btn" type="button" onclick="openCanvasQuery('Open the full coaching queue — all 5 KPI failure areas with priority, failure count, expected impact and status')">
+                  <svg width="12" height="13" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                  View full queue
                 </button>
               </div>
-              <div id="heatmapQualityView" class="heatmap-wrap">
-                <div class="heatmap-grid">
-                  <span class="heatmap-corner">Agent</span>
-                  <span class="heatmap-week-label">W1</span>
-                  <span class="heatmap-week-label">W2</span>
-                  <span class="heatmap-week-label">W3</span>
-                  <span class="heatmap-week-label">W4</span>
-                  <span class="heatmap-week-label">W5</span>
-                  <span class="heatmap-week-label">W6</span>
-                  <span class="heatmap-week-label">W7</span>
-                  <span class="heatmap-week-label">W8</span>
-                  <span class="heatmap-week-label">W9</span>
-                  <span class="heatmap-week-label">W10</span>
-                  <span class="heatmap-week-label">W11</span>
-                  <span class="heatmap-week-label">W12</span>
-
-                  <!-- Sarah -->
-                  <span class="heatmap-row-label">Sarah Reyes</span>
-                  <span class="heatmap-cell h-90" title="W1: 92%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-95" title="W2: 95%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-95" title="W3: 96%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W4: 93%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-95" title="W5: 96%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-95" title="W6: 97%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-95" title="W7: 96%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-95" title="W8: 97%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-95" title="W9: 98%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-95" title="W10: 97%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-95" title="W11: 98%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-95" title="W12: 98%" data-action="↗ Use as exemplar"></span>
-
-                  <!-- Lina -->
-                  <span class="heatmap-row-label">Lina Haddad</span>
-                  <span class="heatmap-cell h-90" title="W1: 92%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W2: 91%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W3: 90%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W4: 92%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W5: 91%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W6: 92%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W7: 91%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W8: 90%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W9: 91%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W10: 92%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W11: 91%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W12: 91%" data-action="↗ Use as exemplar"></span>
-
-                  <!-- Jamal -->
-                  <span class="heatmap-row-label">Jamal Williams</span>
-                  <span class="heatmap-cell h-85" title="W1: 87%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W2: 88%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W3: 89%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-90" title="W4: 90%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W5: 90%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-na" title="W6: no evals"></span>
-                  <span class="heatmap-cell h-90" title="W7: 91%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W8: 90%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W9: 91%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W10: 92%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W11: 90%" data-action="↗ Use as exemplar"></span>
-                  <span class="heatmap-cell h-90" title="W12: 90%" data-action="↗ Use as exemplar"></span>
-
-                  <!-- Priya -->
-                  <span class="heatmap-row-label">Priya Venkat</span>
-                  <span class="heatmap-cell h-85" title="W1: 87%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W2: 87%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W3: 88%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W4: 89%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W5: 88%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W6: 87%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W7: 88%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W8: 89%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W9: 88%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W10: 88%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W11: 88%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W12: 88%" data-action="↗ Investigate dip"></span>
-
-                  <!-- Daniel -->
-                  <span class="heatmap-row-label">Daniel Rodriguez</span>
-                  <span class="heatmap-cell h-85" title="W1: 84%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W2: 85%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W3: 86%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W4: 86%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W5: 85%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W6: 86%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W7: 87%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W8: 86%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W9: 87%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W10: 86%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W11: 86%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W12: 86%" data-action="↗ Investigate dip"></span>
-
-                  <!-- Nadia -->
-                  <span class="heatmap-row-label">Nadia Boukhari</span>
-                  <span class="heatmap-cell h-85" title="W1: 86%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W2: 85%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W3: 85%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W4: 86%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W5: 85%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W6: 86%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W7: 85%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W8: 84%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W9: 85%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W10: 85%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W11: 85%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W12: 85%" data-action="↗ Investigate dip"></span>
-
-                  <!-- Rohan -->
-                  <span class="heatmap-row-label">Rohan Kapoor</span>
-                  <span class="heatmap-cell h-85" title="W1: 86%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W2: 84%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W3: 85%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W4: 84%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W5: 82%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W6: 81%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W7: 82%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W8: 83%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W9: 83%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W10: 83%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W11: 83%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W12: 83%" data-action="↗ Investigate dip"></span>
-
-                  <!-- Aisha -->
-                  <span class="heatmap-row-label">Aisha Khalil</span>
-                  <span class="heatmap-cell h-85" title="W1: 85%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W2: 83%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W3: 82%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W4: 81%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W5: 81%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W6: 82%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W7: 81%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W8: 80%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W9: 81%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W10: 81%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W11: 81%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W12: 81%" data-action="↗ Investigate dip"></span>
-
-                  <!-- Michael — declining recently -->
-                  <span class="heatmap-row-label">Michael Chen</span>
-                  <span class="heatmap-cell h-85" title="W1: 86%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W2: 85%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W3: 85%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W4: 84%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W5: 85%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W6: 85%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W7: 84%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-85" title="W8: 84%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W9: 82%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W10: 81%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-80" title="W11: 80%" data-action="↗ Investigate dip"></span>
-                  <span class="heatmap-cell h-75" title="W12: 79%" data-action="↗ Coach this period"></span>
-
-                  <!-- Elena -->
-                  <span class="heatmap-row-label">Elena Martinez</span>
-                  <span class="heatmap-cell h-80" title="W1: 78%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-80" title="W2: 77%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-75" title="W3: 76%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-75" title="W4: 75%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-75" title="W5: 76%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-75" title="W6: 77%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-75" title="W7: 76%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-75" title="W8: 75%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-75" title="W9: 76%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-75" title="W10: 76%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-75" title="W11: 76%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-75" title="W12: 76%" data-action="↗ Coach this period"></span>
-
-                  <!-- Tariq -->
-                  <span class="heatmap-row-label">Tariq Mansour</span>
-                  <span class="heatmap-cell h-75" title="W1: 74%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-75" title="W2: 73%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-75" title="W3: 72%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-70" title="W4: 71%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-70" title="W5: 70%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-70" title="W6: 70%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-70" title="W7: 69%" data-action="↗ Open coaching plan"></span>
-                  <span class="heatmap-cell h-70" title="W8: 70%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-70" title="W9: 69%" data-action="↗ Open coaching plan"></span>
-                  <span class="heatmap-cell h-70" title="W10: 68%" data-action="↗ Open coaching plan"></span>
-                  <span class="heatmap-cell h-70" title="W11: 68%" data-action="↗ Open coaching plan"></span>
-                  <span class="heatmap-cell h-70" title="W12: 68%" data-action="↗ Open coaching plan"></span>
-
-                  <!-- Omar — sharp decline -->
-                  <span class="heatmap-row-label">Omar Abdallah</span>
-                  <span class="heatmap-cell h-75" title="W1: 73%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-75" title="W2: 72%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-75" title="W3: 73%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-75" title="W4: 72%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-70" title="W5: 70%" data-action="↗ Coach this period"></span>
-                  <span class="heatmap-cell h-70" title="W6: 69%" data-action="↗ Open coaching plan"></span>
-                  <span class="heatmap-cell h-70" title="W7: 68%" data-action="↗ Open coaching plan"></span>
-                  <span class="heatmap-cell h-65" title="W8: 67%" data-action="↗ Open coaching plan"></span>
-                  <span class="heatmap-cell h-65" title="W9: 66%" data-action="↗ Open coaching plan"></span>
-                  <span class="heatmap-cell h-65" title="W10: 65%" data-action="↗ Open coaching plan"></span>
-                  <span class="heatmap-cell h-60" title="W11: 64%" data-action="↗ Open coaching plan"></span>
-                  <span class="heatmap-cell h-60" title="W12: 64%" data-action="↗ Open coaching plan"></span>
-                </div>
-                <div class="heatmap-legend">
-                  <span>Low</span>
-                  <span class="heatmap-legend-bar">
-                    <span style="background: #d44a32;"></span>
-                    <span style="background: #d6611a;"></span>
-                    <span style="background: #c47a18;"></span>
-                    <span style="background: #b58c1a;"></span>
-                    <span style="background: #7c8e3e;"></span>
-                    <span style="background: #4d9c5a;"></span>
-                    <span style="background: #1ca56a;"></span>
-                    <span style="background: #17b26a;"></span>
-                  </span>
-                  <span>High</span>
-                  <span style="margin-left: 16px; display: inline-flex; align-items: center; gap: 5px;">
-                    <span style="width: 12px; height: 12px; background: rgba(255,255,255,0.04); border-radius: 2px;"></span>
-                    No data
-                  </span>
-                </div>
-
-                <!-- AiMY suggestion strip — closes the loop on the heatmap -->
-                <div class="aimy-suggest-strip">
-                  <div class="aimy-suggest-icon">
-                    <svg width="14" height="16" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-                  </div>
-                  <div class="aimy-suggest-body">
-                    <div class="aimy-suggest-prefix">AiMY detected · 3 patterns</div>
-                    <div class="aimy-suggest-text">
-                      <strong>Omar &amp; Tariq</strong> show progressive decline starting W5. <strong>Michael</strong> dipped W9 — likely systemic. <strong>Sarah, Lina, Jamal</strong> consistently exceed target — exemplar candidates.
-                    </div>
-                  </div>
-                  <div class="aimy-suggest-actions">
-                    <button class="k-action-primary" type="button">
-                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="2" width="8" height="8" rx="1"/>
-                        <line x1="4" y1="5" x2="8" y2="5"/>
-                        <line x1="4" y1="7" x2="6" y2="7"/>
-                      </svg>
-                      Generate coaching plans
-                    </button>
-                    <button class="k-row-action" type="button">
-                      Investigate W5 trend
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- KPI Category View — rows = KPI, cols = agent (hidden by default) -->
-              <div id="heatmapKpiView" style="display:none;">
-                <div class="heatmap-wrap" style="margin-top:0;">
-                  <div class="heatmap-grid" style="grid-template-columns: 140px repeat(12, 1fr);">
-                    <span class="heatmap-corner">KPI category</span>
-                    <span class="heatmap-week-label" style="font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Sarah R.</span>
-                    <span class="heatmap-week-label" style="font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Lina H.</span>
-                    <span class="heatmap-week-label" style="font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Jamal W.</span>
-                    <span class="heatmap-week-label" style="font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Priya V.</span>
-                    <span class="heatmap-week-label" style="font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Daniel R.</span>
-                    <span class="heatmap-week-label" style="font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Nadia B.</span>
-                    <span class="heatmap-week-label" style="font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Rohan K.</span>
-                    <span class="heatmap-week-label" style="font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Aisha K.</span>
-                    <span class="heatmap-week-label" style="font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">M. Chen</span>
-                    <span class="heatmap-week-label" style="font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Elena M.</span>
-                    <span class="heatmap-week-label" style="font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Tariq M.</span>
-                    <span class="heatmap-week-label" style="font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Omar A.</span>
-
-                    <!-- Follow-up SOP -->
-                    <span class="heatmap-row-label" style="font-size:10px;">Follow-up SOP</span>
-                    <span class="heatmap-cell h-95" title="Sarah Reyes — Follow-up SOP: 97%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-95" title="Lina Haddad — Follow-up SOP: 96%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Jamal Williams — Follow-up SOP: 91%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Priya Venkat — Follow-up SOP: 89%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-85" title="Daniel Rodriguez — Follow-up SOP: 88%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-85" title="Nadia Boukhari — Follow-up SOP: 86%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-80" title="Rohan Kapoor — Follow-up SOP: 82%" data-action="↓ Investigate dip"></span>
-                    <span class="heatmap-cell h-80" title="Aisha Khalil — Follow-up SOP: 80%" data-action="↓ Investigate dip"></span>
-                    <span class="heatmap-cell h-75" title="Michael Chen — Follow-up SOP: 78%" data-action="↓ Investigate dip"></span>
-                    <span class="heatmap-cell h-75" title="Elena Martinez — Follow-up SOP: 74%" data-action="↓ Schedule check-in"></span>
-                    <span class="heatmap-cell h-60" title="Tariq Mansour — Follow-up SOP: 51% ↓" data-action="⚠ Schedule coaching now" style="outline: 1.5px solid rgba(240,68,56,0.5);"></span>
-                    <span class="heatmap-cell h-60" title="Omar Abdallah — Follow-up SOP: 47% ↓" data-action="⚠ Open active coaching plan" style="outline: 1.5px solid rgba(240,68,56,0.5);"></span>
-
-                    <!-- Resolution confirmation -->
-                    <span class="heatmap-row-label" style="font-size:10px;">Resolution confirm.</span>
-                    <span class="heatmap-cell h-95" title="Sarah Reyes — Resolution confirm.: 96%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Lina Haddad — Resolution confirm.: 93%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Jamal Williams — Resolution confirm.: 90%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-85" title="Priya Venkat — Resolution confirm.: 87%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-85" title="Daniel Rodriguez — Resolution confirm.: 86%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-85" title="Nadia Boukhari — Resolution confirm.: 85%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-80" title="Rohan Kapoor — Resolution confirm.: 81%" data-action="↓ Investigate dip"></span>
-                    <span class="heatmap-cell h-75" title="Aisha Khalil — Resolution confirm.: 79%" data-action="↓ Investigate dip"></span>
-                    <span class="heatmap-cell h-75" title="Michael Chen — Resolution confirm.: 75%" data-action="↓ Schedule check-in"></span>
-                    <span class="heatmap-cell h-70" title="Elena Martinez — Resolution confirm.: 72%" data-action="↓ Schedule check-in"></span>
-                    <span class="heatmap-cell h-70" title="Tariq Mansour — Resolution confirm.: 70%" data-action="↓ Schedule check-in"></span>
-                    <span class="heatmap-cell h-65" title="Omar Abdallah — Resolution confirm.: 60% ↓" data-action="⚠ Add to coaching plan" style="outline: 1.5px solid rgba(240,68,56,0.5);"></span>
-
-                    <!-- Ticket categorisation -->
-                    <span class="heatmap-row-label" style="font-size:10px;">Ticket categorisation</span>
-                    <span class="heatmap-cell h-95" title="Sarah Reyes — Ticket categorisation: 98%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Lina Haddad — Ticket categorisation: 92%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Jamal Williams — Ticket categorisation: 91%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-85" title="Priya Venkat — Ticket categorisation: 88%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-85" title="Daniel Rodriguez — Ticket categorisation: 87%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-85" title="Nadia Boukhari — Ticket categorisation: 85%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-80" title="Rohan Kapoor — Ticket categorisation: 83%" data-action="↓ Investigate dip"></span>
-                    <span class="heatmap-cell h-80" title="Aisha Khalil — Ticket categorisation: 80%" data-action="↓ Investigate dip"></span>
-                    <span class="heatmap-cell h-80" title="Michael Chen — Ticket categorisation: 80%" data-action="↓ Investigate dip"></span>
-                    <span class="heatmap-cell h-75" title="Elena Martinez — Ticket categorisation: 77%" data-action="↓ Schedule check-in"></span>
-                    <span class="heatmap-cell h-75" title="Tariq Mansour — Ticket categorisation: 74%" data-action="↓ Schedule check-in"></span>
-                    <span class="heatmap-cell h-75" title="Omar Abdallah — Ticket categorisation: 74%" data-action="↓ Schedule check-in"></span>
-
-                    <!-- Empathy & tone -->
-                    <span class="heatmap-row-label" style="font-size:10px;">Empathy &amp; tone</span>
-                    <span class="heatmap-cell h-95" title="Sarah Reyes — Empathy: 97%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-95" title="Lina Haddad — Empathy: 96%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Jamal Williams — Empathy: 93%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Priya Venkat — Empathy: 91%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-85" title="Daniel Rodriguez — Empathy: 88%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-85" title="Nadia Boukhari — Empathy: 86%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-85" title="Rohan Kapoor — Empathy: 85%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-85" title="Aisha Khalil — Empathy: 84%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-80" title="Michael Chen — Empathy: 80%" data-action="↓ Investigate dip"></span>
-                    <span class="heatmap-cell h-75" title="Elena Martinez — Empathy: 76%" data-action="↓ Schedule check-in"></span>
-                    <span class="heatmap-cell h-70" title="Tariq Mansour — Empathy: 71%" data-action="↓ Schedule check-in"></span>
-                    <span class="heatmap-cell h-85" title="Omar Abdallah — Empathy: 86% ↑ recovering" data-action="↗ Recovering — keep coaching"></span>
-
-                    <!-- Identity verification -->
-                    <span class="heatmap-row-label" style="font-size:10px;">Identity verification</span>
-                    <span class="heatmap-cell h-95" title="Sarah Reyes — Identity verification: 99%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-95" title="Lina Haddad — Identity verification: 98%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-95" title="Jamal Williams — Identity verification: 97%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-95" title="Priya Venkat — Identity verification: 96%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-95" title="Daniel Rodriguez — Identity verification: 96%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Nadia Boukhari — Identity verification: 93%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Rohan Kapoor — Identity verification: 92%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Aisha Khalil — Identity verification: 91%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Michael Chen — Identity verification: 90%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Elena Martinez — Identity verification: 90%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Tariq Mansour — Identity verification: 90%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-95" title="Omar Abdallah — Identity verification: 94%" data-action="↗ Strong — use as strength"></span>
-
-                    <!-- Survey promotion -->
-                    <span class="heatmap-row-label" style="font-size:10px;">Survey promotion</span>
-                    <span class="heatmap-cell h-95" title="Sarah Reyes — Survey promotion: 96%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Lina Haddad — Survey promotion: 92%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-90" title="Jamal Williams — Survey promotion: 91%" data-action="↗ Use as exemplar"></span>
-                    <span class="heatmap-cell h-85" title="Priya Venkat — Survey promotion: 88%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-85" title="Daniel Rodriguez — Survey promotion: 87%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-85" title="Nadia Boukhari — Survey promotion: 86%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-85" title="Rohan Kapoor — Survey promotion: 84%" data-action="→ Monitor"></span>
-                    <span class="heatmap-cell h-80" title="Aisha Khalil — Survey promotion: 83%" data-action="↓ Investigate dip"></span>
-                    <span class="heatmap-cell h-80" title="Michael Chen — Survey promotion: 81%" data-action="↓ Investigate dip"></span>
-                    <span class="heatmap-cell h-75" title="Elena Martinez — Survey promotion: 78%" data-action="↓ Schedule check-in"></span>
-                    <span class="heatmap-cell h-75" title="Tariq Mansour — Survey promotion: 76%" data-action="↓ Schedule check-in"></span>
-                    <span class="heatmap-cell h-90" title="Omar Abdallah — Survey promotion: 91% ↑" data-action="↗ Recovering — strong here"></span>
-                  </div>
-                  <div class="heatmap-legend">
-                    <span>Low</span>
-                    <span class="heatmap-legend-bar">
-                      <span style="background: #d44a32;"></span>
-                      <span style="background: #d6611a;"></span>
-                      <span style="background: #c47a18;"></span>
-                      <span style="background: #b58c1a;"></span>
-                      <span style="background: #7c8e3e;"></span>
-                      <span style="background: #4d9c5a;"></span>
-                      <span style="background: #1ca56a;"></span>
-                      <span style="background: #17b26a;"></span>
-                    </span>
-                    <span>High</span>
-                    <span style="margin-left:16px;display:inline-flex;align-items:center;gap:5px;">
-                      <span style="width:12px;height:12px;background:rgba(255,255,255,0.04);border-radius:2px;"></span>No data
-                    </span>
-                    <span style="margin-left:12px;display:inline-flex;align-items:center;gap:5px;">
-                      <span style="width:12px;height:12px;background:rgba(240,68,56,0.15);border-radius:2px;outline:1.5px solid rgba(240,68,56,0.5);"></span>Critical gap
-                    </span>
-                  </div>
-                  <!-- AiMY insight for KPI view -->
-                  <div class="aimy-suggest-strip" style="margin-top:12px;">
-                    <div class="aimy-suggest-icon">
-                      <svg width="14" height="16" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-                    </div>
-                    <div class="aimy-suggest-body">
-                      <div class="aimy-suggest-prefix">AiMY KPI insight</div>
-                      <div class="aimy-suggest-text"><strong>Follow-up SOP</strong> is the weakest KPI team-wide — only Omar and Tariq are critical, but 6 agents are below 85%. <strong>Identity verification</strong> is the strongest — all agents above 90%. Empathy is recovering for Omar after coaching.</div>
-                    </div>
-                    <div class="aimy-suggest-actions">
-                      <button class="k-action-primary" type="button" onclick="openCanvasQuery('Which KPI categories have the most agents below 85%? Rank them by team impact')">Rank KPI gaps</button>
-                      <button class="k-row-action" type="button" onclick="openCanvasQuery('Generate targeted coaching plans for Follow-up SOP — the team\'s weakest KPI')">Coach Follow-up SOP</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            <!-- ── FAILURE PATTERN FREQUENCY ── -->
-            <div class="behav-card" style="margin-top: 16px;">
-              <div class="behav-card-header">
-                <div>
-                  <div class="behav-card-title">Top failure patterns · across the team</div>
-                  <div class="behav-card-sub">Frequency-ranked KPI misses · click a pattern to see all impacted evaluations</div>
-                </div>
-              </div>
               <div class="pattern-list">
-                <div data-pattern-name="Missed follow-up SOP — no clear next steps set after resolution" class="pattern-row has-action-bar">
-                  <span class="pattern-rank">#1</span>
+                <div class="pattern-row has-action-bar">
+                  <span class="pattern-rank">H</span>
                   <div class="pattern-info">
                     <div class="pattern-name">
-                      Missed follow-up SOP — no clear next steps set after resolution
-                      <span class="loop-state in-progress" style="margin-left: 8px;"><span class="ls-dot"></span>In progress</span>
+                      Incorrect status
+                      <span class="loop-state prio-high" style="margin-left: 8px;"><span class="ls-dot"></span>High priority</span>
                     </div>
-                    <div class="pattern-meta">Concentrated in <strong>2 agents</strong> · Omar (47), Tariq (28) · CSAT impact: <strong>−14pts</strong> when missed · 1 of 2 coaching plans active</div>
+                    <div class="pattern-meta">High impact · suggested <strong>45 min</strong> session · expected <strong>↓ 60 failures</strong></div>
                   </div>
                   <div>
-                    <div class="pattern-freq err">75</div>
-                    <div class="pattern-freq-sub">instances</div>
+                    <div class="pattern-freq err">150</div>
+                    <div class="pattern-freq-sub">failures</div>
                   </div>
                   <div class="pattern-row-actions">
-                    <button class="k-row-action resolve" type="button">
-                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
-                      Resolve for Tariq
-                    </button>
-                    <button class="k-row-action" type="button">View 75 evals</button>
-                    <button class="k-row-action dismiss" type="button">Acknowledge</button>
-                  </div>
-                </div>
-                <div data-pattern-name="Resolution confirmation skipped" class="pattern-row has-action-bar">
-                  <span class="pattern-rank">#2</span>
-                  <div class="pattern-info">
-                    <div class="pattern-name">Resolution confirmation skipped — agent ended without verifying issue resolved</div>
-                    <div class="pattern-meta">Spread across <strong>4 agents</strong> · most frequent on email channel · CSAT impact: <strong>−8pts</strong></div>
-                  </div>
-                  <div>
-                    <div class="pattern-freq err">52</div>
-                    <div class="pattern-freq-sub">instances</div>
-                  </div>
-                  <div class="pattern-row-actions">
-                    <button class="k-row-action resolve" type="button">
-                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h6M3 4h6M3 8h4"/></svg>
-                      Schedule team refresh
-                    </button>
-                    <button class="k-row-action" type="button">View 52 evals</button>
-                    <button class="k-row-action dismiss" type="button">Acknowledge</button>
-                  </div>
-                </div>
-                <div data-pattern-name="Empathy lapse during escalation" class="pattern-row has-action-bar">
-                  <span class="pattern-rank">#3</span>
-                  <div class="pattern-info">
-                    <div class="pattern-name">Empathy lapse during escalation — tone shift detected by AiMY</div>
-                    <div class="pattern-meta">Spread across <strong>5 agents</strong> · concentrated in billing-category tickets · CSAT impact: <strong>−11pts</strong></div>
-                  </div>
-                  <div>
-                    <div class="pattern-freq warn">34</div>
-                    <div class="pattern-freq-sub">instances</div>
-                  </div>
-                  <div class="pattern-row-actions">
-                    <button class="k-row-action resolve" type="button">
+                    <button class="k-row-action coach" type="button" onclick="openCanvasQuery('Generate a coaching plan for the \'Incorrect status\' KPI failure — 150 instances, 45 min suggested, expected reduction 60 failures')">
                       <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9V3l4 3-4 3zM10 3v6"/></svg>
-                      Generate coaching plans
+                      Generate notes
                     </button>
-                    <button class="k-row-action" type="button">View 34 evals</button>
-                    <button class="k-row-action dismiss" type="button">Acknowledge</button>
-                  </div>
-                </div>
-                <div data-pattern-name="Incorrect ticket categorization" class="pattern-row has-action-bar is-acknowledged">
-                  <span class="pattern-rank">#4</span>
-                  <div class="pattern-info">
-                    <div class="pattern-name">
-                      Incorrect ticket categorization — wrong category or missing tags
-                      <span class="loop-state acknowledged" style="margin-left: 8px;"><span class="ls-dot"></span>Acknowledged · improving</span>
-                    </div>
-                    <div class="pattern-meta">Spread across <strong>6 agents</strong> · improving since Jan training · routing impact: <strong>+12% rerouting</strong></div>
-                  </div>
-                  <div>
-                    <div class="pattern-freq warn">28</div>
-                    <div class="pattern-freq-sub">instances</div>
-                  </div>
-                  <div class="pattern-row-actions">
-                    <button class="k-row-action" type="button">View 28 evals</button>
-                    <button class="k-row-action dismiss" type="button">Reopen</button>
+                    <button class="k-row-action" type="button" onclick="openCanvasQuery('Assign coaching for \'Incorrect status\' to the affected agents and schedule a 45 min session')">Assign</button>
                   </div>
                 </div>
                 <div class="pattern-row has-action-bar">
-                  <span class="pattern-rank">#5</span>
+                  <span class="pattern-rank">M</span>
                   <div class="pattern-info">
                     <div class="pattern-name">
-                      Identity verification skipped before sharing account details
-                      <span class="loop-state monitoring" style="margin-left: 8px;"><span class="ls-dot"></span>Monitoring</span>
+                      Grammar mistake
+                      <span class="loop-state prio-med" style="margin-left: 8px;"><span class="ls-dot"></span>Medium priority</span>
                     </div>
-                    <div class="pattern-meta">Spread across <strong>3 agents</strong> · compliance risk · trending downward · <strong>−40% vs last quarter</strong></div>
+                    <div class="pattern-meta">Medium impact · suggested <strong>30 min</strong> session · expected <strong>↓ 17 failures</strong></div>
                   </div>
                   <div>
-                    <div class="pattern-freq warn">11</div>
-                    <div class="pattern-freq-sub">instances</div>
+                    <div class="pattern-freq warn">55</div>
+                    <div class="pattern-freq-sub">failures</div>
                   </div>
                   <div class="pattern-row-actions">
-                    <button class="k-row-action review" type="button">
-                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1l1.5 3.5L11 5l-2.5 2.5L9 11 6 9 3 11l.5-3.5L1 5l3.5-.5z"/></svg>
-                      Compliance review
+                    <button class="k-row-action coach" type="button" onclick="openCanvasQuery('Generate a coaching plan for the \'Grammar mistake\' KPI failure — 55 instances, 30 min suggested, expected reduction 17 failures')">
+                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9V3l4 3-4 3zM10 3v6"/></svg>
+                      Generate notes
                     </button>
-                    <button class="k-row-action" type="button">View 11 evals</button>
-                    <button class="k-row-action dismiss" type="button">Stop monitoring</button>
+                    <button class="k-row-action" type="button" onclick="openCanvasQuery('Assign coaching for \'Grammar mistake\' to the affected agents and schedule a 30 min session')">Assign</button>
                   </div>
                 </div>
+                <div class="pattern-row has-action-bar">
+                  <span class="pattern-rank">M</span>
+                  <div class="pattern-info">
+                    <div class="pattern-name">
+                      Time between updates
+                      <span class="loop-state prio-med" style="margin-left: 8px;"><span class="ls-dot"></span>Medium priority</span>
+                    </div>
+                    <div class="pattern-meta">Medium impact · suggested <strong>30 min</strong> session · expected <strong>↓ 14 failures</strong></div>
+                  </div>
+                  <div>
+                    <div class="pattern-freq warn">47</div>
+                    <div class="pattern-freq-sub">failures</div>
+                  </div>
+                  <div class="pattern-row-actions">
+                    <button class="k-row-action coach" type="button" onclick="openCanvasQuery('Generate a coaching plan for the \'Time between updates\' KPI failure — 47 instances, 30 min suggested, expected reduction 14 failures')">
+                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9V3l4 3-4 3zM10 3v6"/></svg>
+                      Generate notes
+                    </button>
+                    <button class="k-row-action" type="button" onclick="openCanvasQuery('Assign coaching for \'Time between updates\' to the affected agents and schedule a 30 min session')">Assign</button>
+                  </div>
+                </div>
+                <button class="k-row-action" type="button" style="align-self:flex-start; margin-top:4px;" onclick="openCanvasQuery('Show the 2 lower-priority coaching areas — No specific ETA provided (36 failures) and Article ID missing (20 failures)')">+ 2 more · No specific ETA (36) · Article ID missing (20)</button>
               </div>
             </div>
 
@@ -7654,7 +7432,7 @@
             <section class="scorecard-detail" aria-label="Selected agent scorecard">
 
               <!-- Agent header -->
-              <div class="agent-header">
+              <div class="agent-header" style="align-items: flex-start; flex-wrap: wrap;">
                 <div class="agent-header-avatar" style="background: linear-gradient(135deg,#1a2a3a,#2d5c8e);">OA</div>
                 <div class="agent-header-info">
                   <div class="agent-header-name-row">
@@ -7664,34 +7442,47 @@
                     </span>
                   </div>
                   <div class="agent-header-meta">
-                    Product Support<span class="sep">·</span>5 months tenure<span class="sep">·</span>Reports to Lina Haddad<span class="sep">·</span>
-                    <span class="coverage-stat">
-                      89 of 142 interactions evaluated
-                      <span class="coverage-pct warn">63% coverage</span>
-                    </span>
+                    <div class="agent-header-meta-line">Product Support<span class="sep">·</span>Egypt<span class="sep">·</span>5 months tenure<span class="sep">·</span>Reports to Lina Haddad<span class="sep">·</span>Reviewed by Salma Ehab</div>
+                    <div class="agent-header-meta-line" style="margin-top: 3px;">
+                      <span class="coverage-stat">
+                        89 of 142 interactions evaluated
+                        <span class="coverage-pct warn">63% coverage</span>
+                      </span>
+                    </div>
                   </div>
-                </div>
-                <div class="agent-header-actions">
-                  <button class="brief-primary-btn" type="button">
-                    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="2" y="3" width="10" height="9" rx="1.5"/>
-                      <line x1="2" y1="6" x2="12" y2="6"/>
-                      <line x1="5" y1="1.5" x2="5" y2="4"/>
-                      <line x1="9" y1="1.5" x2="9" y2="4"/>
-                    </svg>
-                    Schedule coaching
-                  </button>
-                  <button class="brief-sec-btn" type="button">
-                    Send feedback
-                  </button>
-                  <button class="header-quick-link" type="button" onclick="setView('evals')" aria-label="View Omar's evaluations in the Evaluations tab">
-                    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M2 3h10v8H2z"/>
-                      <line x1="4.5" y1="6" x2="9.5" y2="6"/>
-                      <line x1="4.5" y1="8.5" x2="7.5" y2="8.5"/>
-                    </svg>
-                    Recent evaluations
-                  </button>
+
+                  <!-- ── AGENT CHANNEL SCORES — now inside the card (fixes overflow) ── -->
+                  <div class="channel-score-strip" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:10px;">
+                    <span class="kpi-mini-label" style="margin-right:2px;">By channel:</span>
+                    <span class="channel-badge"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="10" height="7" rx="1"/><path d="M1 4l5 3.5L11 4"/></svg>Email/Ticket<strong style="margin-left:6px; color:var(--warn);">66%</strong></span>
+                    <span class="channel-badge"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 8.5c-.5 1-1.5 1.5-2.5 1-2-.5-4-2.5-4.5-4.5C3 4 3.5 3 4.5 2.5l1.5 2-1 1c.5 1 1.5 2 2.5 2.5l1-1 2 1.5z"/></svg>Call<strong style="margin-left:6px; color:var(--warn);">71%</strong></span>
+                    <span class="channel-badge"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5v9M3.5 3.5v5M8.5 3.5v5M1.5 5v2M10.5 5v2"/></svg>Voice<strong style="margin-left:6px; color:var(--err);">58%</strong></span>
+                    <span class="channel-badge">Accum. score<strong style="margin-left:6px; color:var(--err);">64%</strong></span>
+                  </div>
+
+                  <!-- ── ACTIONS — left-aligned, own row, under meta + channels ── -->
+                  <div class="agent-header-actions" style="margin-top: 14px; flex-shrink: 0;">
+                    <button class="brief-primary-btn" type="button" onclick="openCanvasQuery('Schedule a coaching session for Omar Abdallah on follow-up SOP confirmation — draft the plan and suggested time')">
+                      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="3" width="10" height="9" rx="1.5"/>
+                        <line x1="2" y1="6" x2="12" y2="6"/>
+                        <line x1="5" y1="1.5" x2="5" y2="4"/>
+                        <line x1="9" y1="1.5" x2="9" y2="4"/>
+                      </svg>
+                      Schedule coaching
+                    </button>
+                    <button class="brief-sec-btn" type="button" onclick="openCanvasQuery('Draft performance feedback for Omar Abdallah based on this period\'s evaluations')">
+                      Send feedback
+                    </button>
+                    <button class="header-quick-link" type="button" onclick="setView('evals')" aria-label="View Omar's evaluations in the Evaluations tab">
+                      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 3h10v8H2z"/>
+                        <line x1="4.5" y1="6" x2="9.5" y2="6"/>
+                        <line x1="4.5" y1="8.5" x2="7.5" y2="8.5"/>
+                      </svg>
+                      Recent evaluations
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -8003,11 +7794,11 @@
                       </div>
                     </div>
                     <div class="k-action-row-buttons">
-                      <button class="k-action-primary" type="button">
+                      <button class="k-action-primary" type="button" onclick="openCanvasQuery('Generate the 30-minute SOP refresh coaching plan for Omar Abdallah — follow-up confirmation, paired with shadowing a Sarah Reyes recording')">
                         <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
                         Generate this plan
                       </button>
-                      <button class="k-row-action" type="button">Discuss with Lina</button>
+                      <button class="k-row-action" type="button" onclick="openCanvasQuery('Summarise Omar Abdallah\'s follow-up SOP gap for a discussion with Lina Haddad')">Discuss with Lina</button>
                     </div>
                   </div>
                 </div>
@@ -10045,6 +9836,9 @@
         font-weight: 500;
         color: var(--d400);
       }
+      .agent-header-meta-line {
+        line-height: 1.5;
+      }
       .agent-header-meta .sep {
         margin: 0 6px;
         opacity: 0.5;
@@ -10074,6 +9868,9 @@
         position: relative;
         overflow: hidden;
         transition: border-color var(--transition-base);
+        font: inherit;
+        width: 100%;
+        text-align: left;
       }
       .kpi-mini:hover {
         border-color: var(--card-border-hover);
@@ -10145,6 +9942,181 @@
       .kpi-mini-trend svg {
         width: 100%;
         height: 100%;
+      }
+
+      /* ── Operational snapshot — 3-tier hierarchy (Batch 5) ──────────
+           Tier 1 hero, Tier 2 primary row, Tier 3 compact secondary row.
+           Cards are real button elements (clickable, focusable) — fixes
+           the "dead end" issue: every metric opens a scoped canvas query. */
+      .snap-tiered {
+        display: grid;
+        grid-template-columns: 1fr 1.6fr;
+        gap: 12px;
+      }
+      .snap-hero {
+        grid-row: 1 / 3;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 14px;
+        padding: 18px 18px 16px;
+        text-align: left;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        transition: transform var(--transition-base), border-color var(--transition-base);
+      }
+      .snap-hero:hover {
+        transform: translateY(-1px);
+        border-color: rgba(111, 223, 226, 0.25);
+      }
+      .snap-hero-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--d400);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+      .snap-hero-value {
+        font-size: 40px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1;
+        margin-top: 8px;
+        color: var(--d50);
+      }
+      .snap-hero-value.ok { color: var(--ok); }
+      .snap-hero-value .km-unit {
+        font-size: 18px;
+        font-weight: 700;
+        margin-left: 2px;
+      }
+      .snap-hero-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .snap-hero-trend {
+        margin-top: auto;
+        padding-top: 14px;
+      }
+      .snap-hero-trend svg { width: 100%; height: 40px; }
+      .snap-primary-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .snap-primary-row .kpi-mini {
+        cursor: pointer;
+        text-align: left;
+        font-family: inherit;
+      }
+      .snap-secondary-row {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: stretch;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding-top: 4px;
+        border-top: 1px solid var(--card-border);
+        margin-top: 2px;
+      }
+      .snap-mini {
+        flex: 1 1 110px;
+        background: transparent;
+        border: 1px solid var(--card-border);
+        border-radius: 10px;
+        padding: 8px 12px;
+        cursor: pointer;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        transition: background var(--transition-base), border-color var(--transition-base);
+      }
+      .snap-mini:hover {
+        background: rgba(255, 255, 255, 0.025);
+        border-color: rgba(255, 255, 255, 0.14);
+      }
+      .snap-mini-label {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d400);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+      .snap-mini-val {
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        color: var(--d50);
+        display: flex;
+        align-items: baseline;
+        gap: 5px;
+      }
+      .snap-mini-val.ok { color: var(--ok); }
+      .snap-mini-val.warn { color: var(--warn); }
+      .snap-mini-val.err { color: var(--err); }
+      .snap-mini-sub {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--d400);
+      }
+      .snap-mini-divider {
+        width: 1px;
+        align-self: stretch;
+        background: var(--card-border);
+        margin: 2px 4px;
+      }
+      @media (max-width: 1400px) {
+        .snap-tiered { grid-template-columns: 1fr; }
+        .snap-hero { grid-row: auto; }
+      }
+      @media (max-width: 860px) {
+        .snap-primary-row { grid-template-columns: 1fr; }
+        .snap-secondary-row { flex-direction: column; }
+        .snap-mini-divider { display: none; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .snap-hero, .snap-mini { transition: none; }
+      }
+
+      /* ── Local pill switcher for merged Product/Agent performance card (Batch 6) ──
+           Scaled-down variant of .view-toggle, scoped to this card only. */
+      .perf-switch {
+        display: inline-flex;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 9px;
+        padding: 2px;
+        gap: 2px;
+      }
+      .perf-switch-btn {
+        background: none;
+        border: none;
+        color: var(--d300);
+        font-family: "Urbanist", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 6px 13px;
+        border-radius: 7px;
+        cursor: pointer;
+        transition: background var(--transition-fast), color var(--transition-fast);
+        letter-spacing: 0.01em;
+      }
+      .perf-switch-btn:hover { color: var(--d50); background: rgba(255, 255, 255, 0.04); }
+      .perf-switch-btn.is-active {
+        background: var(--qa-accent);
+        color: #fff;
+      }
+      .perf-tab-pane { animation: perfFadeIn 200ms var(--ease-out); }
+      @keyframes perfFadeIn {
+        from { opacity: 0; transform: translateY(2px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .perf-switch-btn { transition: none; }
+        .perf-tab-pane { animation: none; }
       }
 
       /* AI narrative — already styled via .narrative-card; just need a custom intro for the agent context */
@@ -11154,7 +11126,12 @@
         border: 1px solid rgba(97, 173, 241, 0.22);
         border-radius: 12px;
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .aimy-suggest-row1 {
+        display: flex;
+        align-items: flex-start;
         gap: 14px;
       }
       .aimy-suggest-icon {
@@ -11197,10 +11174,16 @@
         color: var(--d50);
         font-weight: 800;
       }
+      .aimy-suggest-confidence {
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
       .aimy-suggest-actions {
         display: flex;
         gap: 6px;
-        flex-shrink: 0;
+        flex-wrap: wrap;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
       }
 
       /* ── Row-level: contextual action button on rows ── */
@@ -11417,6 +11400,13 @@
       .loop-state.acknowledged .ls-dot {
         background: var(--d400);
       }
+      /* Priority modifiers (Batch 3) — piggyback on existing .loop-state pill */
+      .loop-state.prio-high { background: rgba(240,68,56,0.14); color: var(--err); border: 1px solid rgba(240,68,56,0.25); }
+      .loop-state.prio-med  { background: rgba(247,144,9,0.14); color: var(--warn); border: 1px solid rgba(247,144,9,0.25); }
+      .loop-state.prio-low  { background: rgba(97,173,241,0.12); color: #61adf1; border: 1px solid rgba(97,173,241,0.25); }
+      .loop-state.prio-high .ls-dot { background: var(--err); }
+      .loop-state.prio-med  .ls-dot { background: var(--warn); }
+      .loop-state.prio-low  .ls-dot { background: #61adf1; }
       @keyframes ls-pulse {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.4; }
@@ -13044,47 +13034,7 @@
           isTyping = false;
         }
 
-        /* ── Heatmap view toggle ─────────────────────────────────── */
-        window.toggleHeatmapView = function() {
-          const qualityView = document.getElementById("heatmapQualityView");
-          const kpiView     = document.getElementById("heatmapKpiView");
-          const btn         = document.getElementById("heatmapToggleBtn");
-          if (!qualityView || !kpiView || !btn) return;
 
-          /* Save scroll position before DOM change */
-          const scrollEl = document.querySelector('.sc-scroll, .dashboard-scroll');
-          const savedScroll = scrollEl ? scrollEl.scrollTop : 0;
-
-          const isQuality = qualityView.style.display !== "none";
-
-          if (isQuality) {
-            // Switch to KPI category view
-            qualityView.style.display = "none";
-            kpiView.style.display = "block";
-            btn.textContent = "Switch to quality score view";
-            // Update card title + subtitle
-            const title = btn.closest(".behav-card").querySelector(".behav-card-title");
-            const sub   = btn.closest(".behav-card").querySelector(".behav-card-sub");
-            if (title) title.textContent = "KPI category heatmap · per agent";
-            if (sub)   sub.textContent   = "Compliance score per KPI · red outline = critical gap below 60% · hover for detail";
-          } else {
-            // Switch back to quality score view
-            qualityView.style.display = "";
-            kpiView.style.display = "none";
-            btn.textContent = "Switch to KPI category view";
-            const title = btn.closest(".behav-card").querySelector(".behav-card-title");
-            const sub   = btn.closest(".behav-card").querySelector(".behav-card-sub");
-            if (title) title.textContent = "Quality score heatmap · per agent · per week";
-            if (sub)   sub.textContent   = "12 weeks · darker = higher score · gaps mean no evaluations that week";
-          }
-
-          /* Restore scroll position after layout settles */
-          if (scrollEl) {
-            requestAnimationFrame(function() {
-              scrollEl.scrollTop = savedScroll;
-            });
-          }
-        };
 
         /* ── Canvas query shortcut — pre-fills and opens the overlay ── */
         window.openCanvasQuery = function(query) {
@@ -13470,6 +13420,28 @@
               <button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;" onclick="openCanvasQuery('Show KPI heatmap for Omar — 12 weeks')">Show 12-week heatmap</button>
             </div>
           </div>`,
+
+          /* 7 — Reviewer calibration table (dedicated, not the generic KPI-failures table) */
+          `<div class="canvas-render">
+            <div class="canvas-type-label"><svg width="11" height="12" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>Table · Reviewer calibration</div>
+            <div class="canvas-table">
+              <table>
+                <thead><tr><th>Reviewer</th><th>Reviews</th><th>Avg score assigned</th><th>Volume share</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td class="ct-agent">Harazem Adam</td><td>1,179</td><td class="ct-score score-ok">95.5%</td><td>35.1%</td><td><span class="loop-state acknowledged" style="font-size:10px;"><span class="ls-dot"></span>In range</span></td></tr>
+                  <tr><td class="ct-agent">Salma Ehab</td><td>1,111</td><td class="ct-score score-ok">96.3%</td><td>33.0%</td><td><span class="loop-state acknowledged" style="font-size:10px;"><span class="ls-dot"></span>In range</span></td></tr>
+                  <tr><td class="ct-agent">Yomna Ehab</td><td>1,073</td><td class="ct-score score-ok">96.4%</td><td>31.9%</td><td><span class="loop-state acknowledged" style="font-size:10px;"><span class="ls-dot"></span>In range</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="font-size:12px;color:var(--d300);margin-top:10px;line-height:1.6;">
+              Spread between reviewers is <strong style="color:var(--d100);">0.9pts</strong> — well inside normal calibration tolerance. No reviewer is scoring systematically harder or softer than the others; volume share is roughly even (31–35%) so no single reviewer is carrying a disproportionate share of the workload.
+            </div>
+            <div class="canvas-action-row">
+              <button class="k-action-primary" type="button" style="font-size:11px;padding:6px 14px;">Schedule a calibration session anyway</button>
+              <button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;">Export table</button>
+            </div>
+          </div>`,
         ];
         let stubIdx = 0;
 
@@ -13557,6 +13529,7 @@
            7 → KPI bar chart         (KPI breakdown / kpi scores / category)        */
         function routeCanvasResponse(query) {
           const q = query.toLowerCase();
+          const isReviewerCal = /reviewer calibration|reviewer performance|reviewer bias|harazem|scoring bias/.test(q);
           const isScorecard  = /scorecard|score card|pull up|open|profile|omar|tariq/.test(q);
           const isTable      = /table|who is below|who needs|below target/.test(q);
           const isChart      = /trend|chart|graph|over time|30 day|quality score|weekly/.test(q);
@@ -13564,6 +13537,7 @@
           const isEvalList   = /evaluat|interaction|individual|47|list the|failed this|failed eval|show.*fail/.test(q);
           const isKpiBar     = /kpi breakdown|kpi score|kpi category|kpi break|show.*kpi|omar.*kpi|kpi.*omar/.test(q);
 
+          if (isReviewerCal) return STUB_RESPONSES[7]; // reviewer calibration table
           if (isEvalList)   return STUB_RESPONSES[6]; // evaluation list render
           if (isKpiBar)     return STUB_RESPONSES[7]; // KPI bar chart render
           if (isScorecard)  return STUB_RESPONSES[0]; // scorecard render
@@ -13639,6 +13613,44 @@
           if (ctx && matched) ctx.innerHTML = matched.label;
         };
 
+        /* ── Merged Product/Agent performance switcher (Batch 6) ───────────
+           Local pill toggle inside one behav-card; swaps the visible
+           lollipop pane plus the title, subtitle, and contextual header
+           actions (View all products vs Generate team plan + 7d/30d/90d). */
+        window.setPerfTab = function setPerfTab(tab) {
+          const isProducts = tab === "products";
+          const btnP = document.getElementById("perfTabProducts");
+          const btnA = document.getElementById("perfTabAgents");
+          const paneP = document.getElementById("perfPaneProducts");
+          const paneA = document.getElementById("perfPaneAgents");
+          const title = document.getElementById("perfSwitchTitle");
+          const sub = document.getElementById("perfSwitchSub");
+          const viewAllBtn = document.getElementById("perfViewAllBtn");
+          const teamPlanBtn = document.getElementById("perfTeamPlanBtn");
+          const heatmapBtn = document.getElementById("perfHeatmapBtn");
+          const timeRange = document.getElementById("perfTimeRange");
+          if (!btnP || !btnA || !paneP || !paneA) return;
+
+          btnP.classList.toggle("is-active", isProducts);
+          btnP.setAttribute("aria-selected", isProducts);
+          btnA.classList.toggle("is-active", !isProducts);
+          btnA.setAttribute("aria-selected", !isProducts);
+
+          paneP.style.display = isProducts ? "" : "none";
+          paneA.style.display = isProducts ? "none" : "";
+          paneP.classList.toggle("is-active", isProducts);
+          paneA.classList.toggle("is-active", !isProducts);
+
+          if (title) title.textContent = isProducts ? "Product performance" : "Member breakdown";
+          if (sub) sub.textContent = isProducts
+            ? "Pass rate by product · ranked · weakest at the bottom · click a product to audit its failures"
+            : "All 12 agents on Product Support · ranked by quality · click an agent to see their full scorecard";
+          if (viewAllBtn) viewAllBtn.style.display = isProducts ? "" : "none";
+          if (teamPlanBtn) teamPlanBtn.style.display = isProducts ? "none" : "";
+          if (heatmapBtn) heatmapBtn.style.display = isProducts ? "none" : "";
+          if (timeRange) timeRange.style.display = isProducts ? "none" : "";
+        };
+
         VIEWS.forEach(function(v) {
           if (v.btn) v.btn.addEventListener("click", function(){ setView(v.key); });
         });
@@ -13678,11 +13690,14 @@
             riskPill.innerHTML = '<span class="risk-dot"></span>' + d.riskLabel;
           }
 
-          /* Meta line */
+          /* Meta line — two-row structure: facts line, then coverage line */
           const metaEl = document.querySelector('.agent-header-meta');
           if (metaEl) {
-            metaEl.innerHTML = d.meta + '<span class="sep">\u00b7</span>'
-              + '<span class="coverage-stat">' + d.evals + ' evaluations this period</span>';
+            const lines = metaEl.querySelectorAll('.agent-header-meta-line');
+            if (lines[0]) lines[0].textContent = d.meta;
+            if (lines[1]) {
+              lines[1].innerHTML = '<span class="coverage-stat">' + d.evals + ' evaluations this period</span>';
+            }
           }
 
           /* Open coaching strip — hide for healthy agents */
