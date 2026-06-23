@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AiMY QA — Dashboard</title>
+    <title>AiMY QA — Settings</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -64,6 +64,30 @@
         /* Layout Variables */
         --sidebar-width: 220px;
         --topbar-height: 60px;
+
+        /* ── Compatibility tokens (design-doc component layer) ── */
+        --d200: #c8d2dc;
+        --info: #0ea5e9;
+        --info-bg: rgba(14, 165, 233, 0.12);
+        --teal-dim: rgba(111, 223, 226, 0.12);
+        --qa-accent-glow: rgba(139, 79, 244, 0.25);
+        --r-xs: 4px;
+        --r-sm: 6px;
+        --r-md: 8px;
+        --r-lg: 10px;
+        --r-xl: 12px;
+        --r-2xl: 16px;
+        --r-pill: 9999px;
+        --t-fast: 150ms;
+        --t-base: 200ms;
+        --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        --font-sans: "Urbanist", sans-serif;
+        --font-mono: "JetBrains Mono", monospace;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+        --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+        --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.5);
       }
 
       /* ── Accessibility: global focus-visible.
@@ -5503,6 +5527,349 @@
       .ada-primary:hover { background: rgba(var(--qa-accent-rgb),.20); }
       .ada-secondary { background: rgba(255,255,255,.03); color: var(--d400); border-color: rgba(255,255,255,.08); }
       .ada-secondary:hover { background: rgba(255,255,255,.07); color: var(--d200); }
+
+      /* ════════════════════════════════════════════════════════════════════
+         SETTINGS — component layer (design-doc primitives) + page layout
+      ════════════════════════════════════════════════════════════════════ */
+
+      /* ── Buttons ── */
+      .btn {
+        display: inline-flex; align-items: center; gap: 7px;
+        font-family: var(--font-sans); font-size: 12px; font-weight: 700;
+        padding: 8px 16px; border-radius: var(--r-md);
+        border: 1px solid transparent; cursor: pointer;
+        transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+        white-space: nowrap; text-decoration: none;
+      }
+      .btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+      .btn-brand { background: var(--brand); color: #fff; border-color: var(--brand); }
+      .btn-brand:hover { background: #4d7fff; border-color: #4d7fff; }
+      .btn-ghost { background: rgba(255,255,255,0.05); color: var(--d300); border-color: rgba(255,255,255,0.1); }
+      .btn-ghost:hover { background: rgba(255,255,255,0.09); color: var(--d50); border-color: rgba(255,255,255,0.16); }
+      .btn-err { background: var(--err-bg); color: var(--err); border-color: rgba(240,68,56,0.25); }
+      .btn-err:hover { background: rgba(240,68,56,0.2); }
+      .btn-sm { font-size: 10.5px; padding: 5px 11px; }
+      .btn-icon { padding: 8px; }
+      .btn:disabled { opacity: 0.38; cursor: not-allowed; }
+
+      /* ── Form inputs ── */
+      .field { display: flex; flex-direction: column; gap: 5px; }
+      .field-label { font-size: 11px; font-weight: 700; color: var(--d300); letter-spacing: 0.02em; }
+      .field-hint { font-size: 10.5px; color: var(--d500); line-height: 1.5; }
+      .field-error { font-size: 10.5px; color: var(--err); }
+      .input {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: var(--r-md); padding: 8px 12px;
+        font-family: var(--font-sans); font-size: 12.5px;
+        color: var(--d50); outline: none; width: 100%;
+        transition: border-color var(--t-fast), background var(--t-fast);
+      }
+      .input::placeholder { color: var(--d600); }
+      .input:hover { border-color: rgba(255,255,255,0.16); }
+      .input:focus { border-color: var(--brand); background: rgba(51,105,255,0.05); }
+      .input.error { border-color: var(--err); }
+      .input.success { border-color: var(--ok); }
+      .input:disabled { opacity: 0.38; cursor: not-allowed; }
+      textarea.input { resize: vertical; min-height: 80px; line-height: 1.6; }
+      .input-wrap { position: relative; display: flex; align-items: center; }
+      .input-wrap .input-suffix {
+        position: absolute; right: 12px; font-size: 11px; font-weight: 600;
+        color: var(--d500); pointer-events: none;
+      }
+      .input-wrap .input { padding-right: 48px; }
+
+      /* ── Toggle ── */
+      .toggle-wrap { display: flex; align-items: center; gap: 10px; }
+      .toggle { position: relative; width: 36px; height: 20px; flex-shrink: 0; cursor: pointer; display: inline-block; }
+      .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+      .toggle-track {
+        position: absolute; inset: 0; background: rgba(255,255,255,0.12);
+        border-radius: var(--r-pill); transition: background var(--t-fast);
+      }
+      .toggle input:checked ~ .toggle-track { background: var(--brand); }
+      .toggle-thumb {
+        position: absolute; top: 3px; left: 3px; width: 14px; height: 14px;
+        border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        transition: transform var(--t-fast);
+      }
+      .toggle input:checked ~ .toggle-thumb { transform: translateX(16px); }
+      .toggle input:focus-visible ~ .toggle-track { outline: 2px solid var(--brand); outline-offset: 2px; }
+      .toggle-label { font-size: 12px; font-weight: 600; color: var(--d300); }
+
+      /* ── Checkbox / Radio ── */
+      .checkbox-wrap { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+      .checkbox {
+        width: 16px; height: 16px; border-radius: var(--r-xs);
+        border: 1.5px solid rgba(255,255,255,0.2); background: transparent; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        transition: background var(--t-fast), border-color var(--t-fast);
+      }
+      .checkbox.checked { background: var(--brand); border-color: var(--brand); }
+      .checkbox.checked::after { content: "\2713"; font-size: 10px; color: #fff; font-weight: 700; }
+      .checkbox-label { font-size: 12px; font-weight: 600; color: var(--d300); }
+      .radio-wrap { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+      .radio {
+        width: 16px; height: 16px; border-radius: 50%;
+        border: 1.5px solid rgba(255,255,255,0.2); background: transparent; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        transition: border-color var(--t-fast);
+      }
+      .radio.checked { border-color: var(--brand); }
+      .radio.checked::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--brand); }
+      .radio-label { font-size: 12px; font-weight: 600; color: var(--d300); }
+
+      /* ── Masked / API-key input ── */
+      .masked-input-wrap { display: flex; align-items: center; gap: 8px; }
+      .masked-input-wrap .input { font-family: var(--font-mono); letter-spacing: 0.08em; }
+      .masked-input-wrap .btn-icon { flex-shrink: 0; }
+
+      /* ── Tags ── */
+      .tag {
+        display: inline-flex; align-items: center; gap: 4px;
+        font-size: 10px; font-weight: 700; padding: 2px 8px;
+        border-radius: var(--r-pill); letter-spacing: 0.04em;
+        text-transform: uppercase; white-space: nowrap;
+      }
+      .tag-ok { background: var(--ok-bg); color: var(--ok); border: 1px solid rgba(23,178,106,0.22); }
+      .tag-warn { background: var(--warn-bg); color: var(--warn); border: 1px solid rgba(247,144,9,0.22); }
+      .tag-err { background: var(--err-bg); color: var(--err); border: 1px solid rgba(240,68,56,0.22); }
+      .tag-ai { background: rgba(0,102,255,0.1); color: #61adf1; border: 1px solid rgba(0,102,255,0.22); }
+      .tag-info { background: var(--info-bg); color: var(--info); border: 1px solid rgba(14,165,233,0.22); }
+      .tag-teal { background: var(--teal-dim); color: var(--teal); border: 1px solid rgba(111,223,226,0.22); }
+      .tag-neutral { background: rgba(255,255,255,0.05); color: var(--d300); border: 1px solid rgba(255,255,255,0.1); }
+
+      /* ── Dropdown (v2-dropdown — replaces native select) ── */
+      .v2-dropdown { position: relative; display: inline-flex; }
+      .v2-dropdown.full { display: flex; width: 100%; }
+      .v2-dropdown-btn {
+        display: flex; align-items: center; justify-content: space-between; gap: 6px; width: 100%;
+        background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+        border-radius: var(--r-md); padding: 8px 12px;
+        font-family: var(--font-sans); font-size: 12.5px; font-weight: 600;
+        color: var(--d100); cursor: pointer;
+        transition: border-color var(--t-fast), background var(--t-fast), color var(--t-fast);
+      }
+      .v2-dropdown-btn:hover { border-color: rgba(255,255,255,0.16); }
+      .v2-dropdown-btn[aria-expanded="true"] { border-color: var(--brand); background: rgba(51,105,255,0.06); color: #c5dcff; }
+      .v2-dropdown-btn svg { width: 12px; height: 12px; color: var(--d400); flex-shrink: 0; transition: transform var(--t-fast); }
+      .v2-dropdown-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+      .dd-label-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .v2-dropdown-panel {
+        position: absolute; top: calc(100% + 4px); left: 0; right: 0; min-width: 180px;
+        background: var(--d800); border: 1px solid rgba(255,255,255,0.1);
+        border-radius: var(--r-lg); padding: 4px; box-shadow: var(--shadow-lg); z-index: 600;
+        opacity: 0; transform: translateY(-4px) scale(0.98); transform-origin: top; pointer-events: none;
+        transition: opacity var(--t-fast), transform var(--t-fast) var(--ease-spring);
+      }
+      .v2-dropdown-panel.open { opacity: 1; transform: none; pointer-events: auto; }
+      .v2-dropdown-option {
+        display: flex; align-items: center; gap: 8px; padding: 7px 10px;
+        border-radius: var(--r-sm); font-size: 12px; font-weight: 600; color: var(--d200);
+        cursor: pointer; transition: background var(--t-fast);
+      }
+      .v2-dropdown-option:hover { background: rgba(255,255,255,0.05); }
+      .v2-dropdown-option::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: transparent; flex-shrink: 0; }
+      .v2-dropdown-option.selected { background: rgba(51,105,255,0.1); color: #a8ccff; }
+      .v2-dropdown-option.selected::before { background: #61adf1; }
+
+      /* ── Modal ── */
+      .modal-overlay {
+        position: fixed; inset: 0; z-index: 1000;
+        display: flex; align-items: center; justify-content: center; padding: 24px;
+        background: rgba(6,9,13,0.62); opacity: 0; pointer-events: none;
+        transition: opacity var(--t-base);
+      }
+      .modal-overlay.open { opacity: 1; pointer-events: auto; }
+      .modal {
+        background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
+        border-radius: var(--r-2xl); padding: 24px 26px; max-width: 540px; width: 100%;
+        box-shadow: var(--shadow-xl); position: relative;
+        max-height: calc(100vh - 48px); overflow-y: auto;
+        transform: translateY(8px) scale(0.985);
+        transition: transform var(--t-base) var(--ease-out);
+      }
+      .modal-overlay.open .modal { transform: none; }
+      .modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+      .modal-title { font-size: 16px; font-weight: 800; color: var(--d50); letter-spacing: -0.01em; }
+      .modal-sub { font-size: 11.5px; color: var(--d500); margin-top: 3px; }
+      .modal-close {
+        width: 28px; height: 28px; border-radius: var(--r-sm);
+        background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+        color: var(--d400); cursor: pointer; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center; font-size: 16px;
+        transition: background var(--t-fast), color var(--t-fast);
+      }
+      .modal-close:hover { background: rgba(255,255,255,0.1); color: var(--d50); }
+      .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 22px; }
+
+      /* ── Callout ── */
+      .set-callout {
+        display: flex; gap: 10px; align-items: flex-start;
+        background: var(--warn-bg); border: 1px solid rgba(247,144,9,0.22);
+        border-radius: var(--r-md); padding: 10px 12px;
+        font-size: 11.5px; color: var(--d200); line-height: 1.55;
+      }
+      .set-callout svg { width: 15px; height: 15px; color: var(--warn); flex-shrink: 0; margin-top: 1px; }
+
+      /* ═══════════════ PAGE LAYOUT ═══════════════ */
+      .settings-wrap { max-width: 1040px; }
+      .settings-head { margin-bottom: 18px; }
+      .settings-title { font-size: 22px; font-weight: 800; color: var(--d50); letter-spacing: -0.02em; }
+      .settings-subtitle { font-size: 13px; color: var(--d400); margin-top: 3px; }
+
+      /* AI config-health strip — Knowledge → Action */
+      .ai-config-strip {
+        display: flex; align-items: center; gap: 14px;
+        background: linear-gradient(135deg, rgba(0,102,255,0.07), rgba(111,223,226,0.04));
+        border: 1px solid rgba(97,173,241,0.18);
+        border-radius: var(--r-xl); padding: 14px 16px; margin-bottom: 22px;
+      }
+      .ai-config-mark { width: 26px; height: 26px; flex-shrink: 0; }
+      .ai-config-mark svg { width: 100%; height: 100%; }
+      .ai-config-body { flex: 1; min-width: 0; }
+      .ai-config-eyebrow {
+        display: flex; align-items: center; gap: 6px; margin-bottom: 3px;
+        font-size: 9.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #61adf1;
+      }
+      .ai-config-text { font-size: 12.5px; color: var(--d100); line-height: 1.5; }
+      .ai-config-text b { color: var(--d50); font-weight: 700; }
+
+      /* Tabs */
+      .settings-tabs {
+        display: flex; gap: 2px; border-bottom: 1px solid rgba(255,255,255,0.08);
+        margin-bottom: 22px;
+      }
+      .settings-tab {
+        position: relative; background: none; border: none; cursor: pointer;
+        font-family: var(--font-sans); font-size: 13px; font-weight: 700; color: var(--d400);
+        padding: 10px 16px 13px; transition: color var(--t-fast);
+      }
+      .settings-tab:hover { color: var(--d200); }
+      .settings-tab.active { color: var(--qa-accent); }
+      .settings-tab::after {
+        content: ""; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px;
+        background: var(--qa-accent); border-radius: 2px;
+        transform: scaleX(0); transform-origin: center; transition: transform var(--t-base) var(--ease-out);
+      }
+      .settings-tab.active::after { transform: scaleX(1); }
+
+      /* Panels */
+      .settings-panel { display: none; }
+      .settings-panel.active { display: block; animation: panelIn var(--t-base) var(--ease-out); }
+      @keyframes panelIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+      /* Cards / rows */
+      .set-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+      .set-card {
+        background: var(--card-bg); border: 1px solid var(--card-border);
+        border-radius: var(--r-2xl); padding: 20px 22px;
+      }
+      .set-card { margin-top: 16px; }
+      .set-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+      .set-card-title { font-size: 14px; font-weight: 800; color: var(--d50); letter-spacing: -0.01em; }
+      .set-card-sub { font-size: 11.5px; color: var(--d500); margin-bottom: 16px; line-height: 1.5; }
+
+      .set-row {
+        display: flex; align-items: center; gap: 16px; padding: 14px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+      }
+      .set-row:last-child { border-bottom: none; padding-bottom: 0; }
+      .set-row:first-of-type { padding-top: 0; }
+      .set-row-text { flex: 1; min-width: 0; }
+      .set-row-title { font-size: 12.5px; font-weight: 700; color: var(--d100); }
+      .set-row-desc { font-size: 11px; color: var(--d500); margin-top: 2px; line-height: 1.45; }
+      .set-row-control { flex-shrink: 0; }
+
+      /* Quality targets */
+      .target-row { display: flex; align-items: center; gap: 16px; padding: 13px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+      .target-row:last-child { border-bottom: none; padding-bottom: 0; }
+      .target-row:first-of-type { padding-top: 0; }
+      .target-text { flex: 1; min-width: 0; }
+      .target-name { font-size: 12.5px; font-weight: 700; color: var(--d100); }
+      .target-delta { font-size: 10.5px; margin-top: 3px; display: inline-flex; align-items: center; gap: 5px; }
+      .target-delta.below { color: var(--err); }
+      .target-delta.met { color: var(--ok); }
+      .target-input { width: 116px; flex-shrink: 0; }
+
+      /* Alert rules */
+      .rule-list { display: flex; flex-direction: column; gap: 10px; }
+      .rule-row {
+        display: flex; align-items: center; gap: 16px;
+        background: rgba(255,255,255,0.02); border: 1px solid var(--card-border);
+        border-radius: var(--r-lg); padding: 14px 16px;
+        transition: border-color var(--t-fast);
+      }
+      .rule-row:hover { border-color: var(--card-border-hover); }
+      .rule-row.disabled { opacity: 0.55; }
+      .rule-main { flex: 1; min-width: 0; }
+      .rule-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+      .rule-name { font-size: 13px; font-weight: 700; color: var(--d50); }
+      .rule-sentence { font-size: 11.5px; color: var(--d300); line-height: 1.5; }
+      .rule-sentence b { color: var(--d50); font-weight: 700; }
+      .rule-channels { display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
+      .rule-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+      /* Integrations */
+      .integration-row {
+        display: flex; align-items: center; gap: 14px;
+        background: rgba(255,255,255,0.02); border: 1px solid var(--card-border);
+        border-radius: var(--r-lg); padding: 15px 16px;
+      }
+      .integration-row + .integration-row { margin-top: 10px; }
+      .integration-icon {
+        width: 36px; height: 36px; border-radius: var(--r-md); flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px; font-weight: 800; color: #fff;
+      }
+      .integration-info { flex: 1; min-width: 0; }
+      .integration-name { font-size: 13px; font-weight: 700; color: var(--d50); display: flex; align-items: center; gap: 8px; }
+      .integration-desc { font-size: 11px; color: var(--d500); margin-top: 2px; }
+      .integration-actions { flex-shrink: 0; display: flex; align-items: center; gap: 8px; }
+      .integration-key { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); }
+
+      /* Rule-builder live preview */
+      .rule-preview {
+        background: rgba(0,102,255,0.06); border: 1px solid rgba(97,173,241,0.2);
+        border-radius: var(--r-md); padding: 11px 13px; font-size: 12px; color: var(--d100); line-height: 1.55;
+      }
+      .rule-preview b { color: #c5dcff; font-weight: 700; }
+      .builder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .builder-grid .full { grid-column: 1 / -1; }
+      .builder-section-label {
+        font-size: 9.5px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase;
+        color: var(--d500); margin: 4px 0 2px;
+      }
+      .channel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .radio-row { display: flex; gap: 18px; flex-wrap: wrap; }
+
+      @media (max-width: 880px) {
+        .set-grid, .builder-grid, .channel-grid { grid-template-columns: 1fr; }
+      }
+
+      /* Add-integration picker */
+      .add-int-list { display: flex; flex-direction: column; gap: 8px; }
+      .add-int-option {
+        display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+        background: rgba(255,255,255,0.02); border: 1px solid var(--card-border);
+        border-radius: var(--r-lg); padding: 11px 13px; cursor: pointer;
+        font-family: var(--font-sans);
+        transition: border-color var(--t-fast), background var(--t-fast);
+      }
+      .add-int-option:hover { border-color: var(--card-border-hover); background: rgba(255,255,255,0.05); }
+      .add-int-option .integration-icon { width: 32px; height: 32px; font-size: 12px; }
+      .add-int-meta { flex: 1; min-width: 0; }
+      .add-int-name { font-size: 12.5px; font-weight: 700; color: var(--d50); }
+      .add-int-desc { font-size: 11px; color: var(--d500); margin-top: 1px; }
+
+      /* Motion guard */
+      @media (prefers-reduced-motion: reduce) {
+        .settings-panel.active { animation: none; }
+        .settings-tab::after { transition: none; }
+        .modal, .modal-overlay, .v2-dropdown-panel { transition: opacity var(--t-fast); transform: none; }
+        .modal { transform: none; }
+      }
+
 </style>
   </head>
   <body>
@@ -6097,7 +6464,7 @@
       <div class="app-sidebar">
                 <div class="sidebar-nav">
           <div class="sidebar-section-label">Primary</div>
-          <a class="nav-item active" href="index.html">
+          <a class="nav-item" href="index.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="3" width="7" height="7"></rect>
               <rect x="14" y="3" width="7" height="7"></rect>
@@ -6140,7 +6507,7 @@
             </svg>
             Data
           </a>
-          <a class="nav-item" href="settings.html">
+          <a class="nav-item active" href="settings.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"></circle>
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -6158,1325 +6525,337 @@
             <!-- Active filter chips injected here by JS -->
             <button class="afs-clear-all" id="afsClearAll">Clear all</button>
           </div>
-        <!-- ════ AIMY DAILY SUMMARY CARD ════════════════════════════════════════
-             Headline metric + 3 key signals + primary action for today.
-             Content driven by JS data below (updateSummaryCard).
-        ════════════════════════════════════════════════════════════════════════ -->
-        <div class="aimy-summary-card" id="aimySummaryCard" role="region" aria-label="AiMY today summary">
 
-          <!-- Row 1: two columns — [score + meta] | [scoreboard, pushed right] -->
-          <div class="summary-top-row">
-            <div class="summary-col-1">
-              <div class="summary-left">
-                <!-- Big number -->
-                <div class="summary-headline-score" id="summaryHeadlineScore">
-                  83<span class="score-unit">%</span>
-                </div>
-                <!-- Meta stack: eyebrow / label / delta / eval-count -->
-                <div class="summary-score-meta">
-                  <div class="summary-eyebrow">
-                    <span>Today</span>
-                  </div>
-                  <div class="summary-headline-label">Overall Quality Score</div>
-                  <div class="summary-score-delta down" id="summaryScoreDelta">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    <span id="summaryDeltaText">&#8722;4 pts vs yesterday</span>
-                  </div>
-                  <div class="summary-evaluated-line">
-                    <strong id="summaryEvalCount">2,847</strong> tickets evaluated today
-                  </div>
-                </div>
+        <div class="settings-wrap">
+          <div class="settings-head">
+            <div class="settings-title">Settings</div>
+            <div class="settings-subtitle">Quality targets, AI evaluation, alert routing, and integrations.</div>
+          </div>
+
+          <div class="ai-config-strip" role="region" aria-label="Configuration health">
+            <div class="ai-config-mark"><svg viewBox="0 0 18 20"><use href="#aimy-logo-small"></use></svg></div>
+            <div class="ai-config-body">
+              <div class="ai-config-eyebrow"><span>AiMY &middot; Configuration</span></div>
+              <div class="ai-config-text"><b>4 alert rules</b> configured, 3 active &middot; <b>1 of 4 integrations</b> connected &middot; quality targets unchanged for <b>18 days</b>. Your Quality-Score target sits <b>7 pts above</b> current performance.</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" type="button" data-action="goto-integrations">Review integrations</button>
+          </div>
+
+          <div class="settings-tabs" role="tablist" aria-label="Settings sections">
+            <button class="settings-tab active" role="tab" aria-selected="true" id="tab-quality" data-tab="quality">Quality</button>
+            <button class="settings-tab" role="tab" aria-selected="false" id="tab-alerts" data-tab="alerts">Alerts &amp; Notifications</button>
+            <button class="settings-tab" role="tab" aria-selected="false" id="tab-integrations" data-tab="integrations">Integrations</button>
+            <button class="settings-tab" role="tab" aria-selected="false" id="tab-account" data-tab="account">Account</button>
+          </div>
+
+        <div class="settings-panel active" role="tabpanel" aria-labelledby="tab-quality" data-panel="quality">
+          <div class="set-grid">
+            <div class="set-card">
+              <div class="set-card-head"><div class="set-card-title">Quality Targets</div></div>
+              <div class="set-card-sub">Benchmarks AiMY scores every interaction against. When live performance falls short, the matching alert rule fires.</div>
+              <div class="target-row"><div class="target-text"><div class="target-name">Quality Score</div><div class="target-delta below">Now 83% &middot; 7 pts below target</div></div><div class="input-wrap target-input"><input class="input" type="number" value="90" aria-label="Quality Score target"><span class="input-suffix">%</span></div></div>
+              <div class="target-row"><div class="target-text"><div class="target-name">SLA Compliance</div><div class="target-delta below">Now 88% &middot; 2 pts below target</div></div><div class="input-wrap target-input"><input class="input" type="number" value="90" aria-label="SLA Compliance target"><span class="input-suffix">%</span></div></div>
+              <div class="target-row"><div class="target-text"><div class="target-name">Pass Rate</div><div class="target-delta met">Now 87% &middot; target met</div></div><div class="input-wrap target-input"><input class="input" type="number" value="85" aria-label="Pass Rate target"><span class="input-suffix">%</span></div></div>
+              <div class="target-row"><div class="target-text"><div class="target-name">First Response</div><div class="target-delta below">Now 34 min &middot; 4 min over target</div></div><div class="input-wrap target-input"><input class="input" type="number" value="30" aria-label="First Response target"><span class="input-suffix">min</span></div></div>
+            </div>
+            <div class="set-card">
+              <div class="set-card-head"><div class="set-card-title">AI Evaluation Rules</div></div>
+              <div class="set-card-sub">What AiMY analyses automatically across every review. Each finding is paired with a contextual action on the dashboard.</div>
+              <div class="set-row"><div class="set-row-text"><div class="set-row-title">KPI Failure Detection</div><div class="set-row-desc">Parse review comments for KPI-failure patterns.</div></div><div class="set-row-control"><label class="toggle"><input type="checkbox" checked aria-label="KPI Failure Detection"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div></div>
+              <div class="set-row"><div class="set-row-text"><div class="set-row-title">Product Risk Alerts</div><div class="set-row-desc">Auto-flag products with high fail rates.</div></div><div class="set-row-control"><label class="toggle"><input type="checkbox" checked aria-label="Product Risk Alerts"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div></div>
+              <div class="set-row"><div class="set-row-text"><div class="set-row-title">Auto Coaching Recommendations</div><div class="set-row-desc">Generate coaching plans from QA data.</div></div><div class="set-row-control"><label class="toggle"><input type="checkbox" checked aria-label="Auto Coaching Recommendations"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div></div>
+              <div class="set-row"><div class="set-row-text"><div class="set-row-title">Weekly Score Trend Analysis</div><div class="set-row-desc">Track and visualise quality trend by week.</div></div><div class="set-row-control"><label class="toggle"><input type="checkbox" checked aria-label="Weekly Score Trend Analysis"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-panel" role="tabpanel" aria-labelledby="tab-alerts" data-panel="alerts">
+          <div class="set-card">
+            <div class="set-card-head">
+              <div>
+                <div class="set-card-title">Alert &amp; Notification Rules</div>
+                <div class="set-card-sub" style="margin-bottom:0">Every rule names what fires it and where it routes &mdash; so an alert never lands without an owner and a next step.</div>
+              </div>
+              <button class="btn btn-brand btn-sm" type="button" data-action="new-rule">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Create rule
+              </button>
+            </div>
+            <div class="rule-list" id="ruleList" style="margin-top:18px"><div class="rule-row" data-rule><div class="rule-main"><div class="rule-top"><span class="rule-name">Product fail-rate breach</span><span class="tag tag-err">Critical</span></div><p class="rule-sentence">When <b>product fail rate</b> is <b>above 15%</b>, notify <b>QA Supervisor</b>.</p><div class="rule-channels"><span class="tag tag-neutral">In-app</span><span class="tag tag-neutral">Email</span></div></div><div class="rule-actions"><label class="toggle"><input type="checkbox" checked aria-label="Enable Product fail-rate breach"><div class="toggle-track"></div><div class="toggle-thumb"></div></label><button class="btn btn-ghost btn-sm" type="button" data-action="edit-rule">Edit</button></div></div><div class="rule-row" data-rule><div class="rule-main"><div class="rule-top"><span class="rule-name">KPI failure surge</span><span class="tag tag-warn">Warning</span></div><p class="rule-sentence">When <b>KPI failure count</b> is <b>above 80</b>, notify <b>Team Lead</b>.</p><div class="rule-channels"><span class="tag tag-neutral">In-app</span></div></div><div class="rule-actions"><label class="toggle"><input type="checkbox" checked aria-label="Enable KPI failure surge"><div class="toggle-track"></div><div class="toggle-thumb"></div></label><button class="btn btn-ghost btn-sm" type="button" data-action="edit-rule">Edit</button></div></div><div class="rule-row" data-rule><div class="rule-main"><div class="rule-top"><span class="rule-name">Pass-rate shortfall</span><span class="tag tag-err">Critical</span></div><p class="rule-sentence">When <b>overall pass rate</b> is <b>below 85%</b>, notify <b>Director of Quality</b>.</p><div class="rule-channels"><span class="tag tag-neutral">Email</span></div></div><div class="rule-actions"><label class="toggle"><input type="checkbox" checked aria-label="Enable Pass-rate shortfall"><div class="toggle-track"></div><div class="toggle-thumb"></div></label><button class="btn btn-ghost btn-sm" type="button" data-action="edit-rule">Edit</button></div></div><div class="rule-row disabled" data-rule><div class="rule-main"><div class="rule-top"><span class="rule-name">Weekly trend decline</span><span class="tag tag-warn">Warning</span></div><p class="rule-sentence">When the <b>weekly trend</b> declines <b>more than 2%</b>, notify <b>Operations Manager</b>.</p><div class="rule-channels"><span class="tag tag-neutral">In-app</span></div></div><div class="rule-actions"><label class="toggle"><input type="checkbox" aria-label="Enable Weekly trend decline"><div class="toggle-track"></div><div class="toggle-thumb"></div></label><button class="btn btn-ghost btn-sm" type="button" data-action="edit-rule">Edit</button></div></div></div>
+          </div>
+
+          <div class="set-card">
+            <div class="set-card-head"><div class="set-card-title">Quiet hours</div></div>
+            <div class="set-card-sub">Hold non-critical alerts outside working hours and batch them into a digest. Critical rules always notify immediately.</div>
+            <div class="set-row">
+              <div class="set-row-text">
+                <div class="set-row-title">Pause non-critical alerts</div>
+                <div class="set-row-desc">Warning and info alerts are held and delivered as a single digest when quiet hours end.</div>
+              </div>
+              <div class="set-row-control"><label class="toggle"><input type="checkbox" aria-label="Pause non-critical alerts"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+            </div>
+            <div class="set-row">
+              <div class="set-row-text">
+                <div class="set-row-title">Quiet window</div>
+                <div class="set-row-desc">Local time. Applies daily.</div>
+              </div>
+              <div class="set-row-control" style="display:flex;align-items:center;gap:8px">
+                <input class="input" type="time" value="18:00" style="width:120px" aria-label="Quiet hours start">
+                <span style="color:var(--d500);font-size:11px">to</span>
+                <input class="input" type="time" value="09:00" style="width:120px" aria-label="Quiet hours end">
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="summary-col-2">
-              <!-- Scoreboard strip: Total Reviewed · Pass · Fail · Overall Score -->
-              <div class="summary-scoreboard" aria-label="Quality summary numbers">
-                <div class="sb-stat">
-                  <span class="sb-stat-label">Reviewed</span>
-                  <span class="sb-stat-value" id="sbTotal">3,363</span>
+        <div class="settings-panel" role="tabpanel" aria-labelledby="tab-integrations" data-panel="integrations">
+          <div class="set-card">
+            <div class="set-card-head"><div class="set-card-title">Integrations</div></div>
+            <div class="set-card-sub">Data sources AiMY pulls reviews from, and channels it routes alerts to.</div>
+
+            <div class="integration-row" data-name="Zendesk Klaus">
+              <div class="integration-icon" style="background:#7456f5">Z</div>
+              <div class="integration-info">
+                <div class="integration-name"><span class="iname">Zendesk Klaus</span> <span class="tag tag-ok int-status">Connected</span></div>
+                <div class="integration-desc">Quality review data source &middot; 4,999 rows synced</div>
+              </div>
+              <div class="integration-actions">
+                <button class="btn btn-ghost btn-sm" type="button" data-action="sync">Sync now</button>
+              </div>
+            </div>
+            <div class="integration-key">
+              <div class="set-callout" style="margin-bottom:12px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <span>Keys are stored masked. <b>Edit credentials</b> clears the field &mdash; the full key must be re-entered, never pre-filled.</span>
+              </div>
+              <div class="field">
+                <label class="field-label">API key</label>
+                <div class="masked-input-wrap">
+                  <input class="input" id="zdKey" type="password" value="zd_live_xxxxxxxxxxxxxxxxxxxx" readonly aria-label="Zendesk API key">
+                  <button class="btn btn-ghost btn-icon" type="button" data-action="reveal-key" title="Show / hide" aria-label="Show or hide key"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
                 </div>
-                <div class="sb-stat">
-                  <span class="sb-stat-label">Pass</span>
-                  <span class="sb-stat-value ok" id="sbPass">3,018</span>
-                </div>
-                <div class="sb-stat">
-                  <span class="sb-stat-label">Fail</span>
-                  <span class="sb-stat-value err" id="sbFail">345</span>
-                </div>
-                <div class="sb-stat">
-                  <span class="sb-stat-label">Pass Rate</span>
-                  <span class="sb-stat-value ok" id="sbPassRate">89.7%</span>
-                </div>
-                <div class="sb-stat">
-                  <span class="sb-stat-label">Quality Score</span>
-                  <span class="sb-stat-value warn" id="sbQScore">87.3%</span>
-                  <span class="sb-vs-target" id="sbVsTarget">vs 90% target</span>
-                </div>
+                <span class="field-hint" id="zdKeyHint">Last updated 3 days ago.</span>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:12px">
+                <button class="btn btn-ghost btn-sm" type="button" data-action="edit-key">Edit credentials</button>
+                <button class="btn btn-err btn-sm" type="button" data-action="disconnect-zd">Disconnect</button>
               </div>
             </div>
           </div>
 
-          <!-- AiMY one-line narrative summary -->
-          <div class="summary-ai-line" id="summaryAiLine">
-            <svg width="13" height="15" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-            <p id="summaryAiLineText">Quality dipped <strong>4 points</strong> on an SLA breach and <strong>5 agents</strong> below threshold — both tied to the same coaching backlog driving today's <strong>2 overdue disputes</strong>.</p>
-          </div>
-
-          <!-- Row 2: 3 signal tiles spanning full width -->
-          <div class="summary-bottom-row">
-            <div class="summary-signals-row" id="summarySignalsRow">
-
-              <!-- Signal 1 — SLA breach (err) -->
-              <div class="summary-signal" id="summarySignal1" role="button" tabindex="0" aria-label="SLA compliance dropped to 61%">
-                <div class="signal-icon err" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path>
-                    <line x1="12" y1="9" x2="12" y2="13"></line>
-                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                  </svg>
-                </div>
-                <div class="signal-content">
-                  <div class="signal-title" id="signalTitle1">SLA compliance at 61%</div>
-                  <div class="signal-sub" id="signalSub1">First response SLA <strong>below 65% target</strong> — 8 agents affected</div>
-                </div>
+          <div class="set-card">
+            <div id="integrationsAddList">
+            <div class="integration-row" data-name="Excel Workbook Import">
+              <div class="integration-icon" style="background:#1f7244">X</div>
+              <div class="integration-info">
+                <div class="integration-name"><span class="iname">Excel Workbook Import</span> <span class="tag tag-neutral int-status">Manual</span></div>
+                <div class="integration-desc">Upload .xlsx exports when an automated source isn&#39;t available</div>
               </div>
-
-              <!-- Signal 2 — Agent performance (warn) -->
-              <div class="summary-signal" id="summarySignal2" role="button" tabindex="0" aria-label="5 agents below quality threshold">
-                <div class="signal-icon warn" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                  </svg>
-                </div>
-                <div class="signal-content">
-                  <div class="signal-title" id="signalTitle2">5 agents below threshold</div>
-                  <div class="signal-sub" id="signalSub2">Scores dropped <strong>vs last week</strong> &mdash; coaching flagged</div>
-                </div>
+              <div class="integration-actions"><button class="btn btn-ghost btn-sm" type="button" data-action="import-file">Import file</button></div>
+            </div>
+            <div class="integration-row" data-name="Microsoft Teams">
+              <div class="integration-icon" style="background:#4b53bc">T</div>
+              <div class="integration-info">
+                <div class="integration-name"><span class="iname">Microsoft Teams</span> <span class="tag tag-neutral int-status">Not connected</span></div>
+                <div class="integration-desc">Push alert notifications to a Teams channel</div>
               </div>
-
-              <!-- Signal 3 — Disputes (info) -->
-              <div class="summary-signal" id="summarySignal3" role="button" tabindex="0" aria-label="2 disputes overdue">
-                <div class="signal-icon info" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                    <rect x="2" y="3" width="20" height="14" rx="2"></rect>
-                    <polyline points="8 21 12 17 16 21"></polyline>
-                  </svg>
-                </div>
-                <div class="signal-content">
-                  <div class="signal-title" id="signalTitle3">2 disputes overdue</div>
-                  <div class="signal-sub" id="signalSub3"><strong>DISP-0441 &amp; DISP-0438</strong> past SLA window</div>
-                </div>
+              <div class="integration-actions"><button class="btn btn-ghost btn-sm" type="button" data-action="connect">Connect</button></div>
+            </div>
+            <div class="integration-row" data-name="Slack">
+              <div class="integration-icon" style="background:#4a154b">S</div>
+              <div class="integration-info">
+                <div class="integration-name"><span class="iname">Slack</span> <span class="tag tag-neutral int-status">Not connected</span></div>
+                <div class="integration-desc">Team alerts &amp; coaching nudges</div>
               </div>
-
+              <div class="integration-actions"><button class="btn btn-ghost btn-sm" type="button" data-action="connect">Connect</button></div>
+            </div>
+            </div>
+            <div style="margin-top:14px">
+              <button class="btn btn-ghost btn-sm" type="button" data-action="add-integration">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add integration
+              </button>
             </div>
           </div>
+        </div>
+
+        <div class="settings-panel" role="tabpanel" aria-labelledby="tab-account" data-panel="account">
+          <div class="set-grid">
+            <div class="set-card">
+              <div class="set-card-head"><div class="set-card-title">Profile</div></div>
+              <div class="set-card-sub">How you appear across AiMY and who alerts are addressed to.</div>
+              <div class="field" style="margin-bottom:14px">
+                <label class="field-label">Name</label>
+                <input class="input" type="text" value="Nour Wael">
+              </div>
+              <div class="field" style="margin-bottom:14px">
+                <label class="field-label">Email</label>
+                <input class="input" type="email" value="nour@aimy.io">
+              </div>
+              <div class="field" style="margin-bottom:14px">
+                <label class="field-label">Role</label>
+                <input class="input" type="text" value="Product Design" disabled>
+                <span class="field-hint">Role is managed by your workspace admin.</span>
+              </div>
+              <div class="field">
+                <label class="field-label">Team</label>
+                <div class="v2-dropdown full" data-dropdown data-name="team"><button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-label-text">Team Cairo</span><svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"></polyline></svg></button><div class="v2-dropdown-panel" role="listbox"><div class="v2-dropdown-option selected" role="option" data-value="cairo">Team Cairo</div><div class="v2-dropdown-option" role="option" data-value="nile">Team Nile</div><div class="v2-dropdown-option" role="option" data-value="delta">Team Delta</div></div></div>
+              </div>
+            </div>
+
+            <div class="set-card">
+              <div class="set-card-head"><div class="set-card-title">Preferences</div></div>
+              <div class="set-card-sub">Appearance and how AiMY reaches you.</div>
+              <div class="field" style="margin-bottom:16px">
+                <label class="field-label">Theme</label>
+                <div class="radio-row" id="themeRadio" style="margin-top:6px">
+                  <div class="radio-wrap" data-radio data-value="dark"><div class="radio checked"></div><span class="radio-label">Dark</span></div>
+                  <div class="radio-wrap" data-radio data-value="light"><div class="radio"></div><span class="radio-label">Light</span></div>
+                  <div class="radio-wrap" data-radio data-value="system"><div class="radio"></div><span class="radio-label">System</span></div>
+                </div>
+              </div>
+              <div class="field" style="margin-bottom:16px">
+                <label class="field-label">Notification digest</label>
+                <div class="v2-dropdown full" data-dropdown data-name="digest"><button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-label-text">Real-time</span><svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"></polyline></svg></button><div class="v2-dropdown-panel" role="listbox"><div class="v2-dropdown-option selected" role="option" data-value="realtime">Real-time</div><div class="v2-dropdown-option" role="option" data-value="daily">Daily summary</div><div class="v2-dropdown-option" role="option" data-value="weekly">Weekly summary</div></div></div>
+              </div>
+              <div class="field">
+                <label class="field-label">Language</label>
+                <div class="v2-dropdown full" data-dropdown data-name="lang"><button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-label-text">English</span><svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"></polyline></svg></button><div class="v2-dropdown-panel" role="listbox"><div class="v2-dropdown-option selected" role="option" data-value="en">English</div><div class="v2-dropdown-option" role="option" data-value="ar">Arabic</div><div class="v2-dropdown-option" role="option" data-value="fr">French</div></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="set-card">
+            <div class="set-card-head"><div class="set-card-title">Security</div></div>
+            <div class="set-card-sub">Protect access to QA data.</div>
+            <div class="set-row">
+              <div class="set-row-text">
+                <div class="set-row-title">Two-factor authentication</div>
+                <div class="set-row-desc">Require a verification code at sign-in.</div>
+              </div>
+              <div class="set-row-control"><label class="toggle"><input type="checkbox" checked aria-label="Two-factor authentication"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+            </div>
+            <div class="set-row">
+              <div class="set-row-text">
+                <div class="set-row-title">Password</div>
+                <div class="set-row-desc">Last changed 2 months ago.</div>
+              </div>
+              <div class="set-row-control"><button class="btn btn-ghost btn-sm" type="button" data-action="change-password">Change password</button></div>
+            </div>
+          </div>
+        </div>
 
         </div>
-        <!-- /aimySummaryCard -->
 
-        <div class="tier-1-grid">
-            <div class="bcard p1 tier-primary" role="region" tabindex="0">
-              <div class="bcard-accent"></div>
-              <div class="bcard-body">
-                <div class="bcard-meta">
-                  <span class="type-label">SLA Breach</span>
-                  <span class="priority-badge">P1 · Critical</span>
-                </div>
-                <p class="bcard-conclusion">
-                  SLA compliance at <span style="color: var(--err); font-weight: 700">61%</span> — 29pts below target, 23 breaches this week.
-                </p>
-                <div class="bcard-divider"></div>
-                <div class="bcard-action">
-                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('SLA compliance is at 61% — 29pts below the 90% target. Break this down by product: compare Objectif Lune, Qvidian, InterFax, and Adestra on breach count, average first response time, and current vs 90% target. Then list the top 5 agents driving the most breaches with their individual compliance rates and the queues they operate in. Flag any product where compliance has been below target for more than 2 consecutive weeks.')">
-                    View breached tickets
-                    <svg viewBox="0 0 13 13" fill="none">
-                      <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </button>
-                  <div class="bcard-ack-row" id="ack-row-sla-breach">
-                    <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'sla-breach')">On it</button>
-                    <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'sla-breach')">Not relevant</button>
-                    <div class="bcard-dismiss-picker" id="bdp-sla-breach"></div>
+        <div class="modal-overlay" id="ruleModal">
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="ruleModalTitle">
+            <div class="modal-header">
+              <div>
+                <div class="modal-title" id="ruleModalTitle">Create alert rule</div>
+                <div class="modal-sub">Define what fires the alert and where it routes.</div>
+              </div>
+              <button class="modal-close" type="button" data-action="close-modal" aria-label="Close">&times;</button>
+            </div>
+
+            <div class="builder-grid">
+              <div class="field full">
+                <label class="field-label">Rule name</label>
+                <input class="input" id="rbName" type="text" placeholder="e.g. Product fail-rate breach">
+              </div>
+
+              <div class="full"><div class="builder-section-label">Trigger</div></div>
+              <div class="field">
+                <label class="field-label">Metric</label>
+                <div class="v2-dropdown full" data-dropdown data-name="metric"><button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-label-text">Product fail rate</span><svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"></polyline></svg></button><div class="v2-dropdown-panel" role="listbox"><div class="v2-dropdown-option selected" role="option" data-value="fail">Product fail rate</div><div class="v2-dropdown-option" role="option" data-value="kpi">KPI failure count</div><div class="v2-dropdown-option" role="option" data-value="pass">Overall pass rate</div><div class="v2-dropdown-option" role="option" data-value="sla">SLA compliance</div><div class="v2-dropdown-option" role="option" data-value="trend">Weekly trend</div><div class="v2-dropdown-option" role="option" data-value="grammar">Grammar failures</div></div></div>
+              </div>
+              <div class="field">
+                <label class="field-label">Condition</label>
+                <div style="display:flex;gap:8px">
+                  <div style="flex:1"><div class="v2-dropdown full" data-dropdown data-name="operator"><button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-label-text">is above</span><svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"></polyline></svg></button><div class="v2-dropdown-panel" role="listbox"><div class="v2-dropdown-option selected" role="option" data-value="above">is above</div><div class="v2-dropdown-option" role="option" data-value="below">is below</div><div class="v2-dropdown-option" role="option" data-value="equals">equals</div></div></div></div>
+                  <div class="input-wrap" style="width:108px;flex-shrink:0">
+                    <input class="input" id="rbThreshold" type="number" value="15" aria-label="Threshold">
+                    <span class="input-suffix" id="rbUnit">%</span>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div class="bcard p1" role="region" tabindex="0">
-              <div class="bcard-accent"></div>
-              <div class="bcard-body">
-                <div class="bcard-meta">
-                  <span class="type-label">KPI Failures</span>
-                  <span class="priority-badge">P1 · Urgent</span>
+              <div class="full">
+                <div class="builder-section-label">Severity</div>
+                <div class="radio-row" id="rbSeverity">
+                  <div class="radio-wrap" data-radio data-value="critical"><div class="radio checked"></div><span class="radio-label">Critical</span></div>
+                  <div class="radio-wrap" data-radio data-value="warning"><div class="radio"></div><span class="radio-label">Warning</span></div>
+                  <div class="radio-wrap" data-radio data-value="info"><div class="radio"></div><span class="radio-label">Info</span></div>
                 </div>
-                <p class="bcard-conclusion">
-                  3 KPIs failing — empathy at <span style="color: var(--err); font-weight: 700">32%</span> is the critical gap, down 8% this period.
-                </p>
-                <div class="bcard-divider"></div>
-                <div class="bcard-action">
-                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('3 KPIs are actively failing. Show a breakdown by product for each: Incorrect status (150 failures) across Objectif Lune and Qvidian, Grammar mistakes (55 failures) in InterFax and Second Street, and Time between updates (47 failures) in Qvidian and RightAnswers. For each KPI show: current rate vs target, which agents are responsible for the most failures, and a current vs target bar comparison per product. Then generate a prioritised coaching plan grouped by agent — rank by failure count impact.')">
-                    Start coaching plan
-                    <svg viewBox="0 0 13 13" fill="none">
-                      <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </button>
-                  <div class="bcard-ack-row" id="ack-row-kpi-failures">
-                    <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'kpi-failures')">On it</button>
-                    <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'kpi-failures')">Not relevant</button>
-                    <div class="bcard-dismiss-picker" id="bdp-kpi-failures"></div>
-                  </div>
+              </div>
+
+              <div class="full">
+                <div class="builder-section-label">Notify via</div>
+                <div class="channel-grid" id="rbChannels">
+                  <div class="checkbox-wrap" data-check data-value="In-app"><div class="checkbox checked"></div><span class="checkbox-label">In-app</span></div>
+                  <div class="checkbox-wrap" data-check data-value="Email"><div class="checkbox"></div><span class="checkbox-label">Email</span></div>
+                  <div class="checkbox-wrap" data-check data-value="Microsoft Teams"><div class="checkbox"></div><span class="checkbox-label">Microsoft Teams</span></div>
+                  <div class="checkbox-wrap" data-check data-value="Slack"><div class="checkbox"></div><span class="checkbox-label">Slack</span></div>
                 </div>
+              </div>
+
+              <div class="field full">
+                <label class="field-label">Recipient</label>
+                <div class="v2-dropdown full" data-dropdown data-name="recipient"><button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-label-text">QA Supervisor</span><svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"></polyline></svg></button><div class="v2-dropdown-panel" role="listbox"><div class="v2-dropdown-option selected" role="option" data-value="qa">QA Supervisor</div><div class="v2-dropdown-option" role="option" data-value="lead">Team Lead</div><div class="v2-dropdown-option" role="option" data-value="director">Director of Quality</div><div class="v2-dropdown-option" role="option" data-value="ops">Operations Manager</div><div class="v2-dropdown-option" role="option" data-value="me">Me</div></div></div>
+              </div>
+
+              <div class="full">
+                <div class="builder-section-label">Preview</div>
+                <div class="rule-preview" id="rbPreview"></div>
               </div>
             </div>
 
-            <div class="bcard p1" role="region" tabindex="0">
-              <div class="bcard-accent"></div>
-              <div class="bcard-body">
-                <div class="bcard-meta">
-                  <span class="type-label">Sentiment</span>
-                  <span class="priority-badge">P1 · Urgent</span>
-                </div>
-                <p class="bcard-conclusion">
-                  Negative sentiment rising — 3 agents driving 39 flagged interactions this week.
-                </p>
-                <div class="bcard-divider"></div>
-                <div class="bcard-action">
-                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('Negative sentiment is rising week over week — 39 flagged interactions, 3 agents responsible for most of it. Break this down by product: which of Objectif Lune, Adestra, Qvidian, and InterFax have the highest negative sentiment rates, and show current vs previous week for each. List the 3 flagged agents with their sentiment scores, ticket volumes, and the specific escalation types triggering negative responses. Identify the common failure pattern and suggest the single fastest intervention to reverse the trend.')">
-                    Review escalation handling
-                    <svg viewBox="0 0 13 13" fill="none">
-                      <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </button>
-                  <div class="bcard-ack-row" id="ack-row-sentiment">
-                    <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'sentiment')">On it</button>
-                    <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'sentiment')">Not relevant</button>
-                    <div class="bcard-dismiss-picker" id="bdp-sentiment"></div>
-                  </div>
-                </div>
-              </div>
+            <div class="modal-footer">
+              <button class="btn btn-ghost" type="button" data-action="close-modal">Cancel</button>
+              <button class="btn btn-brand" type="button" data-action="save-rule">Create rule</button>
             </div>
-
-            <div class="bcard p2" role="region" tabindex="0">
-              <div class="bcard-accent"></div>
-              <div class="bcard-body">
-                <div class="bcard-meta">
-                  <span class="type-label">Quality Score</span>
-                  <span class="priority-badge">P2 · Watch</span>
-                </div>
-                <p class="bcard-conclusion">
-                  Quality at <span style="color: var(--warn); font-weight: 700">87.3%</span> — 2.7% below 90% target. 3 failing KPIs are the drag.
-                </p>
-                <div class="bcard-divider"></div>
-                <div class="bcard-action">
-                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('Overall quality is at 87.3% — 2.7% below the 90% target. Show a product-by-product quality breakdown: rank Objectif Lune, Adestra, InterFax, Qvidian, RightAnswers, and Second Street by current quality score, pass rate, and fail count. Flag which products are above target and which are below with the gap to close. Then show the top 3 KPI failures (Incorrect status 150, Grammar mistakes 55, Time between updates 47) and how eliminating each would move the overall quality score. Recommend the highest-leverage fix.')">
-                    See what's blocking target
-                    <svg viewBox="0 0 13 13" fill="none">
-                      <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </button>
-                  <div class="bcard-ack-row" id="ack-row-quality">
-                    <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'quality')">On it</button>
-                    <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'quality')">Not relevant</button>
-                    <div class="bcard-dismiss-picker" id="bdp-quality"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
           </div>
+        </div>
 
-          <!-- AiMY Detected strip — collapsed by default, full detail in canvas -->
-          <div class="aimy-detected-strip" id="aimyDetectedStrip" role="complementary" aria-label="AiMY detection summary">
-            <div class="ads-left">
-              <svg class="ads-logo" width="14" height="16" viewBox="0 0 18 20">
-                <use href="#aimy-logo-small"/>
-              </svg>
-              <span class="ads-label">AiMY detected</span>
-              <span class="ads-state" id="adsStateText">3 KPIs failing, Nov dip unresolved</span>
-              <span class="ads-confidence" id="adsConfidence">high confidence</span>
+
+
+        <div class="modal-overlay" id="addIntegrationModal">
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addIntTitle" style="max-width:460px">
+            <div class="modal-header">
+              <div>
+                <div class="modal-title" id="addIntTitle">Add integration</div>
+                <div class="modal-sub">Pick a source or channel. You&#39;ll connect it on the next step.</div>
+              </div>
+              <button class="modal-close" type="button" data-action="close-add-int" aria-label="Close">&times;</button>
             </div>
-            <button class="ads-cta" onclick="appendSuggestionCardsResponse()">
-              Explore in canvas
-              <svg viewBox="0 0 13 13" fill="none" width="11" height="11">
-                <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
+            <div class="add-int-list">
+              <button class="add-int-option" type="button" data-add-int="Google Sheets" data-icon="G" data-color="#1a7f4b" data-desc="Pull review exports from a Sheet"><div class="integration-icon" style="background:#1a7f4b">G</div><div class="add-int-meta"><div class="add-int-name">Google Sheets</div><div class="add-int-desc">Pull review exports from a Sheet</div></div></button>
+              <button class="add-int-option" type="button" data-add-int="Genesys Cloud" data-icon="Ge" data-color="#ff4f1f" data-desc="Stream interactions for scoring"><div class="integration-icon" style="background:#ff4f1f">Ge</div><div class="add-int-meta"><div class="add-int-name">Genesys Cloud</div><div class="add-int-desc">Stream interactions for scoring</div></div></button>
+              <button class="add-int-option" type="button" data-add-int="Five9" data-icon="5" data-color="#e01e5a" data-desc="Import contact-centre records"><div class="integration-icon" style="background:#e01e5a">5</div><div class="add-int-meta"><div class="add-int-name">Five9</div><div class="add-int-desc">Import contact-centre records</div></div></button>
+              <button class="add-int-option" type="button" data-add-int="Webhook" data-icon="&lt;/&gt;" data-color="#5b6470" data-desc="Send alerts to a custom endpoint"><div class="integration-icon" style="background:#5b6470">&lt;/&gt;</div><div class="add-int-meta"><div class="add-int-name">Webhook</div><div class="add-int-desc">Send alerts to a custom endpoint</div></div></button>
+            </div>
           </div>
+        </div>
 
-          <div class="tier-2-grid">
-            <div class="layout-column">
-              <div class="chart-v2">
-                <!-- Chart header: title + controls -->
-                <div class="v2-header">
-                  <!-- Row 1: title + AI Analysis toggle (tertiary, right-aligned) -->
-                  <div class="v2-header-row1">
-                    <div class="v2-header-left">
-                      <span class="v2-title">Quality Score</span>
-                      <span class="v2-subtitle"
-                        >Interaction quality over time · updated daily</span
-                      >
-                    </div>
-                    <button
-                      class="ai-insight-btn"
-                      onclick="toggleAiAnalysis()"
-                      id="aiToggleBtn"
-                    >
-                      <svg width="18" height="20" viewBox="0 0 18 20">
-                        <use href="#aimy-logo-small" />
-                      </svg>
-                      AiMY Analysis
-                    </button>
-                  </div>
-
-                  <!-- AiMY Analysis — collapsible, closed by default, sits between title and filters -->
-                  <div
-                    class="ai-insight-panel"
-                    id="aiPanel"
-                    style="display: none; margin: 8px 0 4px"
-                  >
-                    <div class="ai-insight-header">
-                      <svg width="18" height="20" viewBox="0 0 18 20">
-                <use href="#aimy-logo-small" />
-              </svg>
-                      <span>AiMY Analysis</span>
-                      <span
-                        class="memory-cue"
-                        title="Continuing from what you looked at yesterday"
-                      >
-                        <svg
-                          viewBox="0 0 12 12"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        >
-                          <circle cx="6" cy="6" r="4.5" />
-                          <path d="M6 3.5V6L7.5 7" />
-                        </svg>
-                        Picked up from yesterday
-                      </span>
-                    </div>
-                    <p class="ai-insight-text" style="display:none"></p>
-                    <ul class="ai-insight-bullets">
-                      <li>Trending <strong>upward since June</strong> (+8.4 pts) — recovery is real, not a spike.</li>
-                      <li>Still <strong>2.7% below the 90% SLA target</strong> — 3 failing KPIs are the primary drag.</li>
-                      <li>November dip to <strong>74.2%</strong> was volume-driven — 3 agents handled 40% above average load during product launch.</li>
-                      <li>December recovery confirms the issue was <strong>workload, not skill</strong>.</li>
-                      <li>Recommended: <strong>review staffing thresholds</strong> before the next product release.</li>
-                    </ul>
-                    <div style="margin-top: 10px">
-                      <button
-                        class="kf-signal-action"
-                        style="font-size: 12px; padding: 7px 16px"
-                      >
-                        Address KPIs &rarr;
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- Row 2: range tabs + Compare + query input, all on a clean toolbar line -->
-                  <div class="v2-controls">
-                    <div class="range-tabs">
-                      <button
-                        class="range-tab active"
-                        onclick="setRange('All', this)"
-                      >
-                        All
-                      </button>
-                      <button class="range-tab" onclick="setRange('90D', this)">
-                        90D
-                      </button>
-                      <button class="range-tab" onclick="setRange('30D', this)">
-                        30D
-                      </button>
-                      <button class="range-tab" onclick="setRange('7D', this)">
-                        7D
-                      </button>
-                    </div>
-                    <button
-                      class="compare-toggle"
-                      id="compareBtn"
-                      onclick="toggleCompare()"
-                    >
-                      <svg viewBox="0 0 12 12" fill="none">
-                        <path
-                          d="M1 6H11M1 3H7M1 9H9"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                        />
-                      </svg>
-                      Compare
-                    </button>
-                    <!-- Divider -->
-                    <div
-                      style="
-                        width: 1px;
-                        height: 20px;
-                        background: rgba(255, 255, 255, 0.08);
-                        flex-shrink: 0;
-                      "
-                    ></div>
-                    <!-- Ask AiMY button — injects a pre-filled prompt into the main canvas input -->
-                    <button
-                      class="ask-aimy-chart-btn"
-                      id="askAimyChartBtn"
-                      onclick="injectChartPrompt()"
-                      title="Pre-fill a chart question in AiMY Canvas"
-                    >
-                      <svg width="14" height="16" viewBox="0 0 18 20">
-                        <use href="#aimy-logo-small" />
-                      </svg>
-                      Ask AiMY about this chart
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Stats row: key numbers at a glance -->
-                <div class="v2-stats-row">
-                  <div class="v2-stat">
-                    <span class="v2-stat-label">Current Avg</span>
-                    <span class="v2-stat-value">87.3%</span>
-                    <span class="v2-stat-delta up">↑ 5.2% vs last period</span>
-                  </div>
-                  <div class="v2-stat-divider"></div>
-                  <div class="v2-stat">
-                    <span class="v2-stat-label">Peak</span>
-                    <span
-                      class="v2-stat-value"
-                      style="font-size: 16px; padding-top: 3px"
-                      >91.4%</span
-                    >
-                    <span class="v2-stat-delta" style="color: var(--d400)"
-                      >May 14</span
-                    >
-                  </div>
-                  <div class="v2-stat-divider"></div>
-                  <div class="v2-stat">
-                    <span class="v2-stat-label">Low Point</span>
-                    <span
-                      class="v2-stat-value"
-                      style="font-size: 16px; padding-top: 3px"
-                      >74.2%</span
-                    >
-                    <span class="v2-stat-delta" style="color: var(--d400)"
-                      >Nov 3</span
-                    >
-                  </div>
-                  <div class="v2-legend" id="legendArea">
-                    <div class="legend-item">
-                      <div
-                        class="legend-line"
-                        style="background: var(--qa-accent)"
-                      ></div>
-                      <span>This period</span>
-                    </div>
-                    <div
-                      class="legend-item"
-                      id="prevLegend"
-                      style="display: none"
-                    >
-                      <div
-                        class="legend-line"
-                        style="
-                          background: var(--d600);
-                          border-top: 2px dashed var(--d600);
-                        "
-                      ></div>
-                      <span>Previous period</span>
-                    </div>
-                    <div class="legend-item">
-                      <div
-                        class="legend-line dashed"
-                        style="
-                          background: transparent;
-                          border-top: 2px dashed var(--warn);
-                        "
-                      ></div>
-                      <span>SLA Target</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Interactive chart -->
-                <div class="v2-chart-area" id="chartArea">
-                  <div class="chart-tooltip" id="tooltip">
-                    <div class="tooltip-month" id="ttMonth">MAY</div>
-                    <div class="tooltip-row">
-                      <span class="tooltip-label">Score</span>
-                      <span class="tooltip-value" id="ttScore">87.3%</span>
-                    </div>
-                    <div
-                      class="tooltip-row"
-                      id="ttPrevRow"
-                      style="display: none"
-                    >
-                      <span class="tooltip-label">Prev period</span>
-                      <span class="tooltip-value prev" id="ttPrev">82.1%</span>
-                    </div>
-                  </div>
-
-                  <div
-                    class="chart-annotation actionable anomaly"
-                    style="left: 79.5%; top: 59%"
-                  >
-                    <div class="anno-card">
-                      <div class="anno-header">
-                        <strong>Nov Dip</strong>
-                        <span class="anno-score">74.2%</span>
-                      </div>
-                      <p>Driven by an 18% spike in billing escalations.</p>
-                      <button class="anno-btn">
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2.5"
-                        >
-                          <circle cx="11" cy="11" r="8"></circle>
-                          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                        View Root Cause
-                      </button>
-                    </div>
-                    <div class="anno-dot"></div>
-                  </div>
-
-                  <div
-                    class="chart-annotation peak"
-                    style="left: 44.3%; top: 33.1%"
-                  >
-                    <div class="peak-card">
-                      Highest in year<br /><span>91.4%</span>
-                    </div>
-                    <div class="anno-dot"></div>
-                  </div>
-
-                  <svg
-                    id="mainChart"
-                    viewBox="0 0 800 220"
-                    preserveAspectRatio="none"
-                    role="img"
-                    aria-label="Quality Score over 12 months. Peak 91.4% in May, low point 74.2% in November, current 87.3% in December. SLA target is 90%."
-                  >
-                    <title>Quality Score trend, January to December</title>
-                    <text
-                      x="36"
-                      y="8"
-                      text-anchor="end"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                    >
-                      100%
-                    </text>
-                    <text
-                      x="36"
-                      y="58"
-                      text-anchor="end"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                    >
-                      80%
-                    </text>
-                    <text
-                      x="36"
-                      y="108"
-                      text-anchor="end"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                    >
-                      60%
-                    </text>
-                    <text
-                      x="36"
-                      y="158"
-                      text-anchor="end"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                    >
-                      40%
-                    </text>
-                    <text
-                      x="36"
-                      y="200"
-                      text-anchor="end"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                    >
-                      20%
-                    </text>
-                    <g clip-path="url(#chartClip)" opacity="0.4">
-                      <line
-                        x1="40"
-                        y1="5"
-                        x2="800"
-                        y2="5"
-                        stroke="#444D55"
-                        stroke-width="0.5"
-                      />
-                      <line
-                        x1="40"
-                        y1="55"
-                        x2="800"
-                        y2="55"
-                        stroke="#444D55"
-                        stroke-width="0.5"
-                      />
-                      <line
-                        x1="40"
-                        y1="105"
-                        x2="800"
-                        y2="105"
-                        stroke="#444D55"
-                        stroke-width="0.5"
-                      />
-                      <line
-                        x1="40"
-                        y1="155"
-                        x2="800"
-                        y2="155"
-                        stroke="#444D55"
-                        stroke-width="0.5"
-                      />
-                      <line
-                        x1="40"
-                        y1="200"
-                        x2="800"
-                        y2="200"
-                        stroke="#444D55"
-                        stroke-width="0.5"
-                      />
-                    </g>
-                    <g clip-path="url(#chartClip)">
-                      <line
-                        x1="40"
-                        y1="25"
-                        x2="800"
-                        y2="25"
-                        stroke="#F79009"
-                        stroke-width="1"
-                        stroke-dasharray="6 4"
-                        opacity="0.6"
-                      />
-                      <rect
-                        x="724"
-                        y="16"
-                        width="72"
-                        height="16"
-                        rx="4"
-                        fill="rgba(247,144,9,0.12)"
-                      />
-                      <text
-                        x="760"
-                        y="27"
-                        text-anchor="middle"
-                        font-size="9"
-                        fill="#F79009"
-                        font-family="Urbanist,sans-serif"
-                        font-weight="600"
-                      >
-                        SLA 90%
-                      </text>
-                    </g>
-                    <g
-                      clip-path="url(#chartClip)"
-                      id="prevPeriodGroup"
-                      style="display: none"
-                    >
-                      <path
-                        id="prevPath"
-                        d="M40,95 C90,100 140,110 190,105 C240,100 280,115 330,108 C380,101 420,110 470,105 C520,100 560,112 610,108 C660,104 710,110 760,105 C780,103 790,105 800,104"
-                        fill="none"
-                        stroke="#5B6771"
-                        stroke-width="1.5"
-                        stroke-dasharray="5 4"
-                        opacity="0.7"
-                      />
-                      <path
-                        id="prevArea"
-                        d="M40,95 C90,100 140,110 190,105 C240,100 280,115 330,108 C380,101 420,110 470,105 C520,100 560,112 610,108 C660,104 710,110 760,105 C780,103 790,105 800,104 L800,205 L40,205Z"
-                        fill="url(#prevFill)"
-                      />
-                    </g>
-                    <g clip-path="url(#chartClip)">
-                      <rect
-                        x="596"
-                        y="0"
-                        width="80"
-                        height="200"
-                        fill="url(#anomalyFill)"
-                        opacity="0.5"
-                      />
-                      <line
-                        x1="636"
-                        y1="0"
-                        x2="636"
-                        y2="200"
-                        stroke="#F04438"
-                        stroke-width="0.5"
-                        stroke-dasharray="3 3"
-                        opacity="0.4"
-                      />
-                    </g>
-                    <g clip-path="url(#chartClip)">
-                      <path
-                        id="mainPath"
-                        class="chart-accent-stroke"
-                        d="M40,112 C80,105 120,90 165,88 C205,86 230,100 270,93 C305,87 320,112 355,90 C385,73 400,90 435,86 C465,82 485,93 520,88 C555,83 575,90 610,88 C645,86 670,100 710,93 C735,88 760,105 800,100"
-                        fill="none"
-                        stroke="#8B4FF4"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                      />
-                      <path
-                        d="M40,112 C80,105 120,90 165,88 C205,86 230,100 270,93 C305,87 320,112 355,90 C385,73 400,90 435,86 C465,82 485,93 520,88 C555,83 575,90 610,88 C645,86 670,100 710,93 C735,88 760,105 800,100 L800,205 L40,205Z"
-                        fill="url(#v2fill)"
-                      />
-                    </g>
-                    <g clip-path="url(#chartClip)">
-                      <line
-                        class="chart-accent-stroke"
-                        x1="355"
-                        y1="73"
-                        x2="355"
-                        y2="200"
-                        stroke="#8B4FF4"
-                        stroke-width="0.75"
-                        stroke-dasharray="4 3"
-                        opacity="0.5"
-                      />
-                      <circle
-                        class="chart-accent-fill"
-                        cx="355"
-                        cy="73"
-                        r="4"
-                        fill="#8B4FF4"
-                        stroke="#2E3438"
-                        stroke-width="2"
-                      />
-                    </g>
-                    <g clip-path="url(#chartClip)">
-                      <circle
-                        cx="636"
-                        cy="130"
-                        r="4"
-                        fill="#F04438"
-                        stroke="#2E3438"
-                        stroke-width="2"
-                      />
-                    </g>
-                    <g clip-path="url(#chartClip)">
-                      <circle
-                        class="chart-accent-fill"
-                        cx="800"
-                        cy="100"
-                        r="5"
-                        fill="#8B4FF4"
-                        stroke="#2E3438"
-                        stroke-width="2"
-                      />
-                      <circle
-                        class="chart-accent-fill"
-                        cx="800"
-                        cy="100"
-                        r="9"
-                        fill="#8B4FF4"
-                        opacity="0.15"
-                      />
-                    </g>
-                    <text
-                      x="40"
-                      y="215"
-                      text-anchor="middle"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                      data-month-idx="0"
-                    >
-                      JAN
-                    </text>
-                    <text
-                      x="106"
-                      y="215"
-                      text-anchor="middle"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                      data-month-idx="1"
-                    >
-                      FEB
-                    </text>
-                    <text
-                      x="172"
-                      y="215"
-                      text-anchor="middle"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                      data-month-idx="2"
-                    >
-                      MAR
-                    </text>
-                    <text
-                      x="238"
-                      y="215"
-                      text-anchor="middle"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                      data-month-idx="3"
-                    >
-                      APR
-                    </text>
-                    <text
-                      x="304"
-                      y="215"
-                      text-anchor="middle"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                      data-month-idx="4"
-                    >
-                      MAY
-                    </text>
-                    <text
-                      x="370"
-                      y="215"
-                      text-anchor="middle"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                      data-month-idx="5"
-                    >
-                      JUN
-                    </text>
-                    <text
-                      x="436"
-                      y="215"
-                      text-anchor="middle"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                      data-month-idx="6"
-                    >
-                      JUL
-                    </text>
-                    <text
-                      x="502"
-                      y="215"
-                      text-anchor="middle"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                      data-month-idx="7"
-                    >
-                      AUG
-                    </text>
-                    <text
-                      x="568"
-                      y="215"
-                      text-anchor="middle"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                      data-month-idx="8"
-                    >
-                      SEP
-                    </text>
-                    <text
-                      x="634"
-                      y="215"
-                      text-anchor="middle"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                      data-month-idx="9"
-                    >
-                      OCT
-                    </text>
-                    <text
-                      x="700"
-                      y="215"
-                      text-anchor="middle"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                      data-month-idx="10"
-                    >
-                      NOV
-                    </text>
-                    <text
-                      x="766"
-                      y="215"
-                      text-anchor="middle"
-                      font-size="10"
-                      fill="#5B6771"
-                      font-family="Urbanist,sans-serif"
-                      data-month-idx="11"
-                    >
-                      DEC
-                    </text>
-                    <!-- Extra axis label slots for weekly ranges (idx 12-20, hidden by default) -->
-                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="12" style="display:none">W13</text>
-                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="13" style="display:none">W14</text>
-                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="14" style="display:none">W15</text>
-                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="15" style="display:none">W16</text>
-                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="16" style="display:none">W17</text>
-                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="17" style="display:none">W18</text>
-                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="18" style="display:none">W19</text>
-                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="19" style="display:none">W20</text>
-                    <text x="800" y="215" text-anchor="middle" font-size="10" fill="#5B6771" font-family="Urbanist,sans-serif" data-month-idx="20" style="display:none">W21</text>
-                    <!-- Persistent value labels — Peak / Low / Current -->
-                    <!-- Positions updated by applyRangeToChart() via JS -->
-                    <g id="chartValueLabels" clip-path="url(#chartClip)">
-                      <!-- Peak label -->
-                      <text
-                        id="chartLabelPeak"
-                        x="355"
-                        y="62"
-                        text-anchor="middle"
-                        font-size="10"
-                        font-weight="700"
-                        font-family="Urbanist,sans-serif"
-                        fill="#17B26A"
-                      >91.4%</text>
-                      <!-- Low Point label -->
-                      <text
-                        id="chartLabelLow"
-                        x="636"
-                        y="144"
-                        text-anchor="middle"
-                        font-size="10"
-                        font-weight="700"
-                        font-family="Urbanist,sans-serif"
-                        fill="#F04438"
-                      >74.2%</text>
-                      <!-- Current / endpoint label -->
-                      <text
-                        id="chartLabelCurrent"
-                        x="800"
-                        y="90"
-                        text-anchor="end"
-                        font-size="10"
-                        font-weight="700"
-                        font-family="Urbanist,sans-serif"
-                        fill="#C4A8FF"
-                      >87.3%</text>
-                    </g>
-
-                    <rect
-                      id="hoverZone"
-                      x="40"
-                      y="0"
-                      width="760"
-                      height="200"
-                      fill="transparent"
-                      cursor="crosshair"
-                    />
-                    <line
-                      id="hoverLine"
-                      class="chart-accent-stroke"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="200"
-                      stroke="#8B4FF4"
-                      stroke-width="1"
-                      stroke-dasharray="4 3"
-                      opacity="0"
-                      pointer-events="none"
-                    />
-                    <circle
-                      id="hoverDot"
-                      class="chart-accent-fill"
-                      cx="0"
-                      cy="0"
-                      r="4"
-                      fill="#8B4FF4"
-                      stroke="#2E3438"
-                      stroke-width="2"
-                      opacity="0"
-                      pointer-events="none"
-                    />
-                  </svg>
-                </div>
+        <div class="modal-overlay" id="pwModal">
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pwTitle" style="max-width:440px">
+            <div class="modal-header">
+              <div>
+                <div class="modal-title" id="pwTitle">Change password</div>
+                <div class="modal-sub">We&#39;ll email a secure reset link &mdash; no need to enter your current password here.</div>
               </div>
-
-              <div class="kpi-feed">
-                <div class="kpi-brief kf-err">
-                  <div class="kf-rank">#1</div>
-                  <div class="kf-body">
-                    <div class="kf-name">Incorrect status &middot; 150 failures</div>
-                    <p class="kf-conclusion">
-                      Top failure driver across <strong>Objectif Lune</strong> and <strong>Qvidian</strong> — agents closing tickets with wrong status codes.
-                    </p>
-                    <div class="kf-evidence">
-                      <div class="kf-ev-item">
-                        <span class="trend-dn">↓ worsening</span><span>this period</span>
-                      </div>
-                      <div class="kf-ev-item">
-                        <span class="v">103</span><span>in Objectif Lune</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Incorrect status is the #1 failure KPI with 150 occurrences — 103 in Objectif Lune, the rest in Qvidian. Show me the agents responsible, the ticket types most affected, and a targeted coaching brief to fix status accuracy.')">Coach on status →</button>
-                </div>
-
-                <div class="kpi-brief kf-err">
-                  <div class="kf-rank">#2</div>
-                  <div class="kf-body">
-                    <div class="kf-name">Grammar mistake &middot; 55 failures</div>
-                    <p class="kf-conclusion">
-                      Concentrated in <strong>InterFax</strong> and <strong>Second Street</strong> — written responses not meeting quality bar.
-                    </p>
-                    <div class="kf-evidence">
-                      <div class="kf-ev-item">
-                        <span style="color: var(--d300)">→ stable</span><span>not improving</span>
-                      </div>
-                      <div class="kf-ev-item">
-                        <span class="v">55</span><span>failed interactions</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Grammar mistakes account for 55 KPI failures — mostly in InterFax and Second Street. Show me the agents with the highest grammar failure rates, sample the worst-scoring responses, and suggest a writing quality checklist for coaching.')">Review responses →</button>
-                </div>
-
-                <div class="kpi-brief kf-err">
-                  <div class="kf-rank">#3</div>
-                  <div class="kf-body">
-                    <div class="kf-name">Time between updates &middot; 47 failures</div>
-                    <p class="kf-conclusion">
-                      Agents in <strong>Qvidian</strong> and <strong>RightAnswers</strong> leaving customers without updates past SLA window.
-                    </p>
-                    <div class="kf-evidence">
-                      <div class="kf-ev-item">
-                        <span class="trend-up">↑ 3%</span><span>slowly improving</span>
-                      </div>
-                      <div class="kf-ev-item">
-                        <span class="v">47</span><span>failed interactions</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Time between updates has 47 failures — primarily in Qvidian and RightAnswers. Show me the tickets where update delay exceeded SLA, identify the agents most frequently missing the window, and suggest a follow-up cadence fix.')">See delayed tickets →</button>
-                </div>
-
-                <div class="kpi-brief kf-warn">
-                  <div class="kf-rank">#4</div>
-                  <div class="kf-body">
-                    <div class="kf-name">First response time &middot; 71% compliance</div>
-                    <p class="kf-conclusion">
-                      Declining in <strong>Objectif Lune</strong> and <strong>Adestra</strong> — 4pts below the 75% threshold and still falling.
-                    </p>
-                    <div class="kf-evidence">
-                      <div class="kf-ev-item">
-                        <span class="trend-dn">↓ 2%</span><span>declining</span>
-                      </div>
-                      <div class="kf-ev-item">
-                        <span class="v">75%</span><span>threshold</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('First response time is at 71% compliance — down 2pts, failing in Objectif Lune and Adestra. At this trajectory when do we breach the 75% threshold? Show me the agents and queues driving the delay and recommend the top 3 interventions.')">Monitor →</button>
-                </div>
-
-                <button
-                  class="passing-toggle"
-                  id="passingToggle"
-                  onclick="togglePassing()"
-                >
-                  <span class="passing-toggle-label">Passing KPIs · 3</span>
-                  <svg viewBox="0 0 12 12" fill="none">
-                    <path
-                      d="M3 4.5L6 7.5L9 4.5"
-                      stroke="currentColor"
-                      stroke-width="1.3"
-                      stroke-linecap="round"
-                    />
-                  </svg>
-                </button>
-
-                <div class="passing-section" id="passingSection">
-                  <div class="kpi-brief kf-ok" style="margin-bottom: 8px">
-                    <div
-                      class="kf-rank"
-                      style="background: var(--ok-bg); color: var(--ok)"
-                    >
-                      #5
-                    </div>
-                    <div class="kf-body">
-                      <p class="kf-conclusion">
-                        Identity verification is at
-                        <span class="kf-score-ok">82%</span> and improving &mdash;
-                        compliance risk is low here.
-                      </p>
-                      <div class="kf-evidence">
-                        <div class="kf-ev-item">
-                          <span class="trend-up">↑ 6%</span
-                          ><span>vs last period</span>
-                        </div>
-                      </div>
-                    </div>
-                    <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Identity verification is at 82% and improving. What’s driving the 6% gain this period and which agents are leading it?')">View →</button>
-                  </div>
-                  <div class="kpi-brief kf-ok" style="margin-bottom: 8px">
-                    <div
-                      class="kf-rank"
-                      style="background: var(--ok-bg); color: var(--ok)"
-                    >
-                      #6
-                    </div>
-                    <div class="kf-body">
-                      <p class="kf-conclusion">
-                        First contact resolution is at
-                        <span class="kf-score-ok">87%</span> &mdash; agents are
-                        solving issues without callbacks.
-                      </p>
-                      <div class="kf-evidence">
-                        <div class="kf-ev-item">
-                          <span class="trend-up">↑ 4%</span
-                          ><span>vs last period</span>
-                        </div>
-                      </div>
-                    </div>
-                    <button class="kf-action" onclick="window.openOverlay && window.openOverlay('FCR is at 87%. Identify the agents with the strongest scores and summarise what behaviours they share so we can coach others.')">View →</button>
-                  </div>
-                  <div class="kpi-brief kf-ok">
-                    <div
-                      class="kf-rank"
-                      style="background: var(--ok-bg); color: var(--ok)"
-                    >
-                      #7
-                    </div>
-                    <div class="kf-body">
-                      <p class="kf-conclusion">
-                        Compliance script adherence is at
-                        <span class="kf-score-ok">91%</span> and stable &mdash; agents
-                        know the required process.
-                      </p>
-                      <div class="kf-evidence">
-                        <div class="kf-ev-item">
-                          <span style="color: var(--d300)">→ stable</span>
-                        </div>
-                      </div>
-                    </div>
-                    <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Script adherence is at 91% and stable. Any agents drifting below the team average that we should watch before it becomes a trend?')">View →</button>
-                  </div>
-                </div>
-              </div>
+              <button class="modal-close" type="button" data-action="close-pw" aria-label="Close">&times;</button>
             </div>
-
-            <div class="layout-column">
-              <div class="eval-panel">
-                <!-- Header -->
-                <div class="eval-header">
-                  <div class="eval-header-left">
-                    <span class="eval-title">Evaluation &amp; Friction</span>
-                    <span class="eval-subtitle">3,363 tickets · Week of June 2–8, 2026</span>
-                  </div>
-                </div>
-
-                <!-- Top Products by Volume -->
-                <div class="eval-products-section" style="position:relative">
-                  <div class="eval-bars-section-label">Top Products by Volume</div>
-                  <div class="eval-bars">
-                    <div class="eval-bar-row" data-segment="objectif-lune"
-                      onmouseenter="evalHover('objectif-lune')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('Objectif Lune has the highest review volume at 411 with a 79.2% avg quality — worst in portfolio. Show top failing KPIs, agent attribution, and the fastest intervention.')">
-                      <div class="eval-bar-top">
-                        <span class="eval-bar-label"><span class="eval-dot" style="background:var(--warn)"></span>Objectif Lune</span>
-                        <div class="eval-bar-right"><span class="eval-bar-count">411</span><span class="eval-bar-avg warn">79.2%</span></div>
-                      </div>
-                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:91%;background:var(--warn)"></div></div>
-                    </div>
-                    <div class="eval-bar-row" data-segment="adestra"
-                      onmouseenter="evalHover('adestra')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('Adestra has 398 reviews at 93.7% avg quality — best performer in the portfolio. Show what agents are driving this and what behaviors we can replicate elsewhere.')">
-                      <div class="eval-bar-top">
-                        <span class="eval-bar-label"><span class="eval-dot" style="background:var(--ok)"></span>Adestra</span>
-                        <div class="eval-bar-right"><span class="eval-bar-count">398</span><span class="eval-bar-avg ok">93.7%</span></div>
-                      </div>
-                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:88%;background:linear-gradient(90deg,#17b26a,#22c55e)"></div></div>
-                    </div>
-                    <div class="eval-bar-row" data-segment="interfax"
-                      onmouseenter="evalHover('interfax')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('InterFax has 334 reviews at 88.4% avg quality — 1.6pts below the 90% target. Show which KPIs are dragging it under and what coaching action would close the gap.')">
-                      <div class="eval-bar-top">
-                        <span class="eval-bar-label"><span class="eval-dot" style="background:var(--ok)"></span>InterFax</span>
-                        <div class="eval-bar-right"><span class="eval-bar-count">334</span><span class="eval-bar-avg warn">88.4%</span></div>
-                      </div>
-                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:74%;background:linear-gradient(90deg,#17b26a,#22c55e)"></div></div>
-                    </div>
-                    <div class="eval-bar-row" data-segment="rightanswers"
-                      onmouseenter="evalHover('rightanswers')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('RightAnswers has 274 reviews at 91.3% avg quality — above target. Show quality trend and whether it is stable or improving.')">
-                      <div class="eval-bar-top">
-                        <span class="eval-bar-label"><span class="eval-dot" style="background:var(--ok)"></span>RightAnswers</span>
-                        <div class="eval-bar-right"><span class="eval-bar-count">274</span><span class="eval-bar-avg ok">91.3%</span></div>
-                      </div>
-                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:61%;background:linear-gradient(90deg,#17b26a,#22c55e)"></div></div>
-                    </div>
-                    <div class="eval-bar-row" data-segment="qvidian"
-                      onmouseenter="evalHover('qvidian')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('Qvidian has 221 reviews at 80.1% avg quality — second worst in portfolio. Show top failure KPIs, agent attribution, and the fastest intervention to bring it above target.')">
-                      <div class="eval-bar-top">
-                        <span class="eval-bar-label"><span class="eval-dot" style="background:var(--err)"></span>Qvidian</span>
-                        <div class="eval-bar-right"><span class="eval-bar-count">221</span><span class="eval-bar-avg err">80.1%</span></div>
-                      </div>
-                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:49%;background:var(--err)"></div></div>
-                    </div>
-                  </div>
-                  <!-- Causes float — anchored to products section -->
-                  <div class="eval-causes-float" id="causeFloat">
-                    <div class="eval-causes-float-title" id="causeFloatTitle">Details</div>
-                    <div class="eval-causes-float-list" id="causeFloatList"></div>
-                  </div>
-                </div>
-
-
-                <!-- Trend strip -->
-                <div class="eval-trend-strip">
-                  <span class="eval-trend-ok">
-                    <svg viewBox="0 0 11 11" fill="none">
-                      <path d="M1 7L4 4L6.5 6.5L10 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Avg quality ↑ 2.1% vs prior period
-                  </span>
-                  <span class="eval-borderline-badge"
-                    onclick="window.openOverlay && window.openOverlay('Quality score is at 87.3% across 3,363 reviewed tickets this week — 2.7pts below the 90% target. Show me the product breakdown and the top 3 KPI levers that would close the gap fastest.')"
-                    tabindex="0" role="button"
-                    onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"
-                    >2.7pts below target · view breakdown</span
-                  >
-                </div>
-
-                <!-- AiMY unified insight -->
-                <div class="eval-insight">
-                  <div class="eval-insight-header">
-                    <svg width="14" height="18" viewBox="0 0 18 20">
-                <use href="#aimy-logo-small" />
-              </svg>
-                    <span class="eval-insight-label">AiMY Insight</span>
-                  </div>
-                  <p class="eval-insight-text">
-                    <strong
-                      >5 agents slipped below the quality threshold</strong
-                    >
-                    this week, dropping performance by 15%. The primary driver
-                    is
-                    <span class="hl-warn"
-                      >prolonged wait times on billing tickets</span
-                    >, causing
-                    <span class="hl-err">68% of negative interactions</span>
-                    this shift — and directly explaining the 17% fail rate and
-                    the spike in customer friction.
-                  </p>
-                </div>
-
-                <!-- Action row -->
-                <div class="eval-action-row">
-                  <button class="eval-primary-btn" onclick="window.openOverlay && window.openOverlay('Billing escalation handling has a 17% fail rate this shift driven by prolonged wait times. Show me the specific protocol steps being missed and recommend the fastest fix.')">
-                    <svg viewBox="0 0 13 13" fill="none">
-                      <path
-                        d="M6.5 1.5A5 5 0 1 0 11.5 6.5"
-                        stroke="currentColor"
-                        stroke-width="1.4"
-                        stroke-linecap="round"
-                      />
-                      <path
-                        d="M9.5 1.5V4.5H12.5"
-                        stroke="currentColor"
-                        stroke-width="1.4"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                    Review Billing Escalation Protocol
-                  </button>
-                  <button class="eval-sec-btn" onclick="window.openOverlay && window.openOverlay('Show me the 26 tickets with the highest customer friction scores this shift. Sort by wait time and flag any with repeat contact within 24hrs.')">See 26 tickets</button>
-                  <button class="eval-sec-btn" onclick="window.openOverlay && window.openOverlay('Which team or queue should own the billing escalation issue? Suggest the right assignment based on capacity and skill match.')">Assign to team</button>
-                </div>
-
-                <!-- Top Failed KPIs -->
-                <div class="eval-sub-section">
-                  <div class="eval-sub-label">Top Failed KPIs</div>
-                  <div class="eval-bars">
-                    <div class="eval-bar-row eval-kpi-row" data-segment="incorrect-status"
-                      onmouseenter="evalHover('incorrect-status')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('Incorrect status has 150 failures — the #1 KPI this week, concentrated in Objectif Lune (103) and Qvidian. Show me the agents responsible and generate a coaching brief.')">
-                      <div class="eval-bar-top">
-                        <span class="eval-bar-label">Incorrect status</span>
-                        <div class="eval-bar-right eval-bar-val-err">150</div>
-                      </div>
-                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:100%;background:var(--err)"></div></div>
-                    </div>
-                    <div class="eval-bar-row eval-kpi-row" data-segment="grammar-mistake"
-                      onmouseenter="evalHover('grammar-mistake')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('Grammar mistakes account for 55 KPI failures in InterFax and Second Street. Show me the worst-scoring responses and suggest a writing quality fix.')">
-                      <div class="eval-bar-top">
-                        <span class="eval-bar-label">Grammar mistake</span>
-                        <div class="eval-bar-right eval-bar-val-warn">55</div>
-                      </div>
-                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:37%;background:var(--warn)"></div></div>
-                    </div>
-                    <div class="eval-bar-row eval-kpi-row" data-segment="time-updates"
-                      onmouseenter="evalHover('time-updates')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('Time between updates has 47 failures in Qvidian and RightAnswers — agents leaving customers past the SLA update window. Show the tickets and suggest a follow-up cadence fix.')">
-                      <div class="eval-bar-top">
-                        <span class="eval-bar-label">Time between updates</span>
-                        <div class="eval-bar-right eval-bar-val-warn">47</div>
-                      </div>
-                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:31%;background:var(--warn)"></div></div>
-                    </div>
-                    <div class="eval-bar-row eval-kpi-row" data-segment="no-eta"
-                      onmouseenter="evalHover('no-eta')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('No specific ETA provided has 36 failures. Which agents and products are most affected and what script change would fix this?')">
-                      <div class="eval-bar-top">
-                        <span class="eval-bar-label">No specific ETA</span>
-                        <div class="eval-bar-right">36</div>
-                      </div>
-                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:24%;background:var(--teal)"></div></div>
-                    </div>
-                    <div class="eval-bar-row eval-kpi-row" data-segment="article-id"
-                      onmouseenter="evalHover('article-id')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('Article ID missing has 20 failures. Show me the affected tickets and the agents most frequently missing this step.')">
-                      <div class="eval-bar-top">
-                        <span class="eval-bar-label">Article ID missing</span>
-                        <div class="eval-bar-right">20</div>
-                      </div>
-                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:13%;background:var(--teal)"></div></div>
-                    </div>
-                  </div>
-                  <!-- KPI causes float — anchored to KPI section -->
-                  <div class="eval-causes-float" id="kpiFloat" style="position:absolute;right:0;">
-                    <div class="eval-causes-float-title" id="kpiFloatTitle">Details</div>
-                    <div class="eval-causes-float-list" id="kpiFloatList"></div>
-                  </div>
-                </div>
-
-                <!-- Friction signals → canvas CTA -->
-                <div class="eval-canvas-cta" onclick="appendFrictionCardsResponse()">
-                  <svg width="12" height="14" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-                  <span>View all friction signals in canvas</span>
-                  <svg viewBox="0 0 13 13" fill="none" width="10" height="10" style="margin-left:auto;opacity:.5">
-                    <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-
-              </div>
-              <!-- /eval-panel -->
+            <div class="field">
+              <label class="field-label">Send reset link to</label>
+              <input class="input" type="email" value="nour@aimy.io" readonly aria-label="Reset email">
+              <span class="field-hint">The link expires in 30 minutes.</span>
             </div>
-            <!-- /layout-column right -->
+            <div class="modal-footer">
+              <button class="btn btn-ghost" type="button" data-action="close-pw">Cancel</button>
+              <button class="btn btn-brand" type="button" data-action="send-reset">Send reset link</button>
+            </div>
           </div>
-          <!-- /tier-2-grid -->
+        </div>
         </div>
         <!-- /dashboard-scroll -->
 
@@ -7633,1151 +7012,360 @@
     <!-- /app-body -->
 
     <script>
-      // Handlers for V2B interactive components
-      function toggleCard(card) {
-        // Clicking the card wrapper toggles the metric breakdown — same behavior
-        // as the expand-toggle button, so users don't hit a dead click.
-        const btn = card.querySelector(".expand-toggle");
-        if (btn) toggleData(btn);
-      }
-      // Keyboard support for bcard role=button wrappers
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-          const card = e.target.closest('.bcard[role="button"]');
-          if (card && e.target === card) { e.preventDefault(); toggleCard(card); }
-        }
-      });
-      function toggleData(btn) {
-        const card = btn.closest(".bcard");
-        const data = card.querySelector(".bcard-data");
-        const isOpen = data.classList.contains("open");
-        data.classList.toggle("open");
-        btn.classList.toggle("open");
-        // Update label text
-        const textNode = [...btn.childNodes].find(
-          (n) => n.nodeType === 3 && n.textContent.trim() !== "",
-        );
-        if (textNode)
-          textNode.textContent = isOpen ? " Metric Breakdown " : " Hide data ";
-      }
-
-      function toggleChart() {
-        const area = document.getElementById("chartArea");
-        const btn = document.getElementById("chartTrigger");
-        area.classList.toggle("open");
-        btn.classList.toggle("open");
-        const isOpen = area.classList.contains("open");
-        document.getElementById("chartTriggerLabel").textContent = isOpen
-          ? "Hide chart"
-          : "Show supporting chart";
-      }
-
-      function togglePassing() {
-        const sec = document.getElementById("passingSection");
-        const btn = document.getElementById("passingToggle");
-        const isOpen = sec.classList.toggle("open");
-        btn.querySelector("svg").style.transform = isOpen
-          ? "rotate(180deg)"
-          : "rotate(0deg)";
-        const label = btn.querySelector(".passing-toggle-label");
-        if (label)
-          label.textContent = isOpen ? "Hide passing KPIs" : "Passing KPIs · 3";
-      }
-
-      function toggleSection(sectionId, btnId, openLabel, closeLabel) {
-        const section = document.getElementById(sectionId);
-        const btn = document.getElementById(btnId);
-        const isOpen = section.classList.contains("open");
-        section.classList.toggle("open");
-        btn.classList.toggle("open");
-        btn.querySelector(".toggle-label").textContent = isOpen
-          ? openLabel
-          : closeLabel;
-      }
-
-      // ── Quality Score Chart ───────────────────────────────────
-      // Per-range data slices. Each entry: scores[], prevScores[], labels[],
-      // statAvg, statPeak, statPeakMonth, statLow, statLowMonth, deltaText
-      const RANGE_DATA = {
-        'All': {
-          labels: ['W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W14','W15','W16','W17','W18','W19','W20','W21'],
-          scores: [94,95,98,97,93,96,96,97,97,96,96,97,97,96,98,99,97,97,96],
-          prevScores: [89,90,92,91,88,91,91,92,92,91,91,92,91,91,93,94,92,92,91],
-          statAvg: '95.9%', statPeak: '99.0%', statPeakMonth: 'W18',
-          statLow: '93.7%', statLowMonth: 'W05',
-          delta: '↑ 2.1% vs prior period', deltaUp: true,
-          subtitle: 'Weekly quality average · Real workbook data when imported',
-          peakIdx: 15,
-          lowIdx: 4,
-        },
-        '90D': {
-          labels: ['OCT','NOV','DEC'],
-          scores: [86,74,87],
-          prevScores: [83,81,82],
-          statAvg: '82.3%', statPeak: '87%', statPeakMonth: 'Dec',
-          statLow: '74%', statLowMonth: 'Nov',
-          delta: '↓ 0.8% vs prior quarter', deltaUp: false,
-          subtitle: 'Last 90 days · updated daily',
-          peakIdx: 2,
-          lowIdx: 1,
-        },
-        '30D': {
-          labels: ['W1','W2','W3','W4'],
-          scores: [84,86,83,87],
-          prevScores: [80,82,80,83],
-          statAvg: '85.0%', statPeak: '87%', statPeakMonth: 'W4',
-          statLow: '83%', statLowMonth: 'W3',
-          delta: '↑ 3.4% vs prior month', deltaUp: true,
-          subtitle: 'Last 30 days · updated daily',
-          peakIdx: 3,
-          lowIdx: 2,
-        },
-        '7D': {
-          labels: ['MON','TUE','WED','THU','FRI','SAT','SUN'],
-          scores: [84,85,86,83,87,85,87],
-          prevScores: [80,82,81,79,83,81,82],
-          statAvg: '85.3%', statPeak: '87%', statPeakMonth: 'Fri',
-          statLow: '83%', statLowMonth: 'Thu',
-          delta: '↑ 2.1% vs prior week', deltaUp: true,
-          subtitle: 'Last 7 days · updated daily',
-          peakIdx: 4,
-          lowIdx: 3,
-        },
-        'YTD': {
-          labels: ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],
-          scores: [82,85,84,86,91,87,87,88,88,86,74,87],
-          prevScores: [78,80,79,82,84,82,83,84,83,81,80,82],
-          statAvg: '87.3%', statPeak: '91%', statPeakMonth: 'May',
-          statLow: '74%', statLowMonth: 'Nov',
-          delta: '↑ 5.2% vs last period', deltaUp: true,
-          subtitle: 'Year to date · updated daily',
-          peakIdx: 4,
-          lowIdx: 10,
-        }
-      };
-
-      function buildChartPath(scores, xStep, xStart, maxY) {
-        // Build a smooth polyline-style path through score points
-        const pts = scores.map((s, i) => [xStart + i * xStep, ((100 - s) / 100) * maxY]);
-        if (pts.length === 1) return 'M' + pts[0][0] + ',' + pts[0][1];
-        let d = 'M' + pts[0][0] + ',' + pts[0][1];
-        for (let i = 1; i < pts.length; i++) {
-          const cp1x = pts[i-1][0] + xStep * 0.4;
-          const cp1y = pts[i-1][1];
-          const cp2x = pts[i][0] - xStep * 0.4;
-          const cp2y = pts[i][1];
-          d += ' C' + cp1x + ',' + cp1y + ' ' + cp2x + ',' + cp2y + ' ' + pts[i][0] + ',' + pts[i][1];
-        }
-        return d;
-      }
-
-      function applyRangeToChart(range) {
-        const data = RANGE_DATA[range];
-        if (!data) return;
-        const n = data.scores.length;
-        const maxY = 200;
-        // Distribute points across x=40..800 (760px span)
-        const xStep = n === 1 ? 0 : 760 / (n - 1);
-        const xStart = 40;
-
-        // Rebuild main path and fill
-        const mainD = buildChartPath(data.scores, xStep, xStart, maxY);
-        const fillD = mainD + ' L' + (xStart + (n-1)*xStep) + ',205 L' + xStart + ',205Z';
-        const mainPath = document.getElementById('mainPath');
-        if (mainPath) mainPath.setAttribute('d', mainD);
-        // The fill is the sibling <path> — update its d too
-        if (mainPath && mainPath.nextElementSibling) {
-          mainPath.nextElementSibling.setAttribute('d', fillD);
-        }
-
-        // Rebuild prev path and area
-        const prevD = buildChartPath(data.prevScores, xStep, xStart, maxY);
-        const prevAreaD = prevD + ' L' + (xStart + (n-1)*xStep) + ',205 L' + xStart + ',205Z';
-        const prevPath = document.getElementById('prevPath');
-        const prevArea = document.getElementById('prevArea');
-        if (prevPath) prevPath.setAttribute('d', prevD);
-        if (prevArea) prevArea.setAttribute('d', prevAreaD);
-
-        // Update axis labels — reposition x, set text, hide extras
-        const allLabels = document.querySelectorAll('#mainChart text[data-month-idx]');
-        const monthXs = [];
-        // For dense weekly ranges, thin out labels to avoid crowding
-        // Show every Nth label when n > 12
-        const labelInterval = n > 15 ? 3 : (n > 8 ? 2 : 1);
-        allLabels.forEach(el => {
-          const idx = parseInt(el.dataset.monthIdx, 10);
-          if (idx < n) {
-            const xPos = xStart + idx * xStep;
-            el.setAttribute('x', xPos);
-            el.textContent = data.labels[idx];
-            // Show every Nth, always show first and last
-            const show = (idx === 0) || (idx === n - 1) || (idx % labelInterval === 0);
-            el.style.display = show ? '' : 'none';
-            monthXs.push(xPos);
-          } else {
-            el.style.display = 'none';
-            monthXs.push(null);
-          }
-        });
-
-        // Update stats row
-        const statEls = document.querySelectorAll('.v2-stat-value');
-        const deltaEls = document.querySelectorAll('.v2-stat-delta');
-        if (statEls[0]) statEls[0].textContent = data.statAvg;
-        if (statEls[1]) statEls[1].textContent = data.statPeak;
-        if (statEls[2]) statEls[2].textContent = data.statLow;
-        if (deltaEls[0]) {
-          deltaEls[0].textContent = data.delta;
-          deltaEls[0].className = 'v2-stat-delta ' + (data.deltaUp ? 'up' : 'down');
-        }
-        if (deltaEls[1]) deltaEls[1].textContent = 'Peak \u00b7 ' + data.statPeakMonth;
-        if (deltaEls[2]) deltaEls[2].textContent = 'Low \u00b7 ' + data.statLowMonth;
-
-        // Update subtitle
-        const subtitle = document.querySelector('.v2-subtitle');
-        if (subtitle) subtitle.textContent = data.subtitle;
-
-        // ── Persistent value labels: Peak / Low / Current ─────────────────
-        // Compute pixel positions from score values and indices
-        const peakIdx  = (data.peakIdx  !== undefined) ? data.peakIdx  : data.scores.indexOf(Math.max(...data.scores));
-        const lowIdx   = (data.lowIdx   !== undefined) ? data.lowIdx   : data.scores.indexOf(Math.min(...data.scores));
-        const lastIdx  = n - 1;
-
-        function scoreToY(s) { return ((100 - s) / 100) * maxY; }
-
-        const peakX    = xStart + peakIdx  * xStep;
-        const peakY    = scoreToY(data.scores[peakIdx]);
-        const lowX     = xStart + lowIdx   * xStep;
-        const lowY     = scoreToY(data.scores[lowIdx]);
-        const currentX = xStart + lastIdx  * xStep;
-        const currentY = scoreToY(data.scores[lastIdx]);
-
-        const labelPeak    = document.getElementById('chartLabelPeak');
-        const labelLow     = document.getElementById('chartLabelLow');
-        const labelCurrent = document.getElementById('chartLabelCurrent');
-
-        if (labelPeak) {
-          labelPeak.setAttribute('x', peakX);
-          labelPeak.setAttribute('y', Math.max(10, peakY - 8));
-          labelPeak.textContent = data.scores[peakIdx] + '%';
-        }
-        if (labelLow) {
-          labelLow.setAttribute('x', lowX);
-          labelLow.setAttribute('y', Math.min(195, lowY + 14));
-          labelLow.textContent = data.scores[lowIdx] + '%';
-        }
-        if (labelCurrent) {
-          // Right-align to endpoint; shift left slightly if at edge
-          const anchorX = currentX >= 790 ? currentX : currentX + 4;
-          labelCurrent.setAttribute('x', anchorX);
-          labelCurrent.setAttribute('y', Math.max(10, currentY - 8));
-          labelCurrent.setAttribute('text-anchor', currentX >= 790 ? 'end' : 'start');
-          labelCurrent.textContent = data.scores[lastIdx] + '%';
-        }
-
-        // Hide peak label if it overlaps low or current (within 40px x-distance)
-        if (labelPeak && labelLow) {
-          const tooClose = Math.abs(peakX - lowX) < 40 || Math.abs(peakX - currentX) < 40;
-          labelPeak.style.display = tooClose ? 'none' : '';
-        }
-
-        // ── Annotation cards: show only on YTD (they reference specific months) ──
-        const annotations = document.querySelectorAll('.chart-annotation');
-        annotations.forEach(a => {
-          a.style.display = (range === 'YTD') ? '' : 'none';
-        });
-
-        // Move the anomaly highlight band off-screen on non-YTD ranges
-        const anomalyRect = document.querySelector('#mainChart rect[fill="url(#anomalyFill)"]');
-        const anomalyLine = document.querySelector('#mainChart line[stroke="#F04438"]');
-        if (anomalyRect) anomalyRect.style.display = (range === 'YTD') ? '' : 'none';
-        if (anomalyLine) anomalyLine.style.display = (range === 'YTD') ? '' : 'none';
-
-        // Also hide the anomaly circle dot on non-YTD ranges
-        const anomalyDot = document.querySelector('#mainChart circle[fill="#F04438"]');
-        if (anomalyDot) anomalyDot.style.display = (range === 'YTD') ? '' : 'none';
-
-        // Patch hoverZone JS data arrays so tooltip stays accurate
-        window._chart_scores = data.scores;
-        window._chart_prev = data.prevScores;
-        window._chart_labels = data.labels;
-        window._chart_xStep = xStep;
-        window._chart_xStart = xStart;
-        window._chart_n = n;
-      }
-
-      // Initialise chart on load — default to "All" weekly view
-      document.addEventListener('DOMContentLoaded', function() {
-        applyRangeToChart('All');
-      });
-
-      function setRange(range, el) {
-        document.querySelectorAll('.range-tab').forEach(t => t.classList.remove('active'));
-        el.classList.add('active');
-        applyRangeToChart(range);
-      }
-
-      let compareActive = false;
-      function toggleCompare() {
-        compareActive = !compareActive;
-        const btn = document.getElementById("compareBtn");
-        const prevGroup = document.getElementById("prevPeriodGroup");
-        const prevLegend = document.getElementById("prevLegend");
-        const ttPrevRow = document.getElementById("ttPrevRow");
-        if (btn) btn.classList.toggle("active", compareActive);
-        if (prevGroup)
-          prevGroup.style.display = compareActive ? "block" : "none";
-        if (prevLegend)
-          prevLegend.style.display = compareActive ? "flex" : "none";
-        if (ttPrevRow)
-          ttPrevRow.style.display = compareActive ? "flex" : "none";
-      }
-
-      let aiVisible = false; // closed by default
-      function toggleAI() {
-        toggleAiAnalysis();
-      } // keep old ref intact
-      function toggleAiAnalysis() {
-        aiVisible = !aiVisible;
-        const panel = document.getElementById("aiPanel");
-        const toggle = document.getElementById("aiAnalysisToggle");
-        const btn = document.getElementById("aiToggleBtn");
-        if (panel) panel.style.display = aiVisible ? "block" : "none";
-        if (toggle) {
-          toggle.setAttribute("aria-expanded", aiVisible);
-          // Rotate chevron via the existing .open class pattern
-          const chevron = toggle.querySelector("svg:last-child");
-          if (chevron)
-            chevron.style.transform = aiVisible ? "rotate(180deg)" : "";
-        }
-        if (btn) btn.style.opacity = aiVisible ? "1" : "0.5";
-      }
-
-      const chartMonths = [
-        "JAN",
-        "FEB",
-        "MAR",
-        "APR",
-        "MAY",
-        "JUN",
-        "JUL",
-        "AUG",
-        "SEP",
-        "OCT",
-        "NOV",
-        "DEC",
-      ];
-      const chartScores = [82, 85, 84, 86, 91, 87, 87, 88, 88, 86, 74, 87];
-      const chartPrevScores = [78, 80, 79, 82, 84, 82, 83, 84, 83, 81, 80, 82];
-      function scoreToY(s) {
-        return ((100 - s) / 100) * 200;
-      }
-
       (function () {
-        const hoverZone = document.getElementById("hoverZone");
-        const hoverLine = document.getElementById("hoverLine");
-        const hoverDot = document.getElementById("hoverDot");
-        const tooltip = document.getElementById("tooltip");
-        const chartArea = document.getElementById("chartArea");
-        if (!hoverZone) return;
+        "use strict";
 
-        hoverZone.addEventListener("mousemove", (e) => {
-          // Use dynamic arrays that update with each range switch
-          const scores = window._chart_scores || chartScores;
-          const prev   = window._chart_prev   || chartPrevScores;
-          const labels = window._chart_labels  || chartMonths;
-          const xStep  = window._chart_xStep  != null ? window._chart_xStep  : 66;
-          const xStart = window._chart_xStart != null ? window._chart_xStart : 40;
-          const n      = window._chart_n      != null ? window._chart_n      : 12;
-
-          const monthXs = Array.from({length: n}, (_, i) => xStart + i * xStep);
-
-          const svgEl = document.getElementById("mainChart");
-          const rect = svgEl.getBoundingClientRect();
-          const svgX = ((e.clientX - rect.left) / rect.width) * 800;
-          if (svgX < xStart || svgX > xStart + (n - 1) * xStep + 40) return;
-
-          let closest = 0, minDist = Infinity;
-          monthXs.forEach((mx, i) => {
-            const d = Math.abs(svgX - mx);
-            if (d < minDist) { minDist = d; closest = i; }
-          });
-
-          const mx = monthXs[closest];
-          const my = ((100 - scores[closest]) / 100) * 200;
-          hoverLine.setAttribute("x1", mx);
-          hoverLine.setAttribute("x2", mx);
-          hoverLine.setAttribute("opacity", "0.6");
-          hoverDot.setAttribute("cx", mx);
-          hoverDot.setAttribute("cy", my);
-          hoverDot.setAttribute("opacity", "1");
-          document.getElementById("ttMonth").textContent = labels[closest];
-          document.getElementById("ttScore").textContent = scores[closest] + "%";
-          document.getElementById("ttPrev").textContent  = prev[closest]  + "%";
-
-          const areaRect = chartArea.getBoundingClientRect();
-          let tipX = e.clientX - areaRect.left + 14;
-          let tipY = e.clientY - areaRect.top - 20;
-          if (tipX + 140 > areaRect.width) tipX = e.clientX - areaRect.left - 140;
-          tooltip.style.left = Math.max(0, tipX) + "px";
-          tooltip.style.top  = Math.max(0, tipY) + "px";
-          tooltip.classList.add("visible");
-        });
-
-        hoverZone.addEventListener("mouseleave", () => {
-          hoverLine.setAttribute("opacity", "0");
-          hoverDot.setAttribute("opacity", "0");
-          tooltip.classList.remove("visible");
-        });
-      })();
-
-      // ── Quick Action Chips ────────────────────────────────────
-      const chipScenarios = {
-        critical: {
-          detected: "3 KPIs failing, Nov dip unresolved",
-          confidence: "high confidence",
-          context: "· based on 3 failing KPIs and Nov quality dip",
-          signals: [
-            "SLA compliance at 61% — threshold is 65%",
-            "3 KPIs below target threshold this period",
-            "Quality dip of 12pts in November unresolved"
-          ],
-          chips: [
-            {
-              type: "caution",
-              badge: "caution-badge",
-              badgeText: "Watch",
-              label: "Review 313 borderline tickets",
-              sub: "<strong>11% of total</strong> evaluated as borderline this period. Small coaching changes could move them to pass.",
-              action: "See borderline tickets →",
-              actionClass: "caution-action",
-            },
-            {
-              type: "caution",
-              badge: "caution-badge",
-              badgeText: "Watch",
-              label: "Survey promotion slipping — monitor before it becomes a failure",
-              sub: "Survey promo sits at <strong>49%</strong>, just below the 50% threshold. Trending up +3% but not yet stable.",
-              action: "Track KPI trend →",
-              actionClass: "caution-action",
-            },
-            {
-              type: "caution",
-              badge: "caution-badge",
-              badgeText: "Watch",
-              label: "Response SLA drifting — 4pts below target",
-              sub: "SLA compliance at <strong>71%</strong> — down 2pts from last period. Not yet critical but trajectory needs monitoring.",
-              action: "Monitor trend →",
-              actionClass: "caution-action",
-            },
-            {
-              type: "explore",
-              badge: "explore-badge",
-              badgeText: "AiMY",
-              label: "Compare team performance this period",
-              sub: "Customer Support trailing Technical Support by <strong>9pts</strong> on average quality score.",
-              action: "Open AI canvas →",
-              actionClass: "explore-action",
-            },
-          ],
-        },
-        improving: {
-          detected: "All KPIs improving",
-          confidence: "high confidence",
-          context: "· all KPIs trending upward this period",
-          signals: [
-            "All 6 KPIs above threshold — first time this quarter",
-            "Quality score up 5.2% vs prior period",
-            "Empathy scores rose 12% this period"
-          ],
-          chips: [
-            {
-              type: "explore",
-              badge: "explore-badge",
-              badgeText: "Good news",
-              label: "Export monthly success report",
-              sub: "Quality at <strong>92%</strong> — above SLA target for the first time this year. Board-ready summary available.",
-              action: "Export report →",
-              actionClass: "explore-action",
-            },
-            {
-              type: "explore",
-              badge: "explore-badge",
-              badgeText: "AiMY",
-              label: "Identify what drove the improvement",
-              sub: "Empathy scores rose 12% this period. AiMY has identified 3 agents whose coaching approach is setting the standard.",
-              action: "View pattern →",
-              actionClass: "explore-action",
-            },
-            {
-              type: "caution",
-              badge: "caution-badge",
-              badgeText: "Watch",
-              label: "First response time starting to slip",
-              sub: "SLA compliance dropped from <strong>88% to 81%</strong> over 2 weeks. Monitor before it becomes a P1.",
-              action: "Monitor trend →",
-              actionClass: "caution-action",
-            },
-            {
-              type: "explore",
-              badge: "explore-badge",
-              badgeText: "AiMY",
-              label: "Identify which agents are setting the quality standard",
-              sub: "With all KPIs improving, now is the right moment to extract and document what the top performers are doing differently.",
-              action: "View top agents →",
-              actionClass: "explore-action",
-            },
-          ],
-        },
-        dispute: {
-          detected: "5 open disputes, 2 past SLA window",
-          confidence: "medium confidence",
-          context: "· 5 open disputes, 2 past SLA window",
-          signals: [
-            "DISP-0441 and DISP-0438 overdue by 3+ days",
-            "3 disputes awaiting auditor — no reply 48hrs",
-            "7 of 9 recent disputes share one checklist item"
-          ],
-          chips: [
-            {
-              type: "urgent",
-              badge: "urgent-badge",
-              badgeText: "Overdue",
-              label: "Resolve 2 disputes past SLA window",
-              sub: "Disputes <strong>DISP-0441 and DISP-0438</strong> are 3+ days overdue. Escalation risk if unresolved today.",
-              action: "Open dispute queue →",
-              actionClass: "urgent-action",
-            },
-            {
-              type: "caution",
-              badge: "caution-badge",
-              badgeText: "Watch",
-              label: "3 disputes awaiting auditor response",
-              sub: "Agents have responded but <strong>no auditor reply in 48hrs</strong>. Agents are waiting for resolution.",
-              action: "View pending →",
-              actionClass: "caution-action",
-            },
-            {
-              type: "explore",
-              badge: "explore-badge",
-              badgeText: "AiMY",
-              label: "Dispute patterns suggest a training gap",
-              sub: "7 of 9 recent disputes involve the same checklist item. AiMY recommends a targeted refresher.",
-              action: "See pattern →",
-              actionClass: "explore-action",
-            },
-            {
-              type: "caution",
-              badge: "caution-badge",
-              badgeText: "Watch",
-              label: "4 agents have filed more than 1 dispute this period",
-              sub: "Repeat disputes from the same agents often signal a scoring calibration issue or a misaligned checklist item.",
-              action: "Review agent disputes →",
-              actionClass: "caution-action",
-            },
-          ],
-        },
-        explore: {
-          detected: "Stable · explore mode",
-          confidence: "high confidence",
-          context: "· quality stable · no active alerts",
-          signals: [
-            "Quality stable at 89% for 14 days",
-            "No active P1 or P2 alerts",
-            "All SLA targets met this week"
-          ],
-          chips: [
-            {
-              type: "explore",
-              badge: "explore-badge",
-              badgeText: "AiMY",
-              label: "Compare Q3 vs Q4 quality drivers",
-              sub: "Quality is stable at <strong>89%</strong>. Use this quiet period to understand what’s working before it changes.",
-              action: "Start comparison →",
-              actionClass: "explore-action",
-            },
-            {
-              type: "explore",
-              badge: "explore-badge",
-              badgeText: "AiMY",
-              label: "Review KPI template for Q1 planning",
-              sub: "3 KPI thresholds haven’t been updated since last year. Now is a good time to calibrate before Q1.",
-              action: "Review templates →",
-              actionClass: "explore-action",
-            },
-            {
-              type: "explore",
-              badge: "explore-badge",
-              badgeText: "AiMY",
-              label: "Schedule next evaluation cycle review",
-              sub: "Last cycle review was <strong>47 days ago</strong>. A check-in now prevents drift from building up unnoticed.",
-              action: "Schedule review →",
-              actionClass: "explore-action",
-            },
-            {
-              type: "explore",
-              badge: "explore-badge",
-              badgeText: "AiMY",
-              label: "Surface agents at risk of drift before next period",
-              sub: "Quality is stable now but 2 agents have shown a slow decline over 6 weeks. Catching this early prevents a surprise dip.",
-              action: "View at-risk agents →",
-              actionClass: "explore-action",
-            },
-          ],
-        },
-      };
-
-      // Currently-detected state — single source of truth for the pill and chip context
-      let activeScenario = "critical";
-
-      function setScenario(key, el) {
-        activeScenario = key;
-        const scenario = chipScenarios[key];
-        if (!scenario) return;
-        // Update detected pill
-        const lbl = document.getElementById("detectedStateLabel");
-        const conf = document.getElementById("detectedStateConfidence");
-        if (lbl) lbl.textContent = scenario.detected;
-        if (conf) {
-          // Preserve tooltip child, update only text node
-          const textNode = [...conf.childNodes].find(n => n.nodeType === 3);
-          if (textNode) textNode.textContent = scenario.confidence;
-          else conf.firstChild && (conf.firstChild.textContent = scenario.confidence);
-        }
-        // Update confidence tooltip signals
-        const sigEls = document.getElementById("confSignals");
-        if (sigEls && scenario.signals) {
-          sigEls.innerHTML = scenario.signals
-            .map(s => '<div class="conf-signal">' + s + '</div>')
-            .join('');
-        }
-        // Update chip context line
-        const ctxEl = document.getElementById("chipsContext");
-        if (ctxEl) ctxEl.textContent = scenario.context;
-        // Reset rotation offset for this scenario so the first 3 chips always show on switch
-        chipRotationOffset[key] = 0;
-        // Re-render chips for this state
-        renderChips(scenario.chips);
-        // Re-render alt states, excluding the currently active one
-        renderStateAlts();
-      }
-
-      function renderStateAlts() {
-        const list = document.getElementById("stateAltsList");
-        if (!list) return;
-        const alts = Object.entries(chipScenarios).filter(
-          ([key]) => key !== activeScenario,
-        );
-        list.innerHTML = alts
-          .map(
-            ([key, s]) =>
-              `<button class="state-alt" onclick="setScenario('${key}', this)" title="Switch to this state">` +
-              `<svg width="9" height="9" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;opacity:0.55">` +
-              `<path d="M1 5h9M7 1l3 4-3 4"/><path d="M13 9H4M7 13l-3-4 3-4" opacity="0.6"/>` +
-              `</svg>${s.detected}</button>`,
-          )
-          .join("");
-      }
-
-      function renderChips(chips) {
-        const row = document.getElementById("chipsRow");
-        if (!row) return;
-        row.innerHTML = chips
-          .map(
-            (chip, i) => `
-      <div class="v2-chip ${chip.type}" id="chip-${i}" style="animation-delay:${i * 0.06}s">
-        <div class="v2-chip-top">
-          <span class="v2-chip-label">${chip.label}</span>
-          <span class="v2-chip-badge ${chip.badge}">${chip.badgeText}</span>
-        </div>
-        <p class="v2-chip-sub">${chip.sub}</p>
-        <div class="v2-chip-footer">
-          <span class="v2-chip-action ${chip.actionClass}" data-chip-prompt="${chip.label.replace(/"/g,'&quot;')}" tabindex="0" role="button">
-            ${chip.action}
-          </span>
-          <span class="v2-chip-dismiss" onclick="dismissChip(${i})" title="Dismiss">\u2715</span>
-        </div>
-      </div>`,
-          )
-          .join("");
-      }
-
-      // Delegated handler for chip action spans — fires on click or Enter/Space.
-      // Routes all action types to openOverlay with a contextual prompt built from
-      // the chip label + scenario context so AiMY always starts from the right place.
-      (function wireChipActions() {
-        const row = document.getElementById("chipsRow");
-        if (!row) return;
-
-        function handleChipAction(el) {
-          if (!el.classList.contains("v2-chip-action")) return;
-          const chip = el.closest(".v2-chip");
-          if (!chip) return;
-          // Build a contextual prompt from the chip label + detected state
-          const label = el.dataset.chipPrompt || el.textContent.trim();
-          const detected = document.getElementById("detectedStateLabel");
-          const context = detected ? detected.textContent : "";
-          const prompt = label + (context ? " \u2014 current state: " + context : "");
-          if (typeof window.openOverlay === "function") window.openOverlay(prompt);
-        }
-
-        row.addEventListener("click", function(e) {
-          handleChipAction(e.target.closest(".v2-chip-action") || e.target);
-        });
-        row.addEventListener("keydown", function(e) {
-          if (e.key === "Enter" || e.key === " ") {
-            const target = e.target.closest(".v2-chip-action");
-            if (target) { e.preventDefault(); handleChipAction(target); }
-          }
-        });
-      })();
-
-      // Delegated handler for friction feed items — click or Enter/Space opens canvas
-      (function wireFeedItems() {
-        const feed = document.querySelector('.eval-feed');
-        if (!feed) return;
-        function handleFeedClick(el) {
-          const item = el.closest('[data-feed-prompt]');
-          if (!item) return;
-          const prompt = item.dataset.feedPrompt;
-          if (prompt && typeof window.openOverlay === 'function') window.openOverlay(prompt);
-        }
-        feed.addEventListener('click', function(e) { handleFeedClick(e.target); });
-        feed.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            const item = e.target.closest('[data-feed-prompt]');
-            if (item) { e.preventDefault(); handleFeedClick(e.target); }
-          }
-        });
-      })();
-      // Dismissed chips are stashed (not destroyed) for 5 seconds. If the
-      // user clicks Undo, the chip re-inserts at its original index. If the
-      // window elapses, the dismissal is committed — AiMY would then learn
-      // from it via a backend signal (dispatch placeholder below).
-
-      let toastTimer = null;
-      let toastProgressEl = null;
-      let lastDismissed = null; // { i, chip, scenarioKey, nextSibling }
-
-      function dismissChip(i) {
-        const el = document.getElementById("chip-" + i);
-        if (!el) return;
-        const scenario = chipScenarios[activeScenario];
-        if (!scenario) return;
-        const chip = scenario.chips[i];
-        if (!chip) return;
-
-        // Stash for undo
-        lastDismissed = { i, chip, scenarioKey: activeScenario };
-        el.classList.add("dismissed");
-        setTimeout(() => {
-          if (el && el.parentNode) el.remove();
-        }, 220);
-
-        showToast({
-          title: "Suggestion dismissed",
-          sub: "AiMY will surface fewer of these.",
-        });
-      }
-
-      function showToast({ title, sub }) {
-        const toast = document.getElementById("aimyToast");
-        if (!toast) return;
-        const titleEl = document.getElementById("aimyToastTitle");
-        const subEl = document.getElementById("aimyToastSub");
-        if (titleEl) titleEl.textContent = title;
-        if (subEl) subEl.textContent = sub;
-
-        // Reset countdown animation by swapping the progress bar node
-        const oldProgress = document.getElementById("aimyToastProgress");
-        if (oldProgress) {
-          const fresh = oldProgress.cloneNode(false);
-          oldProgress.parentNode.replaceChild(fresh, oldProgress);
-        }
-
-        toast.classList.add("visible");
-
-        // Clear any pending hide
-        if (toastTimer) clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-          toast.classList.remove("visible");
-          commitDismiss();
-          toastTimer = null;
-        }, 5000);
-      }
-
-      function undoToast() {
-        const toast = document.getElementById("aimyToast");
-        if (toastTimer) {
-          clearTimeout(toastTimer);
-          toastTimer = null;
-        }
-        if (toast) toast.classList.remove("visible");
-        if (!lastDismissed) return;
-
-        // Re-render the full chip set — simplest correct behavior,
-        // preserves original index and re-inserts the dismissed chip.
-        const scenario = chipScenarios[lastDismissed.scenarioKey];
-        if (scenario) renderChips(scenario.chips);
-        lastDismissed = null;
-      }
-
-      function commitDismiss() {
-        if (!lastDismissed) return;
-        // Placeholder for backend learning signal. In production, dispatch
-        // an event the agent layer can subscribe to.
-        try {
-          window.dispatchEvent(
-            new CustomEvent("aimy:chip-dismissed", {
-              detail: {
-                chipLabel: lastDismissed.chip.label,
-                scenarioKey: lastDismissed.scenarioKey,
-                index: lastDismissed.i,
-                timestamp: Date.now(),
-              },
-            }),
-          );
-        } catch (e) {
-          /* no-op in non-browser contexts */
-        }
-        lastDismissed = null;
-      }
-
-      // Chip rotation state: tracks current display offset per scenario
-      const chipRotationOffset = {};
-
-      function refreshChips() {
-        const scenario = chipScenarios[activeScenario];
-        if (!scenario || !scenario.chips.length) return;
-        const pool = scenario.chips;
-        if (pool.length <= 3) {
-          // Not enough chips to rotate — re-render same set (no-op visually, but keeps flow)
-          renderChips(pool);
-          return;
-        }
-        // Advance offset by 1, wrap around pool length
-        const prev = chipRotationOffset[activeScenario] || 0;
-        const next = (prev + 1) % pool.length;
-        chipRotationOffset[activeScenario] = next;
-        // Slice 3 chips starting from offset (wrapping)
-        const slice = [];
-        for (let i = 0; i < 3; i++) {
-          slice.push(pool[(next + i) % pool.length]);
-        }
-        // Brief fade-out then render
-        const row = document.getElementById("chipsRow");
-        if (row) {
-          row.style.transition = 'opacity 120ms ease';
-          row.style.opacity = '0';
-          setTimeout(function() {
-            renderChips(slice);
-            row.style.opacity = '1';
-          }, 130);
-        }
-      }
-
-      // Init chips + alt states on load
-      if (document.getElementById("chipsRow")) {
-        renderChips(chipScenarios["critical"].chips);
-      }
-      if (document.getElementById("stateAltsList")) {
-        renderStateAlts();
-      }
-      // Seed initial confidence tooltip
-      (function() {
-        const sigEls = document.getElementById("confSignals");
-        const init = chipScenarios["critical"].signals;
-        if (sigEls && init) {
-          sigEls.innerHTML = init.map(s => '<div class="conf-signal">' + s + '</div>').join('');
-        }
-      })();
-
-      // ── AiMY Daily Summary Card ────────────────────────────────────
-      (function initSummaryCard() {
-        var SIGNAL_PROMPTS = {
-          summarySignal1: "SLA compliance dropped to 61% today — first response times are missing the 65% target. What’s driving this and what should I do right now?",
-          summarySignal2: "5 agents are below the quality threshold today. Who are they, what’s the common failure pattern, and can you generate a coaching plan?",
-          summarySignal3: "DISP-0441 and DISP-0438 are past the SLA window. What’s the status of each dispute and what action should I take to resolve them today?",
-        };
-        Object.keys(SIGNAL_PROMPTS).forEach(function(id) {
-          var el = document.getElementById(id);
+        /* ── Action confirmations — drives the design-system .aimy-toast
+               component already in the shell (#aimyToast): icon, title, sub,
+               divider, Undo, progress bar. Each call supplies its own undo. ── */
+        var aimyToastTimer = null;
+        function toast(msg, sub, onUndo) {
+          var el = document.getElementById("aimyToast");
           if (!el) return;
-          var prompt = SIGNAL_PROMPTS[id];
-          el.addEventListener("click", function() {
-            if (typeof window.openOverlay === "function") window.openOverlay(prompt);
-          });
-          el.addEventListener("keydown", function(e) {
-            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); el.click(); }
-          });
+          var titleEl = document.getElementById("aimyToastTitle");
+          var subEl = document.getElementById("aimyToastSub");
+          var undoBtn = document.getElementById("aimyToastUndo");
+          if (titleEl) titleEl.textContent = msg;
+          if (subEl) subEl.textContent = sub || "";
+
+          if (undoBtn) {
+            var freshUndo = undoBtn.cloneNode(true);
+            undoBtn.parentNode.replaceChild(freshUndo, undoBtn);
+            undoBtn = freshUndo;
+            undoBtn.removeAttribute("onclick");
+            undoBtn.addEventListener("click", function () {
+              if (aimyToastTimer) clearTimeout(aimyToastTimer);
+              el.classList.remove("visible");
+              if (typeof onUndo === "function") onUndo();
+            });
+          }
+
+          var oldProgress = document.getElementById("aimyToastProgress");
+          if (oldProgress) {
+            var fresh = oldProgress.cloneNode(false);
+            oldProgress.parentNode.replaceChild(fresh, oldProgress);
+          }
+          el.classList.add("visible");
+          if (aimyToastTimer) clearTimeout(aimyToastTimer);
+          aimyToastTimer = setTimeout(function () { el.classList.remove("visible"); }, 5000);
+        }
+        /* hidden file input for Excel import */
+        var fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = ".xlsx,.xls,.csv";
+        fileInput.style.display = "none";
+        document.body.appendChild(fileInput);
+        fileInput.addEventListener("change", function () {
+          if (fileInput.files && fileInput.files[0]) {
+            toast("Imported " + fileInput.files[0].name, "Added to the Excel Workbook Import source.", function () {
+              toast("Import undone", "The file was not added.");
+            });
+            fileInput.value = "";
+          }
         });
-      })();
-      // ── End AiMY Daily Summary Card ───────────────────────────────────────────
-
-      // ── Evaluation & Friction Panel: donut hover ──────────────
-      // ── Causes data for floating panel ──────────────────────────
-      const evalCausesData = {
-        pass: {
-          title: "What’s holding it up",
-          color: "#17B26A",
-          items: [
-            { kpi: "Script adherence", val: "91% ↑", cls: "good" },
-            { kpi: "First contact resolution", val: "87% ↑", cls: "good" },
-            { kpi: "Identity verification", val: "82% ↑", cls: "good" },
-          ],
-        },
-        borderline: {
-          title: "What’s pushing it down",
-          color: "#F79009",
-          items: [
-            { kpi: "Survey promotion", val: "49% — just below", cls: "warn" },
-            { kpi: "Response time SLA", val: "71% — 4pts below", cls: "warn" },
-            { kpi: "Empathy on escalations", val: "borderline", cls: "warn" },
-          ],
-        },
-        fail: {
-          title: "Root causes",
-          color: "#F04438",
-          items: [
-            { kpi: "Empathy during escalations", val: "32% ℇ8%", cls: "bad" },
-            { kpi: "Follow-up clarity", val: "48% — flat", cls: "bad" },
-            { kpi: "Billing ticket handling", val: "primary driver", cls: "bad" },
-          ],
-        },
-        "objectif-lune": {
-          title: "Objectif Lune — top failures",
-          color: "#F79009",
-          items: [
-            { kpi: "Incorrect status", val: "103 failures", cls: "bad" },
-            { kpi: "Time between updates", val: "29 failures", cls: "warn" },
-            { kpi: "Grammar mistake", val: "18 failures", cls: "warn" },
-          ],
-        },
-        "adestra": {
-          title: "Adestra — top drivers",
-          color: "#17B26A",
-          items: [
-            { kpi: "Script adherence", val: "96% ↑", cls: "good" },
-            { kpi: "First contact resolution", val: "92% ↑", cls: "good" },
-            { kpi: "Response time SLA", val: "91% ↑", cls: "good" },
-          ],
-        },
-        "interfax": {
-          title: "InterFax — gap to target",
-          color: "#F79009",
-          items: [
-            { kpi: "Grammar mistake", val: "38 failures", cls: "warn" },
-            { kpi: "No specific ETA", val: "14 failures", cls: "warn" },
-            { kpi: "Quality score", val: "88.4% — 1.6pts below", cls: "warn" },
-          ],
-        },
-        "rightanswers": {
-          title: "RightAnswers — above target",
-          color: "#17B26A",
-          items: [
-            { kpi: "Quality score", val: "91.3% ↑", cls: "good" },
-            { kpi: "Pass rate", val: "94% ↑", cls: "good" },
-            { kpi: "Ticket progress", val: "stable", cls: "good" },
-          ],
-        },
-        "qvidian": {
-          title: "Qvidian — top failures",
-          color: "#F04438",
-          items: [
-            { kpi: "Incorrect status", val: "47 failures", cls: "bad" },
-            { kpi: "Time between updates", val: "29 failures", cls: "bad" },
-            { kpi: "Quality score", val: "80.1% — 9.9pts below", cls: "bad" },
-          ],
-        },
-        "incorrect-status": {
-          title: "Incorrect status · 150 failures",
-          color: "#F04438",
-          items: [
-            { kpi: "Objectif Lune", val: "103 failures", cls: "bad" },
-            { kpi: "Qvidian", val: "47 failures", cls: "bad" },
-            { kpi: "Top agent", val: "Omar Adel · 34 cases", cls: "bad" },
-          ],
-        },
-        "grammar-mistake": {
-          title: "Grammar mistake · 55 failures",
-          color: "#F79009",
-          items: [
-            { kpi: "InterFax", val: "38 failures", cls: "warn" },
-            { kpi: "Second Street", val: "17 failures", cls: "warn" },
-            { kpi: "Fix", val: "Writing quality checklist", cls: "warn" },
-          ],
-        },
-        "time-updates": {
-          title: "Time between updates · 47 failures",
-          color: "#F79009",
-          items: [
-            { kpi: "Qvidian", val: "29 failures", cls: "warn" },
-            { kpi: "RightAnswers", val: "18 failures", cls: "warn" },
-            { kpi: "Fix", val: "Follow-up cadence SLA", cls: "warn" },
-          ],
-        },
-        "no-eta": {
-          title: "No specific ETA · 36 failures",
-          color: "#36BFFA",
-          items: [
-            { kpi: "InterFax", val: "14 failures", cls: "warn" },
-            { kpi: "Objectif Lune", val: "12 failures", cls: "warn" },
-            { kpi: "Fix", val: "Script update needed", cls: "warn" },
-          ],
-        },
-        "article-id": {
-          title: "Article ID missing · 20 failures",
-          color: "#36BFFA",
-          items: [
-            { kpi: "Adestra", val: "11 failures", cls: "warn" },
-            { kpi: "Second Street", val: "9 failures", cls: "warn" },
-            { kpi: "Fix", val: "Process reminder step", cls: "warn" },
-          ],
-        },
-      };
-
-      const evalCenterData = {
-        pass:             { pct: "72%",   label: "Pass rate",    color: "#17B26A" },
-        borderline:       { pct: "11%",   label: "Borderline",   color: "#F79009" },
-        fail:             { pct: "17%",   label: "Fail rate",    color: "#F04438" },
-        "objectif-lune":  { pct: "79.2%", label: "Avg quality",  color: "#F79009" },
-        "adestra":        { pct: "93.7%", label: "Avg quality",  color: "#17B26A" },
-        "interfax":       { pct: "88.4%", label: "Avg quality",  color: "#F79009" },
-        "rightanswers":   { pct: "91.3%", label: "Avg quality",  color: "#17B26A" },
-        "qvidian":        { pct: "80.1%", label: "Avg quality",  color: "#F04438" },
-        default:          { pct: "87.3%", label: "Avg quality",  color: "" },
-      };
-
-      let evalOutTimer = null; // debounce timer
-      let activeSegment = null; // track current segment
-
-      function evalHover(segment) {
-        // Cancel any pending evalOut — we're still inside the donut
-        if (evalOutTimer) {
-          clearTimeout(evalOutTimer);
-          evalOutTimer = null;
-        }
-        if (segment === activeSegment) return; // already active, no-op
-        activeSegment = segment;
-
-        // Update donut center text + color
-        const data = evalCenterData[segment];
-        const pctEl = document.getElementById("donutPct");
-        const labelEl = document.getElementById("donutLabel");
-        if (pctEl) {
-          pctEl.textContent = data.pct;
-          pctEl.style.color = data.color;
-        }
-        if (labelEl) {
-          labelEl.textContent = data.label;
+        /* secondary-modal helpers */
+        function openOverlayId(id) { var m = document.getElementById(id); if (m) m.classList.add("open"); return m; }
+        function closeOverlayId(id) { var m = document.getElementById(id); if (m) m.classList.remove("open"); }
+        /* connect / disconnect a simple integration row */
+        function setConnected(row, connected) {
+          if (!row) return;
+          var status = row.querySelector(".int-status");
+          var btn = row.querySelector(".integration-actions button[data-action]");
+          var name = row.getAttribute("data-name") ||
+            (row.querySelector(".iname") ? row.querySelector(".iname").textContent : "integration");
+          if (connected) {
+            if (status) { status.className = "tag tag-ok int-status"; status.textContent = "Connected"; }
+            if (btn) { btn.setAttribute("data-action", "disconnect"); btn.textContent = "Disconnect"; }
+            toast("Connected to " + name, "AiMY will start pulling data from this source.", function () { setConnected(row, false); });
+          } else {
+            if (status) { status.className = "tag tag-neutral int-status"; status.textContent = "Not connected"; }
+            if (btn) { btn.setAttribute("data-action", "connect"); btn.textContent = "Connect"; }
+            toast(name + " disconnected", "Data from this source will no longer sync.", function () { setConnected(row, true); });
+          }
         }
 
-        // Visible arcs: dim others, activate hovered (only for pass/borderline/fail)
-        const isProductSegment = !["pass","borderline","fail"].includes(segment);
-        document.querySelectorAll(".donut-arc").forEach((arc) => {
-          arc.classList.remove(
-            "dimmed",
-            "active-pass",
-            "active-border",
-            "active-fail",
-          );
-          if (!isProductSegment) {
-            if (arc.dataset.segment !== segment) {
-              arc.classList.add("dimmed");
-            } else {
-              arc.classList.add(
-                "active-" + (segment === "borderline" ? "border" : segment),
-              );
+        /* ── Tabs ─────────────────────────────────────────── */
+        var tabs = Array.prototype.slice.call(document.querySelectorAll(".settings-tab"));
+        var panels = Array.prototype.slice.call(document.querySelectorAll(".settings-panel"));
+        function activateTab(name) {
+          tabs.forEach(function (t) {
+            var on = t.getAttribute("data-tab") === name;
+            t.classList.toggle("active", on);
+            t.setAttribute("aria-selected", on ? "true" : "false");
+          });
+          panels.forEach(function (p) {
+            p.classList.toggle("active", p.getAttribute("data-panel") === name);
+          });
+        }
+        tabs.forEach(function (t, idx) {
+          t.addEventListener("click", function () { activateTab(t.getAttribute("data-tab")); });
+          t.addEventListener("keydown", function (e) {
+            if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+              e.preventDefault();
+              var dir = e.key === "ArrowRight" ? 1 : -1;
+              var next = tabs[(idx + dir + tabs.length) % tabs.length];
+              next.focus();
+              activateTab(next.getAttribute("data-tab"));
             }
+          });
+        });
+
+        /* ── v2-dropdown controller ───────────────────────── */
+        function closeAllDropdowns(except) {
+          document.querySelectorAll(".v2-dropdown").forEach(function (dd) {
+            if (dd === except) return;
+            dd.querySelector(".v2-dropdown-panel").classList.remove("open");
+            dd.querySelector(".v2-dropdown-btn").setAttribute("aria-expanded", "false");
+          });
+        }
+        function ddValue(name) {
+          var dd = document.querySelector('.v2-dropdown[data-name="' + name + '"]');
+          if (!dd) return { value: "", label: "" };
+          var sel = dd.querySelector(".v2-dropdown-option.selected");
+          return { value: sel ? sel.getAttribute("data-value") : "", label: sel ? sel.textContent.trim() : "" };
+        }
+        document.addEventListener("click", function (e) {
+          var btn = e.target.closest(".v2-dropdown-btn");
+          if (btn) {
+            var dd = btn.closest(".v2-dropdown");
+            var panel = dd.querySelector(".v2-dropdown-panel");
+            var isOpen = panel.classList.contains("open");
+            closeAllDropdowns(dd);
+            panel.classList.toggle("open", !isOpen);
+            btn.setAttribute("aria-expanded", isOpen ? "false" : "true");
+            return;
+          }
+          var opt = e.target.closest(".v2-dropdown-option");
+          if (opt) {
+            var dd2 = opt.closest(".v2-dropdown");
+            dd2.querySelectorAll(".v2-dropdown-option").forEach(function (o) { o.classList.remove("selected"); });
+            opt.classList.add("selected");
+            dd2.querySelector(".dd-label-text").textContent = opt.textContent.trim();
+            dd2.querySelector(".v2-dropdown-panel").classList.remove("open");
+            dd2.querySelector(".v2-dropdown-btn").setAttribute("aria-expanded", "false");
+            onBuilderChange();
+            return;
+          }
+          if (!e.target.closest(".v2-dropdown")) closeAllDropdowns(null);
+        });
+
+        /* ── Checkbox / Radio (custom) ────────────────────── */
+        document.addEventListener("click", function (e) {
+          var cb = e.target.closest("[data-check]");
+          if (cb) {
+            cb.querySelector(".checkbox").classList.toggle("checked");
+            onBuilderChange();
+          }
+          var rb = e.target.closest("[data-radio]");
+          if (rb) {
+            var group = rb.parentNode;
+            group.querySelectorAll("[data-radio] .radio").forEach(function (r) { r.classList.remove("checked"); });
+            rb.querySelector(".radio").classList.add("checked");
           }
         });
 
-        // Route to correct float panel based on segment type
-        const kpiSegments = ["incorrect-status","grammar-mistake","time-updates","no-eta","article-id"];
-        const isKpiSegment = kpiSegments.includes(segment);
-        const floatId     = isKpiSegment ? "kpiFloat"     : "causeFloat";
-        const titleId     = isKpiSegment ? "kpiFloatTitle" : "causeFloatTitle";
-        const listId      = isKpiSegment ? "kpiFloatList"  : "causeFloatList";
-        const floatPanel  = document.getElementById(floatId);
-        const floatTitle  = document.getElementById(titleId);
-        const floatList   = document.getElementById(listId);
-
-        // Hide the other float
-        const otherFloat = document.getElementById(isKpiSegment ? "causeFloat" : "kpiFloat");
-        if (otherFloat) otherFloat.classList.remove("visible");
-
-        if (floatPanel && floatTitle && floatList) {
-          const causeData = evalCausesData[segment];
-          if (!causeData) return;
-          floatTitle.textContent = causeData.title;
-          floatTitle.style.color = causeData.color;
-          floatList.innerHTML = causeData.items
-            .map(
-              (item) =>
-                `<div class="eval-cause-item">
-          <span class="cause-kpi">${item.kpi}</span>
-          <span class="cause-val ${item.cls}">${item.val}</span>
-        </div>`,
-            )
-            .join("");
-          // Position vertically aligned with the hovered bar row
-          const barRow = document.querySelector(
-            '.eval-bar-row[data-segment="' + segment + '"]',
-          );
-          const container = barRow ? barRow.closest(".eval-products-section, .eval-sub-section") : null;
-          if (barRow && container) {
-            const rowRect = barRow.getBoundingClientRect();
-            const containerRect = container.getBoundingClientRect();
-            floatPanel.style.top = (rowRect.top - containerRect.top + rowRect.height / 2) + "px";
+        /* ── Rule enable toggles dim their row ────────────── */
+        document.addEventListener("change", function (e) {
+          var inp = e.target;
+          if (inp.matches('.rule-row .rule-actions .toggle input')) {
+            inp.closest(".rule-row").classList.toggle("disabled", !inp.checked);
           }
-          floatPanel.classList.add("visible");
+        });
+
+        /* ── Action delegation ────────────────────────────── */
+        var modal = document.getElementById("ruleModal");
+        function openModal() {
+          modal.classList.add("open");
+          var n = document.getElementById("rbName");
+          if (n) n.focus();
+          onBuilderChange();
+        }
+        function closeModal() { modal.classList.remove("open"); }
+
+        document.addEventListener("click", function (e) {
+          var act = e.target.closest("[data-action]");
+          if (!act) return;
+          var a = act.getAttribute("data-action");
+
+          if (a === "goto-integrations") activateTab("integrations");
+
+          else if (a === "new-rule") openModal();
+          else if (a === "close-modal") closeModal();
+          else if (a === "save-rule") saveRule();
+
+          else if (a === "reveal-key") {
+            var k = document.getElementById("zdKey");
+            k.type = k.type === "password" ? "text" : "password";
+          }
+          else if (a === "edit-key") {
+            // Security constraint: never pre-fill — clear and require full re-entry.
+            var key = document.getElementById("zdKey");
+            key.value = "";
+            key.type = "text";
+            key.readOnly = false;
+            key.placeholder = "Enter new API key…";
+            key.focus();
+            document.getElementById("zdKeyHint").textContent = "Enter the full key — partial edits are not supported.";
+            act.textContent = "Save key";
+            act.setAttribute("data-action", "save-key");
+          }
+          else if (a === "edit-rule") {
+            // Prototype: open builder (would prefill in production).
+            openModal();
+          }
+          else if (a === "save-key") {
+            var k2 = document.getElementById("zdKey");
+            k2.type = "password"; k2.readOnly = true;
+            if (!k2.value) k2.value = "zd_live_xxxxxxxxxxxxxxxxxxxx";
+            act.textContent = "Edit credentials";
+            act.setAttribute("data-action", "edit-key");
+            document.getElementById("zdKeyHint").textContent = "Updated just now.";
+            toast("API key updated", "Zendesk Klaus will use the new key on its next sync.");
+          }
+          else if (a === "connect") setConnected(act.closest(".integration-row"), true);
+          else if (a === "disconnect") setConnected(act.closest(".integration-row"), false);
+          else if (a === "disconnect-zd") {
+            var zrow = act.closest(".integration-row");
+            var zs = zrow ? zrow.querySelector(".int-status") : null;
+            if (zs) { zs.className = "tag tag-neutral int-status"; zs.textContent = "Not connected"; }
+            toast("Zendesk Klaus disconnected", "Quality review data will stop syncing.", function () {
+              if (zs) { zs.className = "tag tag-ok int-status"; zs.textContent = "Connected"; }
+            });
+          }
+          else if (a === "sync") toast("Sync complete", "4,999 rows up to date.");
+          else if (a === "import-file") fileInput.click();
+          else if (a === "add-integration") openOverlayId("addIntegrationModal");
+          else if (a === "close-add-int") closeOverlayId("addIntegrationModal");
+          else if (a === "change-password") openOverlayId("pwModal");
+          else if (a === "close-pw") closeOverlayId("pwModal");
+          else if (a === "send-reset") { closeOverlayId("pwModal"); toast("Reset link sent", "Check nour@aimy.io \u2014 the link expires in 30 minutes."); }
+        });
+
+        // Close modal on overlay click / Escape
+        modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") { closeModal(); closeOverlayId("addIntegrationModal"); closeOverlayId("pwModal"); closeAllDropdowns(null); }
+        });
+
+        /* ── Rule-builder live preview ─────────────────────── */
+        var COUNT_METRICS = { kpi: true, grammar: true };
+        function currentUnit() {
+          var m = ddValue("metric").value;
+          return COUNT_METRICS[m] ? "" : "%";
+        }
+        function selectedChannels() {
+          var out = [];
+          document.querySelectorAll("#rbChannels [data-check]").forEach(function (c) {
+            if (c.querySelector(".checkbox").classList.contains("checked")) out.push(c.getAttribute("data-value"));
+          });
+          return out;
+        }
+        function selectedSeverity() {
+          var r = document.querySelector("#rbSeverity [data-radio] .radio.checked");
+          return r ? r.closest("[data-radio]").getAttribute("data-value") : "critical";
+        }
+        function onBuilderChange() {
+          var unit = currentUnit();
+          var unitEl = document.getElementById("rbUnit");
+          if (unitEl) unitEl.textContent = unit;
+          var preview = document.getElementById("rbPreview");
+          if (!preview) return;
+          var metric = ddValue("metric").label || "a metric";
+          var op = ddValue("operator").label || "is above";
+          var thr = (document.getElementById("rbThreshold").value || "0") + unit;
+          var rcpt = ddValue("recipient").label || "a recipient";
+          var chans = selectedChannels();
+          var via = chans.length ? chans.join(" + ") : "no channel selected";
+          preview.innerHTML = "When <b>" + metric.toLowerCase() + "</b> <b>" + op + " " + thr +
+            "</b>, notify <b>" + rcpt + "</b> via <b>" + via + "</b>.";
+        }
+        var thrInput = document.getElementById("rbThreshold");
+        if (thrInput) thrInput.addEventListener("input", onBuilderChange);
+        document.addEventListener("click", function (e) {
+          if (e.target.closest("#rbSeverity [data-radio]")) onBuilderChange();
+        });
+
+        /* ── Save → append a rule row ──────────────────────── */
+        function saveRule() {
+          var nameEl = document.getElementById("rbName");
+          var name = (nameEl.value || "").trim();
+          var thr = document.getElementById("rbThreshold").value;
+          if (!name) { nameEl.classList.add("error"); nameEl.focus(); return; }
+          if (thr === "" || isNaN(parseFloat(thr))) {
+            document.getElementById("rbThreshold").classList.add("error");
+            return;
+          }
+          nameEl.classList.remove("error");
+          document.getElementById("rbThreshold").classList.remove("error");
+
+          var unit = currentUnit();
+          var metric = (ddValue("metric").label || "metric").toLowerCase();
+          var op = ddValue("operator").label || "is above";
+          var rcpt = ddValue("recipient").label || "QA Supervisor";
+          var chans = selectedChannels();
+          var sev = selectedSeverity();
+          var sevMap = { critical: ["Critical", "tag-err"], warning: ["Warning", "tag-warn"], info: ["Info", "tag-info"] };
+          var sm = sevMap[sev] || sevMap.critical;
+
+          var row = document.createElement("div");
+          row.className = "rule-row";
+          row.setAttribute("data-rule", "");
+          var chanTags = chans.map(function (c) { return '<span class="tag tag-neutral">' + c + "</span>"; }).join("");
+          row.innerHTML =
+            '<div class="rule-main">' +
+              '<div class="rule-top"><span class="rule-name"></span><span class="tag ' + sm[1] + '">' + sm[0] + "</span></div>" +
+              '<p class="rule-sentence">When <b>' + metric + "</b> <b>" + op + " " + thr + unit +
+                "</b>, notify <b>" + rcpt + "</b>.</p>" +
+              '<div class="rule-channels">' + chanTags + "</div>" +
+            "</div>" +
+            '<div class="rule-actions">' +
+              '<label class="toggle"><input type="checkbox" checked aria-label="Enable rule"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>' +
+              '<button class="btn btn-ghost btn-sm" type="button" data-action="edit-rule">Edit</button>' +
+            "</div>";
+          // set name via textContent to avoid HTML injection
+          row.querySelector(".rule-name").textContent = name;
+          document.getElementById("ruleList").appendChild(row);
+
+          // reset
+          nameEl.value = "";
+          closeModal();
         }
 
-        // Bar rows: highlight active
-        document.querySelectorAll(".eval-bar-row").forEach((row) => {
-          row.style.background =
-            row.dataset.segment === segment ? "rgba(255,255,255,0.05)" : "";
+        /* add-integration picker */
+        document.addEventListener("click", function (e) {
+          var opt = e.target.closest("[data-add-int]");
+          if (!opt) return;
+          var name = opt.getAttribute("data-add-int");
+          var icon = opt.getAttribute("data-icon") || name.charAt(0);
+          var color = opt.getAttribute("data-color") || "#4b53bc";
+          var desc = opt.getAttribute("data-desc") || "";
+          var row = document.createElement("div");
+          row.className = "integration-row";
+          row.setAttribute("data-name", name);
+          row.innerHTML =
+            '<div class="integration-icon" style="background:' + color + '"></div>' +
+            '<div class="integration-info"><div class="integration-name"><span class="iname"></span> ' +
+              '<span class="tag tag-neutral int-status">Not connected</span></div>' +
+              '<div class="integration-desc"></div></div>' +
+            '<div class="integration-actions"><button class="btn btn-ghost btn-sm" type="button" data-action="connect">Connect</button></div>';
+          row.querySelector(".integration-icon").textContent = icon;
+          row.querySelector(".iname").textContent = name;
+          row.querySelector(".integration-desc").textContent = desc;
+          var list = document.getElementById("integrationsAddList");
+          if (list) list.appendChild(row);
+          closeOverlayId("addIntegrationModal");
+          toast(name + " added", "Connect it to start syncing.", function () {
+            row.remove();
+          });
         });
-      }
+        var addM = document.getElementById("addIntegrationModal");
+        if (addM) addM.addEventListener("click", function (e) { if (e.target === addM) closeOverlayId("addIntegrationModal"); });
+        var pwM = document.getElementById("pwModal");
+        if (pwM) pwM.addEventListener("click", function (e) { if (e.target === pwM) closeOverlayId("pwModal"); });
 
-      function scheduleEvalOut() {
-        // Short debounce — if mouse re-enters another segment within 60ms, cancel reset
-        evalOutTimer = setTimeout(evalOut, 60);
-      }
-
-      function evalOut() {
-        evalOutTimer = null;
-        activeSegment = null;
-
-        const data = evalCenterData.default;
-        const pctEl = document.getElementById("donutPct");
-        const labelEl = document.getElementById("donutLabel");
-        if (pctEl) {
-          pctEl.textContent = data.pct;
-          pctEl.style.color = "";
-        }
-        if (labelEl) {
-          labelEl.textContent = data.label;
-        }
-
-        document.querySelectorAll(".donut-arc").forEach((arc) => {
-          arc.classList.remove(
-            "dimmed",
-            "active-pass",
-            "active-border",
-            "active-fail",
-          );
-        });
-        const fp = document.getElementById("causeFloat");
-        if (fp) fp.classList.remove("visible");
-        const fp2 = document.getElementById("kpiFloat");
-        if (fp2) fp2.classList.remove("visible");
-        document.querySelectorAll(".eval-bar-row").forEach((row) => {
-          row.style.background = "";
-        });
-      }
-
-      // Bar row hover also triggers the same behaviour (already works, keep for sync)
-      // Note: donut interaction now handled entirely by .donut-hit rings above
+        // initial preview
+        onBuilderChange();
+      })();
     </script>
 
     <!-- AiMY Toast — mounted globally; content populated by showToast() on demand -->
