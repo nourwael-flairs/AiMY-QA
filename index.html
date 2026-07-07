@@ -1304,12 +1304,6 @@
       .ev-delta.warn {
         color: var(--warn);
       }
-      .bcard-divider {
-        height: 1px;
-        background: rgba(255, 255, 255, 0.07);
-        margin: 0 0 16px;
-        /* Parent .bcard has overflow:hidden — no negative margin needed */
-      }
       .bcard-action {
         display: flex;
         flex-direction: column;
@@ -4636,29 +4630,21 @@
 
       /* ── AiMY unified insight ────────────────────────────────── */
       .eval-insight {
-        margin: 0 20px 16px;
+        margin: 12px 20px 16px;
         background: rgba(0, 102, 255, 0.06);
         border: 1px solid rgba(0, 102, 255, 0.18);
         border-radius: 8px;
-        padding: 10px 16px;
-      }
-      .eval-insight-header {
+        padding: 12px 16px;
         display: flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 6px;
+        align-items: flex-start;
+        gap: 9px;
       }
-      .eval-insight-label {
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.07em;
-        text-transform: uppercase;
-        color: #61adf1;
-      }
+      .eval-insight-mark { flex-shrink: 0; margin-top: 1px; }
       .eval-insight-text {
         font-size: 12px;
         color: var(--d300);
         line-height: 1.55;
+        margin: 0;
       }
       .eval-insight-text strong {
         color: var(--d50);
@@ -5503,6 +5489,247 @@
       .ada-primary:hover { background: rgba(var(--qa-accent-rgb),.20); }
       .ada-secondary { background: rgba(255,255,255,.03); color: var(--d400); border-color: rgba(255,255,255,.08); }
       .ada-secondary:hover { background: rgba(255,255,255,.07); color: var(--d200); }
+
+      /* ═══ AiMY monitor-mode: first-person voice · done-state · goal viz ═══
+         AiMY has already acted; the manager monitors and can undo.
+         Number leads, voice is a thin connective layer, visuals over prose. */
+
+      /* Big stat line inside insight cards — the number is the hero */
+      .bcard-stat-line { display:flex; align-items:baseline; gap:9px; margin-bottom:2px; }
+      .bcard-stat { font-size:32px; font-weight:800; letter-spacing:-0.035em; line-height:0.95; color:var(--d50); }
+      .bcard-stat.err  { color:var(--err); }
+      .bcard-stat.warn { color:var(--warn); }
+      .bcard-stat.ok   { color:var(--ok); }
+      .bcard-stat-cap { font-size:11px; font-weight:600; color:var(--d300); line-height:1.35; }
+      .bcard-stat-cap b { color:var(--d100); font-weight:700; }
+
+      /* Current-vs-goal meter with a target tick — reused on cards, tiles, goals */
+      .gap-meter { position:relative; height:6px; border-radius:3px; background:rgba(255,255,255,0.08); margin:10px 0 4px; }
+      .gap-meter.labeled { margin-top:18px; }
+      .gap-meter-fill { height:100%; border-radius:3px; transform-origin:left center; }
+      .gap-meter-target { position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--d200); border-radius:1px; }
+      .gap-meter.labeled .gap-meter-target::after {
+        content:"goal"; position:absolute; top:-13px; left:50%; transform:translateX(-50%);
+        font-size:8px; font-weight:800; letter-spacing:.05em; color:var(--d400); text-transform:uppercase; white-space:nowrap;
+      }
+
+      /* Done-state row: what AiMY already did, plus Review / Undo */
+      .aimy-done {
+        display:flex; align-items:center; gap:9px; flex-wrap:wrap;
+        padding-top:12px; margin-top:12px; border-top:1px solid rgba(255,255,255,0.06);
+      }
+      .aimy-done-badge {
+        display:inline-flex; align-items:center; gap:5px; padding:3px 8px; border-radius:20px;
+        background:var(--ok-bg); border:1px solid rgba(23,178,106,0.22); color:var(--ok);
+        font-size:9px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; white-space:nowrap; flex-shrink:0;
+      }
+      .aimy-done-badge svg { width:10px; height:10px; }
+      .aimy-done-text { flex:1 1 130px; min-width:0; font-size:11px; font-weight:600; color:var(--d200); line-height:1.4; }
+      .aimy-done-text b { color:var(--d50); font-weight:700; }
+      .aimy-done-mark { width:15px; height:17px; flex-shrink:0; }
+      .aimy-done-actions { display:flex; gap:6px; flex-shrink:0; }
+      .aimy-done-link {
+        font-size:10px; font-weight:700; color:var(--d300); padding:4px 11px; border-radius:20px;
+        background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); cursor:pointer;
+        font-family:"Urbanist",sans-serif; white-space:nowrap;
+        transition:background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+      }
+      .aimy-done-link:hover { background:rgba(255,255,255,0.08); color:var(--d50); border-color:rgba(255,255,255,0.16); }
+      .aimy-done-link.primary { color:var(--teal); border-color:rgba(111,223,226,0.28); background:rgba(111,223,226,0.10); }
+      .aimy-done-link.primary:hover { background:rgba(111,223,226,0.16); }
+      .aimy-done-link.undo:hover { color:var(--warn); border-color:rgba(247,144,9,0.30); }
+
+      /* Signal tile — number-forward stat + micro-viz + done micro-line */
+      .signal-stat-row { display:flex; align-items:baseline; gap:6px; }
+      .signal-stat { font-size:22px; font-weight:800; letter-spacing:-0.035em; line-height:1; color:var(--d50); }
+      .signal-stat.err { color:var(--err); }
+      .signal-stat.warn { color:var(--warn); }
+      .signal-stat.info { color:var(--brand); }
+      .signal-stat-label { font-size:11px; font-weight:600; color:var(--d300); }
+      .signal-done { display:flex; align-items:center; gap:5px; margin-top:7px; font-size:10px; font-weight:600; color:var(--ok); line-height:1.3; }
+      .signal-done svg { width:11px; height:11px; flex-shrink:0; }
+      .signal-done span { color:var(--d400); font-weight:500; }
+
+      /* Agent dots — one dot per agent, colored by distance from goal line */
+      .agent-dots { display:flex; align-items:center; gap:4px; margin:9px 0 2px; }
+      .agent-dot { width:8px; height:8px; border-radius:50%; }
+      .agent-dot.err  { background:var(--err); }
+      .agent-dot.warn { background:var(--warn); }
+      .agent-dot.ok   { background:var(--ok); }
+      .agent-dots-goal { width:1px; height:13px; background:var(--d500); margin:0 3px; }
+      .agent-dots-cap { font-size:10px; font-weight:600; color:var(--d400); margin-left:5px; }
+
+      /* Team Goal row — replaces the failed-KPI list. Team target + agents off it */
+      .goal-row { padding:11px 0; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer; transition:background var(--transition-fast); border-radius:6px; }
+      .goal-row:hover { background:rgba(255,255,255,0.02); }
+      .goal-row:last-child { border-bottom:none; }
+      .goal-row-head { display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+      .goal-name { font-size:12px; font-weight:700; color:var(--d100); }
+      .goal-vals { display:flex; align-items:baseline; gap:4px; white-space:nowrap; }
+      .goal-cur { font-size:17px; font-weight:800; letter-spacing:-0.025em; }
+      .goal-cur.err { color:var(--err); }
+      .goal-cur.warn { color:var(--warn); }
+      .goal-cur.ok { color:var(--ok); }
+      .goal-tgt { font-size:10px; font-weight:600; color:var(--d500); }
+      .goal-row-foot { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; }
+      .goal-off { font-size:10px; font-weight:600; color:var(--d400); }
+      .goal-off b { color:var(--d200); font-weight:800; }
+      .goal-agents { font-size:10px; font-weight:500; color:var(--d500); min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+      /* Self-contained undo confirmation toast (new; opacity/transform only) */
+      .aimy-mini-toast {
+        position:fixed; left:50%; bottom:24px; transform:translate(-50%,12px); opacity:0; z-index:9999;
+        padding:11px 18px; border-radius:10px; background:var(--d800); border:1px solid rgba(255,255,255,0.12);
+        color:var(--d100); font-size:12px; font-weight:600; box-shadow:0 12px 40px rgba(0,0,0,0.5); pointer-events:none;
+        transition:opacity var(--transition-base), transform var(--transition-base);
+      }
+      .aimy-mini-toast.visible { opacity:1; transform:translate(-50%,0); }
+      @media (prefers-reduced-motion: reduce) {
+        .aimy-mini-toast { transition:opacity var(--transition-base); transform:translate(-50%,0); }
+      }
+
+      /* Undo wired into the AiMY reply bubble */
+      .msg-undo { margin-top:10px; }
+      .msg-undo-btn {
+        font-size:11px; font-weight:700; color:var(--d200); padding:6px 14px; border-radius:20px;
+        background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.14); cursor:pointer;
+        font-family:"Urbanist",sans-serif;
+        transition:background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+      }
+      .msg-undo-btn:hover { color:var(--warn); border-color:rgba(247,144,9,0.35); background:rgba(247,144,9,0.10); }
+      .msg-undo-btn.is-done { color:var(--d400); border-color:rgba(255,255,255,0.10); background:transparent; cursor:default; }
+
+      /* bcard status — replaces the gap bar with a short (<=3 word) tag */
+      .bcard-status { display:inline-flex; align-items:center; gap:6px; margin:9px 0 2px; font-size:11px; font-weight:700; letter-spacing:.01em; color:var(--d300); }
+      .bcard-status::before { content:""; width:6px; height:6px; border-radius:50%; background:currentColor; flex-shrink:0; }
+      .bcard-status.err { color:var(--err); }
+      .bcard-status.warn { color:var(--warn); }
+
+      /* Chart tooltip dip action */
+      .tooltip-action { margin-top:8px; padding-top:7px; border-top:1px solid rgba(255,255,255,0.10); display:flex; align-items:center; gap:6px; }
+      .tooltip-action-dot { color:var(--warn); font-size:11px; line-height:1; }
+      .tooltip-action-text { font-size:10.5px; font-weight:700; color:var(--teal); white-space:nowrap; }
+
+      /* ═══ Director view (role toggle) — reuses manager components ═══ */
+      .view-toggle { display:inline-flex; gap:2px; padding:3px; margin:0 0 16px; background:var(--card-bg); border:1px solid var(--card-border); border-radius:22px; }
+      .view-toggle-btn { font-family:"Urbanist",sans-serif; font-size:12px; font-weight:700; color:var(--d400); padding:6px 18px; border-radius:20px; background:transparent; border:none; cursor:pointer; transition:background var(--transition-fast), color var(--transition-fast); }
+      .view-toggle-btn:hover { color:var(--d200); }
+      .view-toggle-btn.active { background:var(--brand-dim); color:var(--d50); }
+      .dash-view[hidden] { display:none; }
+      .dir-cards { display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-bottom:16px; }
+      @media (max-width: 1100px){ .dir-cards { grid-template-columns:1fr; } }
+
+      /* Quality × CSAT quadrant bubble chart */
+      .quad-wrap { padding:6px 4px 2px; }
+      .quad-chart { width:100%; height:auto; display:block; overflow:visible; }
+      .quad-frame { fill:none; stroke:var(--card-border); stroke-width:1; }
+      .quad-ref { stroke:var(--d600); stroke-dasharray:3 3; stroke-width:1; }
+      .quad-ref-label { fill:var(--d500); font-size:11px; font-weight:700; letter-spacing:.03em; }
+      .quad-quad-label { fill:var(--d700); font-size:13px; font-weight:800; letter-spacing:.09em; }
+      .quad-axis-label { fill:var(--d500); font-size:12px; font-weight:700; letter-spacing:.02em; }
+      .quad-tick { fill:var(--d500); font-size:11px; font-weight:600; }
+      .quad-tick-mark { stroke:var(--d600); stroke-width:1; }
+      /* Portfolio quality trend (single-series + selector) */
+      .tl-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:2px 4px 8px; flex-wrap:wrap; }
+      .tl-dd { position:relative; }
+      .tl-dd-btn { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.05); border:1px solid var(--card-border); color:var(--d50); font-family:inherit; font-size:12px; font-weight:700; padding:7px 12px; border-radius:9px; cursor:pointer; transition:background var(--transition-fast), border-color var(--transition-fast); }
+      .tl-dd-btn:hover { background:rgba(255,255,255,0.08); }
+      .tl-dd-btn svg { width:11px; height:11px; color:var(--d400); transition:transform var(--transition-fast); }
+      .tl-dd-btn[aria-expanded="true"] svg { transform:rotate(180deg); }
+      .tl-dd-menu { position:absolute; top:calc(100% + 6px); right:0; z-index:40; min-width:190px; background:var(--card-bg); border:1px solid var(--card-border); border-radius:11px; padding:6px; box-shadow:0 12px 30px rgba(0,0,0,0.4); display:flex; flex-direction:column; gap:2px; }
+      .tl-dd-menu[hidden] { display:none; }
+      .tl-dd-opt { text-align:left; background:none; border:none; color:var(--d300); font-family:inherit; font-size:12px; font-weight:600; padding:8px 10px; border-radius:7px; cursor:pointer; transition:background var(--transition-fast), color var(--transition-fast); }
+      .tl-dd-opt:hover { background:rgba(255,255,255,0.05); color:var(--d50); }
+      .tl-dd-opt.is-sel { background:rgba(0,102,255,0.12); color:#61adf1; }
+      .tl-chart-wrap { padding:4px 4px 2px; }
+      .tl-chart { width:100%; height:auto; display:block; overflow:visible; }
+      .tl-grid { stroke:rgba(255,255,255,0.05); stroke-width:1; }
+      .tl-goal { stroke:var(--ok); stroke-dasharray:4 4; stroke-width:1; opacity:.55; }
+      .tl-goal-label { fill:var(--ok); font-size:11px; font-weight:700; opacity:.85; }
+      .tl-ytick, .tl-xtick { fill:var(--d500); font-size:11px; font-weight:600; }
+      .tl-line { fill:none; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+      .tl-dot { stroke:var(--card-bg); stroke-width:2; transition:r var(--transition-fast); }
+      .tl-dot:hover { r:6; }
+      .tl-endval { font-size:14px; font-weight:800; }
+      .tl-hoverval { fill:var(--d100); font-size:13px; font-weight:700; }
+      .tl-insight { display:flex; align-items:center; gap:9px; margin:12px 4px 2px; padding:11px 15px; background:rgba(0,102,255,0.06); border:1px solid rgba(0,102,255,0.18); border-radius:10px; cursor:pointer; transition:border-color var(--transition-fast); }
+      .tl-insight:hover { border-color:rgba(0,102,255,0.4); }
+      .tl-insight-mark { width:16px; height:18px; flex-shrink:0; }
+      .tl-insight p { flex:1; font-size:12px; font-weight:600; color:var(--d200); line-height:1.5; margin:0; }
+      .tl-insight p strong { color:var(--d50); }
+      .tl-insight-cta { color:var(--teal); font-weight:700; font-size:11.5px; white-space:nowrap; flex-shrink:0; }
+      .bubble { cursor:pointer; }
+      .bubble circle { fill-opacity:.72; stroke:rgba(255,255,255,0.18); stroke-width:1.5; transition:fill-opacity var(--transition-fast), stroke var(--transition-fast); }
+      .bubble:hover circle { fill-opacity:1; stroke:rgba(255,255,255,0.55); }
+      .bubble-label { fill:var(--d100); font-size:12px; font-weight:700; pointer-events:none; }
+      .bubble-score { fill:#fff; font-size:14px; font-weight:800; pointer-events:none; }
+      .bubble:hover .bubble-label { fill:var(--d50); }
+
+      /* CSAT sentiment donut */
+      .donut-wrap { display:flex; align-items:center; gap:22px; padding:8px 4px 4px; cursor:pointer; }
+      .donut { flex-shrink:0; }
+      .donut-seg { fill:none; stroke-width:14; transition:stroke-width var(--transition-fast); }
+      .donut-wrap:hover .donut-seg { stroke-width:15.5; }
+      .donut-center-val { fill:var(--d50); font-size:19px; font-weight:800; }
+      .donut-center-lab { fill:var(--d400); font-size:7.5px; font-weight:800; letter-spacing:.09em; }
+      .donut-legend { display:flex; flex-direction:column; gap:9px; min-width:180px; }
+      .donut-leg { display:flex; align-items:center; gap:9px; font-size:12px; font-weight:600; color:var(--d200); }
+      .donut-leg-dot { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
+      .donut-leg b { color:var(--d50); font-weight:800; margin-left:auto; }
+      .donut-review { color:var(--teal); font-weight:700; font-size:11px; margin-top:4px; }
+
+      .quad-risk-zone { fill:var(--err); opacity:.05; }
+
+      /* CSAT sentiment — donut + legend + insight, balanced across width */
+      .csat-panel { display:flex; align-items:center; gap:26px; padding:12px 4px 8px; flex-wrap:wrap; }
+      .csat-donut-box { flex-shrink:0; }
+      .csat-legend2 { display:flex; flex-direction:column; gap:12px; min-width:210px; }
+      .csat-leg2 { display:grid; grid-template-columns:12px 1fr auto auto; align-items:center; gap:11px; font-size:12px; font-weight:600; color:var(--d200); }
+      .csat-leg2-dot { width:11px; height:11px; border-radius:3px; }
+      .csat-leg2-pct { font-weight:800; color:var(--d50); font-size:13px; }
+      .csat-leg2-cnt { font-size:10.5px; color:var(--d500); font-weight:600; min-width:78px; text-align:right; }
+      .csat-divider { width:1px; align-self:stretch; background:var(--card-border); }
+      .csat-seg { cursor:pointer; }
+      .csat-seg circle { fill:none; stroke-width:16; transition:stroke-width var(--transition-fast), filter var(--transition-fast); }
+      .csat-seg:hover circle { stroke-width:19; filter:brightness(1.15); }
+      .csat-leg2.csat-legrow { cursor:pointer; padding:3px 6px; margin:-3px -6px; border-radius:7px; transition:background var(--transition-fast); }
+      .csat-leg2.csat-legrow:hover { background:rgba(255,255,255,0.03); }
+      .csat-insight { flex:1; min-width:280px; background:var(--err-bg); border:1px solid var(--card-border); border-radius:14px; padding:15px 17px; cursor:pointer; transition:border-color var(--transition-fast); }
+      .csat-insight:hover { border-color:rgba(240,68,56,0.4); }
+      .csat-insight-head { display:flex; align-items:center; gap:9px; font-size:10.5px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:var(--err); margin-bottom:13px; }
+      .csat-insight-dot { width:7px; height:7px; border-radius:50%; background:var(--err); box-shadow:0 0 0 4px rgba(240,68,56,0.18); }
+      .csat-insight-chips { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:13px; }
+      .csat-chip { display:inline-flex; align-items:center; gap:7px; background:rgba(255,255,255,0.04); border:1px solid var(--card-border); border-radius:999px; padding:5px 12px; font-size:11.5px; font-weight:700; color:var(--d100); }
+      .csat-chip b { color:var(--err); font-weight:800; }
+      .csat-chip-mut b { color:var(--d300); }
+      .csat-insight p { display:flex; align-items:center; gap:9px; font-size:11.5px; font-weight:600; color:var(--d300); line-height:1.45; margin:0 0 14px; }
+      .csat-aimy-mark { width:15px; height:16px; flex-shrink:0; }
+      .csat-insight-cta { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.05); border:1px solid var(--card-border); color:var(--d50); font-weight:700; font-size:12px; padding:8px 14px; border-radius:9px; transition:background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast); }
+      .csat-insight:hover .csat-insight-cta { background:var(--teal); border-color:var(--teal); color:#04211d; }
+
+      /* SLA — radial gauges grid (breaks up the bar monotony) */
+      .sla-radials { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px 8px; padding:14px 4px 8px; }
+      .sla-radial { display:flex; flex-direction:column; align-items:center; gap:7px; cursor:pointer; padding:10px 4px; border-radius:12px; transition:background var(--transition-fast); }
+      .sla-radial:hover { background:rgba(255,255,255,0.03); }
+      .sla-radial-name { font-size:11px; font-weight:700; color:var(--d200); text-align:center; }
+      .sla-ring-track { fill:none; stroke:rgba(255,255,255,0.07); }
+      .sla-ring-arc { fill:none; stroke-linecap:round; }
+      .sla-ring-val { font-size:15px; font-weight:800; }
+
+      /* Achievers — leaderboard (ranked, no bars) */
+      .lead-list { display:flex; flex-direction:column; padding:6px 4px 4px; }
+      .lead-row { display:grid; grid-template-columns:30px 1fr auto auto; align-items:center; gap:16px; padding:11px 8px; border-radius:8px; cursor:pointer; transition:background var(--transition-fast); }
+      .lead-row:hover { background:rgba(255,255,255,0.03); }
+      .lead-row + .lead-row { border-top:1px solid rgba(255,255,255,0.05); }
+      .lead-rank { width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; background:rgba(255,255,255,0.05); color:var(--d300); }
+      .lead-rank.r1 { background:rgba(247,180,9,0.16); color:#f7b409; }
+      .lead-rank.r2 { background:rgba(203,210,220,0.14); color:#cbd2dc; }
+      .lead-rank.r3 { background:rgba(205,127,50,0.16); color:#e08a3c; }
+      .lead-name { font-size:13px; font-weight:700; color:var(--d50); }
+      .lead-metric { display:flex; flex-direction:column; align-items:flex-end; gap:2px; min-width:66px; }
+      .lead-metric-lab { font-size:8.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--d500); }
+      .lead-metric-val { font-size:14px; font-weight:800; color:var(--d100); }
+      .lead-metric-val.ok { color:var(--ok); }
 </style>
   </head>
   <body>
@@ -5724,6 +5951,12 @@
 
       <div class="app-main">
         <div class="dashboard-scroll">
+          <!-- View toggle: Manager (agent ops) / Director (portfolio) -->
+          <div class="view-toggle" role="tablist" aria-label="Dashboard view">
+            <button class="view-toggle-btn active" id="viewTabManager" data-view="manager" role="tab" aria-selected="true" type="button">Manager</button>
+            <button class="view-toggle-btn" id="viewTabDirector" data-view="director" role="tab" aria-selected="false" type="button">Director</button>
+          </div>
+          <div class="dash-view" id="viewManager">
           <!-- Active filter strip — only visible when filters are applied -->
           <div class="active-filter-strip" id="activeFilterStrip">
             <span class="afs-label">Filtered by</span>
@@ -5783,7 +6016,8 @@
                 <div class="sb-stat">
                   <span class="sb-stat-label">Quality Score</span>
                   <span class="sb-stat-value warn" id="sbQScore">87.3%</span>
-                  <span class="sb-vs-target" id="sbVsTarget">vs 90% target</span>
+                  <div class="gap-meter" style="width:78px;margin:5px 0 2px"><div class="gap-meter-fill" style="width:87.3%;background:var(--warn)"></div><div class="gap-meter-target" style="left:90%"></div></div>
+                  <span class="sb-vs-target" id="sbVsTarget">2.7 pts under 90% goal</span>
                 </div>
               </div>
             </div>
@@ -5792,7 +6026,7 @@
           <!-- AiMY one-line narrative summary -->
           <div class="summary-ai-line" id="summaryAiLine">
             <svg width="16" height="19" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-            <p id="summaryAiLineText">Quality dipped <strong>4 points</strong> on an SLA breach and <strong>5 agents</strong> below threshold — both tied to the same coaching backlog driving today's <strong>2 overdue disputes</strong>.</p>
+            <p id="summaryAiLineText">3 issues today — I've handled each. Tap any to review.</p>
           </div>
 
           <!-- Row 2: 3 signal tiles spanning full width -->
@@ -5800,7 +6034,7 @@
             <div class="summary-signals-row" id="summarySignalsRow">
 
               <!-- Signal 1 — SLA breach (err) -->
-              <div class="summary-signal" id="summarySignal1" role="button" tabindex="0" aria-label="SLA compliance dropped to 61%">
+              <div class="summary-signal" id="summarySignal1" role="button" tabindex="0" aria-label="SLA compliance at 61%, 29 points under goal — 23 breaches pulled and fix staged">
                 <div class="signal-icon err" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
                     <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path>
@@ -5809,13 +6043,14 @@
                   </svg>
                 </div>
                 <div class="signal-content">
-                  <div class="signal-title" id="signalTitle1">SLA compliance at 61%</div>
-                  <div class="signal-sub" id="signalSub1">First response SLA <strong>below 65% target</strong> — 8 agents affected</div>
+                  <div class="signal-stat-row"><span class="signal-stat err" id="signalTitle1">61%</span><span class="signal-stat-label">SLA compliance</span></div>
+                  <div class="gap-meter"><div class="gap-meter-fill" style="width:61%;background:var(--err)"></div><div class="gap-meter-target" style="left:90%"></div></div>
+                  <div class="signal-done" id="signalSub1"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Handled</div>
                 </div>
               </div>
 
-              <!-- Signal 2 — Agent performance (warn) -->
-              <div class="summary-signal" id="summarySignal2" role="button" tabindex="0" aria-label="5 agents below quality threshold">
+              <!-- Signal 2 — Agents under goal (warn) -->
+              <div class="summary-signal" id="summarySignal2" role="button" tabindex="0" aria-label="5 agents under goal — coaching plans created for all of them">
                 <div class="signal-icon warn" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
                     <circle cx="12" cy="12" r="10"></circle>
@@ -5824,13 +6059,14 @@
                   </svg>
                 </div>
                 <div class="signal-content">
-                  <div class="signal-title" id="signalTitle2">5 agents below threshold</div>
-                  <div class="signal-sub" id="signalSub2">Scores dropped <strong>vs last week</strong> &mdash; coaching flagged</div>
+                  <div class="signal-stat-row"><span class="signal-stat warn" id="signalTitle2">5</span><span class="signal-stat-label">agents under goal</span></div>
+                  <div class="agent-dots" aria-hidden="true"><span class="agent-dot err"></span><span class="agent-dot err"></span><span class="agent-dot warn"></span><span class="agent-dot warn"></span><span class="agent-dot warn"></span><span class="agent-dots-goal"></span><span class="agent-dots-cap">vs goal</span></div>
+                  <div class="signal-done" id="signalSub2"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Coaching created</div>
                 </div>
               </div>
 
               <!-- Signal 3 — Disputes (info) -->
-              <div class="summary-signal" id="summarySignal3" role="button" tabindex="0" aria-label="2 disputes overdue">
+              <div class="summary-signal" id="summarySignal3" role="button" tabindex="0" aria-label="2 disputes past SLA — replies drafted for both">
                 <div class="signal-icon info" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
                     <rect x="2" y="3" width="20" height="14" rx="2"></rect>
@@ -5838,8 +6074,9 @@
                   </svg>
                 </div>
                 <div class="signal-content">
-                  <div class="signal-title" id="signalTitle3">2 disputes overdue</div>
-                  <div class="signal-sub" id="signalSub3"><strong>DISP-0441 &amp; DISP-0438</strong> past SLA window</div>
+                  <div class="signal-stat-row"><span class="signal-stat info" id="signalTitle3">2</span><span class="signal-stat-label">disputes past SLA</span></div>
+                  <div class="agent-dots" aria-hidden="true"><span class="agent-dot err"></span><span class="agent-dot err"></span><span class="agent-dots-cap">DISP-0441 &amp; 0438</span></div>
+                  <div class="signal-done" id="signalSub3"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Replies drafted</div>
                 </div>
               </div>
 
@@ -5857,22 +6094,14 @@
                   <span class="type-label">SLA Breach</span>
                   <span class="priority-badge">P1 · Critical</span>
                 </div>
-                <p class="bcard-conclusion">
-                  SLA compliance at <span style="color: var(--err); font-weight: 700">61%</span> — 29pts below target, 23 breaches this week.
-                </p>
-                <div class="bcard-divider"></div>
-                <div class="bcard-action">
-                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('SLA compliance is at 61% — 29pts below the 90% target. Break this down by product: compare Objectif Lune, Qvidian, InterFax, and Adestra on breach count, average first response time, and current vs 90% target. Then list the top 5 agents driving the most breaches with their individual compliance rates and the queues they operate in. Flag any product where compliance has been below target for more than 2 consecutive weeks.')">
-                    View breached tickets
-                    <svg viewBox="0 0 13 13" fill="none">
-                      <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </button>
-                  <div class="bcard-ack-row" id="ack-row-sla-breach">
-                    <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'sla-breach')">On it</button>
-                    <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'sla-breach')">Not relevant</button>
-                    <div class="bcard-dismiss-picker" id="bdp-sla-breach"></div>
-                  </div>
+                <div class="bcard-stat-line"><span class="bcard-stat err">61%</span><span class="bcard-stat-cap">SLA compliance</span></div>
+                <div class="bcard-status err">29 pts under</div>
+                <div class="aimy-done">
+                  <svg class="aimy-done-mark" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                  <span class="aimy-done-text">Fix staged · <b>8 agents</b></span>
+                  <span class="aimy-done-actions">
+                    <button class="aimy-done-link primary" data-aimy-review="SLA compliance is at 61% — 29pts below the 90% target. Break this down by product: compare Objectif Lune, Qvidian, InterFax, and Adestra on breach count, average first response time, and current vs 90% target. Then list the top 5 agents driving the most breaches with their individual compliance rates and the queues they operate in. Flag any product where compliance has been below target for more than 2 consecutive weeks." data-aimy-undo="the response-time fix for 8 agents" data-aimy-topic="sla">Review</button>
+                  </span>
                 </div>
               </div>
             </div>
@@ -5881,25 +6110,17 @@
               <div class="bcard-accent"></div>
               <div class="bcard-body">
                 <div class="bcard-meta">
-                  <span class="type-label">KPI Failures</span>
+                  <span class="type-label">Goals Off Track</span>
                   <span class="priority-badge">P1 · Urgent</span>
                 </div>
-                <p class="bcard-conclusion">
-                  3 KPIs failing — empathy at <span style="color: var(--err); font-weight: 700">32%</span> is the critical gap, down 8% this period.
-                </p>
-                <div class="bcard-divider"></div>
-                <div class="bcard-action">
-                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('3 KPIs are actively failing. Show a breakdown by product for each: Incorrect status (150 failures) across Objectif Lune and Qvidian, Grammar mistakes (55 failures) in InterFax and Second Street, and Time between updates (47 failures) in Qvidian and RightAnswers. For each KPI show: current rate vs target, which agents are responsible for the most failures, and a current vs target bar comparison per product. Then generate a prioritised coaching plan grouped by agent — rank by failure count impact.')">
-                    Start coaching plan
-                    <svg viewBox="0 0 13 13" fill="none">
-                      <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </button>
-                  <div class="bcard-ack-row" id="ack-row-kpi-failures">
-                    <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'kpi-failures')">On it</button>
-                    <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'kpi-failures')">Not relevant</button>
-                    <div class="bcard-dismiss-picker" id="bdp-kpi-failures"></div>
-                  </div>
+                <div class="bcard-stat-line"><span class="bcard-stat err">3</span><span class="bcard-stat-cap">goals off track</span></div>
+                <div class="bcard-status err">empathy at 32%</div>
+                <div class="aimy-done">
+                  <svg class="aimy-done-mark" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                  <span class="aimy-done-text"><b>6</b> coaching plans created</span>
+                  <span class="aimy-done-actions">
+                    <button class="aimy-done-link primary" data-aimy-review="3 goals are off track. Show a breakdown by product for each: Correct ticket status (150 failures) across Objectif Lune and Qvidian, Grammar and clarity (55 failures) in InterFax and Second Street, and Update cadence (47 failures) in Qvidian and RightAnswers. For each show: current attainment vs goal, which agents are off the goal, and a current vs goal bar per product. Then show the prioritised coaching plan I created, grouped by agent and ranked by impact." data-aimy-undo="coaching plans for 6 agents" data-aimy-topic="coaching-goals">Review</button>
+                  </span>
                 </div>
               </div>
             </div>
@@ -5911,22 +6132,14 @@
                   <span class="type-label">Sentiment</span>
                   <span class="priority-badge">P1 · Urgent</span>
                 </div>
-                <p class="bcard-conclusion">
-                  Negative sentiment rising — 3 agents driving 39 flagged interactions this week.
-                </p>
-                <div class="bcard-divider"></div>
-                <div class="bcard-action">
-                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('Negative sentiment is rising week over week — 39 flagged interactions, 3 agents responsible for most of it. Break this down by product: which of Objectif Lune, Adestra, Qvidian, and InterFax have the highest negative sentiment rates, and show current vs previous week for each. List the 3 flagged agents with their sentiment scores, ticket volumes, and the specific escalation types triggering negative responses. Identify the common failure pattern and suggest the single fastest intervention to reverse the trend.')">
-                    Review escalation handling
-                    <svg viewBox="0 0 13 13" fill="none">
-                      <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </button>
-                  <div class="bcard-ack-row" id="ack-row-sentiment">
-                    <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'sentiment')">On it</button>
-                    <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'sentiment')">Not relevant</button>
-                    <div class="bcard-dismiss-picker" id="bdp-sentiment"></div>
-                  </div>
+                <div class="bcard-stat-line"><span class="bcard-stat err">39</span><span class="bcard-stat-cap">flagged this week</span></div>
+                <div class="bcard-status err">3 agents driving</div>
+                <div class="aimy-done">
+                  <svg class="aimy-done-mark" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                  <span class="aimy-done-text">Coaching drafted · <b>3 agents</b></span>
+                  <span class="aimy-done-actions">
+                    <button class="aimy-done-link primary" data-aimy-review="Negative sentiment is rising week over week — 39 flagged interactions, 3 agents responsible for most of it. Break this down by product: which of Objectif Lune, Adestra, Qvidian, and InterFax have the highest negative sentiment rates, and show current vs previous week for each. List the 3 flagged agents with their sentiment scores, ticket volumes, and the specific escalation types triggering negative responses. Show the coaching I drafted and the single fastest intervention to reverse the trend." data-aimy-undo="escalation coaching for 3 agents" data-aimy-topic="sentiment">Review</button>
+                  </span>
                 </div>
               </div>
             </div>
@@ -5938,22 +6151,14 @@
                   <span class="type-label">Quality Score</span>
                   <span class="priority-badge">P2 · Watch</span>
                 </div>
-                <p class="bcard-conclusion">
-                  Quality at <span style="color: var(--warn); font-weight: 700">87.3%</span> — 2.7% below 90% target. 3 failing KPIs are the drag.
-                </p>
-                <div class="bcard-divider"></div>
-                <div class="bcard-action">
-                  <button class="action-btn" onclick="event.stopPropagation();window.openOverlay && window.openOverlay('Overall quality is at 87.3% — 2.7% below the 90% target. Show a product-by-product quality breakdown: rank Objectif Lune, Adestra, InterFax, Qvidian, RightAnswers, and Second Street by current quality score, pass rate, and fail count. Flag which products are above target and which are below with the gap to close. Then show the top 3 KPI failures (Incorrect status 150, Grammar mistakes 55, Time between updates 47) and how eliminating each would move the overall quality score. Recommend the highest-leverage fix.')">
-                    See what's blocking target
-                    <svg viewBox="0 0 13 13" fill="none">
-                      <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </button>
-                  <div class="bcard-ack-row" id="ack-row-quality">
-                    <button class="bcard-ack-btn" onclick="event.stopPropagation();acknowledgeAlert(this,'quality')">On it</button>
-                    <button class="bcard-ack-btn dismiss" onclick="event.stopPropagation();showBcardDismissPicker(this,'quality')">Not relevant</button>
-                    <div class="bcard-dismiss-picker" id="bdp-quality"></div>
-                  </div>
+                <div class="bcard-stat-line"><span class="bcard-stat warn">87.3%</span><span class="bcard-stat-cap">quality score</span></div>
+                <div class="bcard-status warn">2.7 under goal</div>
+                <div class="aimy-done">
+                  <svg class="aimy-done-mark" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                  <span class="aimy-done-text">Fix sequence queued</span>
+                  <span class="aimy-done-actions">
+                    <button class="aimy-done-link primary" data-aimy-review="Overall quality is at 87.3% — 2.7% below the 90% goal. Show a product-by-product quality breakdown: rank Objectif Lune, Adestra, InterFax, Qvidian, RightAnswers, and Second Street by current quality score, pass rate, and fail count. Flag which products are above goal and which are below with the gap to close. Then show the top 3 goal gaps (Correct status, Grammar and clarity, Update cadence) and how closing each moves the overall quality score. Show the sequence I queued, highest-leverage first." data-aimy-undo="the queued fix sequence" data-aimy-topic="quality">Review</button>
+                  </span>
                 </div>
               </div>
             </div>
@@ -5966,8 +6171,8 @@
               <svg class="ads-logo" width="18" height="20" viewBox="0 0 18 20">
                 <use href="#aimy-logo-small"/>
               </svg>
-              <span class="ads-label">AiMY detected</span>
-              <span class="ads-state" id="adsStateText">3 KPIs failing, Nov dip unresolved</span>
+              <span class="ads-label">AiMY</span>
+              <span class="ads-state" id="adsStateText">Watching 3 goals off track · Nov dip open</span>
               <span class="ads-confidence" id="adsConfidence">high confidence</span>
             </div>
             <button class="ads-cta" onclick="appendSuggestionCardsResponse()">
@@ -6189,6 +6394,10 @@
                     >
                       <span class="tooltip-label">Prev period</span>
                       <span class="tooltip-value prev" id="ttPrev">82.1%</span>
+                    </div>
+                    <div class="tooltip-action" id="ttAction" style="display:none">
+                      <span class="tooltip-action-dot">&#9889;</span>
+                      <span class="tooltip-action-text">AiMY handled this &mdash; click to review</span>
                     </div>
                   </div>
 
@@ -6687,160 +6896,106 @@
                 <div class="kpi-brief kf-err">
                   <div class="kf-rank">#1</div>
                   <div class="kf-body">
-                    <div class="kf-name">Incorrect status &middot; 150 failures</div>
+                    <div class="kf-name">Ticket status accuracy &middot; 150 off goal</div>
                     <p class="kf-conclusion">
-                      Top failure driver across <strong>Objectif Lune</strong> and <strong>Qvidian</strong> — agents closing tickets with wrong status codes.
+                      Widest gap &mdash; Objectif Lune &amp; Qvidian. I coached the <strong>8 agents</strong> closing tickets with wrong status codes.
                     </p>
                     <div class="kf-evidence">
-                      <div class="kf-ev-item">
-                        <span class="trend-dn">↓ worsening</span><span>this period</span>
-                      </div>
-                      <div class="kf-ev-item">
-                        <span class="v">103</span><span>in Objectif Lune</span>
-                      </div>
+                      <div class="kf-ev-item"><span class="trend-dn">&#8595; worsening</span><span>this period</span></div>
+                      <div class="kf-ev-item"><span class="v">103</span><span>in Objectif Lune</span></div>
                     </div>
                   </div>
-                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Incorrect status is the #1 failure KPI with 150 occurrences — 103 in Objectif Lune, the rest in Qvidian. Show me the agents responsible, the ticket types most affected, and a targeted coaching brief to fix status accuracy.')">Coach on status →</button>
+                  <button class="kf-action" data-aimy-topic="goal-status" data-aimy-undo="the status-code coaching for 8 agents" data-aimy-review="Show the status-code coaching I created for the 8 agents in Objectif Lune and Qvidian — who it covers, what changed, and the tickets it targets.">Review &rarr;</button>
                 </div>
 
                 <div class="kpi-brief kf-err">
                   <div class="kf-rank">#2</div>
                   <div class="kf-body">
-                    <div class="kf-name">Grammar mistake &middot; 55 failures</div>
+                    <div class="kf-name">Grammar &amp; clarity &middot; 55 off goal</div>
                     <p class="kf-conclusion">
-                      Concentrated in <strong>InterFax</strong> and <strong>Second Street</strong> — written responses not meeting quality bar.
+                      InterFax &amp; Second Street. I drafted writing-quality coaching for the <strong>4 agents</strong> behind it.
                     </p>
                     <div class="kf-evidence">
-                      <div class="kf-ev-item">
-                        <span style="color: var(--d300)">→ stable</span><span>not improving</span>
-                      </div>
-                      <div class="kf-ev-item">
-                        <span class="v">55</span><span>failed interactions</span>
-                      </div>
+                      <div class="kf-ev-item"><span style="color: var(--d300)">&rarr; stable</span><span>not improving</span></div>
+                      <div class="kf-ev-item"><span class="v">55</span><span>off goal</span></div>
                     </div>
                   </div>
-                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Grammar mistakes account for 55 KPI failures — mostly in InterFax and Second Street. Show me the agents with the highest grammar failure rates, sample the worst-scoring responses, and suggest a writing quality checklist for coaching.')">Review responses →</button>
+                  <button class="kf-action" data-aimy-topic="goal-grammar" data-aimy-undo="the grammar coaching for 4 agents" data-aimy-review="Show the writing-quality coaching I drafted for the 4 agents in InterFax and Second Street — their worst responses and the clarity checklist I gave them.">Review &rarr;</button>
                 </div>
 
                 <div class="kpi-brief kf-err">
                   <div class="kf-rank">#3</div>
                   <div class="kf-body">
-                    <div class="kf-name">Time between updates &middot; 47 failures</div>
+                    <div class="kf-name">Update cadence &middot; 47 off goal</div>
                     <p class="kf-conclusion">
-                      Agents in <strong>Qvidian</strong> and <strong>RightAnswers</strong> leaving customers without updates past SLA window.
+                      Qvidian &amp; RightAnswers past the SLA window. I set a <strong>4-hour</strong> follow-up nudge for the <strong>3 agents</strong>.
                     </p>
                     <div class="kf-evidence">
-                      <div class="kf-ev-item">
-                        <span class="trend-up">↑ 3%</span><span>slowly improving</span>
-                      </div>
-                      <div class="kf-ev-item">
-                        <span class="v">47</span><span>failed interactions</span>
-                      </div>
+                      <div class="kf-ev-item"><span class="trend-up">&#8593; 3%</span><span>slowly improving</span></div>
+                      <div class="kf-ev-item"><span class="v">47</span><span>off goal</span></div>
                     </div>
                   </div>
-                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Time between updates has 47 failures — primarily in Qvidian and RightAnswers. Show me the tickets where update delay exceeded SLA, identify the agents most frequently missing the window, and suggest a follow-up cadence fix.')">See delayed tickets →</button>
+                  <button class="kf-action" data-aimy-topic="goal-cadence" data-aimy-undo="the follow-up cadence for 3 agents" data-aimy-review="Show the follow-up cadence I set for the 3 agents in Qvidian and RightAnswers — the tickets left past the SLA update window and the new nudge timing.">Review &rarr;</button>
                 </div>
 
                 <div class="kpi-brief kf-warn">
                   <div class="kf-rank">#4</div>
                   <div class="kf-body">
-                    <div class="kf-name">First response time &middot; 71% compliance</div>
+                    <div class="kf-name">First response time &middot; 71% to goal</div>
                     <p class="kf-conclusion">
-                      Declining in <strong>Objectif Lune</strong> and <strong>Adestra</strong> — 4pts below the 75% threshold and still falling.
+                      Slipping in Objectif Lune &amp; Adestra, <strong>4 pts</strong> under goal. I queued a <strong>2-agent</strong> rebalance for the shift.
                     </p>
                     <div class="kf-evidence">
-                      <div class="kf-ev-item">
-                        <span class="trend-dn">↓ 2%</span><span>declining</span>
-                      </div>
-                      <div class="kf-ev-item">
-                        <span class="v">75%</span><span>threshold</span>
-                      </div>
+                      <div class="kf-ev-item"><span class="trend-dn">&#8595; 2%</span><span>declining</span></div>
+                      <div class="kf-ev-item"><span class="v">75%</span><span>goal</span></div>
                     </div>
                   </div>
-                  <button class="kf-action" onclick="window.openOverlay && window.openOverlay('First response time is at 71% compliance — down 2pts, failing in Objectif Lune and Adestra. At this trajectory when do we breach the 75% threshold? Show me the agents and queues driving the delay and recommend the top 3 interventions.')">Monitor →</button>
+                  <button class="kf-action" data-aimy-topic="kpi-frt" data-aimy-undo="the 2-agent rebalance" data-aimy-review="First response time is at 71%, 4 pts under the 75% goal and falling in Objectif Lune and Adestra. Show the queues driving the delay and the 2-agent rebalance I queued for the shift.">Review &rarr;</button>
                 </div>
 
-                <button
-                  class="passing-toggle"
-                  id="passingToggle"
-                  onclick="togglePassing()"
-                >
-                  <span class="passing-toggle-label">Passing KPIs · 3</span>
+                <button class="passing-toggle" id="passingToggle" onclick="togglePassing()">
+                  <span class="passing-toggle-label">Goals on track &middot; 3</span>
                   <svg viewBox="0 0 12 12" fill="none">
-                    <path
-                      d="M3 4.5L6 7.5L9 4.5"
-                      stroke="currentColor"
-                      stroke-width="1.3"
-                      stroke-linecap="round"
-                    />
+                    <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
                   </svg>
                 </button>
 
                 <div class="passing-section" id="passingSection">
                   <div class="kpi-brief kf-ok" style="margin-bottom: 8px">
-                    <div
-                      class="kf-rank"
-                      style="background: var(--ok-bg); color: var(--ok)"
-                    >
-                      #5
-                    </div>
+                    <div class="kf-rank" style="background: var(--ok-bg); color: var(--ok)">#5</div>
                     <div class="kf-body">
                       <p class="kf-conclusion">
-                        Identity verification is at
-                        <span class="kf-score-ok">82%</span> and improving &mdash;
-                        compliance risk is low here.
+                        Identity verification at <span class="kf-score-ok">82%</span>, up 6% &mdash; low risk. I'm tracking the leaders to replicate.
                       </p>
                       <div class="kf-evidence">
-                        <div class="kf-ev-item">
-                          <span class="trend-up">↑ 6%</span
-                          ><span>vs last period</span>
-                        </div>
+                        <div class="kf-ev-item"><span class="trend-up">&#8593; 6%</span><span>vs last period</span></div>
                       </div>
                     </div>
-                    <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Identity verification is at 82% and improving. What’s driving the 6% gain this period and which agents are leading it?')">View →</button>
+                    <button class="kf-action" data-aimy-topic="kpi-identity" data-aimy-review="Identity verification is at 82%, up 6% and low risk. Show which agents are leading it and the behaviours worth replicating.">View &rarr;</button>
                   </div>
                   <div class="kpi-brief kf-ok" style="margin-bottom: 8px">
-                    <div
-                      class="kf-rank"
-                      style="background: var(--ok-bg); color: var(--ok)"
-                    >
-                      #6
-                    </div>
+                    <div class="kf-rank" style="background: var(--ok-bg); color: var(--ok)">#6</div>
                     <div class="kf-body">
                       <p class="kf-conclusion">
-                        First contact resolution is at
-                        <span class="kf-score-ok">87%</span> &mdash; agents are
-                        solving issues without callbacks.
+                        First contact resolution at <span class="kf-score-ok">87%</span>, up 4% &mdash; resolved without callbacks. I'm watching the top performers.
                       </p>
                       <div class="kf-evidence">
-                        <div class="kf-ev-item">
-                          <span class="trend-up">↑ 4%</span
-                          ><span>vs last period</span>
-                        </div>
+                        <div class="kf-ev-item"><span class="trend-up">&#8593; 4%</span><span>vs last period</span></div>
                       </div>
                     </div>
-                    <button class="kf-action" onclick="window.openOverlay && window.openOverlay('FCR is at 87%. Identify the agents with the strongest scores and summarise what behaviours they share so we can coach others.')">View →</button>
+                    <button class="kf-action" data-aimy-topic="kpi-fcr" data-aimy-review="First contact resolution is at 87%, up 4%. Show the top performers and what they share so I can turn it into a coaching template.">View &rarr;</button>
                   </div>
                   <div class="kpi-brief kf-ok">
-                    <div
-                      class="kf-rank"
-                      style="background: var(--ok-bg); color: var(--ok)"
-                    >
-                      #7
-                    </div>
+                    <div class="kf-rank" style="background: var(--ok-bg); color: var(--ok)">#7</div>
                     <div class="kf-body">
                       <p class="kf-conclusion">
-                        Compliance script adherence is at
-                        <span class="kf-score-ok">91%</span> and stable &mdash; agents
-                        know the required process.
+                        Script adherence at <span class="kf-score-ok">91%</span> and stable. I'll flag anyone drifting before it trends.
                       </p>
                       <div class="kf-evidence">
-                        <div class="kf-ev-item">
-                          <span style="color: var(--d300)">→ stable</span>
-                        </div>
+                        <div class="kf-ev-item"><span style="color: var(--d300)">&rarr; stable</span></div>
                       </div>
                     </div>
-                    <button class="kf-action" onclick="window.openOverlay && window.openOverlay('Script adherence is at 91% and stable. Any agents drifting below the team average that we should watch before it becomes a trend?')">View →</button>
+                    <button class="kf-action" data-aimy-topic="kpi-script" data-aimy-review="Compliance script adherence is at 91% and stable. Show the per-agent spread and flag anyone drifting below the team average.">View &rarr;</button>
                   </div>
                 </div>
               </div>
@@ -6926,106 +7081,64 @@
                     onclick="window.openOverlay && window.openOverlay('Quality score is at 87.3% across 3,363 reviewed tickets this week — 2.7pts below the 90% target. Show me the product breakdown and the top 3 KPI levers that would close the gap fastest.')"
                     tabindex="0" role="button"
                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"
-                    >2.7pts below target · view breakdown</span
+                    >2.7 pts under goal · fix queued</span
                   >
                 </div>
 
                 <!-- AiMY unified insight -->
                 <div class="eval-insight">
-                  <div class="eval-insight-header">
-                    <svg width="18" height="23" viewBox="0 0 18 20">
-                <use href="#aimy-logo-small" />
-              </svg>
-                    <span class="eval-insight-label">AiMY Insight</span>
-                  </div>
+                  <svg class="eval-insight-mark" width="16" height="18" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
                   <p class="eval-insight-text">
-                    <strong
-                      >5 agents slipped below the quality threshold</strong
-                    >
-                    this week, dropping performance by 15%. The primary driver
-                    is
-                    <span class="hl-warn"
-                      >prolonged wait times on billing tickets</span
-                    >, causing
-                    <span class="hl-err">68% of negative interactions</span>
-                    this shift — and directly explaining the 17% fail rate and
-                    the spike in customer friction.
+                    <strong>5 agents</strong> under goal · team <span class="hl-err">&#8722;15%</span> · <span class="hl-warn">billing wait times</span> the driver
                   </p>
                 </div>
 
-                <!-- Action row -->
+                <!-- Action row — done-state: AiMY already handled it -->
                 <div class="eval-action-row">
-                  <button class="eval-primary-btn" onclick="window.openOverlay && window.openOverlay('Billing escalation handling has a 17% fail rate this shift driven by prolonged wait times. Show me the specific protocol steps being missed and recommend the fastest fix.')">
-                    <svg viewBox="0 0 13 13" fill="none">
-                      <path
-                        d="M6.5 1.5A5 5 0 1 0 11.5 6.5"
-                        stroke="currentColor"
-                        stroke-width="1.4"
-                        stroke-linecap="round"
-                      />
-                      <path
-                        d="M9.5 1.5V4.5H12.5"
-                        stroke="currentColor"
-                        stroke-width="1.4"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                    Review Billing Escalation Protocol
-                  </button>
-                  <button class="eval-sec-btn" onclick="window.openOverlay && window.openOverlay('Show me the 26 tickets with the highest customer friction scores this shift. Sort by wait time and flag any with repeat contact within 24hrs.')">See 26 tickets</button>
-                  <button class="eval-sec-btn" onclick="window.openOverlay && window.openOverlay('Which team or queue should own the billing escalation issue? Suggest the right assignment based on capacity and skill match.')">Assign to team</button>
+                  <div class="aimy-done" style="width:100%;border-top:none;padding-top:0;margin-top:0">
+                    
+                    <span class="aimy-done-text"><b>26</b> tickets reassigned · protocol reviewed</span>
+                    <span class="aimy-done-actions">
+                      <button class="aimy-done-link primary" data-aimy-review="Billing escalation handling has a 17% fail rate this shift driven by prolonged wait times. Show me the specific protocol steps that were being missed, the 26 tickets I reassigned sorted by wait time with any repeat contact within 24hrs flagged, and confirm which team now owns them." data-aimy-undo="the reassignment of 26 tickets" data-aimy-topic="billing">Review</button>
+                    </span>
+                  </div>
                 </div>
 
-                <!-- Top Failed KPIs -->
+                <!-- Top Failed KPIs → reframed as Team Goals (team target + agents off it) -->
                 <div class="eval-sub-section">
-                  <div class="eval-sub-label">Top Failed KPIs</div>
-                  <div class="eval-bars">
-                    <div class="eval-bar-row eval-kpi-row" data-segment="incorrect-status"
-                      onmouseenter="evalHover('incorrect-status')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('Incorrect status has 150 failures — the #1 KPI this week, concentrated in Objectif Lune (103) and Qvidian. Show me the agents responsible and generate a coaching brief.')">
-                      <div class="eval-bar-top">
-                        <span class="eval-bar-label">Incorrect status</span>
-                        <div class="eval-bar-right eval-bar-val-err">150</div>
-                      </div>
-                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:100%;background:var(--err)"></div></div>
+                  <div class="eval-sub-label">Team Goals · vs this week's targets</div>
+                  <div class="eval-goals" id="teamGoals">
+
+                    <div class="goal-row" data-aimy-review="Correct ticket status is the biggest goal gap — team at 71% vs a 95% goal, 8 agents off it, concentrated in Objectif Lune (103) and Qvidian. Show each off-goal agent with their attainment, the tickets involved, and the coaching brief I generated." data-aimy-undo="coaching for the 8 off-goal agents" data-aimy-topic="goal-status">
+                      <div class="goal-row-head"><span class="goal-name">Correct ticket status</span><span class="goal-vals"><span class="goal-cur err">71%</span><span class="goal-tgt">/ 95% goal</span></span></div>
+                      <div class="gap-meter"><div class="gap-meter-fill" style="width:71%;background:var(--err)"></div><div class="gap-meter-target" style="left:95%"></div></div>
+                      <div class="goal-row-foot"><span class="goal-off"><b>8</b> agents off goal</span><span class="goal-agents">Sarah, Malak +6</span></div>
                     </div>
-                    <div class="eval-bar-row eval-kpi-row" data-segment="grammar-mistake"
-                      onmouseenter="evalHover('grammar-mistake')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('Grammar mistakes account for 55 KPI failures in InterFax and Second Street. Show me the worst-scoring responses and suggest a writing quality fix.')">
-                      <div class="eval-bar-top">
-                        <span class="eval-bar-label">Grammar mistake</span>
-                        <div class="eval-bar-right eval-bar-val-warn">55</div>
-                      </div>
-                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:37%;background:var(--warn)"></div></div>
+
+                    <div class="goal-row" data-aimy-review="Grammar and clarity goal — team at 82% vs 90%, 4 agents off it in InterFax and Second Street. Show the worst-scoring responses and the writing-quality coaching I drafted." data-aimy-undo="the grammar coaching for 4 agents" data-aimy-topic="goal-grammar">
+                      <div class="goal-row-head"><span class="goal-name">Grammar &amp; clarity</span><span class="goal-vals"><span class="goal-cur warn">82%</span><span class="goal-tgt">/ 90% goal</span></span></div>
+                      <div class="gap-meter"><div class="gap-meter-fill" style="width:82%;background:var(--warn)"></div><div class="gap-meter-target" style="left:90%"></div></div>
+                      <div class="goal-row-foot"><span class="goal-off"><b>4</b> agents off goal</span><span class="goal-agents">Youssef, Nada +2</span></div>
                     </div>
-                    <div class="eval-bar-row eval-kpi-row" data-segment="time-updates"
-                      onmouseenter="evalHover('time-updates')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('Time between updates has 47 failures in Qvidian and RightAnswers — agents leaving customers past the SLA update window. Show the tickets and suggest a follow-up cadence fix.')">
-                      <div class="eval-bar-top">
-                        <span class="eval-bar-label">Time between updates</span>
-                        <div class="eval-bar-right eval-bar-val-warn">47</div>
-                      </div>
-                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:31%;background:var(--warn)"></div></div>
+
+                    <div class="goal-row" data-aimy-review="Update cadence goal — team at 84% vs 90%, 3 agents off it in Qvidian and RightAnswers, leaving customers past the SLA update window. Show the tickets and the follow-up cadence fix I set." data-aimy-undo="the follow-up cadence change" data-aimy-topic="goal-cadence">
+                      <div class="goal-row-head"><span class="goal-name">Update cadence</span><span class="goal-vals"><span class="goal-cur warn">84%</span><span class="goal-tgt">/ 90% goal</span></span></div>
+                      <div class="gap-meter"><div class="gap-meter-fill" style="width:84%;background:var(--warn)"></div><div class="gap-meter-target" style="left:90%"></div></div>
+                      <div class="goal-row-foot"><span class="goal-off"><b>3</b> agents off goal</span><span class="goal-agents">Omar, Lina +1</span></div>
                     </div>
-                    <div class="eval-bar-row eval-kpi-row" data-segment="no-eta"
-                      onmouseenter="evalHover('no-eta')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('No specific ETA provided has 36 failures. Which agents and products are most affected and what script change would fix this?')">
-                      <div class="eval-bar-top">
-                        <span class="eval-bar-label">No specific ETA</span>
-                        <div class="eval-bar-right">36</div>
-                      </div>
-                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:24%;background:var(--teal)"></div></div>
+
+                    <div class="goal-row" data-aimy-review="ETA provided goal — team at 87% vs 90%, 2 agents off it. Show which agents and products are affected and the script change I applied." data-aimy-undo="the ETA script change" data-aimy-topic="goal-eta">
+                      <div class="goal-row-head"><span class="goal-name">ETA provided</span><span class="goal-vals"><span class="goal-cur warn">87%</span><span class="goal-tgt">/ 90% goal</span></span></div>
+                      <div class="gap-meter"><div class="gap-meter-fill" style="width:87%;background:var(--warn)"></div><div class="gap-meter-target" style="left:90%"></div></div>
+                      <div class="goal-row-foot"><span class="goal-off"><b>2</b> agents off goal</span><span class="goal-agents">Hana, Karim</span></div>
                     </div>
-                    <div class="eval-bar-row eval-kpi-row" data-segment="article-id"
-                      onmouseenter="evalHover('article-id')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('Article ID missing has 20 failures. Show me the affected tickets and the agents most frequently missing this step.')">
-                      <div class="eval-bar-top">
-                        <span class="eval-bar-label">Article ID missing</span>
-                        <div class="eval-bar-right">20</div>
-                      </div>
-                      <div class="eval-bar-track"><div class="eval-bar-fill" style="width:13%;background:var(--teal)"></div></div>
+
+                    <div class="goal-row" data-aimy-review="Article ID attached goal — team at 92% vs 95%, 1 agent off it. Show the affected tickets and the workflow reminder I added." data-aimy-undo="the article-ID workflow reminder" data-aimy-topic="goal-articleid">
+                      <div class="goal-row-head"><span class="goal-name">Article ID attached</span><span class="goal-vals"><span class="goal-cur ok">92%</span><span class="goal-tgt">/ 95% goal</span></span></div>
+                      <div class="gap-meter"><div class="gap-meter-fill" style="width:92%;background:var(--ok)"></div><div class="gap-meter-target" style="left:95%"></div></div>
+                      <div class="goal-row-foot"><span class="goal-off"><b>1</b> agent off goal</span><span class="goal-agents">Farah</span></div>
                     </div>
+
                   </div>
                   <!-- KPI causes float — anchored to KPI section -->
                   <div class="eval-causes-float" id="kpiFloat" style="position:absolute;right:0;">
@@ -7037,7 +7150,7 @@
                 <!-- Friction signals → canvas CTA -->
                 <div class="eval-canvas-cta" onclick="appendFrictionCardsResponse()">
                   <svg width="15" height="18" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-                  <span>View all friction signals in canvas</span>
+                  <span>See everything I'm tracking in canvas</span>
                   <svg viewBox="0 0 13 13" fill="none" width="10" height="10" style="margin-left:auto;opacity:.5">
                     <path d="M2 6.5H11M7 2.5L11 6.5L7 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
@@ -7049,7 +7162,373 @@
             <!-- /layout-column right -->
           </div>
           <!-- /tier-2-grid -->
-        </div>
+                  </div><!-- /viewManager -->
+          <div class="dash-view" id="viewDirector" hidden>
+            <!-- Hero: reuses aimy-summary-card -->
+            <div class="aimy-summary-card">
+              <div class="summary-top-row">
+                <div class="summary-col-1">
+                  <div class="summary-left">
+                    <div class="summary-headline-score">87.3<span class="score-unit">%</span></div>
+                    <div class="summary-score-meta">
+                      <div class="summary-eyebrow"><span>Portfolio &middot; this period</span></div>
+                      <div class="summary-headline-label">Overall Portfolio Quality</div>
+                      <div class="summary-score-delta down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg><span>&#8722;2.7 pts under 90% goal</span></div>
+                      <div class="summary-evaluated-line"><strong>3,363</strong> tickets across 6 portfolios</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="summary-col-2">
+                  <div class="summary-scoreboard">
+                    <div class="sb-stat"><span class="sb-stat-label">CSAT</span><span class="sb-stat-value warn">81%</span><div class="gap-meter" style="width:78px;margin:5px 0 2px"><div class="gap-meter-fill" style="width:81%;background:var(--warn)"></div><div class="gap-meter-target" style="left:85%"></div></div><span class="sb-vs-target">4 under 85% target</span></div>
+                    <div class="sb-stat"><span class="sb-stat-label">Survey response</span><span class="sb-stat-value">36%</span></div>
+                    <div class="sb-stat"><span class="sb-stat-label">SLA compliance</span><span class="sb-stat-value warn">78%</span></div>
+                    <div class="sb-stat"><span class="sb-stat-label">Surveys</span><span class="sb-stat-value">1,204</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="summary-ai-line"><svg width="16" height="19" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg><p>Across 6 portfolios, CSAT is <strong>4 pts</strong> under target &mdash; Objectif Lune and Qvidian are the drag. I've briefed both leads and routed the detractors.</p></div>
+              <div class="summary-bottom-row">
+                <div class="summary-signals-row">
+              <div class="summary-signal">
+                <div class="signal-icon warn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+                <div class="signal-content">
+                  <div class="signal-stat-row"><span class="signal-stat warn">81%</span><span class="signal-stat-label">CSAT vs 85% target</span></div>
+                  <div class="gap-meter"><div class="gap-meter-fill" style="width:81%;background:var(--warn)"></div><div class="gap-meter-target" style="left:85%"></div></div>
+                  <div class="signal-done"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Detractors routed</div>
+                </div>
+              </div>
+              <div class="summary-signal">
+                <div class="signal-icon warn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+                <div class="signal-content">
+                  <div class="signal-stat-row"><span class="signal-stat warn">78%</span><span class="signal-stat-label">SLA compliance</span></div>
+                  <div class="gap-meter"><div class="gap-meter-fill" style="width:78%;background:var(--warn)"></div><div class="gap-meter-target" style="left:90%"></div></div>
+                  <div class="signal-done"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Fixes staged</div>
+                </div>
+              </div>
+              <div class="summary-signal">
+                <div class="signal-icon err" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+                <div class="signal-content">
+                  <div class="signal-stat-row"><span class="signal-stat err">79%</span><span class="signal-stat-label">Objectif Lune · worst</span></div>
+                  <div class="gap-meter"><div class="gap-meter-fill" style="width:79%;background:var(--err)"></div><div class="gap-meter-target" style="left:90%"></div></div>
+                  <div class="signal-done"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Lead briefed</div>
+                </div>
+              </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Director action cards (reuse bcard) -->
+            <div class="dir-cards">
+            <div class="bcard" role="region" tabindex="0">
+              <div class="bcard-body">
+                <div class="bcard-meta"><span class="type-label">CSAT</span><span class="priority-badge">This week</span></div>
+                <div class="bcard-stat-line"><span class="bcard-stat warn">81%</span><span class="bcard-stat-cap">portfolio CSAT</span></div>
+                <div class="bcard-status warn">4 under target</div>
+                <div class="aimy-done"><svg class="aimy-done-mark" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg><span class="aimy-done-text">Detractors routed &middot; <b>2 leads</b> briefed</span><span class="aimy-done-actions"><button class="aimy-done-link primary" data-aimy-review="CSAT is at 81% against the 85% target. Show the negative-survey breakdown by product and the detractor tickets I routed." data-aimy-topic="csat" data-aimy-undo="the detractor callbacks and lead briefings">Review</button></span></div>
+              </div>
+            </div>
+            <div class="bcard" role="region" tabindex="0">
+              <div class="bcard-body">
+                <div class="bcard-meta"><span class="type-label">Portfolio risk</span><span class="priority-badge">P1</span></div>
+                <div class="bcard-stat-line"><span class="bcard-stat err">79.2%</span><span class="bcard-stat-cap">Objectif Lune quality</span></div>
+                <div class="bcard-status err">worst portfolio</div>
+                <div class="aimy-done"><svg class="aimy-done-mark" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg><span class="aimy-done-text">Fixes staged &middot; lead briefed</span><span class="aimy-done-actions"><button class="aimy-done-link primary" data-aimy-review="Objectif Lune is the worst portfolio at 79.2% quality and 72% CSAT. Show the KPI breakdown and the fixes I staged." data-aimy-topic="portfolio-behind" data-aimy-undo="the fixes for Objectif Lune">Review</button></span></div>
+              </div>
+            </div>
+            <div class="bcard" role="region" tabindex="0">
+              <div class="bcard-body">
+                <div class="bcard-meta"><span class="type-label">SLA</span><span class="priority-badge">P1</span></div>
+                <div class="bcard-stat-line"><span class="bcard-stat warn">78%</span><span class="bcard-stat-cap">portfolio SLA</span></div>
+                <div class="bcard-status warn">12 pts under goal</div>
+                <div class="aimy-done"><svg class="aimy-done-mark" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg><span class="aimy-done-text">Response-time fixes staged</span><span class="aimy-done-actions"><button class="aimy-done-link primary" data-aimy-review="Portfolio SLA compliance is at 78% against the 90% goal. Show the worst products and the fixes I staged." data-aimy-topic="sla-product" data-aimy-undo="the response-time fixes">Review</button></span></div>
+              </div>
+            </div>
+            </div>
+
+            <!-- Portfolio breakdown (reuse eval-panel + eval-bar rows) -->
+            <div class="eval-panel">
+              <div class="eval-header"><div class="eval-header-left"><span class="eval-title">Portfolio breakdown</span><span class="eval-subtitle">6 portfolios &middot; click any row to drill in</span></div></div>
+              <div class="eval-insight">
+                <svg class="eval-insight-mark" width="16" height="18" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                <p class="eval-insight-text"><strong>Objectif Lune</strong> and <strong>Qvidian</strong> are the drag &mdash; both <span class="hl-err">below 81% quality</span> and <span class="hl-err">under 75% CSAT</span>, the same <span class="hl-warn">billing-escalation</span> root cause. I&#39;ve briefed both leads and staged the fixes.</p>
+              </div>
+                                                                                              <div class="eval-products-section">
+                  <div class="eval-bars-section-label">Quality &times; CSAT by portfolio &middot; bubble size = review volume &middot; number = quality score</div>
+                  <div class="quad-wrap">
+                    <svg class="quad-chart" viewBox="0 0 1160 380" role="img" aria-label="Quality versus CSAT by portfolio; click a bubble to drill in">
+                      <rect class="quad-risk-zone" x="70" y="113.3" width="742" height="226.7"></rect>
+                      <rect class="quad-frame" x="70" y="20" width="1060" height="320" rx="10"></rect>
+                      <line class="quad-ref" x1="812" y1="20" x2="812" y2="340"></line>
+                      <line class="quad-ref" x1="70" y1="113.3" x2="1130" y2="113.3"></line>
+                      <text class="quad-ref-label" x="808" y="34" text-anchor="end">90% quality goal</text>
+                      <text class="quad-ref-label" x="76" y="109">85% CSAT target</text>
+                      <line class="quad-tick-mark" x1="282.0" y1="340" x2="282.0" y2="345"></line>
+                      <text class="quad-tick" x="282.0" y="357" text-anchor="middle">80</text>
+                      <line class="quad-tick-mark" x1="547.0" y1="340" x2="547.0" y2="345"></line>
+                      <text class="quad-tick" x="547.0" y="357" text-anchor="middle">85</text>
+                      <line class="quad-tick-mark" x1="812.0" y1="340" x2="812.0" y2="345"></line>
+                      <text class="quad-tick" x="812.0" y="357" text-anchor="middle">90</text>
+                      <line class="quad-tick-mark" x1="1077.0" y1="340" x2="1077.0" y2="345"></line>
+                      <text class="quad-tick" x="1077.0" y="357" text-anchor="middle">95</text>
+                      <line class="quad-tick-mark" x1="65" y1="313.3" x2="70" y2="313.3"></line>
+                      <text class="quad-tick" x="60" y="316.8" text-anchor="end">70</text>
+                      <line class="quad-tick-mark" x1="65" y1="246.7" x2="70" y2="246.7"></line>
+                      <text class="quad-tick" x="60" y="250.2" text-anchor="end">75</text>
+                      <line class="quad-tick-mark" x1="65" y1="180.0" x2="70" y2="180.0"></line>
+                      <text class="quad-tick" x="60" y="183.5" text-anchor="end">80</text>
+                      <line class="quad-tick-mark" x1="65" y1="113.3" x2="70" y2="113.3"></line>
+                      <text class="quad-tick" x="60" y="116.8" text-anchor="end">85</text>
+                      <line class="quad-tick-mark" x1="65" y1="46.7" x2="70" y2="46.7"></line>
+                      <text class="quad-tick" x="60" y="50.2" text-anchor="end">90</text>
+                      <text class="quad-quad-label" x="84" y="330">AT RISK</text>
+                      <text class="quad-axis-label" x="600" y="374" text-anchor="middle">Quality &rarr;</text>
+                      <text class="quad-axis-label" x="22" y="180" text-anchor="middle" transform="rotate(-90 22 180)">CSAT &rarr;</text>
+                  <g class="bubble" data-aimy-review="Objectif Lune &mdash; quality 79.2%, CSAT 72%. Show the KPI breakdown and the action I took." data-aimy-topic="portfolio-behind" data-aimy-undo="the fixes for Objectif Lune">
+                    <title>Objectif Lune — Quality 79.2%, CSAT 72%</title>
+                    <circle cx="239.6" cy="286.7" r="34.0" style="fill:var(--err)"></circle>
+                    <text class="bubble-score" x="239.6" y="286.7" text-anchor="middle" dominant-baseline="central">79</text>
+                    <text class="bubble-label" x="239.6" y="333.7" text-anchor="middle">Objectif Lune</text>
+                  </g>
+                  <g class="bubble" data-aimy-review="Qvidian &mdash; quality 80.1%, CSAT 74%. Show the KPI breakdown and the action I took." data-aimy-topic="portfolio-behind" data-aimy-undo="the fixes for Qvidian">
+                    <title>Qvidian — Quality 80.1%, CSAT 74%</title>
+                    <circle cx="287.3" cy="260.0" r="15.0" style="fill:var(--err)"></circle>
+                    <text class="bubble-score" x="287.3" y="260.0" text-anchor="middle" dominant-baseline="central">80</text>
+                    <text class="bubble-label" x="309.3" y="264.0" text-anchor="start">Qvidian</text>
+                  </g>
+                  <g class="bubble" data-aimy-review="Second Street &mdash; quality 86.0%, CSAT 80%. Show the KPI breakdown and the action I took." data-aimy-topic="portfolio-behind" data-aimy-undo="the fixes for Second Street">
+                    <title>Second Street — Quality 86.0%, CSAT 80%</title>
+                    <circle cx="600.0" cy="180.0" r="17.9" style="fill:var(--warn)"></circle>
+                    <text class="bubble-score" x="600.0" y="180.0" text-anchor="middle" dominant-baseline="central">86</text>
+                    <text class="bubble-label" x="624.9" y="184.0" text-anchor="start">Second Street</text>
+                  </g>
+                  <g class="bubble" data-aimy-review="InterFax &mdash; quality 88.4%, CSAT 83%. Show the KPI breakdown and the action I took." data-aimy-topic="portfolio-behind" data-aimy-undo="the fixes for InterFax">
+                    <title>InterFax — Quality 88.4%, CSAT 83%</title>
+                    <circle cx="727.2" cy="140.0" r="26.3" style="fill:var(--warn)"></circle>
+                    <text class="bubble-score" x="727.2" y="140.0" text-anchor="middle" dominant-baseline="central">88</text>
+                    <text class="bubble-label" x="760.5" y="144.0" text-anchor="start">InterFax</text>
+                  </g>
+                  <g class="bubble" data-aimy-review="RightAnswers &mdash; quality 91.3%, CSAT 88%. Show the KPI breakdown and the action I took." data-aimy-topic="portfolio-ahead">
+                    <title>RightAnswers — Quality 91.3%, CSAT 88%</title>
+                    <circle cx="880.9" cy="73.3" r="20.3" style="fill:var(--ok)"></circle>
+                    <text class="bubble-score" x="880.9" y="73.3" text-anchor="middle" dominant-baseline="central">91</text>
+                    <text class="bubble-label" x="853.6" y="77.3" text-anchor="end">RightAnswers</text>
+                  </g>
+                  <g class="bubble" data-aimy-review="Adestra &mdash; quality 93.7%, CSAT 90%. Show the KPI breakdown and the action I took." data-aimy-topic="portfolio-ahead">
+                    <title>Adestra — Quality 93.7%, CSAT 90%</title>
+                    <circle cx="1008.1" cy="46.7" r="32.7" style="fill:var(--ok)"></circle>
+                    <text class="bubble-score" x="1008.1" y="46.7" text-anchor="middle" dominant-baseline="central">94</text>
+                    <text class="bubble-label" x="968.4" y="50.7" text-anchor="end">Adestra</text>
+                  </g>
+                    </svg>
+                  </div>
+                </div>                <div class="eval-products-section" style="border-top:1px solid rgba(255,255,255,0.05);padding-top:22px;padding-bottom:24px">
+                  <div class="tl-head">
+                    <span class="eval-bars-section-label" style="padding:0">Quality trend &middot; 12 months &middot; select a portfolio</span>
+                    <div class="tl-dd" id="tlDD">
+                      <button class="tl-dd-btn" id="tlDDBtn" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="tlDDLabel">All portfolios</span><svg viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                      <div class="tl-dd-menu" id="tlDDMenu" role="listbox" hidden>
+                    <button class="tl-dd-opt is-sel" data-tl="all" role="option" type="button">All portfolios</button>
+                    <button class="tl-dd-opt" data-tl="ol" role="option" type="button">Objectif Lune</button>
+                    <button class="tl-dd-opt" data-tl="qvidian" role="option" type="button">Qvidian</button>
+                    <button class="tl-dd-opt" data-tl="ss" role="option" type="button">Second Street</button>
+                    <button class="tl-dd-opt" data-tl="interfax" role="option" type="button">InterFax</button>
+                    <button class="tl-dd-opt" data-tl="ra" role="option" type="button">RightAnswers</button>
+                    <button class="tl-dd-opt" data-tl="adestra" role="option" type="button">Adestra</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tl-chart-wrap">
+                    <svg class="tl-chart" id="tlChart" viewBox="0 0 1160 300" role="img" aria-label="Quality trend over 12 months for the selected portfolio">
+                      <line class="tl-grid" x1="50" y1="239.5" x2="1140" y2="239.5"></line>
+                      <text class="tl-ytick" x="42" y="243.0" text-anchor="end">75</text>
+                      <line class="tl-grid" x1="50" y1="187.3" x2="1140" y2="187.3"></line>
+                      <text class="tl-ytick" x="42" y="190.8" text-anchor="end">80</text>
+                      <line class="tl-grid" x1="50" y1="135.0" x2="1140" y2="135.0"></line>
+                      <text class="tl-ytick" x="42" y="138.5" text-anchor="end">85</text>
+                      <line class="tl-grid" x1="50" y1="30.5" x2="1140" y2="30.5"></line>
+                      <text class="tl-ytick" x="42" y="34.0" text-anchor="end">95</text>
+                      <line class="tl-goal" x1="50" y1="82.7" x2="1140" y2="82.7"></line>
+                      <text class="tl-ytick" x="42" y="86.2" text-anchor="end">90</text>
+                      <text class="tl-goal-label" x="1140" y="76.7" text-anchor="end">90% goal</text>
+                      <text class="tl-xtick" x="50.0" y="268" text-anchor="middle">Jan</text>
+                      <text class="tl-xtick" x="149.1" y="268" text-anchor="middle">Feb</text>
+                      <text class="tl-xtick" x="248.2" y="268" text-anchor="middle">Mar</text>
+                      <text class="tl-xtick" x="347.3" y="268" text-anchor="middle">Apr</text>
+                      <text class="tl-xtick" x="446.4" y="268" text-anchor="middle">May</text>
+                      <text class="tl-xtick" x="545.5" y="268" text-anchor="middle">Jun</text>
+                      <text class="tl-xtick" x="644.5" y="268" text-anchor="middle">Jul</text>
+                      <text class="tl-xtick" x="743.6" y="268" text-anchor="middle">Aug</text>
+                      <text class="tl-xtick" x="842.7" y="268" text-anchor="middle">Sep</text>
+                      <text class="tl-xtick" x="941.8" y="268" text-anchor="middle">Oct</text>
+                      <text class="tl-xtick" x="1040.9" y="268" text-anchor="middle">Nov</text>
+                      <text class="tl-xtick" x="1140.0" y="268" text-anchor="middle">Dec</text>
+                      <g id="tlSeries"></g>
+                      <text class="tl-hoverval" id="tlHoverVal" x="1140" y="20" text-anchor="end"></text>
+                    </svg>
+                  </div>
+                  <div class="tl-insight" id="tlInsight" data-aimy-review="" data-aimy-topic="portfolio-behind">
+                    <svg class="tl-insight-mark" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                    <p id="tlInsightText"></p>
+                    <span class="tl-insight-cta">Review &rarr;</span>
+                  </div>
+                </div>
+
+
+
+
+
+
+                                                              <div class="eval-products-section" style="border-top:1px solid rgba(255,255,255,0.05)">
+                  <div class="eval-bars-section-label">CSAT sentiment &middot; closed-ticket surveys</div>
+                  <div class="csat-panel">
+                    <div class="csat-donut-box">
+                      <svg width="130" height="130" viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="44" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="16"></circle>
+                        <g class="csat-seg" data-aimy-review="Show what&#39;s driving the 74% positive CSAT so we can replicate it across weaker portfolios." data-aimy-topic="csat-positive"><title>Positive — 74% · 891 surveys</title><circle cx="60" cy="60" r="44" style="stroke:var(--ok)" stroke-dasharray="204.6 276.46" stroke-dashoffset="0" transform="rotate(-90 60 60)"></circle></g>
+                        <g class="csat-seg" data-aimy-review="Show the 15% neutral surveys &mdash; which are closest to slipping negative." data-aimy-topic="csat-neutral"><title>Neutral — 15% · 181 surveys</title><circle cx="60" cy="60" r="44" style="stroke:var(--d500)" stroke-dasharray="41.5 276.46" stroke-dashoffset="-204.6" transform="rotate(-90 60 60)"></circle></g>
+                        <g class="csat-seg" data-aimy-review="Show the negative CSAT breakdown by product and the detractor tickets I routed for callback." data-aimy-topic="csat" data-aimy-undo="the detractor callbacks and lead briefings"><title>Negative — 11% · 132 surveys</title><circle cx="60" cy="60" r="44" style="stroke:var(--err)" stroke-dasharray="30.4 276.46" stroke-dashoffset="-246.1" transform="rotate(-90 60 60)"></circle></g>
+                        <text class="donut-center-val" x="60" y="58" text-anchor="middle" style="font-size:22px">74%</text>
+                        <text class="donut-center-lab" x="60" y="73" text-anchor="middle">POSITIVE</text>
+                      </svg>
+                    </div>
+                    <div class="csat-legend2">
+                      <div class="csat-leg2 csat-legrow" data-aimy-review="Show what&#39;s driving the 74% positive CSAT so we can replicate it across weaker portfolios." data-aimy-topic="csat-positive"><span class="csat-leg2-dot" style="background:var(--ok)"></span><span>Positive</span><span class="csat-leg2-pct">74%</span><span class="csat-leg2-cnt">891 surveys</span></div>
+                      <div class="csat-leg2 csat-legrow" data-aimy-review="Show the 15% neutral surveys &mdash; which are closest to slipping negative." data-aimy-topic="csat-neutral"><span class="csat-leg2-dot" style="background:var(--d500)"></span><span>Neutral</span><span class="csat-leg2-pct">15%</span><span class="csat-leg2-cnt">181 surveys</span></div>
+                      <div class="csat-leg2 csat-legrow" data-aimy-review="Show the negative CSAT breakdown by product and the detractor tickets I routed for callback." data-aimy-topic="csat" data-aimy-undo="the detractor callbacks and lead briefings"><span class="csat-leg2-dot" style="background:var(--err)"></span><span>Negative</span><span class="csat-leg2-pct">11%</span><span class="csat-leg2-cnt">132 surveys</span></div>
+                    </div>
+                    <div class="csat-divider"></div>
+                    <div class="csat-insight" data-aimy-review="Show the negative CSAT breakdown by product and the detractor tickets I routed for callback." data-aimy-topic="csat" data-aimy-undo="the detractor callbacks and lead briefings">
+                      <div class="csat-insight-head"><span class="csat-insight-dot"></span>Where the negatives concentrate</div>
+                      <div class="csat-insight-chips">
+                        <span class="csat-chip">Objectif Lune <b>71</b></span>
+                        <span class="csat-chip">Qvidian <b>42</b></span>
+                        <span class="csat-chip csat-chip-mut">Others <b>19</b></span>
+                      </div>
+                      <p><svg class="csat-aimy-mark" viewBox="0 0 18 20"><use href="#aimy-logo-small"></use></svg>Detractors routed for callback &middot; both portfolio leads briefed</p>
+                      <span class="csat-insight-cta">Review 132 negative surveys &rarr;</span>
+                    </div>
+                  </div>
+                </div>
+
+
+
+                              <div class="eval-products-section" style="border-top:1px solid rgba(255,255,255,0.05)">
+                  <div class="eval-bars-section-label">SLA compliance by product &middot; vs 90% goal</div>
+                  <div class="sla-radials">
+                    <div class="sla-radial" data-aimy-review="Objectif Lune SLA is at 61% against the 90% goal. Show the breached tickets ranked by wait time and the fix I staged." data-aimy-topic="sla-product" data-aimy-undo="the SLA fix for Objectif Lune">
+                      <svg width="64" height="64" viewBox="0 0 72 72">
+                        <circle class="sla-ring-track" cx="36" cy="36" r="28" stroke-width="8"></circle>
+                        <circle class="sla-ring-arc" cx="36" cy="36" r="28" stroke-width="8" style="stroke:var(--err)" stroke-dasharray="107.3 175.9" stroke-dashoffset="0" transform="rotate(-90 36 36)"></circle>
+                        <text class="sla-ring-val" x="36" y="41" text-anchor="middle" style="fill:var(--err)">61%</text>
+                      </svg>
+                      <div class="sla-radial-name">Objectif Lune</div>
+                    </div>
+                    <div class="sla-radial" data-aimy-review="Qvidian SLA is at 69% against the 90% goal. Show the breached tickets ranked by wait time and the fix I staged." data-aimy-topic="sla-product" data-aimy-undo="the SLA fix for Qvidian">
+                      <svg width="64" height="64" viewBox="0 0 72 72">
+                        <circle class="sla-ring-track" cx="36" cy="36" r="28" stroke-width="8"></circle>
+                        <circle class="sla-ring-arc" cx="36" cy="36" r="28" stroke-width="8" style="stroke:var(--err)" stroke-dasharray="121.4 175.9" stroke-dashoffset="0" transform="rotate(-90 36 36)"></circle>
+                        <text class="sla-ring-val" x="36" y="41" text-anchor="middle" style="fill:var(--err)">69%</text>
+                      </svg>
+                      <div class="sla-radial-name">Qvidian</div>
+                    </div>
+                    <div class="sla-radial" data-aimy-review="Second Street SLA is at 85% against the 90% goal. Show the breached tickets ranked by wait time and the fix I staged." data-aimy-topic="sla-product" data-aimy-undo="the SLA fix for Second Street">
+                      <svg width="64" height="64" viewBox="0 0 72 72">
+                        <circle class="sla-ring-track" cx="36" cy="36" r="28" stroke-width="8"></circle>
+                        <circle class="sla-ring-arc" cx="36" cy="36" r="28" stroke-width="8" style="stroke:var(--warn)" stroke-dasharray="149.5 175.9" stroke-dashoffset="0" transform="rotate(-90 36 36)"></circle>
+                        <text class="sla-ring-val" x="36" y="41" text-anchor="middle" style="fill:var(--warn)">85%</text>
+                      </svg>
+                      <div class="sla-radial-name">Second Street</div>
+                    </div>
+                    <div class="sla-radial" data-aimy-review="InterFax SLA is at 88% against the 90% goal. Show the breached tickets ranked by wait time and the fix I staged." data-aimy-topic="sla-product" data-aimy-undo="the SLA fix for InterFax">
+                      <svg width="64" height="64" viewBox="0 0 72 72">
+                        <circle class="sla-ring-track" cx="36" cy="36" r="28" stroke-width="8"></circle>
+                        <circle class="sla-ring-arc" cx="36" cy="36" r="28" stroke-width="8" style="stroke:var(--warn)" stroke-dasharray="154.8 175.9" stroke-dashoffset="0" transform="rotate(-90 36 36)"></circle>
+                        <text class="sla-ring-val" x="36" y="41" text-anchor="middle" style="fill:var(--warn)">88%</text>
+                      </svg>
+                      <div class="sla-radial-name">InterFax</div>
+                    </div>
+                    <div class="sla-radial" data-aimy-review="RightAnswers SLA is at 92%, above the 90% goal. Show the trend and whether it is holding." data-aimy-topic="sla-ok">
+                      <svg width="64" height="64" viewBox="0 0 72 72">
+                        <circle class="sla-ring-track" cx="36" cy="36" r="28" stroke-width="8"></circle>
+                        <circle class="sla-ring-arc" cx="36" cy="36" r="28" stroke-width="8" style="stroke:var(--ok)" stroke-dasharray="161.8 175.9" stroke-dashoffset="0" transform="rotate(-90 36 36)"></circle>
+                        <text class="sla-ring-val" x="36" y="41" text-anchor="middle" style="fill:var(--ok)">92%</text>
+                      </svg>
+                      <div class="sla-radial-name">RightAnswers</div>
+                    </div>
+                    <div class="sla-radial" data-aimy-review="Adestra SLA is at 94%, above the 90% goal. Show the trend and whether it is holding." data-aimy-topic="sla-ok">
+                      <svg width="64" height="64" viewBox="0 0 72 72">
+                        <circle class="sla-ring-track" cx="36" cy="36" r="28" stroke-width="8"></circle>
+                        <circle class="sla-ring-arc" cx="36" cy="36" r="28" stroke-width="8" style="stroke:var(--ok)" stroke-dasharray="165.3 175.9" stroke-dashoffset="0" transform="rotate(-90 36 36)"></circle>
+                        <text class="sla-ring-val" x="36" y="41" text-anchor="middle" style="fill:var(--ok)">94%</text>
+                      </svg>
+                      <div class="sla-radial-name">Adestra</div>
+                    </div>
+                  </div>
+                </div>
+
+              <div class="eval-sub-section">
+                <div class="eval-sub-label">Top failed KPIs</div>
+                  <div class="goal-row" data-aimy-review="Ticket status accuracy is at 71% vs a 95% goal, 8 agents off it. Show each off-goal agent and the coaching I created." data-aimy-undo="the status-code coaching for 8 agents" data-aimy-topic="goal-status">
+                    <div class="goal-row-head"><span class="goal-name">Ticket status accuracy</span><span class="goal-vals"><span class="goal-cur err">71%</span><span class="goal-tgt">/ 95% goal</span></span></div>
+                    <div class="gap-meter"><div class="gap-meter-fill" style="width:71%;background:var(--err)"></div><div class="gap-meter-target" style="left:95%"></div></div>
+                    <div class="goal-row-foot"><span class="goal-off"><b>8</b> agents off goal</span><span class="goal-agents">Sarah, Malak +6</span></div>
+                  </div>
+                  <div class="goal-row" data-aimy-review="Grammar and clarity is at 82% vs 90%, 4 agents off it. Show the worst responses and the coaching I drafted." data-aimy-undo="the grammar coaching for 4 agents" data-aimy-topic="goal-grammar">
+                    <div class="goal-row-head"><span class="goal-name">Grammar &amp; clarity</span><span class="goal-vals"><span class="goal-cur warn">82%</span><span class="goal-tgt">/ 90% goal</span></span></div>
+                    <div class="gap-meter"><div class="gap-meter-fill" style="width:82%;background:var(--warn)"></div><div class="gap-meter-target" style="left:90%"></div></div>
+                    <div class="goal-row-foot"><span class="goal-off"><b>4</b> agents off goal</span><span class="goal-agents">Youssef, Nada +2</span></div>
+                  </div>
+                  <div class="goal-row" data-aimy-review="Update cadence is at 84% vs 90%, 3 agents off it. Show the tickets and the follow-up cadence I set." data-aimy-undo="the follow-up cadence for 3 agents" data-aimy-topic="goal-cadence">
+                    <div class="goal-row-head"><span class="goal-name">Update cadence</span><span class="goal-vals"><span class="goal-cur warn">84%</span><span class="goal-tgt">/ 90% goal</span></span></div>
+                    <div class="gap-meter"><div class="gap-meter-fill" style="width:84%;background:var(--warn)"></div><div class="gap-meter-target" style="left:90%"></div></div>
+                    <div class="goal-row-foot"><span class="goal-off"><b>3</b> agents off goal</span><span class="goal-agents">Omar, Lina +1</span></div>
+                  </div>
+                  <div class="goal-row" data-aimy-review="ETA provided is at 87% vs 90%, 2 agents off it. Show the affected queue and the script change I applied." data-aimy-undo="the ETA script change" data-aimy-topic="goal-eta">
+                    <div class="goal-row-head"><span class="goal-name">ETA provided</span><span class="goal-vals"><span class="goal-cur warn">87%</span><span class="goal-tgt">/ 90% goal</span></span></div>
+                    <div class="gap-meter"><div class="gap-meter-fill" style="width:87%;background:var(--warn)"></div><div class="gap-meter-target" style="left:90%"></div></div>
+                    <div class="goal-row-foot"><span class="goal-off"><b>2</b> agents off goal</span><span class="goal-agents">Hana, Karim</span></div>
+                  </div>
+              </div>
+                              <div class="eval-products-section" style="border-top:1px solid rgba(255,255,255,0.05)">
+                  <div class="eval-bars-section-label">Top 5 achievers &middot; agents</div>
+                  <div class="lead-list">
+                    <div class="lead-row" data-aimy-review="Layla Mansour is a top performer &mdash; quality 97%, CSAT 96%. Show their standout tickets and what to replicate." data-aimy-topic="achiever">
+                      <span class="lead-rank r1">1</span>
+                      <span class="lead-name">Layla Mansour</span>
+                      <span class="lead-metric"><span class="lead-metric-lab">Quality</span><span class="lead-metric-val ok">97%</span></span>
+                      <span class="lead-metric"><span class="lead-metric-lab">CSAT</span><span class="lead-metric-val">96%</span></span>
+                    </div>
+                    <div class="lead-row" data-aimy-review="Karim Fouad is a top performer &mdash; quality 96%, CSAT 94%. Show their standout tickets and what to replicate." data-aimy-topic="achiever">
+                      <span class="lead-rank r2">2</span>
+                      <span class="lead-name">Karim Fouad</span>
+                      <span class="lead-metric"><span class="lead-metric-lab">Quality</span><span class="lead-metric-val ok">96%</span></span>
+                      <span class="lead-metric"><span class="lead-metric-lab">CSAT</span><span class="lead-metric-val">94%</span></span>
+                    </div>
+                    <div class="lead-row" data-aimy-review="Yasmin Adel is a top performer &mdash; quality 95%, CSAT 95%. Show their standout tickets and what to replicate." data-aimy-topic="achiever">
+                      <span class="lead-rank r3">3</span>
+                      <span class="lead-name">Yasmin Adel</span>
+                      <span class="lead-metric"><span class="lead-metric-lab">Quality</span><span class="lead-metric-val ok">95%</span></span>
+                      <span class="lead-metric"><span class="lead-metric-lab">CSAT</span><span class="lead-metric-val">95%</span></span>
+                    </div>
+                    <div class="lead-row" data-aimy-review="Omar Zaki is a top performer &mdash; quality 94%, CSAT 93%. Show their standout tickets and what to replicate." data-aimy-topic="achiever">
+                      <span class="lead-rank">4</span>
+                      <span class="lead-name">Omar Zaki</span>
+                      <span class="lead-metric"><span class="lead-metric-lab">Quality</span><span class="lead-metric-val ok">94%</span></span>
+                      <span class="lead-metric"><span class="lead-metric-lab">CSAT</span><span class="lead-metric-val">93%</span></span>
+                    </div>
+                    <div class="lead-row" data-aimy-review="Hana Saleh is a top performer &mdash; quality 93%, CSAT 92%. Show their standout tickets and what to replicate." data-aimy-topic="achiever">
+                      <span class="lead-rank">5</span>
+                      <span class="lead-name">Hana Saleh</span>
+                      <span class="lead-metric"><span class="lead-metric-lab">Quality</span><span class="lead-metric-val ok">93%</span></span>
+                      <span class="lead-metric"><span class="lead-metric-lab">CSAT</span><span class="lead-metric-val">92%</span></span>
+                    </div>
+                  </div>
+                </div>
+
+            </div>
+          </div>
+</div>
         <!-- /dashboard-scroll -->
 
         <!-- ════ FLOATING AIMY INPUT BAR (scoped to app-main) ══════════ -->
@@ -7587,6 +8066,13 @@
           document.getElementById("ttScore").textContent = scores[closest] + "%";
           document.getElementById("ttPrev").textContent  = prev[closest]  + "%";
 
+          // Dip = a notable drop below 80 vs the prior point → offer AiMY's recovery action.
+          var ttAction = document.getElementById("ttAction");
+          var isDip = scores[closest] < 80 && (closest === 0 || scores[closest - 1] - scores[closest] >= 6);
+          if (ttAction) ttAction.style.display = isDip ? "flex" : "none";
+          hoverZone.style.cursor = isDip ? "pointer" : "default";
+          window._chart_dip = isDip ? { month: labels[closest], score: scores[closest] } : null;
+
           const areaRect = chartArea.getBoundingClientRect();
           let tipX = e.clientX - areaRect.left + 14;
           let tipY = e.clientY - areaRect.top - 20;
@@ -7600,6 +8086,21 @@
           hoverLine.setAttribute("opacity", "0");
           hoverDot.setAttribute("opacity", "0");
           tooltip.classList.remove("visible");
+          var ttAction = document.getElementById("ttAction");
+          if (ttAction) ttAction.style.display = "none";
+          hoverZone.style.cursor = "default";
+          window._chart_dip = null;
+        });
+
+        // Clicking a dip point opens the canvas with AiMY's account of what it did.
+        hoverZone.addEventListener("click", () => {
+          var dip = window._chart_dip;
+          if (!dip) return;
+          window.__aimyTopic = "chart-dip";
+          window.__aimyUndo = null;
+          if (typeof window.openOverlay === "function") {
+            window.openOverlay("The " + dip.month + " quality dip to " + dip.score + "% — what caused it and what did you do about it?");
+          }
         });
       })();
 
@@ -8730,44 +9231,57 @@
           {
             keys: ["sla", "first response", "response time", "compliance", "61%"],
             response:
-              "First response SLA compliance is at <strong>61%</strong> today against a 65% target — a <strong>4-point gap</strong> affecting 8 agents. " +
-              "The main driver is a ticket volume spike in the billing queue this morning, where average first response climbed to <strong>52 minutes</strong> (target: 30 min). " +
-              "I’d recommend reassigning 2 agents from the general queue to billing for the rest of the shift. " +
-              "Do you want me to identify which agents have capacity to absorb the load right now?",
+              "First response SLA compliance is at <strong>61%</strong> today &mdash; a 4-point gap affecting 8 agents, driven by the billing-queue spike this morning. I've already reassigned 2 agents to billing for the rest of the shift and pulled the breached tickets. First response is easing back toward target. Want the agent-by-agent breakdown?",
           },
           {
             keys: ["agent", "below threshold", "threshold", "coaching", "5 agents"],
             response:
-              "Five agents are currently below the 80% quality threshold: <strong>Omar A. (74%)</strong>, <strong>Sara M. (71%)</strong>, <strong>Khaled R. (69%)</strong>, Layla T. (76%), and Ahmed S. (78%). " +
-              "All five show the same failure pattern — low scores on <em>empathy during escalations</em> (avg 48%) and <em>follow-up confirmation</em> (avg 52%). " +
-              "This suggests a shared training gap rather than individual performance issues. " +
-              "I can generate a targeted coaching plan for this checklist cluster — want me to do that now?",
+              "Five agents are below the 80% quality threshold, all showing the same pattern &mdash; low empathy during escalations and weak follow-up confirmation. I've already built a targeted coaching plan for that checklist cluster and queued it in their 1:1s. I'm tracking their scores daily. Want to see an individual plan?",
           },
           {
             keys: ["dispute", "overdue", "disp-0441", "disp-0438", "past sla", "sla window"],
             response:
-              "<strong>DISP-0441</strong> and <strong>DISP-0438</strong> are both past the 48-hour SLA window — DISP-0441 by 31 hours, DISP-0438 by 19 hours. " +
-              "Both disputes were filed by agents contesting checklist scoring on empathy items, and both are awaiting auditor response. " +
-              "If unresolved today there is an escalation risk to the agents’ team leads. " +
-              "I’d suggest assigning them to an available senior auditor immediately. Do you want me to surface who is available?",
+              "<strong>DISP-0441</strong> and DISP-0438 are past the 48-hour window &mdash; by 31 and 19 hours. Both contest empathy scoring and await an auditor. I've drafted replies for both and routed them to the senior auditor on shift; I'll confirm once they're closed. Want to read the drafts?",
           },
           {
-            keys: ["quality score", "overall", "today", "83", "summary"],
+            keys: ["quality score", "overall", "83", "summary"],
             response:
-              "Today’s overall quality score is <strong>83%</strong>, down 4 points from yesterday’s 87%. " +
-              "The drop is driven by three converging issues: SLA compliance at 61%, five agents below threshold, and two unresolved disputes adding noise to the audit queue. " +
-              "The score is recoverable today if the SLA gap in billing is addressed and the two overdue disputes are closed. " +
-              "Should I generate a prioritised action plan for the shift?",
+              "Today's overall quality score is <strong>83%</strong>, down 4 points from yesterday. It's three converging issues &mdash; SLA at 61%, 5 agents under goal, and 2 overdue disputes &mdash; and I've already actioned all three. The score is recoverable today. Want the prioritised shift plan I put together?",
           },
           {
             keys: ["empathy", "billing escalation", "coaching brief"],
             response:
-              "I’ve confirmed the root cause: billing escalation handling is creating a " +
-              "<span class='msg-data-ref'>&#128202; 17% fail rate</span> this period." +
-              "<br><br>Recommended next step:<br>" +
-              "<button class='msg-action-link' id='empathy-action-btn'>Send coaching brief to team lead</button>",
+              "Root cause confirmed: billing escalation handling drove a <span class='msg-data-ref'>&#128202; 17% fail rate</span> this shift. I've reassigned the 26 friction tickets to the billing pod and briefed the agents.<br><br><button class='msg-action-link' id='empathy-action-btn'>Review coaching brief</button>",
           },
         ];
+
+        /* Per-action canvas responses. A Review drill-down sets window.__aimyTopic;
+           each reflects the actual action AiMY has already taken (past tense + result + monitor). */
+        var RESPONSE_BY_TOPIC = {
+          "sla": "SLA compliance is at <strong>61%</strong> &mdash; 29 pts under the 90% goal, <strong>23 breaches</strong> this week. I've already applied the response-time fix across the <strong>8 affected agents</strong> and pulled every breached ticket for you. First response is down to <strong>41 min</strong> from 52 in the last hour. Undo it below if you'd rather I hold.",
+          "coaching-goals": "Three goals are off track and I've already built coaching plans for the <strong>6 agents</strong> behind them &mdash; empathy at <strong>32%</strong> is the deepest gap. Each plan targets the exact failed checklist items and is in the agent's next 1:1. I'm tracking their scores daily. Undo here to hold the plans, or I can notify their team leads.",
+          "sentiment": "Negative sentiment is up week over week &mdash; <strong>39 flagged interactions</strong>, <strong>3 agents</strong> driving most of it. I've flagged those agents and drafted escalation-handling coaching pulled from the exact interactions that failed. It's queued in their 1:1s and I'm watching sentiment hourly. Undo here, or open the flagged transcripts.",
+          "quality": "Overall quality is at <strong>87.3%</strong> &mdash; <strong>2.7 pts</strong> under the 90% goal. I've sequenced the three fixes highest-leverage first and started on ticket-status accuracy; clearing it alone recovers about <strong>1.6 pts</strong>. I'll update the projection as each lands. Undo here to pause the sequence.",
+          "billing": "Done &mdash; I reviewed the billing escalation protocol and reassigned the <strong>26 friction tickets</strong> to the billing pod, sorted by wait time with 4 repeat-contacts first. The pod has capacity through end of shift and I'll report the resolution rate at close. Undo here to send them back.",
+          "goal-status": "Ticket status accuracy is the widest gap &mdash; team at <strong>71%</strong> vs a <strong>95%</strong> goal, <strong>8 agents</strong> off it (103 misses in Objectif Lune, the rest in Qvidian). I've already coached all 8 with a status-code reference and 3 tickets each to rework. I'm tracking their next 20 tickets. Undo here to hold the coaching.",
+          "goal-grammar": "Grammar &amp; clarity is at <strong>82%</strong> vs a <strong>90%</strong> goal &mdash; <strong>4 agents</strong> off it in InterFax and Second Street. I've drafted writing-quality coaching with their worst responses and a pre-send checklist, attached to each 1:1. Undo here to hold it.",
+          "goal-cadence": "Update cadence is at <strong>84%</strong> vs <strong>90%</strong> &mdash; <strong>3 agents</strong> in Qvidian and RightAnswers were leaving customers past the SLA update window. I've set a 4-hour follow-up nudge for them and I'm watching the update-time trend. Undo here to revert the cadence.",
+          "goal-eta": "ETA provided is at <strong>87%</strong> vs <strong>90%</strong> &mdash; <strong>2 agents</strong> off it. I've updated their response script to require an ETA and applied it to their queue. Undo here to revert the script change.",
+          "goal-articleid": "Article ID attached is at <strong>92%</strong> vs a <strong>95%</strong> goal &mdash; <strong>1 agent</strong> off it. I've added a workflow reminder to that agent's ticket flow. Undo here to remove it.",
+          "kpi-frt": "First response time is at <strong>71%</strong> &mdash; <strong>4 pts</strong> under the 75% goal and still slipping in Objectif Lune and Adestra. I've traced it to the morning billing spike and queued a <strong>2-agent</strong> rebalance for the rest of the shift. I'll alert you if it drops below 70%. Undo here to hold the rebalance.",
+          "kpi-identity": "Identity verification is at <strong>82%</strong>, up <strong>6%</strong> &mdash; compliance risk is low. The gain is led by 3 agents in Adestra and I've captured what they're doing so it can be replicated. Nothing needs action; I'm keeping it in view. Want the replicable behaviours?",
+          "kpi-fcr": "First contact resolution is at <strong>87%</strong>, up <strong>4%</strong> &mdash; issues resolved without callbacks. I've noted the top performers and what they share. On track, no action needed. Want me to turn their approach into a coaching template?",
+          "kpi-script": "Compliance script adherence is at <strong>91%</strong> and stable &mdash; the process is landing. I'm watching for anyone drifting below the team average and will flag early. Nothing to action now. Want the per-agent spread?",
+          "chart-dip": "That's the <strong>November</strong> dip to <strong>74%</strong> &mdash; a 12-point drop I traced to an <strong>18% spike in billing escalations</strong> that week. I reassigned the escalation load and added coaching for the 3 agents involved, and quality recovered to <strong>87%</strong> the following week. Want the escalation breakdown?",
+          "csat": "CSAT is at <strong>81%</strong> against the <strong>85%</strong> target &mdash; the <strong>11% negative</strong> is concentrated in Objectif Lune and Qvidian, the same billing-escalation root cause as the quality dip. I've routed the detractor tickets for callback and briefed both portfolio leads. Undo here to hold the callbacks.",
+          "csat-positive": "The <strong>74% positive</strong> is driven by fast first-response and clean resolutions on the Adestra and RightAnswers portfolios. I’ve captured what those agents do so it can be replicated on the weaker ones. Want the playbook?",
+          "csat-neutral": "The <strong>15% neutral</strong> surveys are the swing group — mostly resolved-but-slow tickets. I’ve flagged the 40 closest to slipping negative and queued proactive follow-ups. Want them ranked by risk?",
+          "sla-product": "This portfolio's SLA is below the <strong>90%</strong> goal. I've pulled its breached tickets, ranked them by wait time, and staged the response-time fix for the agents involved &mdash; first response is already trending back up. Undo here to hold it.",
+          "portfolio-behind": "This portfolio is below target on quality and CSAT &mdash; the same billing-escalation root cause. I've pulled its failing KPIs, briefed the lead, and staged the fixes for the agents involved. Undo here to hold them.",
+          "portfolio-ahead": "This portfolio is above target on both quality and CSAT &mdash; one of your strongest. I've captured what its agents do so it can be replicated across the weaker portfolios. Want the playbook?",
+          "sla-ok": "This product's SLA is above the 90% goal and holding. No action needed &mdash; I'm monitoring it. Want the trend?",
+          "achiever": "This agent is one of your top performers this period &mdash; high quality and CSAT, no flagged interactions. I've added them to the coaching-template source so their approach can be shared. Want their standout tickets?"
+        };
 
         /* Record-link map: prompt keywords -> {label, href} for the Go-to-record action link.
            In production resolves to real deep-link URLs with filter params. */
@@ -8790,6 +9304,23 @@
           var lo = (userText || "").toLowerCase();
           var matched = null;
           var recordLink = null;
+
+          // Undo (when this drill-down was an actioned item) is wired into the reply itself.
+          var undoLabel = window.__aimyUndo; window.__aimyUndo = null;
+          function withUndo(html) {
+            if (!undoLabel) return html;
+            return html +
+              '<div class="msg-undo"><button class="msg-undo-btn" type="button" data-undo-msg="' +
+              undoLabel.replace(/"/g, "&quot;") + '">Undo this</button></div>';
+          }
+
+          // Exact per-action response (set by a Review drill-down) wins over keyword matching.
+          var topic = window.__aimyTopic; window.__aimyTopic = null;
+          if (topic && RESPONSE_BY_TOPIC[topic]) {
+            var tResp = withUndo(RESPONSE_BY_TOPIC[topic]);
+            setTimeout(function () { appendAiMsg(tResp); }, 900 + Math.random() * 500);
+            return;
+          }
 
           for (var i = 0; i < CONTEXTUAL_RESPONSES.length; i++) {
             var entry = CONTEXTUAL_RESPONSES[i];
@@ -8823,6 +9354,7 @@
           }
 
           var delay = 900 + Math.random() * 500;
+          matched = withUndo(matched);
           setTimeout(function() { appendAiMsg(matched); }, delay);
         }
         /* ── Overlay input: Enter to send (Shift+Enter = newline) ────── */
@@ -10087,5 +10619,142 @@
       })();
     
 </script>
-  </body>
+    <script>
+      /* AiMY monitor-mode: Review opens the canvas drill-down and sets the per-action
+         topic + undo label. The Undo is wired into the AiMY reply itself (not pinned).
+         New elements only — data-* + addEventListener, no inline onclick. */
+      (function () {
+        var root = document.querySelector(".dashboard-scroll") || document.body;
+        var mt, mtTimer;
+
+        function miniToast(msg) {
+          if (!mt) {
+            mt = document.createElement("div");
+            mt.className = "aimy-mini-toast";
+            mt.setAttribute("role", "status");
+            document.body.appendChild(mt);
+          }
+          mt.textContent = msg || "Undone — I'll hold off on that.";
+          mt.classList.remove("visible");
+          void mt.offsetWidth; /* restart transition */
+          mt.classList.add("visible");
+          if (mtTimer) clearTimeout(mtTimer);
+          mtTimer = setTimeout(function () { mt.classList.remove("visible"); }, 3200);
+        }
+
+        /* Review → open canvas with the per-action topic + undo label. */
+        root.addEventListener("click", function (e) {
+          var review = e.target.closest("[data-aimy-review]");
+          if (review && root.contains(review)) {
+            e.stopPropagation();
+            var prompt = review.getAttribute("data-aimy-review");
+            window.__aimyTopic = review.getAttribute("data-aimy-topic") || null;
+            window.__aimyUndo = review.getAttribute("data-aimy-undo") || null;
+            if (prompt && typeof window.openOverlay === "function") window.openOverlay(prompt);
+            return;
+          }
+        });
+
+        /* Undo lives inside the AiMY reply — confirm the pause and mark it done. */
+        document.addEventListener("click", function (e) {
+          var u = e.target.closest(".msg-undo-btn");
+          if (!u || u.disabled) return;
+          miniToast("Undone — I've paused " + (u.getAttribute("data-undo-msg") || "that action") + ".");
+          u.disabled = true;
+          u.textContent = "Paused — held";
+          u.classList.add("is-done");
+        });
+      })();
+    </script>
+    <script>
+      /* Director view: role toggle + multi-series portfolio chart (per-line hover). */
+      (function () {
+        var tabs = document.querySelectorAll(".view-toggle-btn");
+        var mgr = document.getElementById("viewManager");
+        var dir = document.getElementById("viewDirector");
+        function setView(v) {
+          var isDir = v === "director";
+          if (dir) dir.hidden = !isDir;
+          if (mgr) mgr.hidden = isDir;
+          tabs.forEach(function (t) {
+            var on = t.getAttribute("data-view") === v;
+            t.classList.toggle("active", on);
+            t.setAttribute("aria-selected", on ? "true" : "false");
+          });
+        }
+        tabs.forEach(function (t) {
+          t.addEventListener("click", function () { setView(t.getAttribute("data-view")); });
+        });
+      })();
+
+          </script>
+  
+    <script>
+    (function(){
+      var DATA={
+        all:{s:[84,85,86,85,87,86,88,87,88,89,86,87],band:'warn',cur:'87.3%',name:'All portfolios',
+          ins:'Overall quality has held near <strong>87%</strong> for the last quarter — 2.7 pts under the 90% goal. Objectif Lune and Qvidian are the persistent drag; I’ve staged their fixes.',
+          rev:'Overall portfolio quality is 87.3% versus the 90% goal. Show the 12-month trend, which portfolios drag it down, and the fixes I staged.',topic:'portfolio-behind',undo:'the staged portfolio fixes'},
+        ol:{s:[87,86,85,83,82,81,80,79,78,79,79,79],band:'err',cur:'79.2%',name:'Objectif Lune',
+          ins:'Objectif Lune has slid <strong>~8 pts since January</strong> — a sustained decline, not a blip. I’ve briefed the lead and staged the KPI fixes.',
+          rev:'Objectif Lune quality has declined about 8 points over 12 months to 79.2%. Show the monthly trend, the KPIs driving the decline, and the fixes I staged.',topic:'portfolio-behind',undo:'the fixes for Objectif Lune'},
+        qvidian:{s:[85,84,83,82,81,80,80,81,80,79,80,80],band:'err',cur:'80.1%',name:'Qvidian',
+          ins:'Qvidian has been <strong>flat in the low 80s</strong> all year. I’ve flagged the two KPIs holding it back and queued coaching.',
+          rev:'Qvidian quality has been flat around 80% all year. Show the trend, the two KPIs holding it back, and the coaching I queued.',topic:'portfolio-behind',undo:'the coaching for Qvidian'},
+        ss:{s:[82,83,84,85,84,85,86,85,86,87,86,86],band:'warn',cur:'86.0%',name:'Second Street',
+          ins:'Second Street is <strong>trending up steadily</strong> toward the 90% goal — on track. Nothing to action.',
+          rev:'Second Street quality is trending up toward 90%, now at 86%. Show the trend and whether it stays on track.',topic:'portfolio-behind',undo:''},
+        interfax:{s:[84,85,86,86,87,88,87,88,89,88,89,88],band:'warn',cur:'88.4%',name:'InterFax',
+          ins:'InterFax is <strong>climbing and near goal</strong>. I’m watching the last 2 pts; no intervention needed yet.',
+          rev:'InterFax quality is climbing, now 88.4%, just under the 90% goal. Show the trend and the last gap to close.',topic:'portfolio-behind',undo:''},
+        ra:{s:[87,88,89,89,90,90,91,91,92,91,92,91],band:'ok',cur:'91.3%',name:'RightAnswers',
+          ins:'RightAnswers has held <strong>above the 90% goal</strong> all year — one of your strongest. I’ve captured its playbook.',
+          rev:'RightAnswers has stayed above the 90% goal all year at 91.3%. Show the trend and the playbook I captured to replicate it.',topic:'portfolio-ahead',undo:''},
+        adestra:{s:[89,90,91,92,93,93,94,93,94,94,94,94],band:'ok',cur:'93.7%',name:'Adestra',
+          ins:'Adestra is <strong>consistently above goal and rising</strong>. I’ve captured what its agents do so it can be replicated elsewhere.',
+          rev:'Adestra is the top portfolio at 93.7%, consistently above goal. Show the trend and the playbook I captured.',topic:'portfolio-ahead',undo:''}
+      };
+      var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var COL={err:'var(--err)',warn:'var(--warn)',ok:'var(--ok)'};
+      function X(i){return 50+i/11*1090;}
+      function Y(v){return 250-(v-74)/22*230;}
+      var series=document.getElementById('tlSeries');
+      var hoverVal=document.getElementById('tlHoverVal');
+      var ins=document.getElementById('tlInsight');
+      var insTxt=document.getElementById('tlInsightText');
+      var ddLabel=document.getElementById('tlDDLabel');
+      if(!series||!ins){return;}
+      function setSVG(el, markup){
+        var doc=new DOMParser().parseFromString('<svg xmlns="http://www.w3.org/2000/svg">'+markup+'</svg>','image/svg+xml');
+        while(el.firstChild){el.removeChild(el.firstChild);}
+        var nodes=Array.prototype.slice.call(doc.documentElement.childNodes);
+        nodes.forEach(function(nd){ el.appendChild(document.importNode(nd,true)); });
+      }
+      function render(key){
+        var d=DATA[key], col=COL[d.band], pts=d.s, i, x, y, m='';
+        var poly=pts.map(function(v,ix){return X(ix).toFixed(1)+','+Y(v).toFixed(1);}).join(' ');
+        m+='<polyline class="tl-line" points="'+poly+'" style="stroke:'+col+'"></polyline>';
+        for(i=0;i<pts.length;i++){
+          x=X(i); y=Y(pts[i]);
+          m+='<circle class="tl-dot" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="4" style="fill:'+col+'" data-h="'+MON[i]+' '+pts[i]+'%"><title>'+MON[i]+' — '+pts[i]+'%</title></circle>';
+        }
+        var lx=X(11), ly=Y(pts[11]);
+        m+='<text class="tl-endval" x="'+(lx-8).toFixed(1)+'" y="'+(ly-10).toFixed(1)+'" text-anchor="end" style="fill:'+col+'">'+d.cur+'</text>';
+        setSVG(series, m);
+        insTxt.innerHTML=d.ins;
+        ins.setAttribute('data-aimy-review', d.rev);
+        ins.setAttribute('data-aimy-topic', d.topic);
+        if(d.undo){ins.setAttribute('data-aimy-undo', d.undo);}else{ins.removeAttribute('data-aimy-undo');}
+        hoverVal.textContent='';
+      }
+      series.addEventListener('mouseover', function(e){ var t=e.target; if(t&&t.getAttribute&&t.getAttribute('data-h')){hoverVal.textContent=t.getAttribute('data-h');} });
+      series.addEventListener('mouseout', function(){ hoverVal.textContent=''; });
+      var dd=document.getElementById('tlDD'), btn=document.getElementById('tlDDBtn'), menu=document.getElementById('tlDDMenu');
+      btn.addEventListener('click', function(e){ e.stopPropagation(); if(menu.hasAttribute('hidden')){menu.removeAttribute('hidden'); btn.setAttribute('aria-expanded','true');}else{menu.setAttribute('hidden',''); btn.setAttribute('aria-expanded','false');} });
+      menu.addEventListener('click', function(e){ var o=e.target.closest('.tl-dd-opt'); if(!o){return;} var key=o.getAttribute('data-tl'); var all=menu.querySelectorAll('.tl-dd-opt'); for(var j=0;j<all.length;j++){all[j].classList.remove('is-sel');} o.classList.add('is-sel'); ddLabel.textContent=DATA[key].name; menu.setAttribute('hidden',''); btn.setAttribute('aria-expanded','false'); render(key); });
+      document.addEventListener('click', function(e){ if(!dd.contains(e.target)){menu.setAttribute('hidden',''); btn.setAttribute('aria-expanded','false');} });
+      render('all');
+    })();
+    </script>
+</body>
 </html>
