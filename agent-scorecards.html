@@ -5540,13 +5540,12 @@
             </svg>
             Reviews
           </a>
-          <a class="nav-item" href="disputes.html">
+          <a class="nav-item" href="my-profile.html" style="order:10;margin-top:auto;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="12"></line>
-              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
             </svg>
-            Disputes
+            My Profile
           </a>
           <div class="sidebar-section-label">Configure</div>
           <a class="nav-item" href="kpi-browser.html">
@@ -5577,12 +5576,559 @@
 
       <div class="app-main">
         <div class="sc-scroll dashboard-scroll">
+
+          <!-- ══════════════════════════════════════════════════════════
+               PERSONA SWITCHER + FEEDBACK-LOOP PANES (added in redesign)
+               Reviews is now a role-toggled feedback funnel. The original
+               scorecard content below is the Supervisor persona; two new
+               panes (#personaHR, #personaEmployee) are toggled by setPersona.
+               ══════════════════════════════════════════════════════════ -->
+          <style>
+            .persona-switch { display:flex; align-items:center; gap:16px; margin-bottom:22px; flex-wrap:wrap; }
+            .persona-switch-inner { display:inline-flex; padding:4px; gap:2px; border:1px solid var(--card-border); border-radius:14px; background:rgba(255,255,255,0.02); }
+            .persona-btn { display:inline-flex; align-items:center; gap:8px; font-family:inherit; cursor:pointer; font-size:13px; font-weight:700; padding:9px 16px; border-radius:10px; border:1px solid transparent; background:transparent; color:var(--d400); transition:background 150ms var(--ease-hover), border-color 150ms var(--ease-hover), color 150ms var(--ease-hover), transform 150ms var(--ease-hover); }
+            .persona-btn svg { width:15px; height:15px; }
+            .persona-btn:hover { color:var(--d200); }
+            .persona-btn.is-active { background:var(--qa-accent-dim); color:var(--qa-accent); border-color:rgba(var(--qa-accent-rgb),0.28); box-shadow:0 0 18px rgba(var(--qa-accent-rgb),0.08); }
+            .persona-context { font-size:12.5px; color:var(--d400); }
+            .persona-spacer { flex:1; }
+            .new-fb-btn { display:inline-flex; align-items:center; gap:7px; font-family:inherit; cursor:pointer; font-size:12.5px; font-weight:700; padding:10px 16px; border-radius:10px; border:none; background:var(--qa-accent); color:#fff; box-shadow:0 4px 16px rgba(var(--qa-accent-rgb),0.28); transition:filter var(--transition-fast); }
+            .new-fb-btn:hover { filter:brightness(1.08); }
+            .new-fb-btn svg { width:15px; height:15px; }
+
+            .persona-pane { animation:paneIn 0.25s var(--ease-out, ease); }
+            @keyframes paneIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+            /* Section scaffold shared by new panes */
+            .fbp-section { margin-bottom:28px; }
+            .fbp-head { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+            .fbp-head h2 { font-size:18px; font-weight:800; letter-spacing:-0.01em; }
+            .fbp-head .sub { font-size:12px; color:var(--d400); }
+            .fbp-head .spacer { flex:1; }
+            .fbp-card { background:var(--card-bg); border:1px solid var(--card-border); border-radius:16px; padding:18px 20px; }
+
+            /* HR config */
+            .hrp-config-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
+            .hrp-cfg { background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:15px 16px; }
+            .hrp-cfg-label { font-size:12px; font-weight:700; color:var(--d200); display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+            .hrp-cfg-label svg { width:15px; height:15px; color:var(--qa-accent); }
+            .hrp-cfg-row { display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:12.5px; color:var(--d300); padding:6px 0; }
+            .hrp-cfg-val { display:inline-flex; align-items:center; gap:6px; font-weight:700; color:var(--d50); padding:4px 10px; border-radius:7px; background:rgba(255,255,255,0.05); border:1px solid var(--card-border); }
+            .hrp-cfg-val.warn { color:var(--warn); }
+
+            /* HR filters */
+            .hrp-filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+            .hrp-chip { font-family:inherit; cursor:pointer; font-size:12px; font-weight:600; padding:8px 14px; border-radius:999px; border:1px solid var(--card-border); background:rgba(255,255,255,0.02); color:var(--d300); transition:background 150ms var(--ease-hover), border-color 150ms var(--ease-hover), color 150ms var(--ease-hover), transform 150ms var(--ease-hover); }
+            .hrp-chip:hover { border-color:var(--card-border-hover); color:var(--d100); }
+            .hrp-chip.is-active { background:var(--qa-accent-dim); color:var(--qa-accent); border-color:rgba(var(--qa-accent-rgb),0.32); }
+            .hrp-chip .n { opacity:0.65; margin-left:5px; }
+
+            /* Directs table */
+            .hrp-table { width:100%; border-collapse:collapse; font-size:12.5px; }
+            .hrp-table th { text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--d500); font-weight:700; padding:0 12px 10px; border-bottom:1px solid var(--card-border); }
+            .hrp-table td { padding:12px; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--d200); vertical-align:middle; }
+            .hrp-table tr:last-child td { border-bottom:none; }
+            .hrp-table tr.attn { background:rgba(240,68,56,0.05); }
+            .hrp-agent { display:flex; align-items:center; gap:10px; }
+            .hrp-av { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#fff; flex-shrink:0; }
+            .hrp-agent-name { font-weight:700; color:var(--d50); }
+            .hrp-agent-tag { font-size:10px; padding:2px 7px; border-radius:5px; font-weight:700; margin-left:6px; }
+            .tag-newhire { background:var(--brand-dim); color:#7ba3ff; }
+            .tag-probation { background:var(--warn-bg); color:var(--warn); }
+            .tag-notice { background:rgba(255,255,255,0.06); color:var(--d400); }
+            .hrp-mini-status { display:inline-flex; align-items:center; gap:6px; font-weight:700; font-size:11.5px; }
+            .hrp-mini-status .d { width:7px; height:7px; border-radius:50%; }
+            .status-ok { color:var(--ok); } .status-warn { color:var(--warn); } .status-err { color:var(--err); }
+            .hrp-row-btn { font-family:inherit; cursor:pointer; font-size:11px; font-weight:700; padding:5px 10px; border-radius:7px; border:1px solid var(--card-border); background:transparent; color:var(--d300); }
+            .hrp-row-btn:hover { color:var(--qa-accent); border-color:rgba(var(--qa-accent-rgb),0.3); }
+
+            /* Attention list */
+            .hrp-attn-item { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+            .hrp-attn-item:last-child { border-bottom:none; }
+            .hrp-attn-icon { width:32px; height:32px; border-radius:9px; background:var(--err-bg); color:var(--err); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+            .hrp-attn-icon svg { width:16px; height:16px; }
+            .hrp-attn-body { flex:1; }
+            .hrp-attn-title { font-size:13px; font-weight:700; }
+            .hrp-attn-sub { font-size:12px; color:var(--d400); margin-top:2px; }
+            .hrp-attn-action { font-family:inherit; cursor:pointer; font-size:11.5px; font-weight:700; padding:7px 12px; border-radius:8px; border:none; background:var(--qa-accent-dim); color:var(--qa-accent); }
+
+            /* Aggregate snapshot */
+            .hrp-agg-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+            .hrp-agg { background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:18px; display:flex; flex-direction:column; gap:10px; }
+            .hrp-agg-ico { width:34px; height:34px; border-radius:10px; background:rgba(var(--qa-accent-rgb),0.12); color:var(--qa-accent); display:flex; align-items:center; justify-content:center; }
+            .hrp-agg-ico svg { width:18px; height:18px; }
+            .hrp-agg-title { font-size:14px; font-weight:700; }
+            .hrp-agg-desc { font-size:12px; color:var(--d400); line-height:1.5; flex:1; }
+            .hrp-agg-btn { align-self:flex-start; font-family:inherit; cursor:pointer; font-size:12px; font-weight:700; padding:8px 14px; border-radius:9px; border:1px solid var(--card-border); background:transparent; color:var(--d200); }
+            .hrp-agg-btn:hover { border-color:var(--qa-accent); color:var(--qa-accent); }
+
+            .aimy-note { display:flex; gap:10px; align-items:flex-start; padding:12px 14px; background:rgba(var(--qa-accent-rgb),0.06); border:1px solid rgba(var(--qa-accent-rgb),0.18); border-radius:12px; font-size:12.5px; color:var(--d200); line-height:1.5; margin-top:14px; }
+            .aimy-note svg { width:16px; height:16px; flex-shrink:0; margin-top:1px; }
+            .aimy-note b { color:var(--d50); }
+
+            /* Employee pane */
+            .empp-banner { display:flex; align-items:center; gap:12px; padding:14px 18px; border-radius:14px; background:linear-gradient(100deg, rgba(var(--qa-accent-rgb),0.14), rgba(0,102,255,0.06)); border:1px solid rgba(var(--qa-accent-rgb),0.2); margin-bottom:22px; }
+            .empp-banner svg { width:20px; height:20px; flex-shrink:0; }
+            .empp-banner-text { flex:1; font-size:13px; color:var(--d100); }
+            .empp-banner-text b { color:var(--d50); }
+            .empp-banner a { color:var(--qa-accent); font-weight:700; text-decoration:none; white-space:nowrap; }
+            .empfb-list { display:flex; flex-direction:column; gap:12px; }
+            .empfb-card { background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:16px 18px; display:flex; flex-direction:column; gap:12px; }
+            .empfb-card.negative { border-left:3px solid var(--err); }
+            .empfb-card.positive { border-left:3px solid var(--ok); }
+            .empfb-top { display:flex; align-items:center; gap:10px; }
+            .empfb-type { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; padding:3px 9px; border-radius:6px; }
+            .empfb-type.positive { background:var(--ok-bg); color:var(--ok); }
+            .empfb-type.negative { background:var(--err-bg); color:var(--err); }
+            .empfb-from { font-size:12px; color:var(--d300); font-weight:600; }
+            .empfb-date { font-size:11px; color:var(--d500); margin-left:auto; }
+            .empfb-kpis { display:flex; flex-wrap:wrap; gap:6px; }
+            .empfb-chip { font-size:11px; font-weight:600; padding:4px 10px; border-radius:999px; background:rgba(255,255,255,0.05); color:var(--d200); border:1px solid var(--card-border); }
+            .empfb-insight { font-size:12.5px; color:var(--d300); line-height:1.55; }
+            .empfb-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+            .empfb-btn { display:inline-flex; align-items:center; gap:6px; font-family:inherit; cursor:pointer; font-size:12px; font-weight:700; padding:8px 14px; border-radius:8px; border:1px solid transparent; }
+            .empfb-btn svg { width:13px; height:13px; }
+            .empfb-btn.ack { background:var(--ok); color:#06210f; }
+            .empfb-btn.dispute { background:rgba(255,255,255,0.05); color:var(--d200); border:1px solid var(--card-border); }
+            .empfb-btn.dispute:hover { border-color:var(--err); color:var(--err); }
+            .empfb-loop { display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:700; padding:7px 12px; border-radius:8px; }
+            .empfb-loop svg { width:13px; height:13px; }
+            .empfb-loop.acknowledged { background:var(--ok-bg); color:var(--ok); }
+            .empfb-loop.disputed { background:var(--warn-bg); color:var(--warn); }
+          </style>
+
+          <div class="persona-switch" role="tablist" aria-label="Feedback persona">
+            <div class="persona-switch-inner">
+              <button class="persona-btn is-active" data-persona="supervisor" role="tab" aria-selected="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Supervisor
+              </button>
+              <button class="persona-btn" data-persona="hr" role="tab" aria-selected="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l7 4v6c0 4-3 7-7 8-4-1-7-4-7-8V6z"/><path d="M9 12l2 2 4-4"/></svg>
+                Feedback Manager
+              </button>
+            </div>
+            <span class="persona-context" id="personaContext">Giving &amp; tracking feedback for your <strong>12 directs</strong></span>
+            <span class="persona-spacer"></span>
+            <button class="new-fb-btn" id="newFbBtn" onclick="window.openNewFeedback && openNewFeedback()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              New Feedback
+            </button>
+          </div>
+
+          <!-- ═══════ SUPERVISOR — UNIFIED EVALUATION WORKSPACE (agent board) ═══════ -->
+          <style>
+            /* Dissolve the old dashboard scaffolding — one agent-centric tool now */
+            #viewTeam, #viewEvals, .morning-brief, .sc-page-header, #activeFilterStrip, .view-toggle-row { display:none !important; }
+
+            #supBoard { animation:paneIn .25s var(--ease-enter, ease); }
+            /* Since your last visit */
+            .slv { background:linear-gradient(120deg, rgba(var(--qa-accent-rgb),0.10), rgba(0,102,255,0.04)); border:1px solid rgba(var(--qa-accent-rgb),0.2); border-radius:16px; padding:16px 18px; margin-bottom:16px; box-shadow:var(--elev-1); }
+            .slv-head { display:flex; align-items:center; gap:9px; margin-bottom:8px; }
+            .slv-head svg { width:18px; height:20px; }
+            .slv-head b { font-size:13px; font-weight:800; letter-spacing:0.01em; }
+            .slv-time { margin-left:auto; font-size:11px; color:var(--d500); }
+            .slv-line { font-size:13.5px; color:var(--d100); line-height:1.5; }
+            .slv-line b { color:var(--d50); font-variant-numeric:tabular-nums; }
+            .slv-jump { color:var(--qa-accent); cursor:pointer; text-decoration:none; border-bottom:1px solid transparent; transition:border-color 150ms var(--ease-hover); }
+            .slv-jump:hover { border-bottom-color:currentColor; }
+            .slv-jump b { color:var(--qa-accent); }
+            .slv-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+            .slv-chip { display:inline-flex; align-items:center; gap:7px; font-family:"Urbanist",sans-serif; cursor:pointer; font-size:12px; font-weight:700; padding:7px 12px; border-radius:999px; border:1px solid var(--card-border); background:rgba(255,255,255,0.03); color:var(--d300); transition:background 150ms var(--ease-hover), color 150ms var(--ease-hover), border-color 150ms var(--ease-hover); }
+            .slv-chip:hover { color:var(--d50); border-color:var(--card-border-hover); }
+            .slv-chip.is-active { background:var(--qa-accent-dim); color:var(--qa-accent); border-color:rgba(var(--qa-accent-rgb),0.32); }
+            .slv-chip .c { font-variant-numeric:tabular-nums; opacity:0.7; }
+            .slv-chip .d { width:7px; height:7px; border-radius:50%; }
+
+            /* Team pulse — one line, because a team is just its agents rolled up */
+            .pulse { display:flex; align-items:center; gap:12px; padding:0 2px; margin-bottom:18px; font-size:12.5px; color:var(--d400); }
+            .pulse b { color:var(--d100); font-variant-numeric:tabular-nums; }
+            .pulse b.err { color:var(--err); }
+            .pulse .sep { width:4px; height:4px; border-radius:50%; background:var(--d600); }
+            /* Evaluation coverage & acknowledgement stats */
+            .cov-strip { display:grid; grid-template-columns:repeat(auto-fit, minmax(212px,1fr)); gap:12px; margin-bottom:20px; }
+            .cov { background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:14px 16px; box-shadow:var(--elev-1); }
+            .cov-top { display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin-bottom:9px; }
+            .cov-label { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--d500); }
+            .cov-val { font-size:20px; font-weight:800; font-variant-numeric:tabular-nums; color:var(--d50); white-space:nowrap; }
+            .cov-val.err { color:var(--err); }
+            .cov-tot { font-size:12px; font-weight:600; color:var(--d500); margin-left:2px; }
+            .cov-bar { height:7px; border-radius:4px; background:rgba(255,255,255,0.07); overflow:hidden; display:flex; gap:2px; }
+            .cov-seg { height:100%; border-radius:4px; }
+            .cov-seg.done, .cov-seg.ok { background:var(--ok); } .cov-seg.warn { background:var(--warn); } .cov-seg.err { background:var(--err); }
+            .cov-sub { font-size:11.5px; color:var(--d400); margin-top:9px; line-height:1.45; }
+            .cov-sub b.warn { color:var(--warn); } .cov-sub b { color:var(--d200); }
+            .cov-sub a { color:var(--qa-accent); cursor:pointer; font-weight:700; text-decoration:none; }
+            .cov-sub a:hover { text-decoration:underline; }
+
+            .board-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+            .board-head h2 { font-size:18px; font-weight:800; letter-spacing:-0.01em; }
+            .board-head .sub { font-size:12px; color:var(--d400); }
+            .bh-spacer { flex:1; }
+            .board-search-wrap { position:relative; display:flex; align-items:center; }
+            .board-search-wrap svg { position:absolute; left:11px; width:14px; height:14px; color:var(--d500); pointer-events:none; }
+            .board-search { font-family:"Urbanist",sans-serif; font-size:12.5px; color:var(--d50); background:rgba(255,255,255,0.05); border:1px solid var(--card-border); border-radius:9px; padding:8px 12px 8px 32px; width:210px; transition:border-color 150ms var(--ease-hover), background 150ms var(--ease-hover); }
+            .board-search::placeholder { color:var(--d500); }
+            .board-search:focus { outline:none; border-color:rgba(var(--qa-accent-rgb),0.4); background:rgba(255,255,255,0.07); }
+            .board-count { font-size:11.5px; color:var(--d500); font-variant-numeric:tabular-nums; }
+
+            /* Agent tiles — a decision surface: KPI in play, trend, freshness, AiMY line, inline action */
+            .board { display:grid; grid-template-columns:repeat(auto-fill, minmax(248px,1fr)); gap:12px; }
+            .ag-tile { display:flex; flex-direction:column; gap:11px; text-align:left; padding:14px; border-radius:14px; border:1px solid var(--card-border); background:var(--card-bg); box-shadow:var(--elev-1); cursor:pointer; font-family:"Urbanist",sans-serif; transition:border-color 180ms var(--ease-hover), box-shadow 180ms var(--ease-hover), transform 180ms var(--ease-hover); }
+            .ag-tile:hover { border-color:var(--card-border-hover); box-shadow:var(--elev-2); transform:translateY(-2px); }
+            .ag-tile:active { transform:translateY(0) scale(0.99); }
+            .ag-tile.disputed { border-color:rgba(247,144,9,0.4); }
+            .ag-tile-top { display:flex; align-items:center; justify-content:space-between; }
+            .ag-av { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#fff; box-shadow:0 0 0 2px var(--card-bg), 0 0 0 4px var(--ring, transparent); }
+            .ag-score { font-size:16px; font-weight:800; font-variant-numeric:tabular-nums; }
+            .ag-score.ok { color:var(--ok); } .ag-score.warn { color:var(--warn); } .ag-score.err { color:var(--err); }
+            .ag-tile-name { font-size:13px; font-weight:700; color:var(--d50); line-height:1.25; }
+            .ag-tile-foot { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+            .loop-chip { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; padding:4px 9px; border-radius:999px; }
+            .loop-chip .d { width:6px; height:6px; border-radius:50%; }
+            .loop-chip.review, .loop-chip.followup { background:var(--qa-accent-dim); color:var(--qa-accent); } .loop-chip.review .d, .loop-chip.followup .d { background:var(--qa-accent); }
+            .loop-chip.pending { background:rgba(255,255,255,0.05); color:var(--d400); } .loop-chip.pending .d { background:var(--d500); }
+            .loop-chip.ack, .loop-chip.disputed { background:var(--warn-bg); color:var(--warn); } .loop-chip.ack .d, .loop-chip.disputed .d { background:var(--warn); }
+            .loop-chip.improving, .loop-chip.ontrack { background:var(--ok-bg); color:var(--ok); } .loop-chip.improving .d, .loop-chip.ontrack .d { background:var(--ok); }
+            .ag-resolve { margin-left:auto; font-family:"Urbanist",sans-serif; cursor:pointer; font-size:11px; font-weight:700; padding:4px 10px; border-radius:7px; border:1px solid rgba(247,144,9,0.4); background:var(--warn-bg); color:var(--warn); transition:filter 150ms var(--ease-hover), transform 120ms var(--ease-hover); }
+            .ag-resolve:hover { filter:brightness(1.12); } .ag-resolve:active { transform:scale(0.94); }
+            .board-empty { grid-column:1/-1; text-align:center; color:var(--d500); font-size:13px; padding:32px; border:1px dashed var(--card-border); border-radius:14px; }
+            /* Enriched card internals */
+            .ag-score-wrap { display:flex; align-items:baseline; gap:5px; }
+            .ag-score.na { font-size:12px; font-weight:700; color:var(--d500); }
+            .ag-trend { font-size:11.5px; font-weight:800; font-variant-numeric:tabular-nums; }
+            .ag-trend.down { color:var(--err); } .ag-trend.up { color:var(--ok); }
+            .ag-tile-kpi { font-size:11.5px; font-weight:600; color:var(--d300); margin-top:-5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+            .ag-tile-state { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+            .ag-fresh { font-size:10.5px; color:var(--d500); }
+            .ag-ai { display:flex; gap:7px; align-items:flex-start; font-size:11px; line-height:1.45; color:var(--d400); background:rgba(var(--qa-accent-rgb),0.05); border:1px solid rgba(var(--qa-accent-rgb),0.12); border-radius:9px; padding:8px 10px; }
+            .ag-ai svg { width:12px; height:13px; flex-shrink:0; margin-top:1px; }
+            .ag-actions { display:flex; gap:6px; }
+            .ag-act { flex:1; font-family:"Urbanist",sans-serif; cursor:pointer; font-size:11.5px; font-weight:700; padding:8px 10px; border-radius:8px; border:1px solid var(--card-border); background:rgba(255,255,255,0.04); color:var(--d200); text-align:center; transition:background 150ms var(--ease-hover), border-color 150ms var(--ease-hover), color 150ms var(--ease-hover), filter 150ms var(--ease-hover), transform 120ms var(--ease-hover); }
+            .ag-act:hover { background:rgba(255,255,255,0.08); color:var(--d50); border-color:var(--card-border-hover); }
+            .ag-act:active { transform:scale(0.97); }
+            .ag-act.primary { background:var(--qa-accent); color:#fff; border-color:transparent; }
+            .ag-act.primary:hover { filter:brightness(1.08); color:#fff; }
+            .ag-act.yes { background:var(--ok); color:#06210f; border-color:transparent; }
+            .ag-act.yes:hover { filter:brightness(1.08); color:#06210f; }
+            .ag-act.warn { background:var(--warn-bg); color:var(--warn); border-color:rgba(247,144,9,0.4); }
+            .ag-act.warn:hover { background:rgba(247,144,9,0.2); color:var(--warn); }
+            .ag-act.no { flex:0 0 auto; padding:8px 15px; }
+            .ag-donechip { align-self:flex-start; }
+            .ag-donechip svg { width:12px; height:12px; }
+            .ag-tile.is-done { opacity:0.7; cursor:default; }
+            .ag-tile.is-done:hover { border-color:var(--card-border); box-shadow:var(--elev-1); transform:none; }
+          </style>
+          <div id="supBoard">
+            <div class="slv">
+              <div class="slv-head"><svg viewBox="0 0 18 20"><use href="#aimy-logo-small" /></svg><b>Since your last visit</b><span class="slv-time">last seen Tue, 9:14am</span></div>
+              <p class="slv-line">I ran <b>34</b> new evaluations across your 12 agents — <a class="slv-jump" role="button" tabindex="0" onclick="supFilter('review')"><b>1</b> feedback needs your review</a>, <a class="slv-jump" role="button" tabindex="0" onclick="supFilter('disputed')"><b>1</b> dispute is waiting on you</a>, and <a class="slv-jump" role="button" tabindex="0" onclick="supFilter('followup')"><b>1</b> follow-up is due today</a>.</p>
+              <div class="slv-chips" id="slvChips"><!-- injected --></div>
+            </div>
+            <div class="pulse">
+              <span><b>82%</b> avg quality</span><span class="sep"></span>
+              <span><b class="err">2</b> agents at risk</span><span class="sep"></span>
+              <span><b>12</b> agents · Product Support</span>
+            </div>
+            <div class="cov-strip">
+              <div class="cov">
+                <div class="cov-top"><span class="cov-label">Evaluated this cycle</span><span class="cov-val">9<span class="cov-tot">/ 12</span></span></div>
+                <div class="cov-bar"><div class="cov-seg done" style="width:75%"></div></div>
+                <div class="cov-sub"><a role="button" tabindex="0" onclick="window.openCanvasQuery && openCanvasQuery('Remind me to evaluate the 3 agents still pending: Nadia Fathy, Karim Adel and Yara Nabil.')">3 pending →</a> Nadia Fathy, Karim Adel, Yara Nabil</div>
+              </div>
+              <div class="cov">
+                <div class="cov-top"><span class="cov-label">Acknowledged</span><span class="cov-val">6<span class="cov-tot">/ 8 sent</span></span></div>
+                <div class="cov-bar"><div class="cov-seg ok" style="width:75%"></div><div class="cov-seg warn" style="width:25%"></div></div>
+                <div class="cov-sub"><b class="warn">2 ignored</b> past the nudge window — <a role="button" tabindex="0" onclick="supFilter('ack')">view →</a></div>
+              </div>
+              <div class="cov">
+                <div class="cov-top"><span class="cov-label">Most-failed KPI</span><span class="cov-val err">62%</span></div>
+                <div class="cov-bar"><div class="cov-seg err" style="width:62%"></div></div>
+                <div class="cov-sub"><b>Follow-up Confirmation</b> · 5 of 12 below target — <a role="button" tabindex="0" onclick="window.openCanvasQuery && openCanvasQuery('Roll out a Follow-up Confirmation coaching plan to the 5 agents failing it.')">act →</a></div>
+              </div>
+            </div>
+            <div class="board-head">
+              <h2>Agents</h2>
+              <span class="sub" id="boardSub">agents that need you now</span>
+              <span class="bh-spacer"></span>
+              <span class="board-count" id="boardCount"></span>
+              <div class="board-search-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+                <input class="board-search" id="boardSearch" type="text" autocomplete="off" spellcheck="false" placeholder="Search all agents…" oninput="supSearch(this.value)" />
+              </div>
+            </div>
+            <div class="board" id="supBoardRows"><!-- injected --></div>
+          </div>
+
+          <!-- ═══════ SUPERVISOR — SENT FEEDBACK & FOLLOW-UP LOOP ═══════ -->
+          <style>
+            /* Elevation, motion & status-tint tokens for the redesigned feedback surfaces */
+            :root {
+              --elev-1: 0 1px 2px rgba(0,0,0,0.4);
+              --elev-2: 0 1px 2px rgba(0,0,0,0.35), 0 8px 22px rgba(0,0,0,0.24);
+              --elev-3: 0 2px 6px rgba(0,0,0,0.4), 0 18px 48px rgba(0,0,0,0.34);
+              --ease-enter: cubic-bezier(0.32, 0.72, 0, 1);
+              --ease-hover: cubic-bezier(0.4, 0, 0.2, 1);
+              --tint-ok: rgba(23,178,106,0.055);
+              --tint-err: rgba(240,68,56,0.05);
+              --tint-accent: rgba(var(--qa-accent-rgb),0.06);
+              --tint-warn: rgba(247,144,9,0.05);
+            }
+            .snap-hero, .kpi-mini, .km-value, .kpi-current, .disp-score, .rep-tile .v, .hrp-cfg-val,
+            .fbtrack-pill, .fbt-name, .hrp-num, .disp-kpi-chip, .rep-bar-row .pc { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+            .fbtrack { margin-bottom:26px; }
+            .fbtrack-head { display:flex; align-items:center; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
+            .fbtrack-head h2 { font-size:18px; font-weight:800; letter-spacing:-0.01em; }
+            .fbtrack-head .sub { font-size:12px; color:var(--d400); }
+            .fbtrack-head .spacer { flex:1; }
+            .fbtrack-summary { display:flex; gap:8px; }
+            .fbtrack-pill { font-size:11px; font-weight:700; padding:5px 11px; border-radius:999px; border:1px solid var(--card-border); color:var(--d300); display:inline-flex; gap:6px; align-items:center; }
+            .fbtrack-pill .d { width:7px; height:7px; border-radius:50%; }
+            .fbtrack-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(298px,1fr)); gap:12px; }
+            .fbt-card { background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:15px 16px; display:flex; flex-direction:column; gap:11px; box-shadow:var(--elev-1); transition:box-shadow 200ms var(--ease-hover), border-color 200ms var(--ease-hover), transform 200ms var(--ease-hover); }
+            .fbt-card:hover { box-shadow:var(--elev-2); transform:translateY(-2px); }
+            .fbt-card.negative { background:linear-gradient(180deg,var(--tint-err),transparent 55%),var(--card-bg); border-color:rgba(240,68,56,0.18); }
+            .fbt-card.positive { background:linear-gradient(180deg,var(--tint-ok),transparent 55%),var(--card-bg); border-color:rgba(23,178,106,0.18); }
+            .fbt-card.followup { background:linear-gradient(180deg,var(--tint-accent),transparent 62%),var(--card-bg); border-color:rgba(var(--qa-accent-rgb),0.34); box-shadow:0 0 0 1px rgba(var(--qa-accent-rgb),0.14), var(--elev-2); }
+            .fbt-top { display:flex; align-items:center; gap:9px; }
+            .fbt-av { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#fff; flex-shrink:0; }
+            .fbt-name { font-size:13px; font-weight:700; }
+            .fbt-type { font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; padding:2px 7px; border-radius:5px; margin-left:auto; }
+            .fbt-type.positive { background:var(--ok-bg); color:var(--ok); } .fbt-type.negative { background:var(--err-bg); color:var(--err); }
+            .fbt-kpis { font-size:12px; color:var(--d300); }
+            .fbt-meta { font-size:11px; color:var(--d500); }
+            .fbt-loop { display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700; padding:5px 10px; border-radius:7px; align-self:flex-start; }
+            .fbt-loop svg { width:12px; height:12px; }
+            .fbt-loop.acknowledged, .fbt-loop.improved { background:var(--ok-bg); color:var(--ok); }
+            .fbt-loop.pending, .fbt-loop.disputed { background:var(--warn-bg); color:var(--warn); }
+            .fbt-loop.escalated { background:var(--err-bg); color:var(--err); }
+            .fbt-followup { border-top:1px dashed rgba(255,255,255,0.1); padding-top:11px; }
+            .fbt-followup-q { font-size:12.5px; font-weight:700; color:var(--d100); display:flex; align-items:center; gap:7px; margin-bottom:9px; }
+            .fbt-followup-q svg { width:14px; height:14px; color:var(--qa-accent); flex-shrink:0; }
+            .fbt-followup-actions { display:flex; gap:8px; }
+            .fbt-fb { flex:1; font-family:inherit; cursor:pointer; font-size:12px; font-weight:700; padding:8px; border-radius:8px; border:1px solid transparent; }
+            .fbt-fb.yes { background:var(--ok); color:#06210f; }
+            .fbt-fb.no { background:rgba(255,255,255,0.05); color:var(--d200); border-color:var(--card-border); }
+            .fbt-fb.no:hover { border-color:var(--err); color:var(--err); }
+          </style>
+          <div class="fbtrack">
+            <div class="fbtrack-head">
+              <h2>Feedback I've sent · loop status</h2>
+              <span class="sub">· AiMY drafts each one from KPI signals — you review, send &amp; follow up</span>
+              <span class="spacer"></span>
+              <div class="fbtrack-summary">
+                <span class="fbtrack-pill"><span class="d" style="background:var(--qa-accent)"></span>1 follow-up due</span>
+                <span class="fbtrack-pill"><span class="d" style="background:var(--warn)"></span>1 pending ack</span>
+              </div>
+            </div>
+            <div class="fbtrack-grid">
+              <!-- Follow-up due — the "Did the employee improve?" branch -->
+              <div class="fbt-card followup" id="fbt-omar">
+                <div class="fbt-top"><div class="fbt-av" style="background:linear-gradient(135deg,#1a2a3a,#2d5c8e)">OA</div><span class="fbt-name">Omar Abdallah</span><span class="fbt-type negative">Negative</span></div>
+                <div class="fbt-kpis">Follow-up Confirmation, Survey Promotion</div>
+                <div class="fbt-meta">AiMY-drafted · sent 21 days ago · acknowledged</div>
+                <div class="fbt-followup" id="fbt-omar-fu">
+                  <div class="fbt-followup-q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Did Omar improve?</div>
+                  <div class="fbt-followup-actions">
+                    <button class="fbt-fb yes" onclick="window.followupResolve && followupResolve('fbt-omar','Omar Abdallah','yes')">Yes — close loop</button>
+                    <button class="fbt-fb no" onclick="window.followupResolve && followupResolve('fbt-omar','Omar Abdallah','no')">No — escalate</button>
+                  </div>
+                </div>
+              </div>
+              <!-- Pending acknowledgement -->
+              <div class="fbt-card negative">
+                <div class="fbt-top"><div class="fbt-av" style="background:linear-gradient(135deg,#3a1a2a,#7d2c52)">TM</div><span class="fbt-name">Tariq Mansour</span><span class="fbt-type negative">Negative</span></div>
+                <div class="fbt-kpis">Issue Resolution</div>
+                <div class="fbt-meta">AiMY-drafted · sent 2 days ago</div>
+                <span class="fbt-loop pending"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Awaiting ack · follow-up in 19d</span>
+              </div>
+              <!-- Positive — no ack required -->
+              <div class="fbt-card positive">
+                <div class="fbt-top"><div class="fbt-av" style="background:linear-gradient(135deg,#1a1f3a,#3d4a8e)">AK</div><span class="fbt-name">Aisha Khalil</span><span class="fbt-type positive">Positive</span></div>
+                <div class="fbt-kpis">Script Adherence · how to exceed</div>
+                <div class="fbt-meta">AiMY-drafted · sent 1 week ago</div>
+                <span class="fbt-loop acknowledged"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>No action needed</span>
+              </div>
+              <!-- Disputed → resolved -->
+              <div class="fbt-card negative">
+                <div class="fbt-top"><div class="fbt-av" style="background:linear-gradient(135deg,#2a2a1a,#6b6010)">MC</div><span class="fbt-name">Michael Chen</span><span class="fbt-type negative">Negative</span></div>
+                <div class="fbt-kpis">Script Adherence</div>
+                <div class="fbt-meta">AiMY-drafted · sent 26 days ago · disputed → overturned</div>
+                <span class="fbt-loop disputed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>Resolved · overturned</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ═══════ FEEDBACK MANAGER (HR) PANE ═══════ -->
+          <div class="persona-pane" id="personaHR" style="display:none;">
+            <style>
+              .hrp-save { font-family:inherit; cursor:pointer; font-size:12px; font-weight:700; padding:8px 15px; border-radius:9px; border:1px solid rgba(var(--qa-accent-rgb),0.32); background:var(--qa-accent-dim); color:var(--qa-accent); transition:background 150ms var(--ease-hover), border-color 150ms var(--ease-hover), color 150ms var(--ease-hover), transform 150ms var(--ease-hover); }
+              .hrp-save:hover { background:rgba(var(--qa-accent-rgb),0.22); }
+              .hrp-save.saved { background:var(--ok-bg); color:var(--ok); border-color:rgba(23,178,106,0.3); }
+              .hrp-ctl-inline { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--d400); }
+              /* Custom stepper — replaces the native number spinner */
+              .ui-stepper { display:inline-flex; align-items:center; gap:1px; background:rgba(255,255,255,0.05); border:1px solid var(--card-border); border-radius:8px; padding:2px; }
+              .ui-step-btn { width:24px; height:24px; border:none; background:transparent; color:var(--d400); font-size:15px; font-weight:700; line-height:1; cursor:pointer; border-radius:6px; display:flex; align-items:center; justify-content:center; transition:background 150ms var(--ease-hover), color 150ms var(--ease-hover), transform 120ms var(--ease-hover); }
+              .ui-step-btn:hover { background:rgba(var(--qa-accent-rgb),0.16); color:var(--qa-accent); }
+              .ui-step-btn:active { transform:scale(0.88); }
+              .ui-step-btn:disabled { opacity:0.3; cursor:not-allowed; }
+              .ui-step-val { min-width:26px; text-align:center; font-size:13px; font-weight:800; color:var(--d50); font-variant-numeric:tabular-nums; }
+              /* Config dropdown — compact custom select reusing the app's v2-dropdown engine */
+              .cfg-dd .v2-dropdown-btn { min-width:118px; justify-content:space-between; padding:6px 10px; border-radius:8px; font-size:12px; }
+              /* Full-width form dropdown (report / wizard) */
+              .v2-dropdown.fld { display:block; width:100%; }
+              .v2-dropdown.fld .v2-dropdown-btn { width:100%; justify-content:space-between; padding:11px 14px; border-radius:10px; font-size:13px; font-weight:600; }
+              .v2-dropdown.fld .v2-dropdown-panel { width:100%; max-height:240px; overflow-y:auto; }
+              .hrp-toggle { position:relative; display:inline-block; width:36px; height:20px; }
+              .hrp-toggle input { opacity:0; width:0; height:0; }
+              .hrp-toggle span { position:absolute; inset:0; border-radius:20px; background:rgba(255,255,255,0.12); transition:background var(--transition-fast); cursor:pointer; }
+              .hrp-toggle span::before { content:""; position:absolute; width:14px; height:14px; border-radius:50%; left:3px; top:3px; background:#fff; transition:transform var(--transition-fast); }
+              .hrp-toggle input:checked + span { background:var(--ok); }
+              .hrp-toggle input:checked + span::before { transform:translateX(16px); }
+              .hrp-cfg-row { align-items:center; }
+            </style>
+            <div class="fbp-section">
+              <div class="fbp-head">
+                <h2>Reminders &amp; escalation limits</h2>
+                <span class="sub">· you own the cadence for the whole feedback loop</span>
+                <span class="spacer"></span>
+                <button class="hrp-save" id="hrpSaveBtn" onclick="window.saveCadence && saveCadence()">Save cadence</button>
+              </div>
+              <div class="hrp-config-grid">
+                <div class="hrp-cfg">
+                  <div class="hrp-cfg-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Reminders</div>
+                  <div class="hrp-cfg-row">Feedback reminder
+                    <div class="v2-dropdown cfg-dd" data-cfg="fbReminder">
+                      <button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-label-text">every 2 wks</span><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 5.5 7 9l3.5-3.5"/></svg></button>
+                      <div class="v2-dropdown-panel" role="listbox" aria-label="Feedback reminder"><div class="v2-dropdown-option" role="option" data-value="weekly">weekly</div><div class="v2-dropdown-option selected" role="option" data-value="every 2 wks">every 2 wks</div><div class="v2-dropdown-option" role="option" data-value="monthly">monthly</div></div>
+                    </div>
+                  </div>
+                  <div class="hrp-cfg-row">Follow-up reminder <span class="hrp-ctl-inline">day <span class="ui-stepper" data-cfg="fuReminder" data-val="21" data-min="1" data-max="31"><button class="ui-step-btn" type="button" data-step="-1" aria-label="Decrease">&minus;</button><span class="ui-step-val">21</span><button class="ui-step-btn" type="button" data-step="1" aria-label="Increase">+</button></span></span></div>
+                  <div class="hrp-cfg-row">Acknowledgement nudge <span class="hrp-ctl-inline">after <span class="ui-stepper" data-cfg="ackNudge" data-val="3" data-min="1" data-max="14"><button class="ui-step-btn" type="button" data-step="-1" aria-label="Decrease">&minus;</button><span class="ui-step-val">3</span><button class="ui-step-btn" type="button" data-step="1" aria-label="Increase">+</button></span> d</span></div>
+                </div>
+                <div class="hrp-cfg">
+                  <div class="hrp-cfg-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>Escalation — after X then notify me</div>
+                  <div class="hrp-cfg-row">Employee no-ack <span class="hrp-ctl-inline">&times;<span class="ui-stepper" data-cfg="escNoAck" data-val="3" data-min="1" data-max="9"><button class="ui-step-btn" type="button" data-step="-1" aria-label="Decrease">&minus;</button><span class="ui-step-val">3</span><button class="ui-step-btn" type="button" data-step="1" aria-label="Increase">+</button></span></span></div>
+                  <div class="hrp-cfg-row">Supervisor no follow-up <span class="hrp-ctl-inline">&times;<span class="ui-stepper" data-cfg="escNoFu" data-val="2" data-min="1" data-max="9"><button class="ui-step-btn" type="button" data-step="-1" aria-label="Decrease">&minus;</button><span class="ui-step-val">2</span><button class="ui-step-btn" type="button" data-step="1" aria-label="Increase">+</button></span></span></div>
+                  <div class="hrp-cfg-row">Repeated KPI fail <span class="hrp-ctl-inline">&times;<span class="ui-stepper" data-cfg="escFail" data-val="4" data-min="1" data-max="9"><button class="ui-step-btn" type="button" data-step="-1" aria-label="Decrease">&minus;</button><span class="ui-step-val">4</span><button class="ui-step-btn" type="button" data-step="1" aria-label="Increase">+</button></span></span></div>
+                </div>
+                <div class="hrp-cfg">
+                  <div class="hrp-cfg-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Follow-up window</div>
+                  <div class="hrp-cfg-row">"Did they improve?" <span class="hrp-ctl-inline">day <span class="ui-stepper" data-cfg="fuDay" data-val="21" data-min="1" data-max="31"><button class="ui-step-btn" type="button" data-step="-1" aria-label="Decrease">&minus;</button><span class="ui-step-val">21</span><button class="ui-step-btn" type="button" data-step="1" aria-label="Increase">+</button></span></span></div>
+                  <div class="hrp-cfg-row">Max window
+                    <div class="v2-dropdown cfg-dd" data-cfg="maxWindow">
+                      <button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-label-text">1 month</span><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 5.5 7 9l3.5-3.5"/></svg></button>
+                      <div class="v2-dropdown-panel" role="listbox" aria-label="Max window"><div class="v2-dropdown-option" role="option" data-value="2 weeks">2 weeks</div><div class="v2-dropdown-option selected" role="option" data-value="1 month">1 month</div></div>
+                    </div>
+                  </div>
+                  <div class="hrp-cfg-row">Proactive — no cycle <label class="hrp-toggle"><input type="checkbox" data-cfg="proactive" checked><span></span></label></div>
+                </div>
+              </div>
+              <div class="aimy-note">
+                <svg viewBox="0 0 18 20"><use href="#aimy-logo-small" /></svg>
+                <span><b>AiMY</b> can auto-schedule an HR meeting for anyone constantly below target. 2 agents currently qualify — Omar Abdallah and Tariq Mansour. Since feedback is proactive (not time-boxed), AiMY can also open feedback from the <b>attendance system</b>.</span>
+              </div>
+            </div>
+
+            <div class="fbp-section">
+              <div class="fbp-head">
+                <h2>Your directs' feedback</h2>
+                <span class="sub">· submitted feedback, top &amp; missing KPIs, unsubmitted</span>
+                <span class="spacer"></span>
+              </div>
+              <div class="hrp-filters" id="hrpFilters">
+                <button class="hrp-chip is-active" data-f="all">All<span class="n">12</span></button>
+                <button class="hrp-chip" data-f="newhire">New hire<span class="n">3</span></button>
+                <button class="hrp-chip" data-f="probation">Probation<span class="n">2</span></button>
+                <button class="hrp-chip" data-f="notice">Notice period<span class="n">1</span></button>
+                <button class="hrp-chip" data-f="attn">Needs attention<span class="n">2</span></button>
+                <button class="hrp-chip" data-f="unsubmitted">Unsubmitted<span class="n">4</span></button>
+              </div>
+              <div class="fbp-card" style="padding:6px 8px;">
+                <table class="hrp-table" id="hrpTable">
+                  <thead><tr><th>Agent</th><th>Last feedback</th><th>Top KPI</th><th>Missing KPIs</th><th>Loop status</th><th></th></tr></thead>
+                  <tbody id="hrpTableBody"><!-- injected --></tbody>
+                </table>
+              </div>
+            </div>
+
+            <style>
+              .dq-item { border:1px solid var(--card-border); border-radius:12px; padding:14px 16px; margin-bottom:10px; }
+              .dq-item:last-child { margin-bottom:0; }
+              .dq-item.resolved { opacity:0.72; }
+              .dq-top { display:flex; align-items:center; gap:11px; }
+              .dq-top .hrp-av { width:32px; height:32px; }
+              .dq-name { font-size:13.5px; font-weight:700; }
+              .dq-meta { font-size:11.5px; color:var(--d500); font-weight:500; }
+              .dq-kpis { font-size:11.5px; color:var(--err); margin-top:2px; }
+              .dq-age { margin-left:auto; font-size:11px; color:var(--d500); }
+              .dq-sla { margin-left:auto; font-size:10.5px; font-weight:700; color:var(--err); background:var(--err-bg); padding:3px 9px; border-radius:999px; }
+              .dq-reason { font-size:12.5px; color:var(--d300); line-height:1.5; margin:10px 0; padding-left:11px; border-left:2px solid var(--card-border); font-style:italic; }
+              .dq-actions { display:flex; gap:8px; }
+              .dq-resolve { display:inline-flex; align-items:center; gap:7px; font-family:inherit; cursor:pointer; font-size:12px; font-weight:700; padding:8px 14px; border-radius:8px; border:none; background:var(--qa-accent); color:#fff; }
+              .dq-resolve:hover { filter:brightness(1.08); }
+              .dq-resolve svg { width:14px; height:14px; }
+              .dq-outcome { display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:700; color:var(--ok); }
+              .dq-outcome svg { width:14px; height:14px; }
+            </style>
+            <div class="fbp-section">
+              <div class="fbp-head"><h2>Disputed feedback</h2><span class="sub">· needs resolution · uphold / overturn / partial adjust</span><span class="spacer"></span><span class="hrp-agent-tag tag-probation" id="dqCount" style="margin:0;">2 open</span></div>
+              <div class="fbp-card"><div id="dqBody"><!-- injected --></div></div>
+            </div>
+
+            <div class="fbp-section">
+              <div class="fbp-head"><h2>Who needs attention</h2><span class="sub">· repeated negative feedback · escalation triggered</span></div>
+              <div class="fbp-card">
+                <div class="hrp-attn-item">
+                  <div class="hrp-attn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                  <div class="hrp-attn-body">
+                    <div class="hrp-attn-title">Omar Abdallah — 4th consecutive negative feedback</div>
+                    <div class="hrp-attn-sub">AiMY escalated to you — repeated KPI-fail threshold (×4) reached · Follow-up Confirmation still below</div>
+                  </div>
+                  <button class="hrp-attn-action" onclick="window.openCanvasQuery && openCanvasQuery('Draft an intervention plan for Omar Abdallah — 4 consecutive negative feedbacks on Follow-up Confirmation. Schedule an HR meeting.')">Review &amp; act</button>
+                </div>
+                <div class="hrp-attn-item">
+                  <div class="hrp-attn-icon" style="background:var(--warn-bg); color:var(--warn);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                  <div class="hrp-attn-body">
+                    <div class="hrp-attn-title">Lina Haddad (Supervisor) — 2 follow-ups missed</div>
+                    <div class="hrp-attn-sub">AiMY escalated — 2 "did they improve?" follow-ups unanswered by the supervisor</div>
+                  </div>
+                  <button class="hrp-attn-action" onclick="window.openCanvasQuery && openCanvasQuery('Remind Lina Haddad about 2 overdue feedback follow-ups.')">Nudge supervisor</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="fbp-section">
+              <div class="fbp-head"><h2>Aggregate snapshot</h2><span class="sub">· any timeline of the aggregation of feedback</span></div>
+              <div class="hrp-agg-grid">
+                <div class="hrp-agg">
+                  <div class="hrp-agg-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+                  <div class="hrp-agg-title">Dashboard</div>
+                  <div class="hrp-agg-desc">Live snapshot of feedback volume, positive/negative split, acknowledgement &amp; dispute rates across your org.</div>
+                  <button class="hrp-agg-btn" onclick="window.location.href='index.html'">Open dashboard</button>
+                </div>
+                <div class="hrp-agg">
+                  <div class="hrp-agg-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg></div>
+                  <div class="hrp-agg-title">Report</div>
+                  <div class="hrp-agg-desc">Generate an aggregated feedback report for everyone, or for a single person, over any date range.</div>
+                  <button class="hrp-agg-btn" onclick="window.openReportModal && openReportModal()">Generate report</button>
+                </div>
+                <div class="hrp-agg">
+                  <div class="hrp-agg-ico"><svg viewBox="0 0 18 20"><use href="#aimy-logo-small" /></svg></div>
+                  <div class="hrp-agg-title">Insights &amp; Actions</div>
+                  <div class="hrp-agg-desc">AiMY-surfaced patterns and recommended next actions — who's acting on their goals and how to help them.</div>
+                  <button class="hrp-agg-btn" onclick="window.openInsightsModal && openInsightsModal()">View insights</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- ══ PAGE HEADER ════════════════════════════════════════ -->
           <div class="sc-page-header">
             <div>
               <div class="sc-page-title">Reviews</div>
               <div class="sc-page-sub">
-                Performance, KPI compliance, and coaching recommendations across <strong>12 agents</strong> on Product Support team
+                Proactive feedback, acknowledgement &amp; coaching across <strong>12 agents</strong> on Product Support team
               </div>
             </div>
           </div>
@@ -5614,20 +6160,6 @@
                 Team
               </button>
               <button
-                class="view-toggle-btn"
-                id="toggleAgent"
-                type="button"
-                role="tab"
-                aria-selected="false"
-                aria-controls="viewAgent"
-              >
-                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="7" cy="5" r="2.5"/>
-                  <path d="M2 12c0-2.5 2.2-4 5-4s5 1.5 5 4"/>
-                </svg>
-                Agent
-              </button>
-              <button
                 class="view-toggle-btn evals-tab"
                 id="toggleEvals"
                 type="button"
@@ -5640,11 +6172,11 @@
                   <line x1="4.5" y1="5" x2="9.5" y2="5"/>
                   <line x1="4.5" y1="7.5" x2="7.5" y2="7.5"/>
                 </svg>
-                Evaluations
+                Feedback
               </button>
             </div>
             <span class="view-toggle-context" id="viewToggleContext">
-              Comparing <strong>4 teams</strong> across <strong>47 agents</strong>
+              <strong>12 agents</strong> on Product Support · click an agent to drill in
             </span>
           </div>
 
@@ -5770,13 +6302,6 @@
             }
           </style>
 
-          <div class="sc-section-label">
-            Today's brief
-            <span class="sc-aimy-hint">
-              <svg width="13" height="14" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-              AiMY analysis
-            </span>
-          </div>
 
           <div class="morning-brief">
             <div class="mb-inner">
@@ -6656,7 +7181,63 @@
           <!-- ══════════════════════════════════════════════════════════
                ████  AGENT VIEW  ████████████████████████████████████████
                ══════════════════════════════════════════════════════════ -->
-          <div class="view-pane" id="viewAgent" role="tabpanel" aria-labelledby="toggleAgent">
+          <div class="view-pane" id="viewAgent" role="tabpanel" aria-label="Agent detail">
+
+          <style>
+            .agent-back-btn { display:inline-flex; align-items:center; gap:7px; font-family:"Urbanist",sans-serif; cursor:pointer; font-size:12.5px; font-weight:700; padding:8px 14px; border-radius:9px; border:1px solid var(--card-border); background:rgba(255,255,255,0.03); color:var(--d300); margin-bottom:18px; transition:background 150ms var(--ease-hover,ease), color 150ms var(--ease-hover,ease), border-color 150ms var(--ease-hover,ease), transform 150ms var(--ease-hover,ease); }
+            .agent-back-btn:hover { color:var(--d50); border-color:var(--card-border-hover); background:rgba(255,255,255,0.06); }
+            .agent-back-btn:active { transform:scale(0.97); }
+            .agent-back-btn svg { width:14px; height:14px; }
+            /* Focused single-agent detail — the board is the roster now, so drop the in-detail roster */
+            #viewAgent .scorecard-grid { grid-template-columns:1fr !important; }
+            #viewAgent .roster-panel { display:none !important; }
+            /* Cut the overwhelming panels — memory dump, behavioural breakdown, the
+               operational KPI-card grid, the long narrative card, the 12-week trend
+               chart, the compliance heatmap and the coaching-plan card. What remains:
+               recent evaluations, header, AiMY loop narrative, KPI standing, coaching strip. */
+            #viewAgent #memoryPanel, #viewAgent #behavKpiCard, #viewAgent .kpi-six-grid,
+            #viewAgent .agent-narrative, #viewAgent .trend-card, #viewAgent .heatmap-card,
+            #viewAgent .coach-card { display:none !important; }
+            .agkpi { margin:20px 0; }
+            .agkpi-head { display:flex; align-items:baseline; gap:10px; margin-bottom:12px; }
+            .agkpi-head h3 { font-size:15px; font-weight:800; letter-spacing:-0.01em; }
+            .agkpi-head .sub { font-size:12px; color:var(--d400); }
+            .agkpi-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:10px 24px; }
+            .agkpi-item { display:grid; grid-template-columns:1fr 84px 42px; align-items:center; gap:11px; font-size:12.5px; }
+            .agkpi-name { color:var(--d200); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+            .agkpi-bar { position:relative; height:6px; border-radius:3px; background:rgba(255,255,255,0.07); overflow:visible; }
+            .agkpi-fill { height:100%; border-radius:3px; }
+            .agkpi-fill.ok { background:var(--ok); } .agkpi-fill.warn { background:var(--warn); } .agkpi-fill.err { background:var(--err); }
+            .agkpi-tgt { position:absolute; top:-2px; width:2px; height:10px; background:var(--d300); opacity:0.55; }
+            .agkpi-val { text-align:right; font-weight:800; font-variant-numeric:tabular-nums; }
+            .agkpi-val.ok { color:var(--ok); } .agkpi-val.warn { color:var(--warn); } .agkpi-val.err { color:var(--err); }
+            /* Per-agent evaluation timeline (evaluations live under the agent, not a global table) */
+            .agev { margin:0 0 20px; }
+            .agev-head { display:flex; align-items:baseline; gap:10px; margin-bottom:12px; }
+            .agev-head h3 { font-size:15px; font-weight:800; letter-spacing:-0.01em; }
+            .agev-head .sub { font-size:12px; color:var(--d400); }
+            .agev-list { display:flex; flex-direction:column; }
+            .agev-row { display:grid; grid-template-columns:76px 84px 1fr auto auto; align-items:center; gap:12px; padding:11px 4px; border-bottom:1px solid rgba(255,255,255,0.05); font-size:12.5px; }
+            .agev-row:last-child { border-bottom:none; }
+            .agev-date { color:var(--d400); font-variant-numeric:tabular-nums; }
+            .agev-chan { font-size:10.5px; font-weight:700; color:var(--d300); background:rgba(255,255,255,0.05); border:1px solid var(--card-border); border-radius:6px; padding:3px 8px; text-align:center; }
+            .agev-kpi { color:var(--d200); }
+            .agev-score { font-weight:800; font-variant-numeric:tabular-nums; text-align:right; min-width:40px; }
+            .agev-score.ok { color:var(--ok); } .agev-score.warn { color:var(--warn); } .agev-score.err { color:var(--err); }
+            .agev-status { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; padding:3px 8px; border-radius:5px; }
+            .agev-status.pass { background:var(--ok-bg); color:var(--ok); } .agev-status.fail { background:var(--err-bg); color:var(--err); } .agev-status.border { background:var(--warn-bg); color:var(--warn); }
+            @media (max-width:640px){ .agev-row { grid-template-columns:64px 1fr auto; } .agev-chan, .agev-kpi { display:none; } }
+          </style>
+          <button class="agent-back-btn" type="button" onclick="window.showSupBoard ? showSupBoard() : setView('team')">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3L5 7l4 4"/></svg>
+            All agents
+          </button>
+
+          <!-- Per-agent evaluation timeline (replaces the global evaluations table) -->
+          <div class="agev">
+            <div class="agev-head"><h3>Recent evaluations</h3><span class="sub" id="agevSub">AiMY-run · this agent</span></div>
+            <div class="fbp-card" style="padding:4px 14px;"><div class="agev-list" id="agevList"><!-- injected per agent --></div></div>
+          </div>
 
           <!-- ══ TODAY'S COACHING PRIORITIES (BRIEFING) ════════════ -->
           <div class="sc-section-label">
@@ -7053,7 +7634,7 @@
                     <button class="brief-sec-btn" type="button" onclick="openCanvasQuery('Draft performance feedback for Omar Abdallah based on this period\'s evaluations')">
                       Send feedback
                     </button>
-                    <button class="header-quick-link" type="button" onclick="setView('evals')" aria-label="View Omar's evaluations in the Evaluations tab">
+                    <button class="header-quick-link" type="button" onclick="var e=document.querySelector('#viewAgent .agev'); if(e) e.scrollIntoView({behavior:'smooth',block:'start'})" aria-label="Jump to this agent's recent evaluations">
                       <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M2 3h10v8H2z"/>
                         <line x1="4.5" y1="6" x2="9.5" y2="6"/>
@@ -7080,7 +7661,7 @@
                       <span class="mb-attr-time" id="agentBriefTime">Updated 4 min ago</span>
                     </div>
                     <div class="mb-statement" id="agentBriefStatement">
-                      Omar has <span class="hl-err">2 failing KPIs</span> and a <span class="hl-warn">stalled coaching plan</span> from last week. His follow-up SOP score dropped a further <span class="hl-err">3 pts</span> this week — the decline is accelerating. <span class="hl-dim">Recommend acting before the next evaluation cycle.</span>
+                      Across the <span class="hl-dim">89 evaluations</span> I've scored, Omar's one failing KPI is <span class="hl-err">Follow-up Confirmation</span> (64% vs the 80% target). I drafted the negative feedback he has now <span class="hl-ok">acknowledged</span>, and his coaching plan is <span class="hl-warn">60% complete</span>. <span class="hl-dim">If it closes on pace I'll ask Lina to re-evaluate — otherwise it escalates to the Feedback Manager.</span>
                     </div>
                     <div class="mb-evidence" id="agentBriefEvidence">
                       <span class="mb-ev-pill"><span class="ev-dot" style="background:var(--err);"></span>Quality <span class="ev-val">64%</span> <span class="ev-delta dn">↓9pts</span></span>
@@ -7095,12 +7676,18 @@
                       <button class="mb-action secondary" type="button" onclick="openCanvasQuery('Why is Omar\'s follow-up SOP declining — show the week-by-week pattern and correlate with ticket type')">
                         Ask why
                       </button>
-                      <button class="mb-action secondary" type="button" onclick="drillToReviewsPage({ agentName: 'Omar Abdallah' })">
+                      <button class="mb-action secondary" type="button" onclick="var e=document.querySelector('#viewAgent .agev'); if(e) e.scrollIntoView({behavior:'smooth',block:'start'})">
                         View evaluations
                       </button>
                     </div>
                   </div>
                 </div>
+              </div>
+
+              <!-- Compact KPI standing (replaces the heavy behavioural breakdown) -->
+              <div class="agkpi">
+                <div class="agkpi-head"><h3>KPI standing</h3><span class="sub" id="agkpiSub">6 KPIs · vs 80% target</span></div>
+                <div class="agkpi-grid" id="agkpiGrid"><!-- injected per agent --></div>
               </div>
 
               <!-- 6 KPI cards — Quality, CSAT, FCR, AHT, Adherence, Utilization -->
@@ -8341,19 +8928,21 @@
                 </div>
               </div>
 
-              <!-- Actions -->
+              <!-- Actions — this is a negative feedback: the employee must Acknowledge or Dispute.
+                   Dispute opens the folded-in resolution flow (formerly the standalone disputes page). -->
               <div style="display:flex;flex-direction:column;gap:8px;">
-                <button class="eval-dispute-btn" type="button">
+                <div class="fb-detail-loop" id="fbDetailLoop" style="display:none;"></div>
+                <button class="fb-detail-btn ack" id="fbDetailAck" type="button" onclick="window.acknowledgeDetail && acknowledgeDetail()">
+                  <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 3 5.5 11 2 7.5"/></svg>
+                  Acknowledge feedback
+                </button>
+                <button class="fb-detail-btn dispute" id="fbDetailDispute" type="button" onclick="window.openDisputeFlow && openDisputeFlow('Omar Abdallah','Voice call · May 7','Follow-up Confirmation, Empathy &amp; Active Listening',64)">
                   <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 1.5v5M7 9.5v.5M2 7a5 5 0 1010 0A5 5 0 002 7z"/></svg>
-                  Dispute this evaluation
+                  Dispute
                 </button>
                 <button class="eval-export-btn" type="button">
                   <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v2h10v-2M7 2v7M4.5 7l2.5 2.5L9.5 7"/></svg>
                   Export as PDF
-                </button>
-                <button class="eval-export-btn" type="button" style="font-size:11px;">
-                  <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h8M9 4.5l3 2.5-3 2.5"/></svg>
-                  Flag for internal review
                 </button>
               </div>
 
@@ -12200,7 +12789,7 @@
       .notif-ev-pill{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:3px 9px;font-size:10px;color:var(--d300);font-weight:500;}
       .notif-ev-pill .ev-val{font-weight:700;color:#fff;}
       .notif-alert-actions{display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;border-top:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.1);}
-      .notif-cta{font-size:11px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;font-family:"Urbanist",sans-serif;transition:all var(--transition-fast);border:1px solid transparent;}
+      .notif-cta{font-size:11px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;font-family:"Urbanist",sans-serif;transition:background 150ms var(--ease-hover), border-color 150ms var(--ease-hover), color 150ms var(--ease-hover), transform 150ms var(--ease-hover);border:1px solid transparent;}
       .notif-cta.primary-p1{background:var(--err-bg);color:var(--err);border-color:rgba(240,68,56,.25);}
       .notif-cta.primary-p1:hover{background:rgba(240,68,56,.18);}
       .notif-cta.primary-p2{background:var(--warn-bg);color:var(--warn);border-color:rgba(247,144,9,.25);}
@@ -13172,20 +13761,26 @@
         const paneAgent = document.getElementById("viewAgent");
         const paneEvals = document.getElementById("viewEvals");
         const ctx = document.getElementById("viewToggleContext");
-        if (!btnTeam || !btnAgent || !paneTeam || !paneAgent) return;
+        if (!btnTeam || !paneTeam || !paneEvals) return;
 
+        /* Agent is no longer a top-level tab — it is a drill-in of Team.
+           btnAgent may be null; the pane still toggles on setView('agent'). */
         const VIEWS = [
-          { btn: btnTeam,  pane: paneTeam,  key: "team",  label: "Comparing <strong>4 teams</strong> across <strong>47 agents</strong>" },
-          { btn: btnAgent, pane: paneAgent, key: "agent", label: "Viewing <strong>Omar Abdallah</strong> · 12 agents on Product Support" },
-          { btn: btnEvals, pane: paneEvals, key: "evals", label: "<strong>547 evaluations</strong> · Product Support · last 30 days" },
+          { btn: btnTeam,  pane: paneTeam,  key: "team",  label: "<strong>12 agents</strong> on Product Support · click an agent to drill in" },
+          { btn: btnAgent, pane: paneAgent, key: "agent", label: "Viewing <strong>Omar Abdallah</strong> · Product Support" },
+          { btn: btnEvals, pane: paneEvals, key: "evals", label: "Feedback loop &amp; evaluation records · Product Support" },
         ];
 
         window.setView = function setView(view) {
           VIEWS.forEach(function(v) {
-            if (!v.btn || !v.pane) return;
+            if (!v.pane) return;
             const active = v.key === view;
-            v.btn.classList.toggle("is-active", active);
-            v.btn.setAttribute("aria-selected", active);
+            /* Keep the Team tab lit while an agent drill-in is open */
+            if (v.btn) {
+              var lit = active || (view === "agent" && v.key === "team");
+              v.btn.classList.toggle("is-active", lit);
+              v.btn.setAttribute("aria-selected", lit);
+            }
             v.pane.classList.toggle("is-active", active);
           });
           const matched = VIEWS.find(function(v){ return v.key === view; });
@@ -13250,6 +13845,7 @@
           'Sarah Reyes':       { initials:'SR', avatarGrad:'linear-gradient(135deg,#1a2e2a,#1f6b54)',  quality:'98%', qualityClass:'ok',  riskLabel:'Exemplar',  riskClass:'risk-ok',   meta:'Product Support · 2.5 years tenure · Reports to Lina Haddad', tenure:'2.5 yr', evals:'218' },
         };
 
+        window.updateAgentPanel = updateAgentPanel;
         function updateAgentPanel(agentName) {
           const d = AGENT_DATA[agentName];
           if (!d) return;
@@ -13317,11 +13913,11 @@
           if (briefStatement) {
             const firstName = agentName.split(' ')[0];
             if (d.qualityClass === 'err') {
-              briefStatement.innerHTML = firstName + ' has <span class="hl-err">failing KPIs</span> and needs action this week. Quality is <span class="hl-err">' + d.quality + '</span> \u2014 recommend reviewing the KPI breakdown and scheduling a coaching session.';
+              briefStatement.innerHTML = 'Across the <span class="hl-dim">' + d.evals + ' evaluations</span> I\u2019ve scored, ' + firstName + ' is <span class="hl-err">below target at ' + d.quality + '</span> \u2014 mainly Follow-up Confirmation. I\u2019ve drafted the feedback and opened a coaching plan. <span class="hl-dim">If it doesn\u2019t close on pace, this escalates to the Feedback Manager.</span>';
             } else if (d.qualityClass === 'warn') {
-              briefStatement.innerHTML = firstName + ' is in the <span class="hl-warn">watch zone</span> at <span class="hl-warn">' + d.quality + '</span>. No immediate action required but worth monitoring \u2014 check for any trending KPI declines.';
+              briefStatement.innerHTML = 'I\u2019ve scored <span class="hl-dim">' + d.evals + ' evaluations</span> of ' + firstName + '. Quality is <span class="hl-warn">' + d.quality + '</span> \u2014 one KPI is drifting toward the line. <span class="hl-dim">I\u2019m watching it and will draft feedback the moment it slips, before it needs escalation.</span>';
             } else {
-              briefStatement.innerHTML = firstName + ' is <span class="hl-ok">performing well</span> at <span class="hl-ok">' + d.quality + '</span>. Consider using their top-scoring interactions as training examples for at-risk agents.';
+              briefStatement.innerHTML = firstName + ' is <span class="hl-ok">clearing target at ' + d.quality + '</span> across ' + d.evals + ' evaluations. I\u2019ve flagged the wins to their supervisor. <span class="hl-dim">I\u2019ll surface how they can exceed further and keep them as a shadow example for at-risk agents.</span>';
             }
           }
           if (briefEvidence) {
@@ -13546,6 +14142,9 @@
               });
             });
           }
+
+          /* Expose so dynamically-injected dropdowns (wizard/report) can init */
+          window.initV2Dropdown = initDropdown;
 
           /* Init all dropdowns on DOMContentLoaded (already past it here) */
           document.querySelectorAll('.v2-dropdown').forEach(initDropdown);
@@ -15627,6 +16226,759 @@
 
       })();
 
+    </script>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         FEEDBACK LOOP — persona switching, New Feedback wizard, folded-in
+         dispute resolution, HR table + employee inbox. Added in redesign.
+         ══════════════════════════════════════════════════════════════════ -->
+    <style>
+      .fb-detail-btn { display:flex; align-items:center; justify-content:center; gap:7px; width:100%; padding:9px 16px; border-radius:8px; font-size:12px; font-weight:700; font-family:"Urbanist",sans-serif; cursor:pointer; border:1px solid transparent; transition:background 150ms var(--ease-hover), border-color 150ms var(--ease-hover), color 150ms var(--ease-hover), transform 150ms var(--ease-hover); }
+      .fb-detail-btn svg { width:13px; height:13px; }
+      .fb-detail-btn.ack { background:var(--ok); color:#06210f; }
+      .fb-detail-btn.ack:hover { filter:brightness(1.08); }
+      .fb-detail-btn.dispute { background:rgba(240,68,56,0.08); color:var(--err); border-color:rgba(240,68,56,0.3); }
+      .fb-detail-btn.dispute:hover { background:rgba(240,68,56,0.14); }
+      .fb-detail-loop { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:9px; border-radius:8px; font-size:12px; font-weight:700; }
+      .fb-detail-loop svg { width:14px; height:14px; }
+      .fb-detail-loop.acknowledged { background:var(--ok-bg); color:var(--ok); }
+      .fb-detail-loop.disputed { background:var(--warn-bg); color:var(--warn); }
+
+      /* Modals */
+      .fbmodal-overlay { position:fixed; inset:0; z-index:400; background:rgba(6,9,13,0.6); backdrop-filter:blur(8px); display:none; align-items:center; justify-content:center; padding:32px; }
+      .fbmodal-overlay.open { display:flex; animation:fbScrimIn 220ms var(--ease-hover) both; }
+      @keyframes fbScrimIn { from { opacity:0; } to { opacity:1; } }
+      .fbmodal { width:100%; max-width:620px; max-height:88vh; overflow-y:auto; background:var(--card-bg); border:1px solid var(--card-border-hover); border-radius:22px; box-shadow:var(--elev-3), 0 1px 0 rgba(255,255,255,0.06) inset; animation:fbModalIn 280ms var(--ease-enter) both; }
+      @keyframes fbModalIn { from { opacity:0; transform:translateY(10px) scale(0.985); } to { opacity:1; transform:none; } }
+      .fbmodal.wide { max-width:820px; }
+      .fbmodal-head { display:flex; align-items:center; gap:12px; padding:20px 24px; border-bottom:1px solid var(--card-border); position:sticky; top:0; background:var(--card-bg); z-index:2; }
+      .fbmodal-head h3 { font-size:17px; font-weight:800; }
+      .fbmodal-head .sub { font-size:12px; color:var(--d400); margin-top:2px; }
+      .fbmodal-x { margin-left:auto; width:32px; height:32px; border-radius:8px; border:1px solid var(--card-border); background:transparent; color:var(--d400); font-size:20px; cursor:pointer; line-height:1; }
+      .fbmodal-body { padding:22px 24px; }
+      .fbmodal-foot { display:flex; gap:10px; align-items:center; padding:16px 24px; border-top:1px solid var(--card-border); position:sticky; bottom:0; background:var(--card-bg); }
+      .fbmodal-foot .spacer { flex:1; }
+      .fbm-btn { font-family:inherit; cursor:pointer; font-size:13px; font-weight:700; padding:10px 18px; border-radius:10px; border:1px solid transparent; transition:background 150ms var(--ease-hover), border-color 150ms var(--ease-hover), color 150ms var(--ease-hover), transform 150ms var(--ease-hover); }
+      .fbm-btn.primary { background:var(--qa-accent); color:#fff; }
+      .fbm-btn.primary:hover { filter:brightness(1.08); }
+      .fbm-btn.primary:disabled { opacity:0.4; cursor:not-allowed; }
+      .fbm-btn.ghost { background:transparent; color:var(--d300); border-color:var(--card-border); }
+      .fbm-btn.ghost:hover { color:var(--d100); border-color:var(--card-border-hover); }
+
+      /* Wizard steps */
+      .nfw-steps { display:flex; gap:8px; margin-bottom:20px; }
+      .nfw-step { flex:1; height:4px; border-radius:2px; background:rgba(255,255,255,0.08); }
+      .nfw-step.done { background:var(--qa-accent); }
+      .nfw-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--d500); margin-bottom:12px; }
+      .nfw-type-row { display:flex; gap:12px; }
+      .nfw-type { flex:1; cursor:pointer; padding:20px; border-radius:14px; border:1.5px solid var(--card-border); background:rgba(255,255,255,0.02); text-align:center; transition:background 150ms var(--ease-hover), border-color 150ms var(--ease-hover), color 150ms var(--ease-hover), transform 150ms var(--ease-hover); }
+      .nfw-type:hover { border-color:var(--card-border-hover); }
+      .nfw-type.sel.positive { border-color:var(--ok); background:var(--ok-bg); }
+      .nfw-type.sel.negative { border-color:var(--err); background:var(--err-bg); }
+      .nfw-type-ico { width:40px; height:40px; margin:0 auto 10px; border-radius:12px; display:flex; align-items:center; justify-content:center; }
+      .nfw-type.positive .nfw-type-ico { background:var(--ok-bg); color:var(--ok); }
+      .nfw-type.negative .nfw-type-ico { background:var(--err-bg); color:var(--err); }
+      .nfw-type-ico svg { width:22px; height:22px; }
+      .nfw-type-title { font-size:15px; font-weight:800; }
+      .nfw-type-desc { font-size:12px; color:var(--d400); margin-top:4px; line-height:1.4; }
+      .nfw-field { margin-bottom:16px; }
+      .nfw-field label { display:block; font-size:12px; font-weight:700; color:var(--d200); margin-bottom:8px; }
+      .nfw-select, .nfw-textarea { width:100%; background:rgba(255,255,255,0.04); border:1px solid var(--card-border); border-radius:10px; padding:11px 14px; color:var(--d50); font-family:inherit; font-size:13px; }
+      .nfw-textarea { resize:vertical; min-height:88px; line-height:1.5; }
+      .nfw-kpi { display:flex; align-items:center; gap:12px; padding:11px 14px; border-radius:10px; border:1px solid var(--card-border); background:rgba(255,255,255,0.02); margin-bottom:8px; cursor:pointer; transition:background 150ms var(--ease-hover), border-color 150ms var(--ease-hover), color 150ms var(--ease-hover), transform 150ms var(--ease-hover); }
+      .nfw-kpi:hover { border-color:var(--card-border-hover); }
+      .nfw-kpi.sel { border-color:rgba(var(--qa-accent-rgb),0.4); background:rgba(var(--qa-accent-rgb),0.07); }
+      .nfw-kpi-check { width:18px; height:18px; border-radius:5px; border:1.5px solid var(--d600); flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+      .nfw-kpi.sel .nfw-kpi-check { background:var(--qa-accent); border-color:var(--qa-accent); }
+      .nfw-kpi.sel .nfw-kpi-check svg { width:11px; height:11px; stroke:#fff; stroke-width:3; fill:none; }
+      .nfw-kpi-name { font-size:13px; font-weight:600; flex:1; }
+      .nfw-kpi-prior { font-size:11px; color:var(--d500); }
+      .nfw-kpi-prior b { color:var(--d200); }
+      .nfw-ai-draft { display:flex; gap:9px; align-items:flex-start; padding:10px 12px; border-radius:10px; background:rgba(var(--qa-accent-rgb),0.06); border:1px solid rgba(var(--qa-accent-rgb),0.16); font-size:11.5px; color:var(--d400); margin-bottom:10px; }
+      .nfw-ai-draft svg { width:15px; height:15px; flex-shrink:0; margin-top:1px; }
+
+      /* Email preview */
+      .nfw-email { border:1px solid var(--card-border); border-radius:12px; overflow:hidden; }
+      .nfw-email-head { padding:12px 16px; background:rgba(255,255,255,0.03); border-bottom:1px solid var(--card-border); font-size:12px; }
+      .nfw-email-head .to { color:var(--d400); } .nfw-email-head .subj { font-weight:700; color:var(--d50); margin-top:3px; }
+      .nfw-email-body { padding:16px; font-size:12.5px; color:var(--d200); line-height:1.6; }
+      .nfw-email-body ul { margin:8px 0 8px 18px; } .nfw-email-body li { margin-bottom:4px; }
+      .nfw-email-cta { display:inline-block; margin-top:8px; padding:8px 14px; border-radius:8px; background:var(--qa-accent-dim); color:var(--qa-accent); font-weight:700; font-size:12px; text-decoration:none; }
+      .nfw-email-note { font-size:11px; color:var(--d500); margin-top:12px; display:flex; gap:6px; align-items:center; }
+      .nfw-email-note svg { width:13px; height:13px; }
+
+      /* Dispute resolution workspace */
+      .disp-cols { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px; }
+      @media (max-width:640px){ .disp-cols { grid-template-columns:1fr; } }
+      .disp-col { border:1px solid var(--card-border); border-radius:12px; padding:14px; }
+      .disp-col h4 { font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--d500); margin-bottom:10px; }
+      .disp-score { font-size:26px; font-weight:800; }
+      .disp-kpi-chip { display:inline-block; font-size:11px; font-weight:600; padding:4px 10px; border-radius:999px; background:var(--err-bg); color:var(--err); margin:0 5px 5px 0; }
+      .disp-decision-tabs { display:flex; gap:8px; margin:6px 0 14px; }
+      .disp-dtab { flex:1; font-family:inherit; cursor:pointer; font-size:12px; font-weight:700; padding:10px; border-radius:10px; border:1px solid var(--card-border); background:transparent; color:var(--d300); }
+      .disp-dtab.sel { border-color:var(--qa-accent); color:var(--qa-accent); background:var(--qa-accent-dim); }
+      .disp-outcome-note { font-size:12px; color:var(--d400); padding:10px 12px; border-radius:10px; background:rgba(255,255,255,0.03); border:1px solid var(--card-border); margin-bottom:6px; line-height:1.5; }
+
+      /* Toast (reuse app style) */
+      #fbToast { position:fixed; bottom:100px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--d800); border:1px solid var(--card-border-hover); border-radius:12px; padding:12px 18px; font-size:13px; font-weight:600; color:var(--d50); box-shadow:0 12px 40px rgba(0,0,0,0.5); opacity:0; pointer-events:none; transition:all var(--transition-base); z-index:500; display:flex; align-items:center; gap:10px; }
+      #fbToast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+      #fbToast svg { width:16px; height:16px; color:var(--ok); flex-shrink:0; }
+    </style>
+
+    <!-- ── Elevation, press & report-anchor polish (design elevation pass) ── -->
+    <style>
+      .hrp-cfg, .hrp-agg, .fbp-card, .dq-item { box-shadow:var(--elev-1); }
+      .hrp-agg { transition:box-shadow 200ms var(--ease-hover), border-color 200ms var(--ease-hover), transform 200ms var(--ease-hover); }
+      .hrp-agg:hover { box-shadow:var(--elev-2); transform:translateY(-2px); border-color:var(--card-border-hover); }
+      .dq-item { transition:box-shadow 200ms var(--ease-hover), border-color 200ms var(--ease-hover); }
+      .dq-item:not(.resolved):hover { box-shadow:var(--elev-2); border-color:var(--card-border-hover); }
+      .hrp-attn-item { transition:background 160ms var(--ease-hover); border-radius:10px; }
+      .persona-btn:active, .hrp-chip:active, .new-fb-btn:active, .fbm-btn:active, .hrp-save:active,
+      .dq-resolve:active, .hrp-attn-action:active, .hrp-agg-btn:active, .fbt-fb:active, .ins-act:active,
+      .fb-detail-btn:active, .nfw-type:active, .disp-dtab:active, .fbmodal-x:active { transform:scale(0.97); transition-duration:90ms; }
+      .new-fb-btn { transition:filter 150ms var(--ease-hover), transform 150ms var(--ease-hover), box-shadow 150ms var(--ease-hover); }
+      .new-fb-btn:hover { transform:translateY(-1px); }
+      /* Report anchor tile — breaks the identical-metric row (no-slop 1.7) */
+      .rep-tile.anchor { grid-column:span 2; background:linear-gradient(135deg, rgba(var(--qa-accent-rgb),0.13), rgba(51,105,255,0.05)); border-color:rgba(var(--qa-accent-rgb),0.28); }
+      .rep-tile.anchor .v { font-size:34px; }
+      .rep-tile.anchor .l { font-size:12px; color:var(--d300); }
+      .rep-split { margin-top:10px; }
+      .rep-split-track { height:6px; border-radius:3px; overflow:hidden; display:flex; background:rgba(255,255,255,0.06); }
+      .rep-split .ackseg { background:var(--ok); } .rep-split .disseg { background:var(--warn); }
+      /* Neutralise leftover employee-pane left-stripes (dead styles) */
+      .empfb-card.negative { border-left:none; background:linear-gradient(180deg,var(--tint-err),transparent 55%),var(--card-bg); border-color:rgba(240,68,56,0.18); }
+      .empfb-card.positive { border-left:none; background:linear-gradient(180deg,var(--tint-ok),transparent 55%),var(--card-bg); border-color:rgba(23,178,106,0.18); }
+    </style>
+
+    <!-- New Feedback wizard -->
+    <div class="fbmodal-overlay" id="newFbModal">
+      <div class="fbmodal">
+        <div class="fbmodal-head">
+          <div>
+            <h3>New Feedback</h3>
+            <div class="sub" id="nfwSub">Proactive — no time constraint · covers one or more KPIs</div>
+          </div>
+          <button class="fbmodal-x" onclick="closeNewFeedback()">×</button>
+        </div>
+        <div class="fbmodal-body">
+          <div class="nfw-steps"><div class="nfw-step done" id="nfws0"></div><div class="nfw-step" id="nfws1"></div><div class="nfw-step" id="nfws2"></div><div class="nfw-step" id="nfws3"></div></div>
+          <div id="nfwBody"><!-- injected per step --></div>
+        </div>
+        <div class="fbmodal-foot">
+          <button class="fbm-btn ghost" id="nfwBack" onclick="nfwPrev()" style="visibility:hidden;">Back</button>
+          <span class="spacer"></span>
+          <button class="fbm-btn primary" id="nfwNext" onclick="nfwNext()">Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dispute resolution workspace (folded-in from disputes) -->
+    <div class="fbmodal-overlay" id="dispModal">
+      <div class="fbmodal wide">
+        <div class="fbmodal-head">
+          <div><h3 id="dispTitle">Dispute</h3><div class="sub">Acknowledge-or-dispute · resolution folded into the feedback loop</div></div>
+          <button class="fbmodal-x" onclick="closeDispute()">×</button>
+        </div>
+        <div class="fbmodal-body">
+          <div class="disp-cols">
+            <div class="disp-col">
+              <h4>Original evaluation</h4>
+              <div class="disp-score" id="dispScore">64%</div>
+              <div style="font-size:12px;color:var(--d400);margin:2px 0 10px;">Target 80% · below</div>
+              <div id="dispKpis"></div>
+            </div>
+            <div class="disp-col">
+              <h4>Dispute rationale (employee)</h4>
+              <textarea class="nfw-textarea" id="dispRationale" placeholder="Why do you believe this evaluation is inaccurate? Cite the interaction, the KPI, and what the score should reflect…"></textarea>
+            </div>
+          </div>
+          <div class="nfw-label">Reviewer decision</div>
+          <div class="disp-decision-tabs" id="dispTabs">
+            <button class="disp-dtab" data-d="upheld" onclick="selDispTab('upheld')">Uphold</button>
+            <button class="disp-dtab" data-d="overturned" onclick="selDispTab('overturned')">Overturn</button>
+            <button class="disp-dtab" data-d="partial" onclick="selDispTab('partial')">Partial adjust</button>
+          </div>
+          <div class="disp-outcome-note" id="dispOutcomeNote">Select an outcome. The employee is notified either way, and the decision is written to the immutable feedback audit trail.</div>
+          <div class="nfw-field" style="margin-top:12px;"><label>Reviewer rationale (required, logged)</label><textarea class="nfw-textarea" id="dispDecisionRationale" placeholder="Explain the decision…"></textarea></div>
+        </div>
+        <div class="fbmodal-foot">
+          <button class="fbm-btn ghost" onclick="closeDispute()">Cancel</button>
+          <span class="spacer"></span>
+          <button class="fbm-btn primary" id="dispSubmit" onclick="submitDispute()" disabled>Record decision</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback report (generate for all or one person) -->
+    <style>
+      .rep-controls { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px; }
+      .rep-empty { text-align:center; color:var(--d500); font-size:13px; padding:36px; border:1px dashed var(--card-border); border-radius:12px; }
+      .rep-head { display:flex; align-items:baseline; gap:10px; margin-bottom:14px; }
+      .rep-head h4 { font-size:15px; font-weight:800; } .rep-head .r { font-size:12px; color:var(--d400); }
+      .rep-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; margin-bottom:18px; }
+      .rep-tile { background:rgba(255,255,255,0.03); border:1px solid var(--card-border); border-radius:12px; padding:13px 14px; }
+      .rep-tile .v { font-size:22px; font-weight:800; } .rep-tile .l { font-size:11px; color:var(--d400); margin-top:2px; }
+      .rep-tile .v.ok { color:var(--ok); } .rep-tile .v.err { color:var(--err); } .rep-tile .v.warn { color:var(--warn); }
+      .rep-sec { margin-bottom:16px; } .rep-sec h5 { font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--d500); font-weight:700; margin-bottom:9px; }
+      .rep-bar-row { display:flex; align-items:center; gap:10px; margin-bottom:7px; font-size:12px; }
+      .rep-bar-row .nm { width:150px; color:var(--d200); flex-shrink:0; }
+      .rep-bar-track { flex:1; height:7px; border-radius:4px; background:rgba(255,255,255,0.07); overflow:hidden; }
+      .rep-bar-fill { height:100%; border-radius:4px; background:var(--qa-accent); }
+      .rep-bar-row .pc { width:38px; text-align:right; color:var(--d300); font-weight:700; }
+      .rep-chips { display:flex; flex-wrap:wrap; gap:6px; }
+      .rep-chip { font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:999px; background:rgba(255,255,255,0.05); border:1px solid var(--card-border); color:var(--d200); }
+      .rep-chip.err { background:var(--err-bg); color:var(--err); border-color:transparent; }
+      /* Insights */
+      .ins-item { display:flex; gap:12px; padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+      .ins-item:last-child { border-bottom:none; }
+      .ins-ico { width:32px; height:32px; border-radius:9px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+      .ins-ico svg { width:16px; height:16px; }
+      .ins-body { flex:1; } .ins-title { font-size:13px; font-weight:700; } .ins-desc { font-size:12px; color:var(--d400); margin-top:2px; line-height:1.5; }
+      .ins-act { align-self:center; font-family:inherit; cursor:pointer; font-size:11.5px; font-weight:700; padding:7px 12px; border-radius:8px; border:1px solid var(--card-border); background:transparent; color:var(--d200); white-space:nowrap; }
+      .ins-act:hover { border-color:var(--qa-accent); color:var(--qa-accent); }
+    </style>
+    <div class="fbmodal-overlay" id="reportModal">
+      <div class="fbmodal wide">
+        <div class="fbmodal-head">
+          <div><h3>Feedback report</h3><div class="sub">Aggregate the feedback loop — for everyone or one person</div></div>
+          <button class="fbmodal-x" onclick="closeReport()">×</button>
+        </div>
+        <div class="fbmodal-body">
+          <div class="rep-controls">
+            <div class="nfw-field" style="margin:0;"><label>Scope</label>
+              <div class="v2-dropdown fld" id="repScope">
+                <button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-label-text">All agents (12)</span><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 5.5 7 9l3.5-3.5"/></svg></button>
+                <div class="v2-dropdown-panel" role="listbox" aria-label="Scope">
+                  <div class="v2-dropdown-option selected" role="option" data-value="all">All agents (12)</div>
+                  <div class="v2-dropdown-option" role="option" data-value="Omar Abdallah">Omar Abdallah</div>
+                  <div class="v2-dropdown-option" role="option" data-value="Tariq Mansour">Tariq Mansour</div>
+                  <div class="v2-dropdown-option" role="option" data-value="Michael Chen">Michael Chen</div>
+                  <div class="v2-dropdown-option" role="option" data-value="Aisha Khalil">Aisha Khalil</div>
+                  <div class="v2-dropdown-option" role="option" data-value="Daniel Rodriguez">Daniel Rodriguez</div>
+                  <div class="v2-dropdown-option" role="option" data-value="Priya Venkat">Priya Venkat</div>
+                  <div class="v2-dropdown-option" role="option" data-value="Jamal Williams">Jamal Williams</div>
+                  <div class="v2-dropdown-option" role="option" data-value="Sarah Reyes">Sarah Reyes</div>
+                </div>
+              </div>
+            </div>
+            <div class="nfw-field" style="margin:0;"><label>Date range</label>
+              <div class="v2-dropdown fld" id="repRange">
+                <button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-label-text">Last 30 days</span><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 5.5 7 9l3.5-3.5"/></svg></button>
+                <div class="v2-dropdown-panel" role="listbox" aria-label="Date range">
+                  <div class="v2-dropdown-option" role="option" data-value="Last 7 days">Last 7 days</div>
+                  <div class="v2-dropdown-option selected" role="option" data-value="Last 30 days">Last 30 days</div>
+                  <div class="v2-dropdown-option" role="option" data-value="Last 90 days">Last 90 days</div>
+                  <div class="v2-dropdown-option" role="option" data-value="This quarter">This quarter</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="repOutput"></div>
+        </div>
+        <div class="fbmodal-foot">
+          <button class="fbm-btn ghost" onclick="closeReport()">Close</button>
+          <span class="spacer"></span>
+          <button class="fbm-btn ghost" id="repExport" onclick="fbToast('Report exported as PDF')" style="display:none;">Export PDF</button>
+          <button class="fbm-btn primary" id="repGen" onclick="generateReport()">Generate</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insights & Actions -->
+    <div class="fbmodal-overlay" id="insightsModal">
+      <div class="fbmodal">
+        <div class="fbmodal-head">
+          <div><h3>Insights &amp; Actions</h3><div class="sub">AiMY-surfaced patterns across your directs</div></div>
+          <button class="fbmodal-x" onclick="closeInsights()">×</button>
+        </div>
+        <div class="fbmodal-body">
+          <div class="ins-item">
+            <div class="ins-ico" style="background:var(--err-bg);color:var(--err);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div class="ins-body"><div class="ins-title">2 agents constantly below target</div><div class="ins-desc">Omar Abdallah &amp; Tariq Mansour — repeated negative feedback. AiMY can auto-schedule an HR meeting.</div></div>
+            <button class="ins-act" onclick="closeInsights(); openCanvasQuery('Auto-schedule HR meetings for Omar Abdallah and Tariq Mansour who are constantly below target.')">Schedule meetings</button>
+          </div>
+          <div class="ins-item">
+            <div class="ins-ico" style="background:var(--warn-bg);color:var(--warn);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg></div>
+            <div class="ins-body"><div class="ins-title">Follow-up Confirmation is the top team gap</div><div class="ins-desc">Lowest-scoring KPI across 5 agents. A shared micro-lesson would lift the whole team.</div></div>
+            <button class="ins-act" onclick="closeInsights(); openCanvasQuery('Roll out a Follow-up Confirmation coaching plan to the 5 agents scoring lowest on it.')">Roll out plan</button>
+          </div>
+          <div class="ins-item">
+            <div class="ins-ico" style="background:var(--ok-bg);color:var(--ok);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="ins-body"><div class="ins-title">4 agents actively acting on their goals</div><div class="ins-desc">Aisha, Daniel, Jamal &amp; Sarah completed coaching plans and are on track — no action needed.</div></div>
+            <button class="ins-act" onclick="closeInsights(); openCanvasQuery('Show the 4 agents who completed coaching plans and are on track.')">View</button>
+          </div>
+          <div class="ins-item">
+            <div class="ins-ico" style="background:rgba(var(--qa-accent-rgb),0.14);color:var(--qa-accent);"><svg viewBox="0 0 18 20"><use href="#aimy-logo-small" /></svg></div>
+            <div class="ins-body"><div class="ins-title">3 unsubmitted feedbacks for new hires</div><div class="ins-desc">Michael, Priya (&amp; 1 more) have no feedback yet — nudge their supervisor before probation ends.</div></div>
+            <button class="ins-act" onclick="closeInsights(); openCanvasQuery('Nudge supervisors about 3 unsubmitted feedbacks for new hires before probation ends.')">Nudge</button>
+          </div>
+        </div>
+        <div class="fbmodal-foot"><button class="fbm-btn ghost" onclick="closeInsights()">Close</button><span class="spacer"></span><button class="fbm-btn primary" onclick="closeInsights(); openCanvasQuery('Draft an action plan from these feedback insights.')">Ask AiMY to act</button></div>
+      </div>
+    </div>
+
+    <div id="fbToast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span id="fbToastMsg"></span></div>
+
+    <script>
+      (function(){
+        var AILOGO = '<svg viewBox="0 0 18 20" style="width:15px;height:15px;"><use href="#aimy-logo-small" /></svg>';
+        var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+
+        /* ── Directs data for the Feedback Manager pane ── */
+        var GRADS = { OA:'linear-gradient(135deg,#1a2a3a,#2d5c8e)', TM:'linear-gradient(135deg,#3a1a2a,#7d2c52)', MC:'linear-gradient(135deg,#2a2a1a,#6b6010)', AK:'linear-gradient(135deg,#1a1f3a,#3d4a8e)', DR:'linear-gradient(135deg,#2a1a3a,#5a3d8e)', PV:'linear-gradient(135deg,#3a2a1a,#8e6230)', JW:'linear-gradient(135deg,#1a3a2a,#2c8e54)', SR:'linear-gradient(135deg,#1a2e2a,#1f6b54)', NF:'linear-gradient(135deg,#3a1a1a,#8e3030)', KA:'linear-gradient(135deg,#1a3a3a,#2c7d8e)', YN:'linear-gradient(135deg,#2a1a2e,#6b2c6b)', HS:'linear-gradient(135deg,#2e2a1a,#8e7c30)' };
+        var DIRECTS = [
+          { in:'OA', name:'Omar Abdallah', tags:['probation','attn'], last:'2 days ago', top:'Empathy 91%', missing:'Follow-up, Survey', status:'err', statusLabel:'Disputed ×1 · below' },
+          { in:'TM', name:'Tariq Mansour', tags:['attn'], last:'5 days ago', top:'Tone 84%', missing:'Resolution', status:'err', statusLabel:'Pending ack' },
+          { in:'MC', name:'Michael Chen', tags:['newhire'], last:'26 days ago', top:'Script 82%', missing:'—', status:'ok', statusLabel:'Disputed → overturned' },
+          { in:'AK', name:'Aisha Khalil', tags:['newhire'], last:'1 week ago', top:'Script 88%', missing:'Survey', status:'ok', statusLabel:'Acknowledged' },
+          { in:'DR', name:'Daniel Rodriguez', tags:[], last:'2 weeks ago', top:'Resolution 90%', missing:'—', status:'ok', statusLabel:'Acknowledged' },
+          { in:'PV', name:'Priya Venkat', tags:['newhire'], last:'3 days ago', top:'Empathy 88%', missing:'—', status:'ok', statusLabel:'Acknowledged · improving' },
+          { in:'JW', name:'Jamal Williams', tags:['notice'], last:'3 weeks ago', top:'Empathy 93%', missing:'—', status:'ok', statusLabel:'Acknowledged' },
+          { in:'SR', name:'Sarah Reyes', tags:[], last:'1 week ago', top:'All exceeding', missing:'—', status:'ok', statusLabel:'Acknowledged' },
+          { in:'NF', name:'Nadia Fathy', tags:['probation'], last:'unsubmitted', top:'—', missing:'All KPIs', status:'warn', statusLabel:'Unsubmitted' },
+          { in:'KA', name:'Karim Adel', tags:[], last:'unsubmitted', top:'—', missing:'All KPIs', status:'warn', statusLabel:'Unsubmitted' },
+          { in:'YN', name:'Yara Nabil', tags:[], last:'unsubmitted', top:'—', missing:'All KPIs', status:'warn', statusLabel:'Unsubmitted' },
+          { in:'HS', name:'Hana Saleh', tags:[], last:'2 weeks ago', top:'Resolution 88%', missing:'—', status:'ok', statusLabel:'Acknowledged' },
+        ];
+
+        function hrFilterMatch(d, filter){
+          if(filter==='all'||!filter) return true;
+          if(filter==='unsubmitted') return d.last==='unsubmitted';
+          return d.tags.indexOf(filter)>=0;
+        }
+        /* Keep the filter-chip counts honest — always derived from DIRECTS, never hardcoded */
+        function refreshHrChipCounts(){
+          document.querySelectorAll('#hrpFilters .hrp-chip').forEach(function(c){
+            var n=c.querySelector('.n'); if(!n) return;
+            n.textContent = DIRECTS.filter(function(d){ return hrFilterMatch(d, c.dataset.f); }).length;
+          });
+        }
+        window.refreshHrChipCounts = refreshHrChipCounts;
+        function renderHrTable(filter){
+          var body = document.getElementById('hrpTableBody'); if(!body) return;
+          refreshHrChipCounts();
+          var rows = DIRECTS.filter(function(d){ return hrFilterMatch(d, filter); });
+          body.innerHTML = rows.map(function(d){
+            var tag = d.tags.indexOf('newhire')>=0?'<span class="hrp-agent-tag tag-newhire">New hire</span>':d.tags.indexOf('probation')>=0?'<span class="hrp-agent-tag tag-probation">Probation</span>':d.tags.indexOf('notice')>=0?'<span class="hrp-agent-tag tag-notice">Notice</span>':'';
+            return '<tr class="'+(d.tags.indexOf('attn')>=0?'attn':'')+'">'+
+              '<td><div class="hrp-agent"><div class="hrp-av" style="background:'+(GRADS[d.in]||'#333')+'">'+d.in+'</div><span class="hrp-agent-name">'+d.name+'</span>'+tag+'</div></td>'+
+              '<td style="color:'+(d.last==='unsubmitted'?'var(--warn)':'var(--d300)')+'">'+d.last+'</td>'+
+              '<td>'+d.top+'</td>'+
+              '<td style="color:var(--d400)">'+d.missing+'</td>'+
+              '<td><span class="hrp-mini-status status-'+d.status+'"><span class="d" style="background:var(--'+d.status+')"></span>'+d.statusLabel+'</span></td>'+
+              '<td style="text-align:right"><button class="hrp-row-btn" onclick="window.openCanvasQuery && openCanvasQuery(\''+(d.last==='unsubmitted'?'Remind me to submit feedback for '+d.name:'Show the full feedback history for '+d.name)+'\')">'+(d.last==='unsubmitted'?'Nudge':'View')+'</button></td>'+
+            '</tr>';
+          }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--d500);padding:24px;">No directs match this filter.</td></tr>';
+        }
+
+        /* ── Employee inbox (Reviews · employee persona) ── */
+        var EMP_FB = [
+          { id:'e1', type:'negative', from:'Lina Haddad (Supervisor)', date:'2 days ago', ack:'pending', kpis:'Follow-up Confirmation 64% · Survey Promotion 71%', insight:'Two KPIs slipped since your last feedback. Restate next steps + timeline on every close. A coaching plan is ready on your profile.' },
+          { id:'e2', type:'positive', from:'Lina Haddad (Supervisor)', date:'1 week ago', ack:null, kpis:'Empathy & Active Listening 91% (was 84%)', insight:'Excellent lift on Empathy — up 7 pts. Keep leading with acknowledgement before troubleshooting to exceed further.' },
+          { id:'e3', type:'negative', from:'AiMY (auto-detected)', date:'3 weeks ago', ack:'acknowledged', kpis:'Script Adherence 80% (recovered)', insight:'You recovered Script Adherence to target — nice work. Keep using the updated snippets.' },
+        ];
+        function renderEmpInbox(){
+          var list = document.getElementById('empfbList'); if(!list) return;
+          list.innerHTML = EMP_FB.map(function(f){
+            var actions='';
+            if(f.type==='negative'){
+              if(f.ack==='pending') actions = '<button class="empfb-btn ack" onclick="empAck(\''+f.id+'\')">'+CHECK+' Acknowledge</button><button class="empfb-btn dispute" onclick="window.openDisputeFlow && openDisputeFlow(\'You\',\''+f.date+'\',\''+f.kpis+'\',64)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Dispute</button>';
+              else if(f.ack==='acknowledged') actions='<span class="empfb-loop acknowledged">'+CHECK+' Acknowledged</span>';
+              else if(f.ack==='disputed') actions='<span class="empfb-loop disputed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg> Disputed · under review</span>';
+            } else {
+              actions='<button class="empfb-btn dispute" onclick="window.openCanvasQuery && openCanvasQuery(\'How do I exceed further on my positive feedback KPIs?\')">Ask AiMY how to exceed more →</button>';
+            }
+            return '<div class="empfb-card '+f.type+'" id="emp-'+f.id+'"><div class="empfb-top"><span class="empfb-type '+f.type+'">'+(f.type==='positive'?'Positive':'Needs attention')+'</span><span class="empfb-from">'+f.from+'</span><span class="empfb-date">'+f.date+'</span></div><div class="empfb-kpis"><span class="empfb-chip">'+f.kpis+'</span></div><div class="empfb-insight">'+AILOGO+' '+f.insight+'</div><div class="empfb-actions">'+actions+'</div></div>';
+          }).join('');
+        }
+        window.empAck = function(id){ var f=EMP_FB.find(function(x){return x.id===id;}); if(f){ f.ack='acknowledged'; renderEmpInbox(); fbToast('Feedback acknowledged — your supervisor was notified'); } };
+
+        /* ── Persona switching ── */
+        var scroll = document.querySelector('.sc-scroll');
+        var CTX = { supervisor:'Giving &amp; tracking feedback for your <strong>12 directs</strong>', hr:'Overseeing the feedback loop · <strong>reminders, escalations, aggregate</strong>', employee:'Your feedback inbox · acknowledge or dispute' };
+        window.setPersona = function(role){
+          document.querySelectorAll('.persona-btn').forEach(function(b){ var a=b.dataset.persona===role; b.classList.toggle('is-active',a); b.setAttribute('aria-selected',a); });
+          Array.from(scroll.children).forEach(function(ch){
+            if(ch.classList.contains('persona-switch')) return;
+            if(ch.id==='personaHR'){ ch.style.display = role==='hr'?'':'none'; return; }
+            if(ch.id==='personaEmployee'){ ch.style.display = role==='employee'?'':'none'; return; }
+            ch.style.display = role==='supervisor'?'':'none';
+          });
+          var ctx=document.getElementById('personaContext'); if(ctx) ctx.innerHTML = CTX[role];
+          var nfb=document.getElementById('newFbBtn'); if(nfb) nfb.style.display = role==='employee'?'none':'';
+          if(role==='hr'){ renderHrTable('all'); renderDisputeQueue(); }
+          if(role==='employee') renderEmpInbox();
+          if(role==='supervisor' && window.showSupBoard) showSupBoard(); /* reset to the agent board, not a stale drill-in */
+          window.scrollTo && scroll.scrollTo(0,0);
+        };
+        document.querySelectorAll('.persona-btn').forEach(function(b){ b.addEventListener('click', function(){ setPersona(b.dataset.persona); }); });
+        document.querySelectorAll('#hrpFilters .hrp-chip').forEach(function(c){ c.addEventListener('click', function(){ document.querySelectorAll('#hrpFilters .hrp-chip').forEach(function(x){x.classList.remove('is-active');}); c.classList.add('is-active'); renderHrTable(c.dataset.f); }); });
+
+        /* ── Toast ── */
+        var tTimer;
+        window.fbToast = function(msg){ var t=document.getElementById('fbToast'); document.getElementById('fbToastMsg').textContent=msg; t.classList.add('show'); clearTimeout(tTimer); tTimer=setTimeout(function(){t.classList.remove('show');},3200); };
+
+        /* ── Detail-page acknowledge / dispute ── */
+        window.acknowledgeDetail = function(){
+          var loop=document.getElementById('fbDetailLoop'), ack=document.getElementById('fbDetailAck'), dis=document.getElementById('fbDetailDispute');
+          loop.className='fb-detail-loop acknowledged'; loop.innerHTML=CHECK+' Feedback acknowledged'; loop.style.display='';
+          ack.style.display='none'; dis.style.display='none';
+          fbToast('Feedback acknowledged — supervisor notified · loop closed');
+        };
+
+        /* ── Dispute resolution (folded in) ── */
+        var dispChoice=null;
+        var dispSource='detail', dispQueueId=null;
+        window.openDisputeFlow = function(agent, interaction, kpis, score, source, queueId){
+          dispSource = source || 'detail'; dispQueueId = queueId || null;
+          document.getElementById('dispTitle').textContent = (dispSource==='queue'?'Resolve dispute — ':'Dispute — ')+agent+' · '+interaction;
+          document.getElementById('dispScore').textContent = (score||64)+'%';
+          document.getElementById('dispKpis').innerHTML = String(kpis).split(',').map(function(k){ return '<span class="disp-kpi-chip">'+k.trim()+'</span>'; }).join('');
+          dispChoice=null; document.getElementById('dispSubmit').disabled=true;
+          document.querySelectorAll('.disp-dtab').forEach(function(t){t.classList.remove('sel');});
+          var rat=document.getElementById('dispRationale');
+          if(dispSource==='queue'){ var d=DISPUTE_QUEUE.find(function(x){return x.id===queueId;}); rat.value = d?d.reason:''; rat.readOnly=true; }
+          else { rat.value=''; rat.readOnly=false; }
+          document.getElementById('dispDecisionRationale').value='';
+          document.getElementById('dispOutcomeNote').textContent='Select an outcome. The employee is notified either way, and the decision is written to the immutable feedback audit trail.';
+          document.getElementById('dispModal').classList.add('open');
+        };
+        window.openDisputeFromQueue = function(id){ var d=DISPUTE_QUEUE.find(function(x){return x.id===id;}); if(d) openDisputeFlow(d.agent, d.interaction, d.kpis, d.score, 'queue', id); };
+        window.closeDispute = function(){ document.getElementById('dispModal').classList.remove('open'); };
+        window.selDispTab = function(d){
+          dispChoice=d; document.querySelectorAll('.disp-dtab').forEach(function(t){ t.classList.toggle('sel', t.dataset.d===d); });
+          var notes={ upheld:'Uphold — original score stands. Employee is asked to acknowledge and continue their coaching plan.', overturned:'Overturn — score fully corrected. Affected KPIs are recalculated and the follow-up window resets.', partial:'Partial adjust — selected KPIs corrected while the rest stand. A revised feedback is re-sent.' };
+          document.getElementById('dispOutcomeNote').textContent=notes[d];
+          document.getElementById('dispSubmit').disabled=false;
+        };
+        window.submitDispute = function(){
+          if(!dispChoice) return;
+          var choice=dispChoice, src=dispSource, qid=dispQueueId;
+          closeDispute();
+          if(src==='queue' && qid){
+            var d=DISPUTE_QUEUE.find(function(x){return x.id===qid;});
+            if(d){ d.state='resolved'; d.outcome=choice; renderDisputeQueue(); }
+          } else {
+            var loop=document.getElementById('fbDetailLoop'), ack=document.getElementById('fbDetailAck'), dis=document.getElementById('fbDetailDispute');
+            if(loop){ loop.className='fb-detail-loop disputed'; loop.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg> Resolved · '+({upheld:'Upheld',overturned:'Overturned',partial:'Partial adjust'})[choice]; loop.style.display=''; if(ack)ack.style.display='none'; if(dis)dis.style.display='none'; }
+          }
+          fbToast('Decision recorded — employee notified · written to audit trail');
+        };
+
+        /* ── HR dispute-resolution queue ── */
+        var DISPUTE_QUEUE = [
+          { id:'dq1', agent:'Omar Abdallah', in:'OA', grad:'linear-gradient(135deg,#1a2a3a,#2d5c8e)', interaction:'Voice · May 7', kpis:'Follow-up Confirmation, Empathy & Active Listening', score:64, reason:'Caller ended the contact abruptly before I could confirm the next steps — the transcript cuts off mid-sentence.', age:'2 days ago', sla:false, state:'open' },
+          { id:'dq2', agent:'Tariq Mansour', in:'TM', grad:'linear-gradient(135deg,#3a1a2a,#7d2c52)', interaction:'Chat · May 3', kpis:'Issue Resolution', score:71, reason:'The customer confirmed the issue was resolved in a follow-up message that was not included in the scored window.', age:'3 days ago', sla:true, state:'open' }
+        ];
+        function renderDisputeQueue(){
+          var body=document.getElementById('dqBody'); if(!body) return;
+          var open=DISPUTE_QUEUE.filter(function(d){return d.state==='open';});
+          var cnt=document.getElementById('dqCount'); if(cnt) cnt.textContent=open.length+' open';
+          var OUT={upheld:'Upheld',overturned:'Overturned',partial:'Partial adjust'};
+          body.innerHTML = DISPUTE_QUEUE.map(function(d){
+            var head='<div class="dq-top"><div class="hrp-av" style="background:'+d.grad+'">'+d.in+'</div><div><div class="dq-name">'+d.agent+' <span class="dq-meta">· '+d.interaction+' · '+d.score+'%</span></div><div class="dq-kpis">'+d.kpis+'</div></div>'+(d.sla?'<span class="dq-sla">SLA · '+d.age+'</span>':'<span class="dq-age">'+d.age+'</span>')+'</div>';
+            if(d.state==='resolved'){
+              return '<div class="dq-item resolved">'+head+'<div class="dq-reason">"'+d.reason+'"</div><span class="dq-outcome">'+({upheld:'',overturned:'',partial:''})[d.outcome]+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Resolved · '+OUT[d.outcome]+' · employee notified</span></div>';
+            }
+            return '<div class="dq-item">'+head+'<div class="dq-reason">"'+d.reason+'"</div><div class="dq-actions"><button class="dq-resolve" onclick="window.openDisputeFromQueue && openDisputeFromQueue(\''+d.id+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Review &amp; resolve</button></div></div>';
+          }).join('') || '<div style="text-align:center;color:var(--d500);padding:24px;">No disputed feedback — queue is clear.</div>';
+        }
+        window.renderDisputeQueue = renderDisputeQueue;
+
+        /* ── New Feedback wizard ── */
+        var KPI_CATALOG = [
+          { name:'Empathy & Active Listening', prior:84 }, { name:'Tone & Professionalism', prior:88 },
+          { name:'Script Adherence', prior:80 }, { name:'Follow-up Confirmation', prior:64 },
+          { name:'Issue Resolution', prior:82 }, { name:'Survey Promotion', prior:71 },
+        ];
+        var nfw = { step:0, type:null, agent:'Omar Abdallah', kpis:[], insight:'' };
+        window.openNewFeedback = function(agent){ nfw={step:0,type:null,agent:agent||'Omar Abdallah',kpis:[],insight:''}; document.getElementById('newFbModal').classList.add('open'); renderNfw(); };
+        window.closeNewFeedback = function(){ document.getElementById('newFbModal').classList.remove('open'); };
+        window.nfwPrev = function(){ if(nfw.step>0){ nfw.step--; renderNfw(); } };
+        window.nfwNext = function(){
+          if(nfw.step===0 && !nfw.type) return;
+          if(nfw.step===1 && nfw.kpis.length===0){ fbToast('Pick at least one KPI'); return; }
+          if(nfw.step===3){ sendFeedback(); return; }
+          if(nfw.step===2){ nfw.insight = document.getElementById('nfwInsight').value; }
+          nfw.step++; renderNfw();
+        };
+        function nfwDraftInsight(){
+          var names = nfw.kpis.map(function(i){return KPI_CATALOG[i].name;});
+          if(nfw.type==='positive') return 'I flagged strong work on '+names.join(' and ')+' and shared it with your supervisor. To excel even further, keep leading with acknowledgement and add a personalised close — here is how top performers push past target.';
+          return 'I detected a dip on '+names.join(' and ')+' and drafted this for your supervisor. To improve, restate the agreed next step and timeline before every close — I have prepared a coaching plan that should bring these back to target within about 3 weeks.';
+        }
+        function renderNfw(){
+          for(var i=0;i<4;i++){ var s=document.getElementById('nfws'+i); if(s) s.classList.toggle('done', i<=nfw.step); }
+          document.getElementById('nfwBack').style.visibility = nfw.step>0?'visible':'hidden';
+          document.getElementById('nfwNext').textContent = nfw.step===3?'Send feedback':'Continue';
+          var b=document.getElementById('nfwBody');
+          if(nfw.step===0){
+            b.innerHTML = '<div class="nfw-label">What kind of feedback?</div><div class="nfw-type-row">'+
+              '<div class="nfw-type positive '+(nfw.type==='positive'?'sel':'')+'" onclick="nfwSetType(\'positive\')"><div class="nfw-type-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3z"/></svg></div><div class="nfw-type-title">Positive</div><div class="nfw-type-desc">Recognise a win · how to exceed more</div></div>'+
+              '<div class="nfw-type negative '+(nfw.type==='negative'?'sel':'')+'" onclick="nfwSetType(\'negative\')"><div class="nfw-type-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3z"/></svg></div><div class="nfw-type-title">Negative</div><div class="nfw-type-desc">Needs improvement · employee acknowledges or disputes</div></div>'+
+            '</div>';
+          } else if(nfw.step===1){
+            var agentOpts = DIRECTS.map(function(d){ return '<div class="v2-dropdown-option'+(d.name===nfw.agent?' selected':'')+'" role="option" data-value="'+d.name+'">'+d.name+'</div>'; }).join('');
+            b.innerHTML = '<div class="nfw-field"><label>Agent</label>'+
+                '<div class="v2-dropdown fld" id="nfwAgentDd">'+
+                  '<button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-label-text">'+nfw.agent+'</span><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 5.5 7 9l3.5-3.5"/></svg></button>'+
+                  '<div class="v2-dropdown-panel" role="listbox" aria-label="Agent">'+agentOpts+'</div>'+
+                '</div></div>'+
+              '<div class="nfw-label">KPIs — pick one or more · values seed from the previous feedback</div>'+
+              KPI_CATALOG.map(function(k,i){ var sel=nfw.kpis.indexOf(i)>=0; return '<div class="nfw-kpi '+(sel?'sel':'')+'" onclick="nfwToggleKpi('+i+')"><div class="nfw-kpi-check">'+(sel?'<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</div><span class="nfw-kpi-name">'+k.name+'</span><span class="nfw-kpi-prior">prior <b>'+k.prior+'%</b></span></div>'; }).join('');
+            var add=document.getElementById('nfwAgentDd');
+            if(add && window.initV2Dropdown){ window.initV2Dropdown(add); add.addEventListener('v2-select', function(e){ nfw.agent=e.detail.value; }); }
+          } else if(nfw.step===2){
+            if(!nfw.insight) nfw.insight = nfwDraftInsight();
+            b.innerHTML = '<div class="nfw-label">AiMY-drafted insight</div><div class="nfw-ai-draft">'+AILOGO+' AiMY drafted this from the selected KPIs and their prior values. Edit freely.</div><textarea class="nfw-textarea" id="nfwInsight" style="min-height:120px;">'+nfw.insight+'</textarea>';
+          } else {
+            nfw.insight = nfw.insight || nfwDraftInsight();
+            var names = nfw.kpis.map(function(i){return KPI_CATALOG[i];});
+            b.innerHTML = '<div class="nfw-label">Review — this email is sent to '+nfw.agent+'</div>'+
+              '<div class="nfw-email"><div class="nfw-email-head"><div class="to">To: '+nfw.agent.toLowerCase().replace(/ /g,'.')+'@company.com</div><div class="subj">'+(nfw.type==='positive'?'Great work — positive feedback on your KPIs':'Feedback on your KPIs — please acknowledge')+'</div></div>'+
+              '<div class="nfw-email-body">Hi '+nfw.agent.split(' ')[0]+',<br>'+(nfw.type==='positive'?'Recognising strong performance on:':'Here is feedback on the following KPIs:')+
+              '<ul>'+names.map(function(k){return '<li><b>'+k.name+'</b> — currently tracking from a prior '+k.prior+'%</li>';}).join('')+'</ul>'+
+              '<div style="display:flex;gap:8px;align-items:flex-start;margin:6px 0;">'+AILOGO+'<span style="color:var(--d300)">'+nfw.insight+'</span></div>'+
+              (nfw.type==='negative'?'<div style="margin-top:8px;color:var(--d300)">Please <b>acknowledge</b> this feedback, or <b>dispute</b> it if you disagree.</div>':'')+
+              '<a class="nfw-email-cta" href="my-profile.html">View your agent profile →</a>'+
+              '<div class="nfw-email-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'+(nfw.type==='negative'?'A "did they improve?" follow-up is scheduled for day 21 (max 1 month).':'No action required — keep it up.')+'</div>'+
+              '</div></div>';
+          }
+        }
+        window.nfwSetType = function(t){ nfw.type=t; renderNfw(); };
+        window.nfwSetAgent = function(a){ nfw.agent=a; };
+        window.nfwToggleKpi = function(i){ var p=nfw.kpis.indexOf(i); if(p>=0) nfw.kpis.splice(p,1); else nfw.kpis.push(i); nfw.insight=''; renderNfw(); };
+        function sendFeedback(){ closeNewFeedback(); fbToast((nfw.type==='positive'?'Positive':'Negative')+' feedback sent to '+nfw.agent+' · '+nfw.kpis.length+' KPI'+(nfw.kpis.length>1?'s':'')); }
+
+        /* ── Supervisor follow-up loop: "Did the employee improve?" ── */
+        window.followupResolve = function(cardId, name, ans){
+          var card=document.getElementById(cardId); if(!card) return;
+          var fu=document.getElementById(cardId+'-fu'); if(!fu) return;
+          card.classList.remove('followup');
+          if(ans==='yes'){
+            fu.innerHTML='<span class="fbt-loop improved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Improved · loop closed · flagged for re-evaluation</span>';
+            fbToast(name+' improved — loop closed · flagged for re-evaluation');
+          } else {
+            fu.innerHTML='<span class="fbt-loop escalated"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Did not improve · escalated to Feedback Manager</span>';
+            fbToast(name+' did not improve — escalated to the Feedback Manager');
+          }
+        };
+
+        /* ── Editable reminders & escalation config ── */
+        window.FEEDBACK_CONFIG = {};
+        function ddValue(el){ var s=el.querySelector('.v2-dropdown-option.selected'); return s?s.dataset.value:''; }
+        window.saveCadence = function(){
+          var cfg={};
+          document.querySelectorAll('#personaHR [data-cfg]').forEach(function(el){
+            var v;
+            if(el.classList.contains('ui-stepper')) v=el.dataset.val;
+            else if(el.classList.contains('v2-dropdown')) v=ddValue(el);
+            else if(el.type==='checkbox') v=el.checked;
+            else v=el.value;
+            cfg[el.dataset.cfg]=v;
+          });
+          window.FEEDBACK_CONFIG = cfg;
+          var b=document.getElementById('hrpSaveBtn');
+          if(b){ b.textContent='Saved ✓'; b.classList.add('saved'); setTimeout(function(){ b.textContent='Save cadence'; b.classList.remove('saved'); }, 1600); }
+          fbToast('Reminder & escalation settings saved · applied across the loop');
+        };
+        /* Custom stepper engine (delegated · replaces native number spinners) */
+        document.addEventListener('click', function(e){
+          var btn = e.target.closest('.ui-step-btn'); if(!btn) return;
+          var st = btn.closest('.ui-stepper'); if(!st) return;
+          var min=+st.dataset.min, max=+st.dataset.max, cur=+st.dataset.val, step=+btn.dataset.step;
+          var next=Math.min(max, Math.max(min, cur+step));
+          st.dataset.val=next; st.querySelector('.ui-step-val').textContent=next;
+          st.querySelectorAll('.ui-step-btn').forEach(function(b){ var s=+b.dataset.step; b.disabled=(s<0&&next<=min)||(s>0&&next>=max); });
+        });
+
+        /* ── Feedback report (all or one person) ── */
+        function ddSet(dd, val){
+          if(!dd) return;
+          var lbl=dd.querySelector('.dd-label-text');
+          dd.querySelectorAll('.v2-dropdown-option').forEach(function(o){ var sel=o.dataset.value===val; o.classList.toggle('selected',sel); if(sel&&lbl) lbl.textContent=o.textContent.trim(); });
+          var btn=dd.querySelector('.v2-dropdown-btn'); if(btn) btn.classList.remove('active-filter');
+        }
+        window.openReportModal = function(){
+          ddSet(document.getElementById('repScope'),'all');
+          ddSet(document.getElementById('repRange'),'Last 30 days');
+          document.getElementById('repOutput').innerHTML='<div class="rep-empty">Pick a scope and date range, then Generate.</div>';
+          document.getElementById('repExport').style.display='none';
+          document.getElementById('reportModal').classList.add('open');
+        };
+        window.closeReport = function(){ document.getElementById('reportModal').classList.remove('open'); };
+        window.generateReport = function(){
+          var scope=ddValue(document.getElementById('repScope')), range=ddValue(document.getElementById('repRange'));
+          var single = scope!=='all';
+          var scopeLabel = single ? scope : 'All agents · 12 people';
+          var total=single?7:148, pos=single?3:61, neg=single?4:87;
+          var ack=single?86:78, disp=single?14:9;
+          var kpiGaps = single
+            ? [['Follow-up Confirmation',64],['Survey Promotion',71],['Issue Resolution',82]]
+            : [['Follow-up Confirmation',68],['Survey Promotion',74],['Script Adherence',83],['Empathy & Active Listening',88]];
+          var missing = single ? ['Tone & Professionalism'] : ['—'];
+          var attn = single ? (scope==='Omar Abdallah'||scope==='Tariq Mansour'?1:0) : 2;
+          var out='<div class="rep-head"><h4>'+scopeLabel+'</h4><span class="r">· '+range+' · '+total+' feedback items</span></div>'+
+            '<div class="rep-stats">'+
+              '<div class="rep-tile anchor"><div class="v">'+ack+'%</div><div class="l">Loop health · acknowledged &amp; acted on</div>'+
+                '<div class="rep-split"><div class="rep-split-track"><div class="ackseg" style="width:'+ack+'%"></div><div class="disseg" style="width:'+disp+'%"></div></div></div></div>'+
+              '<div class="rep-tile"><div class="v">'+total+'</div><div class="l">Total feedback</div></div>'+
+              '<div class="rep-tile"><div class="v ok">'+pos+'</div><div class="l">Positive</div></div>'+
+              '<div class="rep-tile"><div class="v err">'+neg+'</div><div class="l">Negative</div></div>'+
+              '<div class="rep-tile"><div class="v warn">'+disp+'%</div><div class="l">Disputed</div></div>'+
+            '</div>'+
+            '<div class="rep-sec"><h5>Top KPI gaps (lowest scoring)</h5>'+kpiGaps.map(function(k){return '<div class="rep-bar-row"><span class="nm">'+k[0]+'</span><div class="rep-bar-track"><div class="rep-bar-fill" style="width:'+k[1]+'%;background:'+(k[1]<75?'var(--err)':k[1]<85?'var(--warn)':'var(--ok)')+'"></div></div><span class="pc">'+k[1]+'%</span></div>';}).join('')+'</div>'+
+            '<div class="rep-sec"><h5>Missing KPIs (no feedback yet)</h5><div class="rep-chips">'+missing.map(function(m){return '<span class="rep-chip'+(m!=='—'?' err':'')+'">'+m+'</span>';}).join('')+'</div></div>'+
+            '<div class="rep-sec"><h5>Needs attention</h5><div class="rep-chips"><span class="rep-chip'+(attn>0?' err':'')+'">'+attn+' with repeated negative feedback</span></div></div>';
+          document.getElementById('repOutput').innerHTML=out;
+          document.getElementById('repExport').style.display='';
+          fbToast('Report generated for '+(single?scope:'all agents')+' · '+range);
+        };
+
+        /* ── Insights & Actions ── */
+        window.openInsightsModal = function(){ document.getElementById('insightsModal').classList.add('open'); };
+        window.closeInsights = function(){ document.getElementById('insightsModal').classList.remove('open'); };
+
+        /* Wire the report dropdowns — this modal is parsed after the shared
+           dropdown engine ran its load-time init, so init them explicitly. */
+        ['repScope','repRange'].forEach(function(id){ var el=document.getElementById(id); if(el && window.initV2Dropdown) window.initV2Dropdown(el); });
+
+        /* ── Unified evaluation workspace — agent board ── */
+        var SUP_AGENTS = [
+          { name:'Omar Abdallah', in:'OA', grad:GRADS.OA, q:64, loop:'followup', kpi:'Follow-up Confirmation', trend:{dir:'down',n:3}, when:'acknowledged · sent 21d ago', ai:'I drafted this and Omar acknowledged it — did he improve?' },
+          { name:'Tariq Mansour', in:'TM', grad:GRADS.TM, q:68, loop:'review', kpi:'Issue Resolution', trend:{dir:'down',n:5}, when:'drafted 1h ago', ai:'I drafted negative feedback from a KPI dip — review before it sends.' },
+          { name:'Michael Chen', in:'MC', grad:GRADS.MC, q:79, loop:'disputed', kpi:'Script Adherence', trend:null, when:'disputed 5h ago', ai:'Michael disputed this — your call to uphold or overturn.' },
+          { name:'Aisha Khalil', in:'AK', grad:GRADS.AK, q:81, loop:'ack', kpi:'Empathy & Active Listening', trend:{dir:'up',n:4}, when:'sent 1d ago', ai:'Positive feedback sent — waiting on Aisha to acknowledge it.' },
+          { name:'Daniel Rodriguez', in:'DR', grad:GRADS.DR, q:86, loop:'ontrack', kpi:'All KPIs at target', trend:null, when:'updated 2d ago', ai:'At or above target across the board — nothing needs you.' },
+          { name:'Priya Venkat', in:'PV', grad:GRADS.PV, q:88, loop:'improving', kpi:'Follow-up Confirmation', trend:{dir:'up',n:6}, when:'updated 3d ago', ai:'Recovering after coaching — up 6pts and on track.' },
+          { name:'Jamal Williams', in:'JW', grad:GRADS.JW, q:90, loop:'ontrack', kpi:'All KPIs at target', trend:null, when:'updated 2d ago', ai:'Consistently above target — holding steady.' },
+          { name:'Sarah Reyes', in:'SR', grad:GRADS.SR, q:98, loop:'ontrack', kpi:'All KPIs exceeding', trend:{dir:'up',n:2}, when:'updated 4d ago', ai:'Top of the team — every KPI exceeding target.' },
+          { name:'Hana Saleh', in:'HS', grad:GRADS.HS, q:88, loop:'ontrack', kpi:'All KPIs at target', trend:null, when:'updated 2d ago', ai:'Steady above target — no action needed.' },
+          { name:'Nadia Fathy', in:'NF', grad:GRADS.NF, q:null, loop:'pending', kpi:'Not evaluated this cycle', trend:null, when:'no evaluation yet', ai:'I’ll draft feedback the moment you run her evaluation.' },
+          { name:'Karim Adel', in:'KA', grad:GRADS.KA, q:null, loop:'pending', kpi:'Not evaluated this cycle', trend:null, when:'no evaluation yet', ai:'I’ll draft feedback the moment you run his evaluation.' },
+          { name:'Yara Nabil', in:'YN', grad:GRADS.YN, q:null, loop:'pending', kpi:'Not evaluated this cycle', trend:null, when:'no evaluation yet', ai:'I’ll draft feedback the moment you run her evaluation.' }
+        ];
+        var LOOP_LABEL = { review:'Needs review', ack:'Awaiting ack', disputed:'Disputed', followup:'Follow-up due', improving:'Improving', ontrack:'On track', pending:'Pending eval' };
+        function qClass(q){ return q<70?'err':q<85?'warn':'ok'; }
+        function inFilter(a, f){
+          if(!f||f==='all') return true;
+          if(f==='attention') return a.loop==='review'||a.loop==='ack'||a.loop==='disputed'||a.loop==='followup';
+          if(f==='ontrack') return a.loop==='ontrack'||a.loop==='improving';
+          return a.loop===f;
+        }
+        var curFilter='attention', curSearch='';
+        function boardRows(){ return SUP_AGENTS.filter(function(a){ return curSearch ? a.name.toLowerCase().indexOf(curSearch)>=0 : inFilter(a,curFilter); }); }
+        /* Per-state inline action — every card can close its own loop stage from the board */
+        function supTileActions(a){
+          if(a.done) return '<span class="loop-chip '+a.done.cls+' ag-donechip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'+a.done.text+'</span>';
+          var n=a.name.replace(/'/g,"\\'");
+          switch(a.loop){
+            case 'followup': return '<div class="ag-actions"><button class="ag-act yes" onclick="event.stopPropagation();supTileResolve(\''+n+'\',\'yes\')">Yes — improved</button><button class="ag-act no" onclick="event.stopPropagation();supTileResolve(\''+n+'\',\'no\')">No</button></div>';
+            case 'review': return '<div class="ag-actions"><button class="ag-act primary" onclick="event.stopPropagation();openSupAgent(\''+n+'\')">Review AiMY draft</button></div>';
+            case 'ack': return '<div class="ag-actions"><button class="ag-act" onclick="event.stopPropagation();supTileNudge(\''+n+'\')">Nudge to acknowledge</button></div>';
+            case 'disputed': return '<div class="ag-actions"><button class="ag-act warn" onclick="event.stopPropagation();supAction(\''+n+'\',\'disputed\')">Resolve dispute</button></div>';
+            case 'pending': return '<div class="ag-actions"><button class="ag-act primary" onclick="event.stopPropagation();window.openNewFeedback&&openNewFeedback(\''+n+'\')">Evaluate now</button></div>';
+            default: return '<div class="ag-actions"><button class="ag-act" onclick="event.stopPropagation();openSupAgent(\''+n+'\')">View profile</button></div>';
+          }
+        }
+        window.supTileResolve = function(name, ans){
+          var a=SUP_AGENTS.find(function(x){return x.name===name;}); if(!a) return;
+          a.done = ans==='yes'
+            ? { cls:'improving', text:'Improved · loop closed · flagged for re-evaluation' }
+            : { cls:'disputed', text:'Did not improve · escalated to Feedback Manager' };
+          renderSupBoard();
+          fbToast(ans==='yes' ? name+' improved — loop closed · flagged for re-evaluation'
+                              : name+' did not improve — escalated to the Feedback Manager');
+        };
+        window.supTileNudge = function(name){
+          var a=SUP_AGENTS.find(function(x){return x.name===name;}); if(!a) return;
+          a.done = { cls:'ack', text:'Acknowledgement nudge sent by AiMY' };
+          renderSupBoard();
+          fbToast('AiMY nudged '+name+' to acknowledge their feedback');
+        };
+        function renderSupBoard(){
+          var body=document.getElementById('supBoardRows'); if(!body) return;
+          var rows=boardRows();
+          body.innerHTML = rows.map(function(a){
+            var hasQ = a.q!=null;
+            var qc = hasQ ? qClass(a.q) : 'pending';
+            var ring = hasQ ? 'var(--'+qc+')' : 'var(--d600)';
+            var score = hasQ ? '<span class="ag-score '+qc+'">'+a.q+'%</span>'
+                             : '<span class="ag-score na">Not evaluated</span>';
+            var trend = a.trend ? '<span class="ag-trend '+a.trend.dir+'">'+(a.trend.dir==='down'?'↓':'↑')+a.trend.n+'</span>' : '';
+            // Resolved cards are settled — no click target, no keyboard focus, aria-disabled
+            var interactive = a.done
+              ? 'aria-disabled="true"'
+              : 'role="button" tabindex="0" onclick="openSupAgent(\''+a.name.replace(/'/g,"\\'")+'\')" onkeydown="if(event.key===\'Enter\')openSupAgent(\''+a.name.replace(/'/g,"\\'")+'\')"';
+            return '<div class="ag-tile '+a.loop+(a.done?' is-done':'')+'" '+interactive+'>'+
+              '<div class="ag-tile-top">'+
+                '<div class="ag-av" style="background:'+a.grad+'; --ring:'+ring+'">'+a.in+'</div>'+
+                '<span class="ag-score-wrap">'+score+trend+'</span>'+
+              '</div>'+
+              '<div class="ag-tile-name">'+a.name+'</div>'+
+              '<div class="ag-tile-kpi">'+a.kpi+'</div>'+
+              '<div class="ag-tile-state">'+
+                '<span class="loop-chip '+a.loop+'"><span class="d"></span>'+LOOP_LABEL[a.loop]+'</span>'+
+                '<span class="ag-fresh">· '+a.when+'</span>'+
+              '</div>'+
+              '<div class="ag-ai"><svg viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg><span>'+a.ai+'</span></div>'+
+              supTileActions(a)+
+            '</div>';
+          }).join('') || '<div class="board-empty">'+(curSearch?'No agent matches &ldquo;'+curSearch+'&rdquo;.':'Nothing here — you\'re all caught up in this view.')+'</div>';
+          var cnt=document.getElementById('boardCount'); if(cnt) cnt.textContent = rows.length+' of '+SUP_AGENTS.length+' agents';
+        }
+        function loopCount(f){ return SUP_AGENTS.filter(function(a){ return inFilter(a,f); }).length; }
+        function renderSupChips(active){
+          var el=document.getElementById('slvChips'); if(!el) return;
+          var defs=[ {f:'attention',l:'Needs attention',d:'var(--qa-accent)'}, {f:'review',l:'Needs review',d:'var(--qa-accent)'}, {f:'ack',l:'Awaiting ack',d:'var(--warn)'}, {f:'disputed',l:'Disputed',d:'var(--warn)'}, {f:'followup',l:'Follow-up due',d:'var(--qa-accent)'}, {f:'pending',l:'Pending eval',d:'var(--d500)'}, {f:'ontrack',l:'On track',d:'var(--ok)'}, {f:'all',l:'All',d:''} ];
+          el.innerHTML = defs.map(function(x){ return '<button class="slv-chip'+(x.f===active?' is-active':'')+'" data-f="'+x.f+'" onclick="supFilter(\''+x.f+'\')">'+(x.d?'<span class="d" style="background:'+x.d+'"></span>':'')+x.l+' <span class="c">'+loopCount(x.f)+'</span></button>'; }).join('');
+        }
+        function updateBoardSub(){
+          var sub=document.getElementById('boardSub'); if(!sub) return;
+          if(curSearch){ sub.textContent='search results'; return; }
+          var m={ attention:'agents that need you now', all:'every agent, most-urgent first', review:'feedback awaiting your review', ack:'sent · awaiting employee acknowledgement', disputed:'disputed feedback to resolve', followup:'follow-ups due now', pending:'not yet evaluated this cycle', ontrack:'on track — no action needed' };
+          sub.textContent = m[curFilter] || 'click an agent to open their loop';
+        }
+        window.supFilter = function(f){ curFilter=f; curSearch=''; var s=document.getElementById('boardSearch'); if(s) s.value=''; renderSupChips(f); renderSupBoard(); updateBoardSub(); };
+        window.supSearch = function(v){ curSearch=(v||'').trim().toLowerCase(); renderSupChips(curSearch?null:curFilter); renderSupBoard(); updateBoardSub(); };
+        function renderAgentEvals(name){
+          var a=SUP_AGENTS.find(function(x){return x.name===name;}) || {q:80};
+          var list=document.getElementById('agevList'); if(!list) return;
+          var chans=['Voice','Chat','Email','Ticket','Chat'], days=['May 7','May 5','May 3','Apr 30','Apr 28'], off=[3,-6,8,-4,5];
+          var kpis=['Empathy & tone','Follow-up confirmation','Issue resolution','Script adherence','Survey promotion'];
+          list.innerHTML = days.map(function(d,i){
+            var sc=Math.max(42,Math.min(100, a.q+off[i]));
+            var cls=sc<70?'err':sc<85?'warn':'ok', st=sc<70?'fail':sc<85?'border':'pass', stl=sc<70?'Fail':sc<85?'Borderline':'Pass';
+            return '<div class="agev-row"><span class="agev-date">'+d+'</span><span class="agev-chan">'+chans[i]+'</span><span class="agev-kpi">'+kpis[i]+'</span><span class="agev-score '+cls+'">'+sc+'%</span><span class="agev-status '+st+'">'+stl+'</span></div>';
+          }).join('');
+          var sub=document.getElementById('agevSub'); if(sub) sub.textContent='AiMY-run · '+name+' · last 30 days';
+        }
+        function renderAgentKpis(name){
+          var a=SUP_AGENTS.find(function(x){return x.name===name;}) || {q:80};
+          var grid=document.getElementById('agkpiGrid'); if(!grid) return;
+          var defs=[['Empathy & Active Listening',11],['Tone & Professionalism',8],['Issue Resolution',2],['Script Adherence',0],['Follow-up Confirmation',-16],['Survey Promotion',-9]];
+          grid.innerHTML = defs.map(function(k){
+            var sc=Math.max(40,Math.min(100, a.q + k[1]));
+            var cls=sc<70?'err':sc<85?'warn':'ok';
+            return '<div class="agkpi-item"><span class="agkpi-name">'+k[0]+'</span><div class="agkpi-bar"><div class="agkpi-fill '+cls+'" style="width:'+sc+'%"></div><span class="agkpi-tgt" style="left:80%"></span></div><span class="agkpi-val '+cls+'">'+sc+'%</span></div>';
+          }).join('');
+          var sub=document.getElementById('agkpiSub'); if(sub) sub.textContent='6 KPIs · vs 80% target · '+name.split(' ')[0]+'’s current standing';
+        }
+        window.openSupAgent = function(name){ var b=document.getElementById('supBoard'); if(b) b.style.display='none'; if(window.updateAgentPanel) updateAgentPanel(name); renderAgentEvals(name); renderAgentKpis(name); var va=document.getElementById('viewAgent'); if(va) va.classList.add('is-active'); var sc=document.querySelector('.sc-scroll'); if(sc) sc.scrollTop=0; };
+        window.showSupBoard = function(){ var va=document.getElementById('viewAgent'); if(va) va.classList.remove('is-active'); var b=document.getElementById('supBoard'); if(b) b.style.display=''; var sc=document.querySelector('.sc-scroll'); if(sc) sc.scrollTop=0; };
+        window.supAction = function(name, loop){ if(loop==='disputed' && window.openDisputeFlow){ openDisputeFlow(name, 'Chat · May 3', 'Issue Resolution', 79); } else { openSupAgent(name); } };
+        renderSupChips('attention'); renderSupBoard(); updateBoardSub();
+
+        /* Place the feedback loop directly under the "Since your last visit" block. */
+        (function(){ var track=document.querySelector('.fbtrack'), board=document.getElementById('supBoard'), slv=board?board.querySelector('.slv'):null; if(track && slv) slv.insertAdjacentElement('afterend', track); })();
+
+        /* Strip the "Today's coaching priorities" briefing + the roster label from the agent
+           detail — priorities live on the board now, and the board is the roster. */
+        (function(){ var va=document.getElementById('viewAgent'); if(!va) return; Array.prototype.forEach.call(va.querySelectorAll('.sc-section-label'), function(l){ var t=l.textContent||''; if(/coaching priorities/i.test(t)){ var n=l.nextElementSibling; l.remove(); if(n && n.classList.contains('tier-2-grid')) n.remove(); } else if(/^\s*All agents/i.test(t)){ l.remove(); } }); })();
+
+        /* init default persona */
+        setPersona('supervisor');
+      })();
     </script>
   </body>
 </html>

@@ -5914,13 +5914,12 @@
             </svg>
             Reviews
           </a>
-          <a class="nav-item" href="disputes.html">
+          <a class="nav-item" href="my-profile.html" style="order:10;margin-top:auto;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="12"></line>
-              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
             </svg>
-            Disputes
+            My Profile
           </a>
           <div class="sidebar-section-label">Configure</div>
           <a class="nav-item" href="kpi-browser.html">
@@ -6085,6 +6084,148 @@
 
         </div>
         <!-- /aimySummaryCard -->
+
+        <!-- ════ FEEDBACK LOOP OVERVIEW (redesign · alerts route to AiMY canvas) ════ -->
+        <style>
+          .floop { margin: 0 0 22px; }
+          .floop-head { display:flex; align-items:baseline; gap:12px; margin-bottom:14px; }
+          .floop-head h2 { font-size:19px; font-weight:800; letter-spacing:-0.01em; color:var(--d50); }
+          .floop-head .fl-sub { font-size:12.5px; color:var(--d400); }
+          .floop-head .fl-spacer { flex:1; }
+          .floop-head a { font-size:12px; font-weight:700; color:var(--qa-accent); text-decoration:none; }
+          .floop-grid { display:grid; grid-template-columns:1.7fr 1fr; gap:14px; }
+          @media (max-width:1080px){ .floop-grid { grid-template-columns:1fr; } }
+          .floop-card { background:var(--card-bg); border:1px solid var(--card-border); border-radius:18px; padding:20px 22px; box-shadow:0 1px 2px rgba(0,0,0,0.4), 0 8px 22px rgba(0,0,0,0.2); position:relative; overflow:hidden; }
+          .floop-card.hero::before { content:""; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, rgba(var(--qa-accent-rgb),0.6) 30%, rgba(111,223,226,0.4) 70%, transparent); }
+          .floop-anchor { display:flex; align-items:flex-end; gap:16px; margin-bottom:22px; }
+          .floop-health { font-size:52px; font-weight:800; line-height:0.92; letter-spacing:-0.02em; color:var(--d50); font-variant-numeric:tabular-nums; }
+          .floop-anchor .fl-ctx { font-size:13px; color:var(--d400); line-height:1.55; max-width:36ch; padding-bottom:5px; }
+          .floop-anchor .fl-ctx b { color:var(--d100); font-variant-numeric:tabular-nums; }
+          .funnel { display:flex; flex-direction:column; gap:9px; }
+          .fn-stage { display:grid; grid-template-columns:118px 1fr 64px; align-items:center; gap:12px; }
+          .fn-label { font-size:12.5px; font-weight:600; color:var(--d200); }
+          .fn-bar { height:30px; border-radius:8px; background:rgba(255,255,255,0.04); position:relative; overflow:hidden; }
+          .fn-fill { height:100%; border-radius:8px; background:linear-gradient(90deg, var(--qa-accent), #5b8def 65%, var(--teal)); display:flex; align-items:center; padding:0 11px; }
+          .fn-count { font-size:12.5px; font-weight:800; color:#fff; font-variant-numeric:tabular-nums; }
+          .fn-conv { font-size:12.5px; font-weight:700; color:var(--d300); text-align:right; font-variant-numeric:tabular-nums; }
+          .fn-conv.drop { color:var(--teal); }
+          .fn-branch { display:flex; flex-wrap:wrap; gap:8px; margin-top:5px; padding-left:130px; }
+          .fn-chip { font-size:11px; font-weight:700; padding:5px 10px; border-radius:999px; border:1px solid var(--card-border); color:var(--d300); font-variant-numeric:tabular-nums; }
+          .fn-chip.warn { color:var(--warn); background:rgba(247,144,9,0.08); border-color:transparent; }
+          .fn-chip.err { color:var(--err); background:rgba(240,68,56,0.08); border-color:transparent; }
+          .floop-side { display:flex; flex-direction:column; gap:16px; }
+          .floop-sub-h { font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--d500); font-weight:700; margin-bottom:8px; }
+          .attn-row { display:flex; gap:11px; align-items:flex-start; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer; transition:opacity 150ms cubic-bezier(0.4,0,0.2,1); }
+          .attn-row:last-child { border-bottom:none; }
+          .attn-row:hover { opacity:0.82; }
+          .attn-dot { width:8px; height:8px; border-radius:50%; margin-top:5px; flex-shrink:0; }
+          .attn-t { font-size:12.5px; font-weight:700; color:var(--d100); }
+          .attn-s { font-size:11.5px; color:var(--d400); margin-top:1px; line-height:1.45; }
+          .act-item { display:flex; gap:10px; align-items:baseline; padding:6px 0; font-size:12px; color:var(--d300); }
+          .act-item .at { color:var(--d500); font-size:11px; white-space:nowrap; margin-left:auto; font-variant-numeric:tabular-nums; }
+          .floop-ask { margin-top:4px; width:100%; display:flex; align-items:center; justify-content:center; gap:8px; font-family:"Urbanist",sans-serif; cursor:pointer; font-size:12.5px; font-weight:700; padding:10px; border-radius:10px; border:1px solid rgba(var(--qa-accent-rgb),0.28); background:var(--qa-accent-dim); color:var(--qa-accent); transition:background 150ms cubic-bezier(0.4,0,0.2,1), transform 150ms cubic-bezier(0.4,0,0.2,1); }
+          .floop-ask:hover { background:rgba(var(--qa-accent-rgb),0.2); }
+          .floop-ask:active { transform:scale(0.98); }
+          .floop-ask svg { width:15px; height:15px; }
+          /* attn-block groups a "needs attention" line with what AiMY already did about it */
+          .attn-block { border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px; margin-bottom:2px; }
+          .attn-block:last-child { border-bottom:none; }
+          .attn-block .attn-row { border-bottom:none; padding-bottom:4px; }
+          .attn-done { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:2px; padding:8px 10px; border-radius:10px; background:rgba(var(--qa-accent-rgb),0.06); border:1px solid rgba(var(--qa-accent-rgb),0.16); }
+          .attn-done .mark { width:14px; height:16px; flex-shrink:0; }
+          .attn-done .txt { flex:1 1 140px; min-width:0; font-size:11.5px; font-weight:600; color:var(--d200); line-height:1.4; }
+          .attn-done .txt b { color:var(--d50); font-weight:700; }
+          .attn-done .acts { display:flex; gap:6px; flex-shrink:0; }
+          .attn-done .lnk { font-family:"Urbanist",sans-serif; font-size:10.5px; font-weight:700; padding:4px 11px; border-radius:20px; cursor:pointer; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); color:var(--d300); white-space:nowrap; transition:background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast); }
+          .attn-done .lnk:hover { background:rgba(255,255,255,0.08); color:var(--d50); border-color:rgba(255,255,255,0.16); }
+          .attn-done .lnk.primary { color:var(--teal); border-color:rgba(111,223,226,0.28); background:rgba(111,223,226,0.10); }
+          .attn-done .lnk.primary:hover { background:rgba(111,223,226,0.16); }
+          .floop-report { display:inline-flex; align-items:center; gap:6px; font-family:"Urbanist",sans-serif; cursor:pointer; font-size:12px; font-weight:700; padding:6px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.10); background:rgba(255,255,255,0.03); color:var(--d200); transition:background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast); }
+          .floop-report:hover { background:rgba(255,255,255,0.07); color:var(--d50); border-color:rgba(255,255,255,0.18); }
+          .floop-report svg { width:13px; height:13px; }
+        </style>
+        <section class="floop" aria-label="Feedback loop overview">
+          <div class="floop-head">
+            <h2>Feedback loop</h2>
+            <span class="fl-sub">· proactive feedback across 12 agents · last 30 days</span>
+            <span class="fl-spacer"></span>
+            <button class="floop-report" type="button" onclick="openCanvasQuery('Generate a feedback report. Ask me whether it should cover all 12 agents or one specific person, then produce the aggregate loop metrics — sent, acknowledged, improved, disputed, escalated — and export it.')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+              Generate report
+            </button>
+            <a href="agent-scorecards.html">Open in Reviews →</a>
+          </div>
+          <div class="floop-grid">
+            <div class="floop-card hero">
+              <div class="floop-anchor">
+                <div class="floop-health">82%</div>
+                <div class="fl-ctx"><b>148</b> feedbacks sent this month — <b>78%</b> acknowledged, <b>61%</b> led to a measured improvement, <b>9%</b> disputed.</div>
+              </div>
+              <div class="funnel">
+                <div class="fn-stage"><span class="fn-label">Sent</span><div class="fn-bar"><div class="fn-fill" style="width:100%"><span class="fn-count">148</span></div></div><span class="fn-conv">100%</span></div>
+                <div class="fn-stage"><span class="fn-label">Acknowledged</span><div class="fn-bar"><div class="fn-fill" style="width:78%"><span class="fn-count">116</span></div></div><span class="fn-conv">78%</span></div>
+                <div class="fn-stage"><span class="fn-label">Improved</span><div class="fn-bar"><div class="fn-fill" style="width:48%"><span class="fn-count">71</span></div></div><span class="fn-conv drop">61%</span></div>
+                <div class="fn-branch">
+                  <span class="fn-chip warn">13 disputed &middot; 11 resolved</span>
+                  <span class="fn-chip err">9 escalated to HR</span>
+                  <span class="fn-chip">21 awaiting ack</span>
+                </div>
+              </div>
+            </div>
+            <div class="floop-card floop-side">
+              <div>
+                <div class="floop-sub-h">Needs attention</div>
+                <!-- Omar — constantly below → AiMY auto-scheduled the HR meeting (closed action, not a prompt) -->
+                <div class="attn-block">
+                  <div class="attn-row static">
+                    <span class="attn-dot" style="background:var(--err)"></span>
+                    <div><div class="attn-t">Omar Abdallah &middot; 4th negative</div><div class="attn-s">Constantly below &middot; repeated KPI-fail threshold reached</div></div>
+                  </div>
+                  <div class="attn-done">
+                    <svg class="mark" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                    <span class="txt">I scheduled an <b>HR meeting</b> &middot; Thu 3:00pm with Lina &amp; HR</span>
+                    <span class="acts">
+                      <button class="lnk primary" onclick="openCanvasQuery('Show why Omar Abdallah\'s HR meeting was auto-scheduled — his 4 consecutive negatives on Follow-up Confirmation, the constantly-below threshold, and the meeting details.')">Review</button>
+                      <button class="lnk" onclick="openCanvasQuery('Reschedule Omar Abdallah\'s HR meeting to another time.')">Reschedule</button>
+                    </span>
+                  </div>
+                </div>
+                <!-- Employee non-acknowledgement escalation → AiMY notified the Feedback Manager -->
+                <div class="attn-block">
+                  <div class="attn-row static">
+                    <span class="attn-dot" style="background:var(--err)"></span>
+                    <div><div class="attn-t">Karim Nabil &middot; feedback un-acknowledged &times;3</div><div class="attn-s">Reminders sent, no response before the window closed</div></div>
+                  </div>
+                  <div class="attn-done">
+                    <svg class="mark" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
+                    <span class="txt">I notified the <b>Feedback Manager</b> after 3 un-acknowledged reminders.</span>
+                    <span class="acts">
+                      <button class="lnk primary" onclick="openCanvasQuery('Show Karim Nabil\'s un-acknowledged feedback — the 3 reminders I sent, the deadline it passed, and the escalation I raised to the Feedback Manager.')">Review</button>
+                    </span>
+                  </div>
+                </div>
+                <div class="attn-row" role="button" tabindex="0" onclick="openCanvasQuery('Lina Haddad has 2 overdue feedback follow-ups — remind her to close them.')">
+                  <span class="attn-dot" style="background:var(--warn)"></span>
+                  <div><div class="attn-t">Lina Haddad &middot; 2 follow-ups overdue</div><div class="attn-s">"Did they improve?" unanswered &times;2</div></div>
+                </div>
+                <div class="attn-row" role="button" tabindex="0" onclick="openCanvasQuery('3 new hires have unsubmitted feedback before probation ends — nudge their supervisors.')">
+                  <span class="attn-dot" style="background:var(--brand)"></span>
+                  <div><div class="attn-t">3 new hires &middot; no feedback yet</div><div class="attn-s">Nudge supervisors before probation ends</div></div>
+                </div>
+              </div>
+              <div>
+                <div class="floop-sub-h">Recent loop activity</div>
+                <div class="act-item"><span>Aisha acknowledged feedback on Empathy</span><span class="at">2h</span></div>
+                <div class="act-item"><span>Dispute overturned &middot; Michael &middot; Script Adherence</span><span class="at">5h</span></div>
+                <div class="act-item"><span>Omar's coaching plan reached 60%</span><span class="at">1d</span></div>
+              </div>
+              <button class="floop-ask" type="button" onclick="openCanvasQuery('Summarise the feedback loop health and what needs my attention today.')">
+                <svg viewBox="0 0 18 20"><use href="#aimy-logo-small" /></svg>
+                Ask AiMY about the loop
+              </button>
+            </div>
+          </div>
+        </section>
 
         <div class="tier-1-grid">
             <div class="bcard p1 tier-primary" role="region" tabindex="0">
@@ -9140,6 +9281,10 @@
 
           setTimeout(() => overlayInput.focus(), 220);
         }
+
+        /* Global entry — feedback-loop alerts route into the AiMY canvas
+           (the bell is reserved for system notifications). */
+        window.openCanvasQuery = function (q) { openOverlay(q); };
 
         /* ── Close overlay ───────────────────────────────────────────── */
         function closeOverlay() {
