@@ -8184,7 +8184,6 @@
                       <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l4 4 6-8"/></svg>
                       Set recovery goal
                     </button>
-                    <button class="k-row-action" type="button">Export for 1:1</button>
                   </div>
                 </div>
               </div>
@@ -8314,7 +8313,6 @@
                   <span class="heatmap-coaching-note">Coaching session on W7 (Mar 14) shows recovery in Empathy — pattern confirms coaching effectiveness for soft-skill KPIs</span>
                   <div style="display:flex;gap:6px;">
                     <button class="brief-sec-btn" type="button" style="font-size:10px;padding:5px 12px;">Ask AiMY — why did Follow-up SOP decline?</button>
-                    <button class="brief-sec-btn" type="button" style="font-size:10px;padding:5px 12px;">Export heatmap</button>
                   </div>
                 </div>
               </div>
@@ -8423,7 +8421,6 @@
               <!-- Bulk bar -->
               <div class="eval-bulk-bar" id="evalBulkBarAccount">
                 <span class="eval-bulk-count" id="evalBulkCountAccount">0 selected</span>
-                <button class="eval-bulk-btn primary" type="button">Export selected</button>
                 <button class="eval-bulk-btn sec" type="button">Flag for review</button>
                 <button class="eval-bulk-btn sec" type="button" onclick="clearAccountEvalSelection()">Clear</button>
               </div>
@@ -8940,10 +8937,6 @@
                   <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 1.5v5M7 9.5v.5M2 7a5 5 0 1010 0A5 5 0 002 7z"/></svg>
                   Dispute
                 </button>
-                <button class="eval-export-btn" type="button">
-                  <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v2h10v-2M7 2v7M4.5 7l2.5 2.5L9.5 7"/></svg>
-                  Export as PDF
-                </button>
               </div>
 
             </div>
@@ -9196,10 +9189,6 @@
                 <button class="eval-dispute-btn" type="button">
                   <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 1.5v5M7 9.5v.5M2 7a5 5 0 1010 0A5 5 0 002 7z"/></svg>
                   Dispute this evaluation
-                </button>
-                <button class="eval-export-btn" type="button">
-                  <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v2h10v-2M7 2v7M4.5 7l2.5 2.5L9.5 7"/></svg>
-                  Export as PDF
                 </button>
                 <button class="eval-export-btn" type="button" style="font-size:11px;">
                   <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h8M9 4.5l3 2.5-3 2.5"/></svg>
@@ -13403,7 +13392,6 @@
             </div>
             <div class="canvas-action-row">
               <button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;" onclick="openCanvasQuery('Show me the individual evaluations for Omar Abdallah this period — sorted by lowest score first')">Drill team → Omar → evaluations</button>
-              <button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;">Export scorecard</button>
             </div>
           </div>`,
 
@@ -13423,7 +13411,6 @@
             </div>
             <div class="canvas-action-row">
               <button class="k-action-primary" type="button" style="font-size:11px;padding:6px 14px;">Generate coaching plans for all</button>
-              <button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;">Export table</button>
               <button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;">Filter by agent</button>
             </div>
           </div>`,
@@ -13460,7 +13447,6 @@
             <div class="canvas-action-row">
               <button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;">Overlay Omar's individual trend</button>
               <button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;">Show per-agent breakdown</button>
-              <button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;">Export chart</button>
             </div>
           </div>`,
 
@@ -13523,7 +13509,6 @@
             <div style="font-size:10px;color:var(--d500);padding:6px 2px;">Showing 4 of 12 · click any row to open full evaluation detail</div>
             <div class="canvas-action-row">
               <button class="k-action-primary" type="button" style="font-size:11px;padding:6px 14px;" onclick="drillToReviewsPage({ agentName: 'Omar Abdallah' })">Open full list in Reviews</button>
-              <button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;" onclick="openCanvasQuery('Export the 12 failed evaluations this week as CSV')">Export 12 evals</button>
               <button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;" onclick="openCanvasQuery('Generate coaching plans for the 3 agents with failures this week')">Generate coaching plans</button>
             </div>
           </div>`,
@@ -13607,7 +13592,6 @@
             </div>
             <div class="canvas-action-row">
               <button class="k-action-primary" type="button" style="font-size:11px;padding:6px 14px;">Schedule a calibration session anyway</button>
-              <button class="brief-sec-btn" type="button" style="font-size:10px;padding:4px 10px;">Export table</button>
             </div>
           </div>`,
         ];
@@ -16478,7 +16462,6 @@
         <div class="fbmodal-foot">
           <button class="fbm-btn ghost" onclick="closeReport()">Close</button>
           <span class="spacer"></span>
-          <button class="fbm-btn ghost" id="repExport" onclick="fbToast('Report exported as PDF')" style="display:none;">Export PDF</button>
           <button class="fbm-btn primary" id="repGen" onclick="generateReport()">Generate</button>
         </div>
       </div>
@@ -16803,7 +16786,6 @@
           ddSet(document.getElementById('repScope'),'all');
           ddSet(document.getElementById('repRange'),'Last 30 days');
           document.getElementById('repOutput').innerHTML='<div class="rep-empty">Pick a scope and date range, then Generate.</div>';
-          document.getElementById('repExport').style.display='none';
           document.getElementById('reportModal').classList.add('open');
         };
         window.closeReport = function(){ document.getElementById('reportModal').classList.remove('open'); };
@@ -16831,7 +16813,6 @@
             '<div class="rep-sec"><h5>Missing KPIs (no feedback yet)</h5><div class="rep-chips">'+missing.map(function(m){return '<span class="rep-chip'+(m!=='—'?' err':'')+'">'+m+'</span>';}).join('')+'</div></div>'+
             '<div class="rep-sec"><h5>Needs attention</h5><div class="rep-chips"><span class="rep-chip'+(attn>0?' err':'')+'">'+attn+' with repeated negative feedback</span></div></div>';
           document.getElementById('repOutput').innerHTML=out;
-          document.getElementById('repExport').style.display='';
           fbToast('Report generated for '+(single?scope:'all agents')+' · '+range);
         };
 
