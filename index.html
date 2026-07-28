@@ -87,7 +87,7 @@
       .state-detected-pill:focus-visible,
       .passing-toggle:focus-visible,
       .bcard:focus-visible,
-      .kpi-brief:focus-visible,
+      .goal-brief:focus-visible,
       .feed-item:focus-visible {
         outline: 2px solid var(--brand);
         outline-offset: 2px;
@@ -1145,7 +1145,7 @@
 
       /* ══ MERGED COMPONENT CSS (Unaltered from V2B files) ══════════════════════════════ */
 
-      /* 1. Briefing Cards (kpi-card-v2b) */
+      /* 1. Briefing Cards (goal-card-v2b) */
       .bcard {
         background: var(--card-bg);
         border-radius: 16px;
@@ -1421,7 +1421,7 @@
         color: var(--d300);
       }
 
-      /* 2. Narrative Card (quality-kpi-v2b) */
+      /* 2. Narrative Card (quality-goal-v2b) */
       .narrative-card {
         background: var(--card-bg);
         border-radius: 16px;
@@ -1602,13 +1602,13 @@
         overflow: visible;
       }
 
-      /* 3. KPI Feed (quality-kpi-v2b) */
-      .kpi-feed {
+      /* 3. goal Feed (quality-goal-v2b) */
+      .goal-feed {
         display: flex;
         flex-direction: column;
         gap: 8px;
       }
-      .kpi-brief {
+      .goal-brief {
         display: flex;
         gap: 10px;
         align-items: flex-start;
@@ -1619,14 +1619,14 @@
         transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
         cursor: pointer;
       }
-      .kpi-brief:hover {
+      .goal-brief:hover {
         background: rgba(30, 40, 54, 0.9);
         border-color: rgba(255, 255, 255, 0.12);
         transform: translateX(2px);
       }
-      /* .kpi-brief.kf-err  { border-left-color:var(--err);  } */
-      /* .kpi-brief.kf-warn { border-left-color:var(--warn); } */
-      /* .kpi-brief.kf-ok   { border-left-color:var(--ok);   } */
+      /* .goal-brief.kf-err  { border-left-color:var(--err);  } */
+      /* .goal-brief.kf-warn { border-left-color:var(--warn); } */
+      /* .goal-brief.kf-ok   { border-left-color:var(--ok);   } */
       .kf-rank {
         font-size: 9px;
         font-weight: 700;
@@ -2088,7 +2088,7 @@
       }
       /* scaleX grows from left anchor — origin must be set on fill elements */
       .driver-bar-fill,
-      .scorecard-kpi-bar {
+      .scorecard-goal-bar {
         transform-origin: left center;
       }
       .driver-bar-stat {
@@ -3140,7 +3140,7 @@
          80ms ease-out = immediate, then snaps back quickly. */
       .bcard:active,
       .v2-chip:active,
-      .kpi-brief:active,
+      .goal-brief:active,
       .action-btn:active,
       .nav-item:active,
       .topnav-tab:active,
@@ -3607,7 +3607,7 @@
         .skeleton,
         .driver-bar-fill,
         .eval-bar-fill,
-        .scorecard-kpi-bar {
+        .scorecard-goal-bar {
           animation: none !important;
           transition: none !important;
         }
@@ -3653,7 +3653,7 @@
         }
         .bcard:hover,
         .v2-chip:hover,
-        .kpi-brief:hover,
+        .goal-brief:hover,
         .action-btn:hover,
         .quick-action-btn:hover,
         .ask-aimy-chart-btn:hover,
@@ -3663,7 +3663,7 @@
         }
         .bcard:active,
         .v2-chip:active,
-        .kpi-brief:active,
+        .goal-brief:active,
         .action-btn:active,
         .nav-item:active,
         .topnav-tab:active,
@@ -4573,7 +4573,7 @@
         flex-shrink: 0;
         color: var(--d600);
       }
-      .eval-cause-item .cause-kpi {
+      .eval-cause-item .cause-goal {
         font-weight: 600;
         color: var(--d50);
         flex: 1;
@@ -4709,7 +4709,7 @@
       }
 
       /* ── Friction feed (bottom section) ─────────────────────── */
-      /* ── Eval panel sub-sections (Products + KPIs) ─────────────────── */
+      /* ── Eval panel sub-sections (Products + goals) ─────────────────── */
       /* Bar row right-side stats: review count + avg quality score */
       .eval-bar-count {
         font-size: 12px;
@@ -4737,15 +4737,15 @@
         color: var(--d500);
         padding: 4px 0 6px;
       }
-            /* KPI rows — pointer cursor + canvas-fire indicator */
-      .eval-kpi-row {
+            /* goal rows — pointer cursor + canvas-fire indicator */
+      .eval-goal-row {
         cursor: pointer;
       }
-      .eval-kpi-row:hover {
+      .eval-goal-row:hover {
         background: rgba(255,255,255,0.04);
         border-radius: 6px;
       }
-      .eval-kpi-row:hover .eval-bar-label {
+      .eval-goal-row:hover .eval-bar-label {
         color: var(--d100);
       }
 
@@ -5260,20 +5260,20 @@
       .scorecard-metric:last-child { border-right: none; }
       .scorecard-metric-val { font-size: 15px; font-weight: 700; color: var(--d50); display: block; }
       .scorecard-metric-lbl { font-size: 10px; color: var(--d500); margin-top: 2px; display: block; }
-      .scorecard-kpis { padding: 10px 14px 12px; }
-      .scorecard-kpi-row {
+      .scorecard-goals { padding: 10px 14px 12px; }
+      .scorecard-goal-row {
         display: flex; align-items: center; gap: 8px;
         padding: 5px 0;
         border-bottom: 1px solid rgba(255,255,255,0.04);
       }
-      .scorecard-kpi-row:last-child { border-bottom: none; }
-      .scorecard-kpi-name { font-size: 11px; color: var(--d300); flex: 1; }
-      .scorecard-kpi-bar-wrap {
+      .scorecard-goal-row:last-child { border-bottom: none; }
+      .scorecard-goal-name { font-size: 11px; color: var(--d300); flex: 1; }
+      .scorecard-goal-bar-wrap {
         width: 80px; height: 5px; background: rgba(255,255,255,0.07);
         border-radius: 20px; overflow: hidden; flex-shrink: 0;
       }
-      .scorecard-kpi-bar { height: 100%; border-radius: 20px; }
-      .scorecard-kpi-val { font-size: 11px; font-weight: 600; color: var(--d50); width: 32px; text-align: right; flex-shrink: 0; }
+      .scorecard-goal-bar { height: 100%; border-radius: 20px; }
+      .scorecard-goal-val { font-size: 11px; font-weight: 600; color: var(--d50); width: 32px; text-align: right; flex-shrink: 0; }
       .scorecard-footer {
         display: flex; align-items: center; justify-content: space-between;
         padding: 8px 14px;
@@ -5559,7 +5559,7 @@
       .agent-dots-goal { width:1px; height:13px; background:var(--d500); margin:0 3px; }
       .agent-dots-cap { font-size:10px; font-weight:600; color:var(--d400); margin-left:5px; }
 
-      /* Team Goal row — replaces the failed-KPI list. Team target + agents off it */
+      /* Team Goal row — replaces the failed-goal list. Team target + agents off it */
       .goal-row { padding:11px 0; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer; transition:background var(--transition-fast); border-radius:6px; }
       .goal-row:hover { background:rgba(255,255,255,0.02); }
       .goal-row:last-child { border-bottom:none; }
@@ -5922,13 +5922,13 @@
             My Profile
           </a>
           <div class="sidebar-section-label">Configure</div>
-          <a class="nav-item" href="kpi-browser.html">
+          <a class="nav-item" href="goal-browser.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="4" width="18" height="16" rx="2"></rect>
               <line x1="3" y1="10" x2="21" y2="10"></line>
               <line x1="9" y1="4" x2="9" y2="20"></line>
             </svg>
-            KPI Hub
+            goal Hub
           </a>
           <a class="nav-item" href="data-ingestion.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -6064,8 +6064,8 @@
                 </div>
               </div>
 
-              <!-- Signal 3 — Disputes (info) -->
-              <div class="summary-signal" id="summarySignal3" role="button" tabindex="0" aria-label="2 disputes past SLA — replies drafted for both">
+              <!-- Signal 3 — justifys (info) -->
+              <div class="summary-signal" id="summarySignal3" role="button" tabindex="0" aria-label="2 justifys past SLA — replies drafted for both">
                 <div class="signal-icon info" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
                     <rect x="2" y="3" width="20" height="14" rx="2"></rect>
@@ -6073,7 +6073,7 @@
                   </svg>
                 </div>
                 <div class="signal-content">
-                  <div class="signal-stat-row"><span class="signal-stat info" id="signalTitle3">2</span><span class="signal-stat-label">disputes past SLA</span></div>
+                  <div class="signal-stat-row"><span class="signal-stat info" id="signalTitle3">2</span><span class="signal-stat-label">justifys past SLA</span></div>
                   <div class="agent-dots" aria-hidden="true"><span class="agent-dot err"></span><span class="agent-dot err"></span><span class="agent-dots-cap">DISP-0441 &amp; 0438</span></div>
                   <div class="signal-done" id="signalSub3"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Replies drafted</div>
                 </div>
@@ -6149,7 +6149,7 @@
             <h2>Feedback loop</h2>
             <span class="fl-sub">· proactive feedback across 12 agents · last 30 days</span>
             <span class="fl-spacer"></span>
-            <button class="floop-report" type="button" onclick="openCanvasQuery('Generate a feedback report. Ask me whether it should cover all 12 agents or one specific person, then produce the aggregate loop metrics — sent, acknowledged, improved, disputed, escalated — and export it.')">
+            <button class="floop-report" type="button" onclick="openCanvasQuery('Generate a feedback report. Ask me whether it should cover all 12 agents or one specific person, then produce the aggregate loop metrics — sent, acknowledged, improved, justifyd, escalated — and export it.')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
               Generate report
             </button>
@@ -6159,14 +6159,14 @@
             <div class="floop-card hero">
               <div class="floop-anchor">
                 <div class="floop-health">82%</div>
-                <div class="fl-ctx"><b>148</b> feedbacks sent this month — <b>78%</b> acknowledged, <b>61%</b> led to a measured improvement, <b>9%</b> disputed.</div>
+                <div class="fl-ctx"><b>148</b> feedbacks sent this month — <b>78%</b> acknowledged, <b>61%</b> led to a measured improvement, <b>9%</b> justifyd.</div>
               </div>
               <div class="funnel">
                 <div class="fn-stage"><span class="fn-label">Sent</span><div class="fn-bar"><div class="fn-fill" style="width:100%"><span class="fn-count">148</span></div></div><span class="fn-conv">100%</span></div>
                 <div class="fn-stage"><span class="fn-label">Acknowledged</span><div class="fn-bar"><div class="fn-fill" style="width:78%"><span class="fn-count">116</span></div></div><span class="fn-conv">78%</span></div>
                 <div class="fn-stage"><span class="fn-label">Improved</span><div class="fn-bar"><div class="fn-fill" style="width:48%"><span class="fn-count">71</span></div></div><span class="fn-conv drop">61%</span></div>
                 <div class="fn-branch">
-                  <span class="fn-chip warn">13 disputed &middot; 11 resolved</span>
+                  <span class="fn-chip warn">13 justifyd &middot; 11 resolved</span>
                   <span class="fn-chip err">9 escalated to HR</span>
                   <span class="fn-chip">21 awaiting ack</span>
                 </div>
@@ -6179,7 +6179,7 @@
                 <div class="attn-block">
                   <div class="attn-row static">
                     <span class="attn-dot" style="background:var(--err)"></span>
-                    <div><div class="attn-t">Omar Abdallah &middot; 4th negative</div><div class="attn-s">Constantly below &middot; repeated KPI-fail threshold reached</div></div>
+                    <div><div class="attn-t">Omar Abdallah &middot; 4th negative</div><div class="attn-s">Constantly below &middot; repeated goal-fail threshold reached</div></div>
                   </div>
                   <div class="attn-done">
                     <svg class="mark" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
@@ -6216,7 +6216,7 @@
               <div>
                 <div class="floop-sub-h">Recent loop activity</div>
                 <div class="act-item"><span>Aisha acknowledged feedback on Empathy</span><span class="at">2h</span></div>
-                <div class="act-item"><span>Dispute overturned &middot; Michael &middot; Script Adherence</span><span class="at">5h</span></div>
+                <div class="act-item"><span>justify overturned &middot; Michael &middot; Script Adherence</span><span class="at">5h</span></div>
                 <div class="act-item"><span>Omar's coaching plan reached 60%</span><span class="at">1d</span></div>
               </div>
               <button class="floop-ask" type="button" onclick="openCanvasQuery('Summarise the feedback loop health and what needs my attention today.')">
@@ -6381,7 +6381,7 @@
                     <p class="ai-insight-text" style="display:none"></p>
                     <ul class="ai-insight-bullets">
                       <li>Trending <strong>upward since June</strong> (+8.4 pts) — recovery is real, not a spike.</li>
-                      <li>Still <strong>2.7% below the 90% SLA target</strong> — 3 failing KPIs are the primary drag.</li>
+                      <li>Still <strong>2.7% below the 90% SLA target</strong> — 3 failing goals are the primary drag.</li>
                       <li>November dip to <strong>74.2%</strong> was volume-driven — 3 agents handled 40% above average load during product launch.</li>
                       <li>December recovery confirms the issue was <strong>workload, not skill</strong>.</li>
                       <li>Recommended: <strong>review staffing thresholds</strong> before the next product release.</li>
@@ -6391,7 +6391,7 @@
                         class="kf-signal-action"
                         style="font-size: 12px; padding: 7px 16px"
                       >
-                        Address KPIs &rarr;
+                        Address goals &rarr;
                       </button>
                     </div>
                   </div>
@@ -7033,8 +7033,8 @@
                 </div>
               </div>
 
-              <div class="kpi-feed">
-                <div class="kpi-brief kf-err">
+              <div class="goal-feed">
+                <div class="goal-brief kf-err">
                   <div class="kf-rank">#1</div>
                   <div class="kf-body">
                     <div class="kf-name">Ticket status accuracy &middot; 150 off goal</div>
@@ -7049,7 +7049,7 @@
                   <button class="kf-action" data-aimy-topic="goal-status" data-aimy-undo="the status-code coaching for 8 agents" data-aimy-review="Show the status-code coaching I created for the 8 agents in Objectif Lune and Qvidian — who it covers, what changed, and the tickets it targets.">Review &rarr;</button>
                 </div>
 
-                <div class="kpi-brief kf-err">
+                <div class="goal-brief kf-err">
                   <div class="kf-rank">#2</div>
                   <div class="kf-body">
                     <div class="kf-name">Grammar &amp; clarity &middot; 55 off goal</div>
@@ -7064,7 +7064,7 @@
                   <button class="kf-action" data-aimy-topic="goal-grammar" data-aimy-undo="the grammar coaching for 4 agents" data-aimy-review="Show the writing-quality coaching I drafted for the 4 agents in InterFax and Second Street — their worst responses and the clarity checklist I gave them.">Review &rarr;</button>
                 </div>
 
-                <div class="kpi-brief kf-err">
+                <div class="goal-brief kf-err">
                   <div class="kf-rank">#3</div>
                   <div class="kf-body">
                     <div class="kf-name">Update cadence &middot; 47 off goal</div>
@@ -7079,7 +7079,7 @@
                   <button class="kf-action" data-aimy-topic="goal-cadence" data-aimy-undo="the follow-up cadence for 3 agents" data-aimy-review="Show the follow-up cadence I set for the 3 agents in Qvidian and RightAnswers — the tickets left past the SLA update window and the new nudge timing.">Review &rarr;</button>
                 </div>
 
-                <div class="kpi-brief kf-warn">
+                <div class="goal-brief kf-warn">
                   <div class="kf-rank">#4</div>
                   <div class="kf-body">
                     <div class="kf-name">First response time &middot; 71% to goal</div>
@@ -7091,7 +7091,7 @@
                       <div class="kf-ev-item"><span class="v">75%</span><span>goal</span></div>
                     </div>
                   </div>
-                  <button class="kf-action" data-aimy-topic="kpi-frt" data-aimy-undo="the 2-agent rebalance" data-aimy-review="First response time is at 71%, 4 pts under the 75% goal and falling in Objectif Lune and Adestra. Show the queues driving the delay and the 2-agent rebalance I queued for the shift.">Review &rarr;</button>
+                  <button class="kf-action" data-aimy-topic="goal-frt" data-aimy-undo="the 2-agent rebalance" data-aimy-review="First response time is at 71%, 4 pts under the 75% goal and falling in Objectif Lune and Adestra. Show the queues driving the delay and the 2-agent rebalance I queued for the shift.">Review &rarr;</button>
                 </div>
 
                 <button class="passing-toggle" id="passingToggle" onclick="togglePassing()">
@@ -7102,7 +7102,7 @@
                 </button>
 
                 <div class="passing-section" id="passingSection">
-                  <div class="kpi-brief kf-ok" style="margin-bottom: 8px">
+                  <div class="goal-brief kf-ok" style="margin-bottom: 8px">
                     <div class="kf-rank" style="background: var(--ok-bg); color: var(--ok)">#5</div>
                     <div class="kf-body">
                       <p class="kf-conclusion">
@@ -7112,9 +7112,9 @@
                         <div class="kf-ev-item"><span class="trend-up">&#8593; 6%</span><span>vs last period</span></div>
                       </div>
                     </div>
-                    <button class="kf-action" data-aimy-topic="kpi-identity" data-aimy-review="Identity verification is at 82%, up 6% and low risk. Show which agents are leading it and the behaviours worth replicating.">View &rarr;</button>
+                    <button class="kf-action" data-aimy-topic="goal-identity" data-aimy-review="Identity verification is at 82%, up 6% and low risk. Show which agents are leading it and the behaviours worth replicating.">View &rarr;</button>
                   </div>
-                  <div class="kpi-brief kf-ok" style="margin-bottom: 8px">
+                  <div class="goal-brief kf-ok" style="margin-bottom: 8px">
                     <div class="kf-rank" style="background: var(--ok-bg); color: var(--ok)">#6</div>
                     <div class="kf-body">
                       <p class="kf-conclusion">
@@ -7124,9 +7124,9 @@
                         <div class="kf-ev-item"><span class="trend-up">&#8593; 4%</span><span>vs last period</span></div>
                       </div>
                     </div>
-                    <button class="kf-action" data-aimy-topic="kpi-fcr" data-aimy-review="First contact resolution is at 87%, up 4%. Show the top performers and what they share so I can turn it into a coaching template.">View &rarr;</button>
+                    <button class="kf-action" data-aimy-topic="goal-fcr" data-aimy-review="First contact resolution is at 87%, up 4%. Show the top performers and what they share so I can turn it into a coaching template.">View &rarr;</button>
                   </div>
-                  <div class="kpi-brief kf-ok">
+                  <div class="goal-brief kf-ok">
                     <div class="kf-rank" style="background: var(--ok-bg); color: var(--ok)">#7</div>
                     <div class="kf-body">
                       <p class="kf-conclusion">
@@ -7136,7 +7136,7 @@
                         <div class="kf-ev-item"><span style="color: var(--d300)">&rarr; stable</span></div>
                       </div>
                     </div>
-                    <button class="kf-action" data-aimy-topic="kpi-script" data-aimy-review="Compliance script adherence is at 91% and stable. Show the per-agent spread and flag anyone drifting below the team average.">View &rarr;</button>
+                    <button class="kf-action" data-aimy-topic="goal-script" data-aimy-review="Compliance script adherence is at 91% and stable. Show the per-agent spread and flag anyone drifting below the team average.">View &rarr;</button>
                   </div>
                 </div>
               </div>
@@ -7158,7 +7158,7 @@
                   <div class="eval-bars">
                     <div class="eval-bar-row" data-segment="objectif-lune"
                       onmouseenter="evalHover('objectif-lune')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('Objectif Lune has the highest review volume at 411 with a 79.2% avg quality — worst in portfolio. Show top failing KPIs, agent attribution, and the fastest intervention.')">
+                      onclick="window.openOverlay && window.openOverlay('Objectif Lune has the highest review volume at 411 with a 79.2% avg quality — worst in portfolio. Show top failing goals, agent attribution, and the fastest intervention.')">
                       <div class="eval-bar-top">
                         <span class="eval-bar-label"><span class="eval-dot" style="background:var(--warn)"></span>Objectif Lune</span>
                         <div class="eval-bar-right"><span class="eval-bar-count">411</span><span class="eval-bar-avg warn">79.2%</span></div>
@@ -7176,7 +7176,7 @@
                     </div>
                     <div class="eval-bar-row" data-segment="interfax"
                       onmouseenter="evalHover('interfax')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('InterFax has 334 reviews at 88.4% avg quality — 1.6pts below the 90% target. Show which KPIs are dragging it under and what coaching action would close the gap.')">
+                      onclick="window.openOverlay && window.openOverlay('InterFax has 334 reviews at 88.4% avg quality — 1.6pts below the 90% target. Show which goals are dragging it under and what coaching action would close the gap.')">
                       <div class="eval-bar-top">
                         <span class="eval-bar-label"><span class="eval-dot" style="background:var(--ok)"></span>InterFax</span>
                         <div class="eval-bar-right"><span class="eval-bar-count">334</span><span class="eval-bar-avg warn">88.4%</span></div>
@@ -7194,7 +7194,7 @@
                     </div>
                     <div class="eval-bar-row" data-segment="qvidian"
                       onmouseenter="evalHover('qvidian')" onmouseleave="scheduleEvalOut()"
-                      onclick="window.openOverlay && window.openOverlay('Qvidian has 221 reviews at 80.1% avg quality — second worst in portfolio. Show top failure KPIs, agent attribution, and the fastest intervention to bring it above target.')">
+                      onclick="window.openOverlay && window.openOverlay('Qvidian has 221 reviews at 80.1% avg quality — second worst in portfolio. Show top failure goals, agent attribution, and the fastest intervention to bring it above target.')">
                       <div class="eval-bar-top">
                         <span class="eval-bar-label"><span class="eval-dot" style="background:var(--err)"></span>Qvidian</span>
                         <div class="eval-bar-right"><span class="eval-bar-count">221</span><span class="eval-bar-avg err">80.1%</span></div>
@@ -7219,7 +7219,7 @@
                     Avg quality ↑ 2.1% vs prior period
                   </span>
                   <span class="eval-borderline-badge"
-                    onclick="window.openOverlay && window.openOverlay('Quality score is at 87.3% across 3,363 reviewed tickets this week — 2.7pts below the 90% target. Show me the product breakdown and the top 3 KPI levers that would close the gap fastest.')"
+                    onclick="window.openOverlay && window.openOverlay('Quality score is at 87.3% across 3,363 reviewed tickets this week — 2.7pts below the 90% target. Show me the product breakdown and the top 3 goal levers that would close the gap fastest.')"
                     tabindex="0" role="button"
                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"
                     >2.7 pts under goal · fix queued</span
@@ -7245,7 +7245,7 @@
                   </div>
                 </div>
 
-                <!-- Top Failed KPIs → reframed as Team Goals (team target + agents off it) -->
+                <!-- Top Failed goals → reframed as Team Goals (team target + agents off it) -->
                 <div class="eval-sub-section">
                   <div class="eval-sub-label">Team Goals · vs this week's targets</div>
                   <div class="eval-goals" id="teamGoals">
@@ -7281,10 +7281,10 @@
                     </div>
 
                   </div>
-                  <!-- KPI causes float — anchored to KPI section -->
-                  <div class="eval-causes-float" id="kpiFloat" style="position:absolute;right:0;">
-                    <div class="eval-causes-float-title" id="kpiFloatTitle">Details</div>
-                    <div class="eval-causes-float-list" id="kpiFloatList"></div>
+                  <!-- goal causes float — anchored to goal section -->
+                  <div class="eval-causes-float" id="goalFloat" style="position:absolute;right:0;">
+                    <div class="eval-causes-float-title" id="goalFloatTitle">Details</div>
+                    <div class="eval-causes-float-list" id="goalFloatList"></div>
                   </div>
                 </div>
 
@@ -7374,7 +7374,7 @@
                 <div class="bcard-meta"><span class="type-label">Portfolio risk</span><span class="priority-badge">P1</span></div>
                 <div class="bcard-stat-line"><span class="bcard-stat err">79.2%</span><span class="bcard-stat-cap">Objectif Lune quality</span></div>
                 <div class="bcard-status err">worst portfolio</div>
-                <div class="aimy-done"><svg class="aimy-done-mark" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg><span class="aimy-done-text">Fixes staged &middot; lead briefed</span><span class="aimy-done-actions"><button class="aimy-done-link primary" data-aimy-review="Objectif Lune is the worst portfolio at 79.2% quality and 72% CSAT. Show the KPI breakdown and the fixes I staged." data-aimy-topic="portfolio-behind" data-aimy-undo="the fixes for Objectif Lune">Review</button></span></div>
+                <div class="aimy-done"><svg class="aimy-done-mark" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg><span class="aimy-done-text">Fixes staged &middot; lead briefed</span><span class="aimy-done-actions"><button class="aimy-done-link primary" data-aimy-review="Objectif Lune is the worst portfolio at 79.2% quality and 72% CSAT. Show the goal breakdown and the fixes I staged." data-aimy-topic="portfolio-behind" data-aimy-undo="the fixes for Objectif Lune">Review</button></span></div>
               </div>
             </div>
             <div class="bcard" role="region" tabindex="0">
@@ -7425,37 +7425,37 @@
                       <text class="quad-quad-label" x="84" y="330">AT RISK</text>
                       <text class="quad-axis-label" x="600" y="374" text-anchor="middle">Quality &rarr;</text>
                       <text class="quad-axis-label" x="22" y="180" text-anchor="middle" transform="rotate(-90 22 180)">CSAT &rarr;</text>
-                  <g class="bubble" data-aimy-review="Objectif Lune &mdash; quality 79.2%, CSAT 72%. Show the KPI breakdown and the action I took." data-aimy-topic="portfolio-behind" data-aimy-undo="the fixes for Objectif Lune">
+                  <g class="bubble" data-aimy-review="Objectif Lune &mdash; quality 79.2%, CSAT 72%. Show the goal breakdown and the action I took." data-aimy-topic="portfolio-behind" data-aimy-undo="the fixes for Objectif Lune">
                     <title>Objectif Lune — Quality 79.2%, CSAT 72%</title>
                     <circle cx="239.6" cy="286.7" r="34.0" style="fill:var(--err)"></circle>
                     <text class="bubble-score" x="239.6" y="286.7" text-anchor="middle" dominant-baseline="central">79</text>
                     <text class="bubble-label" x="239.6" y="333.7" text-anchor="middle">Objectif Lune</text>
                   </g>
-                  <g class="bubble" data-aimy-review="Qvidian &mdash; quality 80.1%, CSAT 74%. Show the KPI breakdown and the action I took." data-aimy-topic="portfolio-behind" data-aimy-undo="the fixes for Qvidian">
+                  <g class="bubble" data-aimy-review="Qvidian &mdash; quality 80.1%, CSAT 74%. Show the goal breakdown and the action I took." data-aimy-topic="portfolio-behind" data-aimy-undo="the fixes for Qvidian">
                     <title>Qvidian — Quality 80.1%, CSAT 74%</title>
                     <circle cx="287.3" cy="260.0" r="15.0" style="fill:var(--err)"></circle>
                     <text class="bubble-score" x="287.3" y="260.0" text-anchor="middle" dominant-baseline="central">80</text>
                     <text class="bubble-label" x="309.3" y="264.0" text-anchor="start">Qvidian</text>
                   </g>
-                  <g class="bubble" data-aimy-review="Second Street &mdash; quality 86.0%, CSAT 80%. Show the KPI breakdown and the action I took." data-aimy-topic="portfolio-behind" data-aimy-undo="the fixes for Second Street">
+                  <g class="bubble" data-aimy-review="Second Street &mdash; quality 86.0%, CSAT 80%. Show the goal breakdown and the action I took." data-aimy-topic="portfolio-behind" data-aimy-undo="the fixes for Second Street">
                     <title>Second Street — Quality 86.0%, CSAT 80%</title>
                     <circle cx="600.0" cy="180.0" r="17.9" style="fill:var(--warn)"></circle>
                     <text class="bubble-score" x="600.0" y="180.0" text-anchor="middle" dominant-baseline="central">86</text>
                     <text class="bubble-label" x="624.9" y="184.0" text-anchor="start">Second Street</text>
                   </g>
-                  <g class="bubble" data-aimy-review="InterFax &mdash; quality 88.4%, CSAT 83%. Show the KPI breakdown and the action I took." data-aimy-topic="portfolio-behind" data-aimy-undo="the fixes for InterFax">
+                  <g class="bubble" data-aimy-review="InterFax &mdash; quality 88.4%, CSAT 83%. Show the goal breakdown and the action I took." data-aimy-topic="portfolio-behind" data-aimy-undo="the fixes for InterFax">
                     <title>InterFax — Quality 88.4%, CSAT 83%</title>
                     <circle cx="727.2" cy="140.0" r="26.3" style="fill:var(--warn)"></circle>
                     <text class="bubble-score" x="727.2" y="140.0" text-anchor="middle" dominant-baseline="central">88</text>
                     <text class="bubble-label" x="760.5" y="144.0" text-anchor="start">InterFax</text>
                   </g>
-                  <g class="bubble" data-aimy-review="RightAnswers &mdash; quality 91.3%, CSAT 88%. Show the KPI breakdown and the action I took." data-aimy-topic="portfolio-ahead">
+                  <g class="bubble" data-aimy-review="RightAnswers &mdash; quality 91.3%, CSAT 88%. Show the goal breakdown and the action I took." data-aimy-topic="portfolio-ahead">
                     <title>RightAnswers — Quality 91.3%, CSAT 88%</title>
                     <circle cx="880.9" cy="73.3" r="20.3" style="fill:var(--ok)"></circle>
                     <text class="bubble-score" x="880.9" y="73.3" text-anchor="middle" dominant-baseline="central">91</text>
                     <text class="bubble-label" x="853.6" y="77.3" text-anchor="end">RightAnswers</text>
                   </g>
-                  <g class="bubble" data-aimy-review="Adestra &mdash; quality 93.7%, CSAT 90%. Show the KPI breakdown and the action I took." data-aimy-topic="portfolio-ahead">
+                  <g class="bubble" data-aimy-review="Adestra &mdash; quality 93.7%, CSAT 90%. Show the goal breakdown and the action I took." data-aimy-topic="portfolio-ahead">
                     <title>Adestra — Quality 93.7%, CSAT 90%</title>
                     <circle cx="1008.1" cy="46.7" r="32.7" style="fill:var(--ok)"></circle>
                     <text class="bubble-score" x="1008.1" y="46.7" text-anchor="middle" dominant-baseline="central">94</text>
@@ -7609,7 +7609,7 @@
                 </div>
 
               <div class="eval-sub-section">
-                <div class="eval-sub-label">Top failed KPIs</div>
+                <div class="eval-sub-label">Top failed goals</div>
                   <div class="goal-row" data-aimy-review="Ticket status accuracy is at 71% vs a 95% goal, 8 agents off it. Show each off-goal agent and the coaching I created." data-aimy-undo="the status-code coaching for 8 agents" data-aimy-topic="goal-status">
                     <div class="goal-row-head"><span class="goal-name">Ticket status accuracy</span><span class="goal-vals"><span class="goal-cur err">71%</span><span class="goal-tgt">/ 95% goal</span></span></div>
                     <div class="gap-meter"><div class="gap-meter-fill" style="width:71%;background:var(--err)"></div><div class="gap-meter-target" style="left:95%"></div></div>
@@ -7873,7 +7873,7 @@
           : "rotate(0deg)";
         const label = btn.querySelector(".passing-toggle-label");
         if (label)
-          label.textContent = isOpen ? "Hide passing KPIs" : "Passing KPIs · 3";
+          label.textContent = isOpen ? "Hide passing goals" : "Passing goals · 3";
       }
 
       function toggleSection(sectionId, btnId, openLabel, closeLabel) {
@@ -8248,12 +8248,12 @@
       // ── Quick Action Chips ────────────────────────────────────
       const chipScenarios = {
         critical: {
-          detected: "3 KPIs failing, Nov dip unresolved",
+          detected: "3 goals failing, Nov dip unresolved",
           confidence: "high confidence",
-          context: "· based on 3 failing KPIs and Nov quality dip",
+          context: "· based on 3 failing goals and Nov quality dip",
           signals: [
             "SLA compliance at 61% — threshold is 65%",
-            "3 KPIs below target threshold this period",
+            "3 goals below target threshold this period",
             "Quality dip of 12pts in November unresolved"
           ],
           chips: [
@@ -8272,7 +8272,7 @@
               badgeText: "Watch",
               label: "Survey promotion slipping — monitor before it becomes a failure",
               sub: "Survey promo sits at <strong>49%</strong>, just below the 50% threshold. Trending up +3% but not yet stable.",
-              action: "Track KPI trend →",
+              action: "Track goal trend →",
               actionClass: "caution-action",
             },
             {
@@ -8296,11 +8296,11 @@
           ],
         },
         improving: {
-          detected: "All KPIs improving",
+          detected: "All goals improving",
           confidence: "high confidence",
-          context: "· all KPIs trending upward this period",
+          context: "· all goals trending upward this period",
           signals: [
-            "All 6 KPIs above threshold — first time this quarter",
+            "All 6 goals above threshold — first time this quarter",
             "Quality score up 5.2% vs prior period",
             "Empathy scores rose 12% this period"
           ],
@@ -8337,36 +8337,36 @@
               badge: "explore-badge",
               badgeText: "AiMY",
               label: "Identify which agents are setting the quality standard",
-              sub: "With all KPIs improving, now is the right moment to extract and document what the top performers are doing differently.",
+              sub: "With all goals improving, now is the right moment to extract and document what the top performers are doing differently.",
               action: "View top agents →",
               actionClass: "explore-action",
             },
           ],
         },
-        dispute: {
-          detected: "5 open disputes, 2 past SLA window",
+        justify: {
+          detected: "5 open justifys, 2 past SLA window",
           confidence: "medium confidence",
-          context: "· 5 open disputes, 2 past SLA window",
+          context: "· 5 open justifys, 2 past SLA window",
           signals: [
             "DISP-0441 and DISP-0438 overdue by 3+ days",
-            "3 disputes awaiting auditor — no reply 48hrs",
-            "7 of 9 recent disputes share one checklist item"
+            "3 justifys awaiting auditor — no reply 48hrs",
+            "7 of 9 recent justifys share one checklist item"
           ],
           chips: [
             {
               type: "urgent",
               badge: "urgent-badge",
               badgeText: "Overdue",
-              label: "Resolve 2 disputes past SLA window",
-              sub: "Disputes <strong>DISP-0441 and DISP-0438</strong> are 3+ days overdue. Escalation risk if unresolved today.",
-              action: "Open dispute queue →",
+              label: "Resolve 2 justifys past SLA window",
+              sub: "justifys <strong>DISP-0441 and DISP-0438</strong> are 3+ days overdue. Escalation risk if unresolved today.",
+              action: "Open justify queue →",
               actionClass: "urgent-action",
             },
             {
               type: "caution",
               badge: "caution-badge",
               badgeText: "Watch",
-              label: "3 disputes awaiting auditor response",
+              label: "3 justifys awaiting auditor response",
               sub: "Agents have responded but <strong>no auditor reply in 48hrs</strong>. Agents are waiting for resolution.",
               action: "View pending →",
               actionClass: "caution-action",
@@ -8375,8 +8375,8 @@
               type: "explore",
               badge: "explore-badge",
               badgeText: "AiMY",
-              label: "Dispute patterns suggest a training gap",
-              sub: "7 of 9 recent disputes involve the same checklist item. AiMY recommends a targeted refresher.",
+              label: "justify patterns suggest a training gap",
+              sub: "7 of 9 recent justifys involve the same checklist item. AiMY recommends a targeted refresher.",
               action: "See pattern →",
               actionClass: "explore-action",
             },
@@ -8384,9 +8384,9 @@
               type: "caution",
               badge: "caution-badge",
               badgeText: "Watch",
-              label: "4 agents have filed more than 1 dispute this period",
-              sub: "Repeat disputes from the same agents often signal a scoring calibration issue or a misaligned checklist item.",
-              action: "Review agent disputes →",
+              label: "4 agents have filed more than 1 justify this period",
+              sub: "Repeat justifys from the same agents often signal a scoring calibration issue or a misaligned checklist item.",
+              action: "Review agent justifys →",
               actionClass: "caution-action",
             },
           ],
@@ -8414,8 +8414,8 @@
               type: "explore",
               badge: "explore-badge",
               badgeText: "AiMY",
-              label: "Review KPI template for Q1 planning",
-              sub: "3 KPI thresholds haven’t been updated since last year. Now is a good time to calibrate before Q1.",
+              label: "Review goal template for Q1 planning",
+              sub: "3 goal thresholds haven’t been updated since last year. Now is a good time to calibrate before Q1.",
               action: "Review templates →",
               actionClass: "explore-action",
             },
@@ -8711,7 +8711,7 @@
         var SIGNAL_PROMPTS = {
           summarySignal1: "SLA compliance dropped to 61% today — first response times are missing the 65% target. What’s driving this and what should I do right now?",
           summarySignal2: "5 agents are below the quality threshold today. Who are they, what’s the common failure pattern, and can you generate a coaching plan?",
-          summarySignal3: "DISP-0441 and DISP-0438 are past the SLA window. What’s the status of each dispute and what action should I take to resolve them today?",
+          summarySignal3: "DISP-0441 and DISP-0438 are past the SLA window. What’s the status of each justify and what action should I take to resolve them today?",
         };
         Object.keys(SIGNAL_PROMPTS).forEach(function(id) {
           var el = document.getElementById(id);
@@ -8734,117 +8734,117 @@
           title: "What’s holding it up",
           color: "#17B26A",
           items: [
-            { kpi: "Script adherence", val: "91% ↑", cls: "good" },
-            { kpi: "First contact resolution", val: "87% ↑", cls: "good" },
-            { kpi: "Identity verification", val: "82% ↑", cls: "good" },
+            { goal: "Script adherence", val: "91% ↑", cls: "good" },
+            { goal: "First contact resolution", val: "87% ↑", cls: "good" },
+            { goal: "Identity verification", val: "82% ↑", cls: "good" },
           ],
         },
         borderline: {
           title: "What’s pushing it down",
           color: "#F79009",
           items: [
-            { kpi: "Survey promotion", val: "49% — just below", cls: "warn" },
-            { kpi: "Response time SLA", val: "71% — 4pts below", cls: "warn" },
-            { kpi: "Empathy on escalations", val: "borderline", cls: "warn" },
+            { goal: "Survey promotion", val: "49% — just below", cls: "warn" },
+            { goal: "Response time SLA", val: "71% — 4pts below", cls: "warn" },
+            { goal: "Empathy on escalations", val: "borderline", cls: "warn" },
           ],
         },
         fail: {
           title: "Root causes",
           color: "#F04438",
           items: [
-            { kpi: "Empathy during escalations", val: "32% ℇ8%", cls: "bad" },
-            { kpi: "Follow-up clarity", val: "48% — flat", cls: "bad" },
-            { kpi: "Billing ticket handling", val: "primary driver", cls: "bad" },
+            { goal: "Empathy during escalations", val: "32% ℇ8%", cls: "bad" },
+            { goal: "Follow-up clarity", val: "48% — flat", cls: "bad" },
+            { goal: "Billing ticket handling", val: "primary driver", cls: "bad" },
           ],
         },
         "objectif-lune": {
           title: "Objectif Lune — top failures",
           color: "#F79009",
           items: [
-            { kpi: "Incorrect status", val: "103 failures", cls: "bad" },
-            { kpi: "Time between updates", val: "29 failures", cls: "warn" },
-            { kpi: "Grammar mistake", val: "18 failures", cls: "warn" },
+            { goal: "Incorrect status", val: "103 failures", cls: "bad" },
+            { goal: "Time between updates", val: "29 failures", cls: "warn" },
+            { goal: "Grammar mistake", val: "18 failures", cls: "warn" },
           ],
         },
         "adestra": {
           title: "Adestra — top drivers",
           color: "#17B26A",
           items: [
-            { kpi: "Script adherence", val: "96% ↑", cls: "good" },
-            { kpi: "First contact resolution", val: "92% ↑", cls: "good" },
-            { kpi: "Response time SLA", val: "91% ↑", cls: "good" },
+            { goal: "Script adherence", val: "96% ↑", cls: "good" },
+            { goal: "First contact resolution", val: "92% ↑", cls: "good" },
+            { goal: "Response time SLA", val: "91% ↑", cls: "good" },
           ],
         },
         "interfax": {
           title: "InterFax — gap to target",
           color: "#F79009",
           items: [
-            { kpi: "Grammar mistake", val: "38 failures", cls: "warn" },
-            { kpi: "No specific ETA", val: "14 failures", cls: "warn" },
-            { kpi: "Quality score", val: "88.4% — 1.6pts below", cls: "warn" },
+            { goal: "Grammar mistake", val: "38 failures", cls: "warn" },
+            { goal: "No specific ETA", val: "14 failures", cls: "warn" },
+            { goal: "Quality score", val: "88.4% — 1.6pts below", cls: "warn" },
           ],
         },
         "rightanswers": {
           title: "RightAnswers — above target",
           color: "#17B26A",
           items: [
-            { kpi: "Quality score", val: "91.3% ↑", cls: "good" },
-            { kpi: "Pass rate", val: "94% ↑", cls: "good" },
-            { kpi: "Ticket progress", val: "stable", cls: "good" },
+            { goal: "Quality score", val: "91.3% ↑", cls: "good" },
+            { goal: "Pass rate", val: "94% ↑", cls: "good" },
+            { goal: "Ticket progress", val: "stable", cls: "good" },
           ],
         },
         "qvidian": {
           title: "Qvidian — top failures",
           color: "#F04438",
           items: [
-            { kpi: "Incorrect status", val: "47 failures", cls: "bad" },
-            { kpi: "Time between updates", val: "29 failures", cls: "bad" },
-            { kpi: "Quality score", val: "80.1% — 9.9pts below", cls: "bad" },
+            { goal: "Incorrect status", val: "47 failures", cls: "bad" },
+            { goal: "Time between updates", val: "29 failures", cls: "bad" },
+            { goal: "Quality score", val: "80.1% — 9.9pts below", cls: "bad" },
           ],
         },
         "incorrect-status": {
           title: "Incorrect status · 150 failures",
           color: "#F04438",
           items: [
-            { kpi: "Objectif Lune", val: "103 failures", cls: "bad" },
-            { kpi: "Qvidian", val: "47 failures", cls: "bad" },
-            { kpi: "Top agent", val: "Omar Adel · 34 cases", cls: "bad" },
+            { goal: "Objectif Lune", val: "103 failures", cls: "bad" },
+            { goal: "Qvidian", val: "47 failures", cls: "bad" },
+            { goal: "Top agent", val: "Omar Adel · 34 cases", cls: "bad" },
           ],
         },
         "grammar-mistake": {
           title: "Grammar mistake · 55 failures",
           color: "#F79009",
           items: [
-            { kpi: "InterFax", val: "38 failures", cls: "warn" },
-            { kpi: "Second Street", val: "17 failures", cls: "warn" },
-            { kpi: "Fix", val: "Writing quality checklist", cls: "warn" },
+            { goal: "InterFax", val: "38 failures", cls: "warn" },
+            { goal: "Second Street", val: "17 failures", cls: "warn" },
+            { goal: "Fix", val: "Writing quality checklist", cls: "warn" },
           ],
         },
         "time-updates": {
           title: "Time between updates · 47 failures",
           color: "#F79009",
           items: [
-            { kpi: "Qvidian", val: "29 failures", cls: "warn" },
-            { kpi: "RightAnswers", val: "18 failures", cls: "warn" },
-            { kpi: "Fix", val: "Follow-up cadence SLA", cls: "warn" },
+            { goal: "Qvidian", val: "29 failures", cls: "warn" },
+            { goal: "RightAnswers", val: "18 failures", cls: "warn" },
+            { goal: "Fix", val: "Follow-up cadence SLA", cls: "warn" },
           ],
         },
         "no-eta": {
           title: "No specific ETA · 36 failures",
           color: "#36BFFA",
           items: [
-            { kpi: "InterFax", val: "14 failures", cls: "warn" },
-            { kpi: "Objectif Lune", val: "12 failures", cls: "warn" },
-            { kpi: "Fix", val: "Script update needed", cls: "warn" },
+            { goal: "InterFax", val: "14 failures", cls: "warn" },
+            { goal: "Objectif Lune", val: "12 failures", cls: "warn" },
+            { goal: "Fix", val: "Script update needed", cls: "warn" },
           ],
         },
         "article-id": {
           title: "Article ID missing · 20 failures",
           color: "#36BFFA",
           items: [
-            { kpi: "Adestra", val: "11 failures", cls: "warn" },
-            { kpi: "Second Street", val: "9 failures", cls: "warn" },
-            { kpi: "Fix", val: "Process reminder step", cls: "warn" },
+            { goal: "Adestra", val: "11 failures", cls: "warn" },
+            { goal: "Second Street", val: "9 failures", cls: "warn" },
+            { goal: "Fix", val: "Process reminder step", cls: "warn" },
           ],
         },
       };
@@ -8906,17 +8906,17 @@
         });
 
         // Route to correct float panel based on segment type
-        const kpiSegments = ["incorrect-status","grammar-mistake","time-updates","no-eta","article-id"];
-        const isKpiSegment = kpiSegments.includes(segment);
-        const floatId     = isKpiSegment ? "kpiFloat"     : "causeFloat";
-        const titleId     = isKpiSegment ? "kpiFloatTitle" : "causeFloatTitle";
-        const listId      = isKpiSegment ? "kpiFloatList"  : "causeFloatList";
+        const goalSegments = ["incorrect-status","grammar-mistake","time-updates","no-eta","article-id"];
+        const isgoalSegment = goalSegments.includes(segment);
+        const floatId     = isgoalSegment ? "goalFloat"     : "causeFloat";
+        const titleId     = isgoalSegment ? "goalFloatTitle" : "causeFloatTitle";
+        const listId      = isgoalSegment ? "goalFloatList"  : "causeFloatList";
         const floatPanel  = document.getElementById(floatId);
         const floatTitle  = document.getElementById(titleId);
         const floatList   = document.getElementById(listId);
 
         // Hide the other float
-        const otherFloat = document.getElementById(isKpiSegment ? "causeFloat" : "kpiFloat");
+        const otherFloat = document.getElementById(isgoalSegment ? "causeFloat" : "goalFloat");
         if (otherFloat) otherFloat.classList.remove("visible");
 
         if (floatPanel && floatTitle && floatList) {
@@ -8928,7 +8928,7 @@
             .map(
               (item) =>
                 `<div class="eval-cause-item">
-          <span class="cause-kpi">${item.kpi}</span>
+          <span class="cause-goal">${item.goal}</span>
           <span class="cause-val ${item.cls}">${item.val}</span>
         </div>`,
             )
@@ -8983,7 +8983,7 @@
         });
         const fp = document.getElementById("causeFloat");
         if (fp) fp.classList.remove("visible");
-        const fp2 = document.getElementById("kpiFloat");
+        const fp2 = document.getElementById("goalFloat");
         if (fp2) fp2.classList.remove("visible");
         document.querySelectorAll(".eval-bar-row").forEach((row) => {
           row.style.background = "";
@@ -9215,7 +9215,7 @@
           critical: [
             'What\u2019s driving the SLA compliance drop to 61%?',
             'Which 5 agents are below threshold and what\u2019s the common failure?',
-            'Generate a coaching plan for the 3 failing KPIs',
+            'Generate a coaching plan for the 3 failing goals',
             'Summarise today\u2019s quality score and the fastest fixes'
           ],
           improving: [
@@ -9224,16 +9224,16 @@
             'Export a board-ready quality summary for this period',
             'Is the first response time slip a risk to watch?'
           ],
-          dispute: [
+          justify: [
             'What\u2019s the status of DISP-0441 and DISP-0438?',
-            'Which 3 disputes are awaiting auditor response?',
-            'What checklist item appears in 7 of 9 recent disputes?',
-            'Recommend a training intervention for the recurring dispute pattern'
+            'Which 3 justifys are awaiting auditor response?',
+            'What checklist item appears in 7 of 9 recent justifys?',
+            'Recommend a training intervention for the recurring justify pattern'
           ],
           explore: [
             'Compare Q3 vs Q4 quality drivers',
             'Which agents are at risk of drift before next period?',
-            'Are any KPI thresholds due for recalibration before Q1?',
+            'Are any goal thresholds due for recalibration before Q1?',
             'Schedule a cycle review \u2014 what should it cover?'
           ]
         };
@@ -9248,9 +9248,9 @@
             const tagsEl = document.getElementById('overlayContextTags');
             if (!tagsEl) return;
             const scenarioContextMap = {
-              critical:  ['today\u2019s KPI data', '3 KPIs failing', 'Nov score dip'],
-              improving: ['all KPIs trending up', 'today\u2019s quality data'],
-              dispute:   ['5 open disputes', '2 past SLA window', 'today\u2019s data'],
+              critical:  ['today\u2019s goal data', '3 goals failing', 'Nov score dip'],
+              improving: ['all goals trending up', 'today\u2019s quality data'],
+              justify:   ['5 open justifys', '2 past SLA window', 'today\u2019s data'],
               explore:   ['quality stable', 'no active alerts', 'today\u2019s data']
             };
             const tags = (typeof activeScenario !== 'undefined' && scenarioContextMap[activeScenario])
@@ -9384,14 +9384,14 @@
               "Five agents are below the 80% quality threshold, all showing the same pattern &mdash; low empathy during escalations and weak follow-up confirmation. I've already built a targeted coaching plan for that checklist cluster and queued it in their 1:1s. I'm tracking their scores daily. Want to see an individual plan?",
           },
           {
-            keys: ["dispute", "overdue", "disp-0441", "disp-0438", "past sla", "sla window"],
+            keys: ["justify", "overdue", "disp-0441", "disp-0438", "past sla", "sla window"],
             response:
               "<strong>DISP-0441</strong> and DISP-0438 are past the 48-hour window &mdash; by 31 and 19 hours. Both contest empathy scoring and await an auditor. I've drafted replies for both and routed them to the senior auditor on shift; I'll confirm once they're closed. Want to read the drafts?",
           },
           {
             keys: ["quality score", "overall", "83", "summary"],
             response:
-              "Today's overall quality score is <strong>83%</strong>, down 4 points from yesterday. It's three converging issues &mdash; SLA at 61%, 5 agents under goal, and 2 overdue disputes &mdash; and I've already actioned all three. The score is recoverable today. Want the prioritised shift plan I put together?",
+              "Today's overall quality score is <strong>83%</strong>, down 4 points from yesterday. It's three converging issues &mdash; SLA at 61%, 5 agents under goal, and 2 overdue justifys &mdash; and I've already actioned all three. The score is recoverable today. Want the prioritised shift plan I put together?",
           },
           {
             keys: ["empathy", "billing escalation", "coaching brief"],
@@ -9413,16 +9413,16 @@
           "goal-cadence": "Update cadence is at <strong>84%</strong> vs <strong>90%</strong> &mdash; <strong>3 agents</strong> in Qvidian and RightAnswers were leaving customers past the SLA update window. I've set a 4-hour follow-up nudge for them and I'm watching the update-time trend. Undo here to revert the cadence.",
           "goal-eta": "ETA provided is at <strong>87%</strong> vs <strong>90%</strong> &mdash; <strong>2 agents</strong> off it. I've updated their response script to require an ETA and applied it to their queue. Undo here to revert the script change.",
           "goal-articleid": "Article ID attached is at <strong>92%</strong> vs a <strong>95%</strong> goal &mdash; <strong>1 agent</strong> off it. I've added a workflow reminder to that agent's ticket flow. Undo here to remove it.",
-          "kpi-frt": "First response time is at <strong>71%</strong> &mdash; <strong>4 pts</strong> under the 75% goal and still slipping in Objectif Lune and Adestra. I've traced it to the morning billing spike and queued a <strong>2-agent</strong> rebalance for the rest of the shift. I'll alert you if it drops below 70%. Undo here to hold the rebalance.",
-          "kpi-identity": "Identity verification is at <strong>82%</strong>, up <strong>6%</strong> &mdash; compliance risk is low. The gain is led by 3 agents in Adestra and I've captured what they're doing so it can be replicated. Nothing needs action; I'm keeping it in view. Want the replicable behaviours?",
-          "kpi-fcr": "First contact resolution is at <strong>87%</strong>, up <strong>4%</strong> &mdash; issues resolved without callbacks. I've noted the top performers and what they share. On track, no action needed. Want me to turn their approach into a coaching template?",
-          "kpi-script": "Compliance script adherence is at <strong>91%</strong> and stable &mdash; the process is landing. I'm watching for anyone drifting below the team average and will flag early. Nothing to action now. Want the per-agent spread?",
+          "goal-frt": "First response time is at <strong>71%</strong> &mdash; <strong>4 pts</strong> under the 75% goal and still slipping in Objectif Lune and Adestra. I've traced it to the morning billing spike and queued a <strong>2-agent</strong> rebalance for the rest of the shift. I'll alert you if it drops below 70%. Undo here to hold the rebalance.",
+          "goal-identity": "Identity verification is at <strong>82%</strong>, up <strong>6%</strong> &mdash; compliance risk is low. The gain is led by 3 agents in Adestra and I've captured what they're doing so it can be replicated. Nothing needs action; I'm keeping it in view. Want the replicable behaviours?",
+          "goal-fcr": "First contact resolution is at <strong>87%</strong>, up <strong>4%</strong> &mdash; issues resolved without callbacks. I've noted the top performers and what they share. On track, no action needed. Want me to turn their approach into a coaching template?",
+          "goal-script": "Compliance script adherence is at <strong>91%</strong> and stable &mdash; the process is landing. I'm watching for anyone drifting below the team average and will flag early. Nothing to action now. Want the per-agent spread?",
           "chart-dip": "That's the <strong>November</strong> dip to <strong>74%</strong> &mdash; a 12-point drop I traced to an <strong>18% spike in billing escalations</strong> that week. I reassigned the escalation load and added coaching for the 3 agents involved, and quality recovered to <strong>87%</strong> the following week. Want the escalation breakdown?",
           "csat": "CSAT is at <strong>81%</strong> against the <strong>85%</strong> target &mdash; the <strong>11% negative</strong> is concentrated in Objectif Lune and Qvidian, the same billing-escalation root cause as the quality dip. I've routed the detractor tickets for callback and briefed both portfolio leads. Undo here to hold the callbacks.",
           "csat-positive": "The <strong>74% positive</strong> is driven by fast first-response and clean resolutions on the Adestra and RightAnswers portfolios. I’ve captured what those agents do so it can be replicated on the weaker ones. Want the playbook?",
           "csat-neutral": "The <strong>15% neutral</strong> surveys are the swing group — mostly resolved-but-slow tickets. I’ve flagged the 40 closest to slipping negative and queued proactive follow-ups. Want them ranked by risk?",
           "sla-product": "This portfolio's SLA is below the <strong>90%</strong> goal. I've pulled its breached tickets, ranked them by wait time, and staged the response-time fix for the agents involved &mdash; first response is already trending back up. Undo here to hold it.",
-          "portfolio-behind": "This portfolio is below target on quality and CSAT &mdash; the same billing-escalation root cause. I've pulled its failing KPIs, briefed the lead, and staged the fixes for the agents involved. Undo here to hold them.",
+          "portfolio-behind": "This portfolio is below target on quality and CSAT &mdash; the same billing-escalation root cause. I've pulled its failing goals, briefed the lead, and staged the fixes for the agents involved. Undo here to hold them.",
           "portfolio-ahead": "This portfolio is above target on both quality and CSAT &mdash; one of your strongest. I've captured what its agents do so it can be replicated across the weaker portfolios. Want the playbook?",
           "sla-ok": "This product's SLA is above the 90% goal and holding. No action needed &mdash; I'm monitoring it. Want the trend?",
           "achiever": "This agent is one of your top performers this period &mdash; high quality and CSAT, no flagged interactions. I've added them to the coaching-template source so their approach can be shared. Want their standout tickets?"
@@ -9435,8 +9435,8 @@
             link: { label: 'View breached tickets in Reviews', href: 'agent-scorecards.html' } },
           { keys: ['agent', 'below threshold', '5 agents', 'omar', 'sara', 'khaled'],
             link: { label: 'Open agent scorecards', href: 'agent-scorecards.html' } },
-          { keys: ['dispute', 'disp-0441', 'disp-0438', 'overdue', 'auditor'],
-            link: { label: 'Go to Disputes queue', href: 'disputes.html' } },
+          { keys: ['justify', 'disp-0441', 'disp-0438', 'overdue', 'auditor'],
+            link: { label: 'Go to justifys queue', href: 'justifys.html' } },
           { keys: ['empathy', 'coaching plan', 'coaching brief', 'follow-up clarity', 'survey', 'script'],
             link: { label: 'Review coaching evaluations', href: 'agent-scorecards.html' } },
         ];
@@ -9477,7 +9477,7 @@
           if (!matched) {
             matched =
               "Today’s quality score is <strong>83%</strong>, 4 points below yesterday. " +
-              "Active issues: SLA compliance at 61%, 5 agents below threshold, and 2 overdue disputes. " +
+              "Active issues: SLA compliance at 61%, 5 agents below threshold, and 2 overdue justifys. " +
               "Would you like me to drill into any of these areas?";
           }
 
@@ -9812,7 +9812,7 @@
         // Maps bcard alertId to its corresponding summary signal element ID
         var ALERT_TO_SIGNAL = {
           'sla-breach':   'summarySignal1',
-          'kpi-failures': 'summarySignal2',
+          'goal-failures': 'summarySignal2',
           'sentiment':    'summarySignal2',  // both agent-related signals map to signal 2
           'quality':      null               // no direct signal tile — quality is ambient
         };
@@ -9896,9 +9896,9 @@
         /* ── Alert data ───────────────────────────────────────────────── */
         const ALERT_DATA = [
           { id:'sla-breach', priority:'p1', type:'SLA Breach', badge:'P1 \u00b7 Critical', summary:'First response SLA compliance at 61% \u2014 29pts below the 90% threshold. 23 breaches this week, up from 14.', evidence:[{label:'SLA compliance',val:'61%',delta:'\u219329pts'},{label:'Breaches this week',val:'23',delta:'\u21919 vs last week'},{label:'Avg first response',val:'45 min',delta:''}], cta:'View breached tickets', ctaClass:'primary-p1' },
-          { id:'kpi-failures', priority:'p1', type:'KPI Failures', badge:'P1 \u00b7 Urgent', summary:'3 KPIs actively failing \u2014 empathy is the biggest gap, down 8% this period.', evidence:[{label:'Empathy score',val:'32%',delta:'\u2193\u22128%'},{label:'Failed interactions',val:'184',delta:''}], cta:'Start coaching plan', ctaClass:'primary-p1', coachingAction:true },
+          { id:'goal-failures', priority:'p1', type:'goal Failures', badge:'P1 \u00b7 Urgent', summary:'3 goals actively failing \u2014 empathy is the biggest gap, down 8% this period.', evidence:[{label:'Empathy score',val:'32%',delta:'\u2193\u22128%'},{label:'Failed interactions',val:'184',delta:''}], cta:'Start coaching plan', ctaClass:'primary-p1', coachingAction:true },
           { id:'sentiment', priority:'p1', type:'Sentiment', badge:'P1 \u00b7 Urgent', summary:'Negative sentiment rising week over week \u2014 3 agents driving most of it.', evidence:[{label:'Negative interactions',val:'39',delta:'\u2191 rising'},{label:'Agents flagged',val:'3',delta:''}], cta:'Review escalation handling', ctaClass:'primary-p1' },
-          { id:'quality', priority:'p2', type:'Quality Score', badge:'P2 \u00b7 Watch', summary:'Quality at 87.3% \u2014 2.7% below the 90% SLA target. 3 failing KPIs are the primary drag.', evidence:[{label:'Current avg',val:'87.3%',delta:'\u2191+5.2%'},{label:'Gap to SLA',val:'\u22122.7%',delta:''}], cta:"See what's blocking target", ctaClass:'primary-p2' }
+          { id:'quality', priority:'p2', type:'Quality Score', badge:'P2 \u00b7 Watch', summary:'Quality at 87.3% \u2014 2.7% below the 90% SLA target. 3 failing goals are the primary drag.', evidence:[{label:'Current avg',val:'87.3%',delta:'\u2191+5.2%'},{label:'Gap to SLA',val:'\u22122.7%',delta:''}], cta:"See what's blocking target", ctaClass:'primary-p2' }
         ];
 
         /* ── Open canvas with alerts ─────────────────────────────────── */
@@ -9963,7 +9963,7 @@
           if (isCoaching) {
             window.openCanvasWithCoaching('Omar Adel','OA',
               'Run a targeted empathy coaching session focusing on billing escalation calls.',
-              'Omar has failed the <strong>Empathy during escalations</strong> KPI in 4 of his last 5 evaluated calls.',
+              'Omar has failed the <strong>Empathy during escalations</strong> goal in 4 of his last 5 evaluated calls.',
               'High');
             return;
           }
@@ -10265,14 +10265,14 @@
             body: '11% of total evaluated as borderline this period. Small coaching changes on survey promotion and empathy scoring could move most of them to a pass.',
             meta: '313 tickets · 11% of total',
             action: 'See borderline tickets →',
-            prompt: '313 tickets were borderline this period. List them ranked by closeness to pass threshold, identify the 1–2 KPI failures per ticket, and show the fastest coaching intervention per agent.'
+            prompt: '313 tickets were borderline this period. List them ranked by closeness to pass threshold, identify the 1–2 goal failures per ticket, and show the fastest coaching intervention per agent.'
           },
           {
             badge: 'Watch', badgeCls: 'adr-badge-warn',
             title: 'Survey promotion slipping — monitor before it becomes a failure',
             body: 'Survey promo sits at 49%, just below the 50% threshold. Trending up 3% but not yet stable.',
             meta: '49% current · 50% threshold',
-            action: 'Track KPI trend →',
+            action: 'Track goal trend →',
             prompt: 'Survey promotion is at 49% — 1pt below threshold. Show week-by-week trend for 6 weeks, agents dragging the rate down, and the single most effective prompt change to stabilise it.'
           },
           {
@@ -10289,7 +10289,7 @@
             body: 'Customer Support trailing Technical Support by 9pts on average quality score. Gap widened 3pts since last period.',
             meta: 'CS: 82% · TS: 91% · −9pts gap',
             action: 'Open AiMY canvas →',
-            prompt: 'Customer Support trails Technical Support by 9pts — 82% vs 91%. Side-by-side breakdown: top failing KPIs per team, agents dragging each team, and coaching actions to close the gap.'
+            prompt: 'Customer Support trails Technical Support by 9pts — 82% vs 91%. Side-by-side breakdown: top failing goals per team, agents dragging each team, and coaching actions to close the gap.'
           }
         ];
 
@@ -10383,7 +10383,7 @@
           }
           if (label.startsWith('Start coaching plan')) {
             btn.addEventListener('click', function(e) { e.stopPropagation();
-              openCanvasCard('kpi-failures', 'Loading KPI failure breakdown across products…');
+              openCanvasCard('goal-failures', 'Loading goal failure breakdown across products…');
             });
           }
           if (label.startsWith('Review escalation handling')) {
@@ -10416,8 +10416,8 @@
           appendSystemMsg('Loading scorecard for ' + agentName + '…');
 
           setTimeout(function() {
-            /* Scorecard data — stub matching Omar Adel's known KPI state */
-            const kpis = [
+            /* Scorecard data — stub matching Omar Adel's known goal state */
+            const goals = [
               { name: 'Empathy during escalations', pct: 32,  color: 'var(--err)' },
               { name: 'Follow-up clarity',           pct: 48,  color: 'var(--warn)' },
               { name: 'Survey promotion',             pct: 49,  color: 'var(--warn)' },
@@ -10460,7 +10460,7 @@
             metrics.className = 'scorecard-metrics';
             [
               { val: '47',  lbl: 'Evals this month' },
-              { val: '3',   lbl: 'KPIs failing' },
+              { val: '3',   lbl: 'goals failing' },
               { val: '−8%', lbl: 'vs last period' },
             ].forEach(function(m) {
               const cell = document.createElement('div');
@@ -10473,25 +10473,25 @@
               metrics.appendChild(cell);
             });
 
-            /* KPI bars */
-            const kpisEl = document.createElement('div');
-            kpisEl.className = 'scorecard-kpis';
-            kpis.forEach(function(k) {
+            /* goal bars */
+            const goalsEl = document.createElement('div');
+            goalsEl.className = 'scorecard-goals';
+            goals.forEach(function(k) {
               const row = document.createElement('div');
-              row.className = 'scorecard-kpi-row';
+              row.className = 'scorecard-goal-row';
               const nm = document.createElement('span');
-              nm.className = 'scorecard-kpi-name'; nm.textContent = k.name;
+              nm.className = 'scorecard-goal-name'; nm.textContent = k.name;
               const barWrap = document.createElement('div');
-              barWrap.className = 'scorecard-kpi-bar-wrap';
+              barWrap.className = 'scorecard-goal-bar-wrap';
               const bar = document.createElement('div');
-              bar.className = 'scorecard-kpi-bar';
+              bar.className = 'scorecard-goal-bar';
               bar.style.width = k.pct + '%';
               bar.style.background = k.color;
               barWrap.appendChild(bar);
               const val = document.createElement('span');
-              val.className = 'scorecard-kpi-val'; val.textContent = k.pct + '%';
+              val.className = 'scorecard-goal-val'; val.textContent = k.pct + '%';
               row.appendChild(nm); row.appendChild(barWrap); row.appendChild(val);
-              kpisEl.appendChild(row);
+              goalsEl.appendChild(row);
             });
 
             /* Footer */
@@ -10511,7 +10511,7 @@
 
             card.appendChild(hdr);
             card.appendChild(metrics);
-            card.appendChild(kpisEl);
+            card.appendChild(goalsEl);
             card.appendChild(footer);
 
             const outer = document.createElement('div');
@@ -10564,10 +10564,10 @@
             disclaimer: 'SLA Compliance is estimated from review pass/fail ratio. AHT is calculated from ticket timestamps. First Response Time requires SLA sheet data.',
             actions: [{ label: 'View all breached tickets', cls: 'ada-primary' }, { label: 'Trigger SLA recovery plan', cls: 'ada-secondary' }]
           },
-          'kpi-failures': {
-            priority: 'p1', title: 'KPI Failure Breakdown',
+          'goal-failures': {
+            priority: 'p1', title: 'goal Failure Breakdown',
             badge: 'P1 · Urgent',
-            summary: '3 KPIs are actively failing across the portfolio. Incorrect status alone accounts for 150 incidents — 103 in Objectif Lune. Coaching plan grouped by agent impact below.',
+            summary: '3 goals are actively failing across the portfolio. Incorrect status alone accounts for 150 incidents — 103 in Objectif Lune. Coaching plan grouped by agent impact below.',
             rows: [
               { label: 'Incorrect status — Objectif Lune', val: '103 failures', badge: 'adr-badge-err', badgeText: '#1 driver' },
               { label: 'Incorrect status — Qvidian', val: '47 failures', badge: 'adr-badge-err', badgeText: 'combined: 150' },
@@ -10578,8 +10578,8 @@
               { label: 'Fastest fix', val: 'Status accuracy coaching', badge: 'adr-badge-warn', badgeText: 'est. −48 failures removed' },
             ],
             metrics: [
-              { label: 'TOTAL FAILURES', value: '252',   state: 'err',  target: 'Across 3 KPIs' },
-              { label: 'TOP KPI',        value: '150',   state: 'err',  target: 'Incorrect status' },
+              { label: 'TOTAL FAILURES', value: '252',   state: 'err',  target: 'Across 3 goals' },
+              { label: 'TOP goal',        value: '150',   state: 'err',  target: 'Incorrect status' },
               { label: 'AGENTS AT RISK', value: '7',     state: 'warn', target: 'Below threshold' }
             ],
             chart: {
@@ -10592,7 +10592,7 @@
               ]
             },
             disclaimer: 'Failure counts reflect this week’s evaluated tickets. Target bars represent zero-failure goal. Coaching impact estimated from historical recovery rates.',
-            actions: [{ label: 'Generate coaching plan', cls: 'ada-primary' }, { label: 'Open KPI Hub', cls: 'ada-secondary' }]
+            actions: [{ label: 'Generate coaching plan', cls: 'ada-primary' }, { label: 'Open goal Hub', cls: 'ada-secondary' }]
           },
           'sentiment': {
             priority: 'p1', title: 'Negative Sentiment Breakdown',
@@ -10655,7 +10655,7 @@
               ]
             },
             disclaimer: 'Quality scores are calculated from evaluated tickets in this period. Products with fewer than 50 tickets may show variance.',
-            actions: [{ label: 'Open KPI breakdown', cls: 'ada-primary' }, { label: 'Create improvement plan', cls: 'ada-secondary' }]
+            actions: [{ label: 'Open goal breakdown', cls: 'ada-primary' }, { label: 'Create improvement plan', cls: 'ada-secondary' }]
           }
         };
 
@@ -10841,11 +10841,11 @@
           ins:'Overall quality has held near <strong>87%</strong> for the last quarter — 2.7 pts under the 90% goal. Objectif Lune and Qvidian are the persistent drag; I’ve staged their fixes.',
           rev:'Overall portfolio quality is 87.3% versus the 90% goal. Show the 12-month trend, which portfolios drag it down, and the fixes I staged.',topic:'portfolio-behind',undo:'the staged portfolio fixes'},
         ol:{s:[87,86,85,83,82,81,80,79,78,79,79,79],band:'err',cur:'79.2%',name:'Objectif Lune',
-          ins:'Objectif Lune has slid <strong>~8 pts since January</strong> — a sustained decline, not a blip. I’ve briefed the lead and staged the KPI fixes.',
-          rev:'Objectif Lune quality has declined about 8 points over 12 months to 79.2%. Show the monthly trend, the KPIs driving the decline, and the fixes I staged.',topic:'portfolio-behind',undo:'the fixes for Objectif Lune'},
+          ins:'Objectif Lune has slid <strong>~8 pts since January</strong> — a sustained decline, not a blip. I’ve briefed the lead and staged the goal fixes.',
+          rev:'Objectif Lune quality has declined about 8 points over 12 months to 79.2%. Show the monthly trend, the goals driving the decline, and the fixes I staged.',topic:'portfolio-behind',undo:'the fixes for Objectif Lune'},
         qvidian:{s:[85,84,83,82,81,80,80,81,80,79,80,80],band:'err',cur:'80.1%',name:'Qvidian',
-          ins:'Qvidian has been <strong>flat in the low 80s</strong> all year. I’ve flagged the two KPIs holding it back and queued coaching.',
-          rev:'Qvidian quality has been flat around 80% all year. Show the trend, the two KPIs holding it back, and the coaching I queued.',topic:'portfolio-behind',undo:'the coaching for Qvidian'},
+          ins:'Qvidian has been <strong>flat in the low 80s</strong> all year. I’ve flagged the two goals holding it back and queued coaching.',
+          rev:'Qvidian quality has been flat around 80% all year. Show the trend, the two goals holding it back, and the coaching I queued.',topic:'portfolio-behind',undo:'the coaching for Qvidian'},
         ss:{s:[82,83,84,85,84,85,86,85,86,87,86,86],band:'warn',cur:'86.0%',name:'Second Street',
           ins:'Second Street is <strong>trending up steadily</strong> toward the 90% goal — on track. Nothing to action.',
           rev:'Second Street quality is trending up toward 90%, now at 86%. Show the trend and whether it stays on track.',topic:'portfolio-behind',undo:''},

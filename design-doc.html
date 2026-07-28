@@ -808,7 +808,7 @@
       background: linear-gradient(90deg, #0066ff, #6fdfe2);
     }
 
-    /* thick variant for KPI category breakdown */
+    /* thick variant for goal category breakdown */
     .progress-bar-track.thick { height: 10px; border-radius: var(--r-sm); }
 
     /* ═══════════════════════════════════════════════
@@ -1393,18 +1393,18 @@
     .feed-agents { font-size: 9px; color: var(--d400); }
 
     /* ═══════════════════════════════════════════════
-       KPI BRIEF FEED
+       goal BRIEF FEED
     ═══════════════════════════════════════════════ */
-    .kpi-feed { display: flex; flex-direction: column; gap: 8px; }
+    .goal-feed { display: flex; flex-direction: column; gap: 8px; }
 
-    .kpi-brief {
+    .goal-brief {
       display: flex; gap: 10px; align-items: flex-start;
       padding: 10px 14px; background: var(--card-bg);
       border-radius: var(--r-xl); border: 1px solid rgba(255,255,255,0.06);
       cursor: pointer;
       transition: background var(--t-fast), border-color var(--t-fast), transform var(--t-fast);
     }
-    .kpi-brief:hover {
+    .goal-brief:hover {
       background: rgba(30,40,54,0.9); border-color: rgba(255,255,255,0.12);
       transform: translateX(2px);
     }
@@ -1415,9 +1415,9 @@
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; margin-top: 1px;
     }
-    .kpi-brief.kf-err  .kf-rank { background: var(--err-bg);  color: var(--err);  }
-    .kpi-brief.kf-warn .kf-rank { background: var(--warn-bg); color: var(--warn); }
-    .kpi-brief.kf-ok   .kf-rank { background: var(--ok-bg);   color: var(--ok);   }
+    .goal-brief.kf-err  .kf-rank { background: var(--err-bg);  color: var(--err);  }
+    .goal-brief.kf-warn .kf-rank { background: var(--warn-bg); color: var(--warn); }
+    .goal-brief.kf-ok   .kf-rank { background: var(--ok-bg);   color: var(--ok);   }
 
     .kf-body { flex: 1; min-width: 0; }
     .kf-conclusion {
@@ -1437,11 +1437,11 @@
       flex-shrink: 0; align-self: center;
       transition: background var(--t-fast), color var(--t-fast);
     }
-    .kpi-brief.kf-err  .kf-action { background: var(--err-bg);  color: var(--err);  }
-    .kpi-brief.kf-warn .kf-action { background: var(--warn-bg); color: var(--warn); }
-    .kpi-brief.kf-ok   .kf-action { background: var(--ok-bg);   color: var(--ok);   }
+    .goal-brief.kf-err  .kf-action { background: var(--err-bg);  color: var(--err);  }
+    .goal-brief.kf-warn .kf-action { background: var(--warn-bg); color: var(--warn); }
+    .goal-brief.kf-ok   .kf-action { background: var(--ok-bg);   color: var(--ok);   }
 
-    /* Passing KPIs toggle — collapses the green items */
+    /* Passing goals toggle — collapses the green items */
     .passing-toggle {
       display: flex; align-items: center; gap: 8px; width: 100%;
       font-family: var(--font-sans); font-size: 10px; font-weight: 700;
@@ -1789,10 +1789,10 @@
     }
 
     /* ══════════════════════════════════════════════════════════════
-       DISPUTES COMPONENTS
+       justifyS COMPONENTS
     ══════════════════════════════════════════════════════════════ */
 
-    /* ── Dispute row ──────────────────────────────────────────────── */
+    /* ── justify row ──────────────────────────────────────────────── */
     .ds-disp-row {
       display: flex;
       align-items: flex-start;
@@ -1832,7 +1832,7 @@
     .disp-row-body    { flex: 1; min-width: 0; }
     .disp-row-agent   { font-size: 13px; font-weight: 700; color: var(--d100); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .disp-eval-id     { font-size: 9px; font-weight: 600; color: var(--d600); display: block; margin-top: 1px; }
-    .disp-row-kpis    { font-size: 10px; color: var(--d400); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .disp-row-goals    { font-size: 10px; color: var(--d400); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .disp-row-auditor { font-size: 9px; color: var(--d600); margin-top: 1px; }
 
     /* Right side meta */
@@ -1921,7 +1921,7 @@
     .detail-status-badge.pending    { background: var(--warn-bg); color: var(--warn); border: 1px solid rgba(247,144,9,0.2); }
     .detail-status-badge.in-review  { background: rgba(51,105,255,0.1); color: #61adf1; border: 1px solid rgba(51,105,255,0.22); }
     .detail-status-badge.resolved   { background: var(--ok-bg); color: var(--ok); border: 1px solid rgba(23,178,106,0.2); }
-    .dispute-label-pill {
+    .justify-label-pill {
       font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px;
       background: rgba(139,79,244,0.1); color: var(--qa-accent);
       border: 1px solid rgba(139,79,244,0.2);
@@ -1959,34 +1959,34 @@
     .ess-value { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
     .ess-value.err  { color: var(--err); }
     .ess-value.warn { color: var(--warn); }
-    .kpi-breakdown-label { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--d500); margin-bottom: 8px; }
-    .ds-kpi-list { display: flex; flex-direction: column; gap: 6px; }
-    .ds-kpi-item {
+    .goal-breakdown-label { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--d500); margin-bottom: 8px; }
+    .ds-goal-list { display: flex; flex-direction: column; gap: 6px; }
+    .ds-goal-item {
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
       padding: 7px 10px; border-radius: 8px;
       background: rgba(255,255,255,0.02); border: 1px solid transparent;
     }
-    .ds-kpi-item.kpi-contested {
+    .ds-goal-item.goal-contested {
       background: rgba(139,79,244,0.06);
       outline: 1px solid rgba(139,79,244,0.18);
     }
-    .kpi-item-left  { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
-    .kpi-item-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .goal-item-left  { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+    .goal-item-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
     .contested-marker {
       font-size: 8px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
       padding: 2px 6px; border-radius: 4px;
       background: rgba(139,79,244,0.15); color: var(--qa-accent); flex-shrink: 0;
     }
-    .ds-kpi-name  { font-size: 11px; font-weight: 600; color: var(--d100); }
-    .kpi-bar-track{ width: 60px; height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
-    .kpi-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
-    .kpi-bar-fill.pass { background: var(--ok); }
-    .kpi-bar-fill.warn { background: var(--warn); }
-    .kpi-bar-fill.fail { background: var(--err); }
-    .ds-kpi-score      { font-size: 11px; font-weight: 700; width: 32px; text-align: right; }
-    .ds-kpi-score.pass { color: var(--ok); }
-    .ds-kpi-score.warn { color: var(--warn); }
-    .ds-kpi-score.fail { color: var(--err); }
+    .ds-goal-name  { font-size: 11px; font-weight: 600; color: var(--d100); }
+    .goal-bar-track{ width: 60px; height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
+    .goal-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+    .goal-bar-fill.pass { background: var(--ok); }
+    .goal-bar-fill.warn { background: var(--warn); }
+    .goal-bar-fill.fail { background: var(--err); }
+    .ds-goal-score      { font-size: 11px; font-weight: 700; width: 32px; text-align: right; }
+    .ds-goal-score.pass { color: var(--ok); }
+    .ds-goal-score.warn { color: var(--warn); }
+    .ds-goal-score.fail { color: var(--err); }
 
     /* AI rationale block */
     .ai-rationale-block {
@@ -2128,7 +2128,7 @@
     .audit-trail-scope { font-size: 10px; color: var(--d500); padding: 2px 8px; border-radius: 6px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); }
 
     /* ══════════════════════════════════════════════════════════════
-       KPI HUB COMPONENTS
+       goal HUB COMPONENTS
     ══════════════════════════════════════════════════════════════ */
 
     /* ── Template Card ────────────────────────────────────────────── */
@@ -2191,7 +2191,7 @@
       display: flex; align-items: center; justify-content: space-between;
       padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 2px;
     }
-    .tpl-kpi-count { font-size: 11px; font-weight: 700; color: var(--d300); }
+    .tpl-goal-count { font-size: 11px; font-weight: 700; color: var(--d300); }
     .tpl-updated    { font-size: 10px; color: var(--d600); font-weight: 500; }
 
     /* AI hover actions — fade in on card hover */
@@ -2540,39 +2540,39 @@
     .brief-risk-pill.risk-ok   { background: var(--ok-bg); color: var(--ok); border: 1px solid rgba(23,178,106,0.2); }
     .brief-risk-pill.risk-ok .risk-dot { background: var(--ok); }
 
-    /* ── KPI Mini Grid ────────────────────────────────────────────── */
-    .ds-kpi-six-grid {
+    /* ── goal Mini Grid ────────────────────────────────────────────── */
+    .ds-goal-six-grid {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       gap: 12px;
     }
-    .kpi-mini {
+    .goal-mini {
       background: var(--card-bg); border: 1px solid var(--card-border);
       border-radius: 12px; padding: 14px; position: relative; overflow: hidden;
       transition: border-color var(--transition-base);
     }
-    .kpi-mini:hover { border-color: var(--card-border-hover); }
-    .kpi-mini-label {
+    .goal-mini:hover { border-color: var(--card-border-hover); }
+    .goal-mini-label {
       font-size: 9px; font-weight: 700; color: var(--d400);
       letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px;
     }
-    .kpi-mini-value {
+    .goal-mini-value {
       font-size: 22px; font-weight: 800; color: var(--d50);
       letter-spacing: -0.02em; line-height: 1; margin-bottom: 6px;
     }
-    .kpi-mini-value.ok   { color: var(--ok); }
-    .kpi-mini-value.warn { color: var(--warn); }
-    .kpi-mini-value.err  { color: var(--err); }
-    .kpi-mini-value .km-unit { font-size: 12px; font-weight: 600; color: inherit; opacity: 0.65; margin-left: 1px; }
-    .kpi-mini-meta { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10px; font-weight: 700; }
-    .kpi-mini-delta { white-space: nowrap; }
-    .kpi-mini-delta.ok   { color: var(--ok); }
-    .kpi-mini-delta.warn { color: var(--warn); }
-    .kpi-mini-delta.err  { color: var(--err); }
-    .kpi-mini-delta.neu  { color: var(--d400); }
-    .kpi-mini-target { color: var(--d500); font-weight: 600; }
+    .goal-mini-value.ok   { color: var(--ok); }
+    .goal-mini-value.warn { color: var(--warn); }
+    .goal-mini-value.err  { color: var(--err); }
+    .goal-mini-value .km-unit { font-size: 12px; font-weight: 600; color: inherit; opacity: 0.65; margin-left: 1px; }
+    .goal-mini-meta { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10px; font-weight: 700; }
+    .goal-mini-delta { white-space: nowrap; }
+    .goal-mini-delta.ok   { color: var(--ok); }
+    .goal-mini-delta.warn { color: var(--warn); }
+    .goal-mini-delta.err  { color: var(--err); }
+    .goal-mini-delta.neu  { color: var(--d400); }
+    .goal-mini-target { color: var(--d500); font-weight: 600; }
 
-    /* ── Behavioral KPI Breakdown ─────────────────────────────────── */
+    /* ── Behavioral goal Breakdown ─────────────────────────────────── */
     .ds-behav-card {
       background: var(--card-bg); border: 1px solid var(--card-border);
       border-radius: 16px; padding: 18px 20px 20px;
@@ -3192,7 +3192,7 @@
     <a class="ds-nav-link" href="#navigation"><span class="dot"></span>Navigation</a>
     <a class="ds-nav-link" href="#cards"><span class="dot"></span>Cards</a>
     <a class="ds-nav-link" href="#bcard-extended"><span class="dot"></span>Briefing Card (Full)</a>
-    <a class="ds-nav-link" href="#kpi-feed"><span class="dot"></span>KPI Brief Feed</a>
+    <a class="ds-nav-link" href="#goal-feed"><span class="dot"></span>goal Brief Feed</a>
     <a class="ds-nav-link" href="#friction-feed"><span class="dot"></span>Friction Feed</a>
     <a class="ds-nav-link" href="#badges"><span class="dot"></span>Badges &amp; Status</a>
     <a class="ds-nav-link" href="#chips"><span class="dot"></span>Chips &amp; Filters</a>
@@ -3224,18 +3224,18 @@
   </div>
 
   <div class="ds-nav-group">
-    <span class="ds-nav-label">KPI Hub</span>
-    <a class="ds-nav-link" href="#kpihub-shell"><span class="dot"></span>KPI Hub Shell</a>
-    <a class="ds-nav-link" href="#kpihub-tpl-card"><span class="dot"></span>Template Card</a>
-    <a class="ds-nav-link" href="#kpihub-intel-bar"><span class="dot"></span>Intel Bar</a>
-    <a class="ds-nav-link" href="#kpihub-metric-table"><span class="dot"></span>Metric Card</a>
-    <a class="ds-nav-link" href="#kpihub-cr-card"><span class="dot"></span>Governance CR Card</a>
-    <a class="ds-nav-link" href="#kpihub-perm-matrix"><span class="dot"></span>Permission Matrix</a>
-    <a class="ds-nav-link" href="#kpihub-health-card"><span class="dot"></span>Health Card</a>
-    <a class="ds-nav-link" href="#kpihub-kdo"><span class="dot"></span>KPI Detail Overlay</a>
-    <a class="ds-nav-link" href="#kpihub-mdo"><span class="dot"></span>Metric Detail Overlay</a>
-    <a class="ds-nav-link" href="#kpihub-editor"><span class="dot"></span>Scorecard Editor</a>
-    <a class="ds-nav-link" href="#kpihub-governance"><span class="dot"></span>Governance Layout</a>
+    <span class="ds-nav-label">goal Hub</span>
+    <a class="ds-nav-link" href="#goalhub-shell"><span class="dot"></span>goal Hub Shell</a>
+    <a class="ds-nav-link" href="#goalhub-tpl-card"><span class="dot"></span>Template Card</a>
+    <a class="ds-nav-link" href="#goalhub-intel-bar"><span class="dot"></span>Intel Bar</a>
+    <a class="ds-nav-link" href="#goalhub-metric-table"><span class="dot"></span>Metric Card</a>
+    <a class="ds-nav-link" href="#goalhub-cr-card"><span class="dot"></span>Governance CR Card</a>
+    <a class="ds-nav-link" href="#goalhub-perm-matrix"><span class="dot"></span>Permission Matrix</a>
+    <a class="ds-nav-link" href="#goalhub-health-card"><span class="dot"></span>Health Card</a>
+    <a class="ds-nav-link" href="#goalhub-kdo"><span class="dot"></span>goal Detail Overlay</a>
+    <a class="ds-nav-link" href="#goalhub-mdo"><span class="dot"></span>Metric Detail Overlay</a>
+    <a class="ds-nav-link" href="#goalhub-editor"><span class="dot"></span>Scorecard Editor</a>
+    <a class="ds-nav-link" href="#goalhub-governance"><span class="dot"></span>Governance Layout</a>
   </div>
 
   <div class="ds-nav-group">
@@ -3245,8 +3245,8 @@
     <a class="ds-nav-link" href="#sc-lollipop"><span class="dot"></span>Lollipop Chart</a>
     <a class="ds-nav-link" href="#sc-dotplot"><span class="dot"></span>Dot Plot</a>
     <a class="ds-nav-link" href="#sc-heatmap"><span class="dot"></span>Heatmap (×2)</a>
-    <a class="ds-nav-link" href="#sc-kpi-mini"><span class="dot"></span>KPI Mini Grid</a>
-    <a class="ds-nav-link" href="#sc-behav"><span class="dot"></span>Behavioral KPI Breakdown</a>
+    <a class="ds-nav-link" href="#sc-goal-mini"><span class="dot"></span>goal Mini Grid</a>
+    <a class="ds-nav-link" href="#sc-behav"><span class="dot"></span>Behavioral goal Breakdown</a>
     <a class="ds-nav-link" href="#sc-trend-card"><span class="dot"></span>Trend Card</a>
     <a class="ds-nav-link" href="#sc-coach-feed"><span class="dot"></span>Coaching Feed</a>
     <a class="ds-nav-link" href="#sc-coaching-card"><span class="dot"></span>Coaching Card</a>
@@ -3254,7 +3254,7 @@
     <a class="ds-nav-link" href="#sc-eval-panel"><span class="dot"></span>Evaluation Panel</a>
     <a class="ds-nav-link" href="#sc-conf-badge"><span class="dot"></span>Confidence Badge</a>
     <a class="ds-nav-link" href="#sc-memory-panel"><span class="dot"></span>Memory Panel</a>
-    <a class="ds-nav-link" href="#sc-kpi-drawer"><span class="dot"></span>KPI Detail Drawer</a>
+    <a class="ds-nav-link" href="#sc-goal-drawer"><span class="dot"></span>goal Detail Drawer</a>
     <a class="ds-nav-link" href="#sc-brief"><span class="dot"></span>Brief Card</a>
     <a class="ds-nav-link" href="#sc-pattern-list"><span class="dot"></span>Pattern List</a>
     <a class="ds-nav-link" href="#sc-page-header"><span class="dot"></span>Page Header</a>
@@ -3265,15 +3265,15 @@
   </div>
 
   <div class="ds-nav-group">
-    <span class="ds-nav-label">Disputes</span>
-    <a class="ds-nav-link" href="#disputes-row"><span class="dot"></span>Dispute Row</a>
-    <a class="ds-nav-link" href="#disputes-sla"><span class="dot"></span>SLA Indicators</a>
-    <a class="ds-nav-link" href="#disputes-suggest"><span class="dot"></span>AiMY Suggest Strip</a>
-    <a class="ds-nav-link" href="#disputes-detail"><span class="dot"></span>Change Request Panel</a>
-    <a class="ds-nav-link" href="#disputes-workspace"><span class="dot"></span>Workspace + APA</a>
-    <a class="ds-nav-link" href="#disputes-decision"><span class="dot"></span>Decision Zone</a>
-    <a class="ds-nav-link" href="#disputes-audit"><span class="dot"></span>Audit Trail</a>
-    <a class="ds-nav-link" href="#disputes-modal"><span class="dot"></span>Modal + Wizard</a>
+    <span class="ds-nav-label">justifys</span>
+    <a class="ds-nav-link" href="#justifys-row"><span class="dot"></span>justify Row</a>
+    <a class="ds-nav-link" href="#justifys-sla"><span class="dot"></span>SLA Indicators</a>
+    <a class="ds-nav-link" href="#justifys-suggest"><span class="dot"></span>AiMY Suggest Strip</a>
+    <a class="ds-nav-link" href="#justifys-detail"><span class="dot"></span>Change Request Panel</a>
+    <a class="ds-nav-link" href="#justifys-workspace"><span class="dot"></span>Workspace + APA</a>
+    <a class="ds-nav-link" href="#justifys-decision"><span class="dot"></span>Decision Zone</a>
+    <a class="ds-nav-link" href="#justifys-audit"><span class="dot"></span>Audit Trail</a>
+    <a class="ds-nav-link" href="#justifys-modal"><span class="dot"></span>Modal + Wizard</a>
   </div>
 
   <div class="ds-nav-group">
@@ -3300,7 +3300,7 @@
   <div class="ds-hero-eyebrow">AiMY QA Design System</div>
   <h1>Build consistent.<br>Ship confident.</h1>
   <p class="ds-hero-sub">
-    Every token, component, and pattern used across AiMY QA v2 — from the AI Chat canvas to the Disputes audit trail. One source of truth so every surface feels native to the same product.
+    Every token, component, and pattern used across AiMY QA v2 — from the AI Chat canvas to the justifys audit trail. One source of truth so every surface feels native to the same product.
   </p>
   <div class="demo-row" style="margin-top:24px;gap:8px">
     <span class="tag tag-teal">v2 · 2026</span>
@@ -3324,7 +3324,7 @@
       <div class="surface-icon" style="background:rgba(51,105,255,0.12)">🧠</div>
       <div class="surface-name">Dashboard</div>
       <div class="surface-type">Primary · AI-first</div>
-      <div class="surface-desc">AI Chat canvas + briefing cards + KPI feed. The primary surface for day-to-day supervisor work. Two-tier grid layout.</div>
+      <div class="surface-desc">AI Chat canvas + briefing cards + goal feed. The primary surface for day-to-day supervisor work. Two-tier grid layout.</div>
     </div>
 
     <div class="surface-card">
@@ -3336,16 +3336,16 @@
 
     <div class="surface-card">
       <div class="surface-icon" style="background:var(--teal-dim)">⚙️</div>
-      <div class="surface-name">KPI Hub</div>
+      <div class="surface-name">goal Hub</div>
       <div class="surface-type">Admin · Configuration</div>
       <div class="surface-desc">Template browser, metric registry, governance controls, metric health. 3 of 4 tabs role-gated to Admins only.</div>
     </div>
 
     <div class="surface-card">
       <div class="surface-icon" style="background:var(--err-bg)">⚖️</div>
-      <div class="surface-name">Disputes</div>
+      <div class="surface-name">justifys</div>
       <div class="surface-type">Workflow · Role-based</div>
-      <div class="surface-desc">Full lifecycle dispute management. Three roles (Agent, Auditor, Admin) with distinct views, permissions, and SLA tracking.</div>
+      <div class="surface-desc">Full lifecycle justify management. Three roles (Agent, Auditor, Admin) with distinct views, permissions, and SLA tracking.</div>
     </div>
 
     <div class="surface-card" style="grid-column:1 / -1">
@@ -3384,15 +3384,15 @@
         <td><span class="tag tag-ok">Full</span></td>
       </tr>
       <tr>
-        <td>KPI Hub</td>
+        <td>goal Hub</td>
         <td>—</td>
         <td><span class="tag tag-warn">Templates only</span></td>
         <td>—</td>
         <td><span class="tag tag-ok">Full</span></td>
       </tr>
       <tr>
-        <td>Disputes</td>
-        <td><span class="tag tag-neutral">Own disputes</span></td>
+        <td>justifys</td>
+        <td><span class="tag tag-neutral">Own justifys</span></td>
         <td>—</td>
         <td><span class="tag tag-warn">Queue + decisions</span></td>
         <td><span class="tag tag-ok">Full + export</span></td>
@@ -3475,7 +3475,7 @@
       <tr><td>--brand</td><td><code>#3369ff</code></td><td>Primary CTAs, focus rings, brand buttons, AI canvas accent</td></tr>
       <tr><td>--qa-accent ⚠</td><td><code>#8b4ff4</code></td><td>Nav active state, chip active, topnav tab active — one swap propagates everywhere</td></tr>
       <tr><td>--teal</td><td><code>#6fdfe2</code></td><td>AI identity signals, eyebrows, version badge, gradient endpoint</td></tr>
-      <tr><td>--ok / --warn / --err</td><td>Green / Amber / Red</td><td>Scores, findings, disputes, pipeline status, badge variants</td></tr>
+      <tr><td>--ok / --warn / --err</td><td>Green / Amber / Red</td><td>Scores, findings, justifys, pipeline status, badge variants</td></tr>
       <tr><td>--card-bg</td><td><code>#141b24</code></td><td>Every card, sidebar, filter tray, tooltip — shared surface token</td></tr>
       <tr><td>--body-bg</td><td><code>#0f1215</code></td><td>Page background only — never used on elevated surfaces</td></tr>
     </tbody>
@@ -3773,7 +3773,7 @@
       <tr><td>--r-md</td><td><code>8px</code></td><td>Buttons, nav items, inputs, filter tray cells, focus ring</td></tr>
       <tr><td>--r-lg</td><td><code>10px</code></td><td>Token swatches, callouts, AFS strip, source connection card</td></tr>
       <tr><td>--r-xl</td><td><code>12px</code></td><td>Surface cards, template cards, code blocks, modals</td></tr>
-      <tr><td>--r-2xl</td><td><code>16px</code></td><td>Briefing cards, narrative cards, KPI brief, score cards</td></tr>
+      <tr><td>--r-2xl</td><td><code>16px</code></td><td>Briefing cards, narrative cards, goal brief, score cards</td></tr>
       <tr><td>--r-pill</td><td><code>9999px</code></td><td>Chips, tags, badges, tabs strip, user pill, search input</td></tr>
     </tbody>
   </table>
@@ -3877,10 +3877,10 @@
       <tr><td>body background</td><td><code>#0f1215</code></td><td>Sits below ellipse layer — never use on cards</td></tr>
       <tr><td>#appEllipse</td><td>z-index 0, fixed inset 0</td><td>Radial gradient duo — pointer-events: none</td></tr>
       <tr><td>.app-main scroll pad</td><td><code>24px 32px 100px</code></td><td>Top / horiz / bottom inner padding</td></tr>
-      <tr><td>Dashboard tier-1 grid</td><td><code>repeat(4, 1fr), gap 16px</code></td><td>4-column KPI briefing row</td></tr>
-      <tr><td>Dashboard tier-2 grid</td><td><code>1.5fr 1fr, gap 16px</code></td><td>Narrative card + KPI feed split</td></tr>
+      <tr><td>Dashboard tier-1 grid</td><td><code>repeat(4, 1fr), gap 16px</code></td><td>4-column goal briefing row</td></tr>
+      <tr><td>Dashboard tier-2 grid</td><td><code>1.5fr 1fr, gap 16px</code></td><td>Narrative card + goal feed split</td></tr>
       <tr><td>Reviews left panel</td><td><code>280px</code> fixed width</td><td>Agent list; right panel fills remaining space</td></tr>
-      <tr><td>Disputes split</td><td><code>360px</code> left list</td><td>Dispute queue + detail view</td></tr>
+      <tr><td>justifys split</td><td><code>360px</code> left list</td><td>justify queue + detail view</td></tr>
       <tr><td>Ingestion split</td><td><code>300px</code> source list</td><td>Source list + detail / upload area</td></tr>
     </tbody>
   </table>
@@ -3925,7 +3925,7 @@
     <button class="copy-btn" onclick="copyCode(this,'dashboard-grid')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy
     </button>
-    <pre class="ds-code" id="dashboard-grid"><span class="cm">/* Tier 1 — 4-column KPI briefing row */</span>
+    <pre class="ds-code" id="dashboard-grid"><span class="cm">/* Tier 1 — 4-column goal briefing row */</span>
 <span class="ct">.tier-1-grid</span> {
   <span class="ck">display</span>: <span class="cv">grid</span>;
   <span class="ck">grid-template-columns</span>: <span class="cs">repeat(4, 1fr)</span>;
@@ -3933,7 +3933,7 @@
   <span class="ck">margin-bottom</span>: <span class="cs">16px</span>;
 }
 
-<span class="cm">/* Tier 2 — asymmetric narrative + KPI feed */</span>
+<span class="cm">/* Tier 2 — asymmetric narrative + goal feed */</span>
 <span class="ct">.tier-2-grid</span> {
   <span class="ck">display</span>: <span class="cv">grid</span>;
   <span class="ck">grid-template-columns</span>: <span class="cs">1.5fr 1fr</span>;
@@ -3966,9 +3966,9 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         My Profile
       </a>
-      <a class="nav-item" href="kpi-browser.html">
+      <a class="nav-item" href="goal-browser.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="4" x2="9" y2="20"/></svg>
-        KPI Hub
+        goal Hub
       </a>
       <a class="nav-item" href="data-ingestion.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
@@ -4418,21 +4418,21 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     KPI BRIEF FEED
+     goal BRIEF FEED
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="kpi-feed"></span>
-  <div class="ds-h2">KPI Brief Feed</div>
-  <p class="ds-desc">A vertically-stacked list of prioritised KPI alerts, displayed in the right column of the Dashboard. Each <code>.kpi-brief</code> row has a ranked icon, a conclusion, evidence items, and a context action button. Color (err/warn/ok) comes from the parent modifier class — never set colors inline.</p>
+  <span class="ds-section-anchor" id="goal-feed"></span>
+  <div class="ds-h2">goal Brief Feed</div>
+  <p class="ds-desc">A vertically-stacked list of prioritised goal alerts, displayed in the right column of the Dashboard. Each <code>.goal-brief</code> row has a ranked icon, a conclusion, evidence items, and a context action button. Color (err/warn/ok) comes from the parent modifier class — never set colors inline.</p>
 
   <div class="ds-h3">Feed Demo</div>
   <div class="ds-preview">
     <div class="ds-preview-label">HOVER ROWS — translateX(2px) on hover</div>
     <div style="max-width:460px">
-      <div class="kpi-feed">
+      <div class="goal-feed">
 
         <!-- Err row -->
-        <div class="kpi-brief kf-err">
+        <div class="goal-brief kf-err">
           <div class="kf-rank">1</div>
           <div class="kf-body">
             <div class="kf-conclusion">SLA Response Time — <span class="kf-score-err">61%</span> pass rate</div>
@@ -4445,7 +4445,7 @@
         </div>
 
         <!-- Warn row -->
-        <div class="kpi-brief kf-warn">
+        <div class="goal-brief kf-warn">
           <div class="kf-rank">2</div>
           <div class="kf-body">
             <div class="kf-conclusion">Empathy Score — <span class="kf-score-warn">72%</span> avg</div>
@@ -4458,7 +4458,7 @@
         </div>
 
         <!-- Ok row -->
-        <div class="kpi-brief kf-ok">
+        <div class="goal-brief kf-ok">
           <div class="kf-rank">3</div>
           <div class="kf-body">
             <div class="kf-conclusion">Resolution Quality — <span class="kf-score-ok">88%</span> avg</div>
@@ -4469,14 +4469,14 @@
           <button class="kf-action">View</button>
         </div>
 
-        <!-- Passing KPI toggle -->
+        <!-- Passing goal toggle -->
         <button class="passing-toggle" onclick="toggleDemoPassingSection(this)" id="demoPassingToggle">
-          <span class="passing-toggle-label">Passing KPIs · 3</span>
+          <span class="passing-toggle-label">Passing goals · 3</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </button>
 
         <div class="passing-section" id="demoPassingSection">
-          <div class="kpi-brief kf-ok">
+          <div class="goal-brief kf-ok">
             <div class="kf-rank">4</div>
             <div class="kf-body">
               <div class="kf-conclusion">First Call Resolution — <span class="kf-score-ok">84%</span></div>
@@ -4493,25 +4493,25 @@
   <table class="ds-table">
     <thead><tr><th>Element</th><th>Spec</th><th>Notes</th></tr></thead>
     <tbody>
-      <tr><td>.kpi-feed</td><td>flex column, gap 8px</td><td>Direct parent of all .kpi-brief rows.</td></tr>
-      <tr><td>.kpi-brief</td><td>flex, pad 10px 14px, bg --card-bg, r-xl, 1px border</td><td>Hover: translateX(2px) — feeds never lift vertically. Modifier: .kf-err / .kf-warn / .kf-ok.</td></tr>
+      <tr><td>.goal-feed</td><td>flex column, gap 8px</td><td>Direct parent of all .goal-brief rows.</td></tr>
+      <tr><td>.goal-brief</td><td>flex, pad 10px 14px, bg --card-bg, r-xl, 1px border</td><td>Hover: translateX(2px) — feeds never lift vertically. Modifier: .kf-err / .kf-warn / .kf-ok.</td></tr>
       <tr><td>.kf-rank</td><td>20×20px, r-xs, semantic bg per modifier</td><td>Rank number (1, 2, 3…). Not a score — it's the feed position number.</td></tr>
-      <tr><td>.kf-conclusion</td><td>11px/700 #fff, lh 1.4</td><td>KPI name + inline score. Score uses .kf-score-err/warn/ok for semantic color.</td></tr>
+      <tr><td>.kf-conclusion</td><td>11px/700 #fff, lh 1.4</td><td>goal name + inline score. Score uses .kf-score-err/warn/ok for semantic color.</td></tr>
       <tr><td>.kf-evidence</td><td>10px --d300, flex gap 8px</td><td>Metric items in .kf-ev-item. Values bold via .v. Trends via .trend-up/dn/warn.</td></tr>
       <tr><td>.kf-action</td><td>10px/700, 4×10px pad, r-sm, inherits modifier color</td><td>One word max: Review / Coach / View / Flag. Self-aligned center.</td></tr>
-      <tr><td>.passing-toggle</td><td>10px/700 uppercase, full-width, top hairline border</td><td>Collapses/expands the passing KPIs section. SVG chevron rotates 180° when open.</td></tr>
-      <tr><td>.passing-section</td><td>display none → block on .open</td><td>Contains passing .kpi-brief rows (always .kf-ok). Hidden by default.</td></tr>
+      <tr><td>.passing-toggle</td><td>10px/700 uppercase, full-width, top hairline border</td><td>Collapses/expands the passing goals section. SVG chevron rotates 180° when open.</td></tr>
+      <tr><td>.passing-section</td><td>display none → block on .open</td><td>Contains passing .goal-brief rows (always .kf-ok). Hidden by default.</td></tr>
     </tbody>
   </table>
 
   <div class="ds-code-wrap">
-    <button class="copy-btn" onclick="copyCode(this,'kpi-feed-html')">
+    <button class="copy-btn" onclick="copyCode(this,'goal-feed-html')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy HTML
     </button>
-    <pre class="ds-code" id="kpi-feed-html"><span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"kpi-feed"</span><span class="ct">&gt;</span>
+    <pre class="ds-code" id="goal-feed-html"><span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"goal-feed"</span><span class="ct">&gt;</span>
 
   <span class="cm">&lt;!-- Err row (rank 1) --&gt;</span>
-  <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"kpi-brief kf-err"</span><span class="ct">&gt;</span>
+  <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"goal-brief kf-err"</span><span class="ct">&gt;</span>
     <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"kf-rank"</span><span class="ct">&gt;</span>1<span class="ct">&lt;/div&gt;</span>
     <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"kf-body"</span><span class="ct">&gt;</span>
       <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"kf-conclusion"</span><span class="ct">&gt;</span>SLA Response Time — <span class="ct">&lt;span</span> <span class="ck">class</span>=<span class="cs">"kf-score-err"</span><span class="ct">&gt;</span>61%<span class="ct">&lt;/span&gt;&lt;/div&gt;</span>
@@ -4525,11 +4525,11 @@
 
   <span class="cm">&lt;!-- Passing toggle --&gt;</span>
   <span class="ct">&lt;button</span> <span class="ck">class</span>=<span class="cs">"passing-toggle"</span><span class="ct">&gt;</span>
-    <span class="ct">&lt;span</span> <span class="ck">class</span>=<span class="cs">"passing-toggle-label"</span><span class="ct">&gt;</span>Passing KPIs · 3<span class="ct">&lt;/span&gt;</span>
+    <span class="ct">&lt;span</span> <span class="ck">class</span>=<span class="cs">"passing-toggle-label"</span><span class="ct">&gt;</span>Passing goals · 3<span class="ct">&lt;/span&gt;</span>
     <span class="cm">&lt;!-- chevron svg --&gt;</span>
   <span class="ct">&lt;/button&gt;</span>
   <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"passing-section"</span><span class="ct">&gt;</span>
-    <span class="cm">&lt;!-- .kpi-brief.kf-ok rows --&gt;</span>
+    <span class="cm">&lt;!-- .goal-brief.kf-ok rows --&gt;</span>
   <span class="ct">&lt;/div&gt;</span>
 
 <span class="ct">&lt;/div&gt;</span></pre>
@@ -5286,7 +5286,7 @@
     <tbody>
       <tr><td>.btn-brand</td><td><code>--brand</code></td><td>#fff</td><td>Primary CTA, standalone actions</td></tr>
       <tr><td>.btn-ghost</td><td><code>rgba(255,255,255,0.05)</code></td><td><code>--d300</code></td><td>Secondary / cancel / dismiss</td></tr>
-      <tr><td>.btn-err</td><td><code>--err-bg</code></td><td><code>--err</code></td><td>P1 cards, escalation, overturned disputes</td></tr>
+      <tr><td>.btn-err</td><td><code>--err-bg</code></td><td><code>--err</code></td><td>P1 cards, escalation, overturned justifys</td></tr>
       <tr><td>.btn-warn</td><td><code>--warn-bg</code></td><td><code>--warn</code></td><td>P2 cards, coaching, borderline actions</td></tr>
       <tr><td>.btn-ok</td><td><code>--ok-bg</code></td><td><code>--ok</code></td><td>P3 cards, resolve, uphold, positive actions</td></tr>
       <tr><td>.btn-qa</td><td><code>--qa-accent-dim</code></td><td><code>--qa-accent</code></td><td>QA-specific overrides and admin actions</td></tr>
@@ -5399,9 +5399,9 @@
         </select>
       </div>
       <div class="field" style="grid-column:1/-1">
-        <label class="field-label">Dispute Rationale</label>
+        <label class="field-label">justify Rationale</label>
         <textarea class="input" rows="3" placeholder="Explain why this score should be reconsidered…"></textarea>
-        <span class="field-hint">Required for all dispute submissions. Min 40 characters.</span>
+        <span class="field-hint">Required for all justify submissions. Min 40 characters.</span>
       </div>
     </div>
   </div>
@@ -5518,7 +5518,7 @@
       <tr><td>.input.success</td><td>border <code>--ok</code></td><td>Pair with green confirmation text</td></tr>
       <tr><td>.input:disabled</td><td>opacity 0.38, cursor not-allowed</td><td>Never remove from DOM — use disabled attr</td></tr>
       <tr><td>select.input</td><td>custom chevron via background-image</td><td>appearance: none; right-pad 36px for arrow</td></tr>
-      <tr><td>textarea.input</td><td>min-height 80px, resize: vertical</td><td>Used in dispute rationale, coaching notes</td></tr>
+      <tr><td>textarea.input</td><td>min-height 80px, resize: vertical</td><td>Used in justify rationale, coaching notes</td></tr>
       <tr><td>type="password"</td><td>font-family: mono, letter-spacing 0.08em</td><td>API keys only — never pre-fill after save</td></tr>
     </tbody>
   </table>
@@ -5530,9 +5530,9 @@
 <div class="ds-section">
   <span class="ds-section-anchor" id="feeds"></span>
   <div class="ds-h2">Feed Items</div>
-  <p class="ds-desc">Two feed patterns: the KPI brief (ranked alert list on the Dashboard) and the coaching / activity feed item used in side panels and agent history.</p>
+  <p class="ds-desc">Two feed patterns: the goal brief (ranked alert list on the Dashboard) and the coaching / activity feed item used in side panels and agent history.</p>
 
-  <div class="ds-h3">KPI Brief — Ranked Alert List</div>
+  <div class="ds-h3">goal Brief — Ranked Alert List</div>
   <div class="ds-preview">
     <div style="display:flex;flex-direction:column;gap:8px;max-width:480px">
 
@@ -5604,10 +5604,10 @@
         <div style="flex:1">
           <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
             <span style="font-size:12px;font-weight:700;color:var(--d50)">Youssef A.</span>
-            <span class="tag tag-neutral" style="font-size:8.5px">Dispute filed</span>
+            <span class="tag tag-neutral" style="font-size:8.5px">justify filed</span>
             <span style="font-size:10px;color:var(--d500);margin-left:auto">2 days ago</span>
           </div>
-          <div style="font-size:12px;color:var(--d300);line-height:1.55">Disputed Resolution Quality score on call #49821. Customer was actually satisfied — transcript shows positive close.</div>
+          <div style="font-size:12px;color:var(--d300);line-height:1.55">justifyd Resolution Quality score on call #49821. Customer was actually satisfied — transcript shows positive close.</div>
         </div>
       </div>
 
@@ -5731,7 +5731,7 @@
         </li>
         <li style="font-size:12px;color:var(--d300);line-height:1.5;padding-left:14px;position:relative;">
           <span style="position:absolute;left:0;color:var(--qa-accent);font-weight:700;font-size:14px;line-height:1.3;">·</span>
-          Still <strong style="color:var(--d50);font-weight:600;">2.7% below the 90% SLA target</strong> — 3 failing KPIs are the primary drag.
+          Still <strong style="color:var(--d50);font-weight:600;">2.7% below the 90% SLA target</strong> — 3 failing goals are the primary drag.
         </li>
         <li style="font-size:12px;color:var(--d300);line-height:1.5;padding-left:14px;position:relative;">
           <span style="position:absolute;left:0;color:var(--qa-accent);font-weight:700;font-size:14px;line-height:1.3;">·</span>
@@ -5739,7 +5739,7 @@
         </li>
       </ul>
       <div style="margin-top:10px;">
-        <button style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;background:rgba(var(--qa-accent-rgb),0.1);border:1px solid rgba(var(--qa-accent-rgb),0.25);color:var(--qa-accent);cursor:pointer;font-family:Urbanist,sans-serif;">Address KPIs &rarr;</button>
+        <button style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;background:rgba(var(--qa-accent-rgb),0.1);border:1px solid rgba(var(--qa-accent-rgb),0.25);color:var(--qa-accent);cursor:pointer;font-family:Urbanist,sans-serif;">Address goals &rarr;</button>
       </div>
     </div>
   </div>
@@ -5829,7 +5829,7 @@
         </div>
         <div style="display:flex;align-items:center;gap:8px;padding:5px 12px 5px 10px;background:rgba(var(--qa-accent-rgb),0.1);border:1px solid rgba(var(--qa-accent-rgb),0.28);border-radius:20px;font-size:11px;font-weight:700;color:var(--d50);">
           <span style="width:6px;height:6px;border-radius:50%;background:var(--qa-accent);box-shadow:0 0 0 2px rgba(var(--qa-accent-rgb),0.2);flex-shrink:0;display:inline-block;"></span>
-          3 KPIs failing, Nov dip unresolved
+          3 goals failing, Nov dip unresolved
           <span style="font-size:9px;font-weight:700;letter-spacing:0.04em;color:var(--d400);">high confidence</span>
         </div>
       </div>
@@ -5848,7 +5848,7 @@
             <svg width="11" height="13" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
             <span>Suggested by AiMY</span>
           </div>
-          <span style="font-size:12px;color:var(--d400);font-style:italic;">· based on 3 failing KPIs</span>
+          <span style="font-size:12px;color:var(--d400);font-style:italic;">· based on 3 failing goals</span>
         </div>
         <button style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:var(--d400);padding:4px 10px;border:1px solid var(--d700);border-radius:8px;background:none;cursor:pointer;font-family:Urbanist,sans-serif;">↻ Refresh</button>
       </div>
@@ -5893,7 +5893,7 @@
 <div class="ds-section">
   <span class="ds-section-anchor" id="dataviz"></span>
   <div class="ds-h2">Data Viz</div>
-  <p class="ds-desc">Two data display primitives used across Reviews and Agent Scorecard: the SVG score ring (overall score) and horizontal progress bars (per-category KPI breakdown).</p>
+  <p class="ds-desc">Two data display primitives used across Reviews and Agent Scorecard: the SVG score ring (overall score) and horizontal progress bars (per-category goal breakdown).</p>
 
   <div class="ds-h3">Score Ring</div>
   <div class="ds-preview">
@@ -5967,7 +5967,7 @@
     <div style="font-size:10.5px;color:var(--d500);margin-top:12px">stroke-dashoffset = circumference × (1 − score/100) · circumference = 2π × 36 ≈ 226.2</div>
   </div>
 
-  <div class="ds-h3">KPI Category Progress Bars</div>
+  <div class="ds-h3">goal Category Progress Bars</div>
   <div class="ds-preview">
     <div style="display:flex;flex-direction:column;gap:10px;max-width:480px">
 
@@ -6111,7 +6111,7 @@
     <tbody>
       <tr><td>.avatar-sm</td><td>24×24px</td><td>9px / 700</td><td>Activity feed thread connector, topnav mention</td></tr>
       <tr><td>.avatar-md</td><td>32×32px</td><td>11px / 700</td><td>User pill in topnav, agent row in reviews list</td></tr>
-      <tr><td>.avatar-lg</td><td>44×44px</td><td>14px / 700</td><td>Agent scorecard header, dispute detail header</td></tr>
+      <tr><td>.avatar-lg</td><td>44×44px</td><td>14px / 700</td><td>Agent scorecard header, justify detail header</td></tr>
       <tr><td>AI variant</td><td>any size</td><td>—</td><td>Background: <code>--ai</code> gradient. Always initials "AI". Never use --grad-avatar on AI actor.</td></tr>
     </tbody>
   </table>
@@ -6293,7 +6293,7 @@
 
       <div class="tooltip-wrap">
         <button class="btn btn-ghost btn-sm">Hover me</button>
-        <div class="tooltip">Opens the dispute detail panel</div>
+        <div class="tooltip">Opens the justify detail panel</div>
       </div>
 
       <div class="tooltip-wrap">
@@ -6658,7 +6658,7 @@
       <tr><td>Score ring</td><td><code>role="img"</code> on outer div, <code>aria-label="Score: 88%, Pass"</code></td><td>SVG is decorative — mark <code>aria-hidden="true"</code> on both circles.</td></tr>
       <tr><td>Progress bar</td><td><code>role="progressbar"</code>, <code>aria-valuenow</code>, <code>aria-valuemin="0"</code>, <code>aria-valuemax="100"</code></td><td>Include <code>aria-label</code> with category name.</td></tr>
       <tr><td>Icon-only button</td><td><code>aria-label="descriptive action"</code></td><td>Never rely on a tooltip alone to convey the action.</td></tr>
-      <tr><td>Live signal badge</td><td><code>role="status"</code>, <code>aria-live="polite"</code></td><td>Only use <code>aria-live="assertive"</code> for critical alerts (P1 disputes).</td></tr>
+      <tr><td>Live signal badge</td><td><code>role="status"</code>, <code>aria-live="polite"</code></td><td>Only use <code>aria-live="assertive"</code> for critical alerts (P1 justifys).</td></tr>
       <tr><td>Masked API input</td><td><code>autocomplete="off"</code>, <code>autocomplete="new-password"</code></td><td>Prevents browser autofill from leaking credentials into the visible DOM.</td></tr>
       <tr><td>Skeleton</td><td><code>aria-busy="true"</code> on the container</td><td>Remove when content loads. Announce with <code>aria-live="polite"</code> region.</td></tr>
     </tbody>
@@ -7091,8 +7091,8 @@
     </tbody>
   </table>
 
-  <div class="ds-h3">Variant 2 — Disputes Toast (<code>.disp-toast</code>)</div>
-  <p class="ds-desc">Used after decision actions in the disputes workflow. Simpler — no undo button, no progress bar. Icon uses semantic ok/err tint (not qa-accent). Same positioning and entrance animation.</p>
+  <div class="ds-h3">Variant 2 — justifys Toast (<code>.disp-toast</code>)</div>
+  <p class="ds-desc">Used after decision actions in the justifys workflow. Simpler — no undo button, no progress bar. Icon uses semantic ok/err tint (not qa-accent). Same positioning and entrance animation.</p>
 
   <div class="ds-preview">
     <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(22,30,42,0.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.09);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.55);min-width:280px;max-width:380px;">
@@ -7134,7 +7134,7 @@
   <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"aimy-toast-progress"</span><span class="ct">&gt;&lt;/div&gt;</span>
 <span class="ct">&lt;/div&gt;</span>
 
-<span class="cm">&lt;!-- Disputes toast (decision confirmation, no undo) --&gt;</span>
+<span class="cm">&lt;!-- justifys toast (decision confirmation, no undo) --&gt;</span>
 <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"disp-toast"</span> <span class="ck">id</span>=<span class="cs">"dispToast"</span><span class="ct">&gt;</span>
   <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"disp-toast-icon ok"</span> <span class="ck">id</span>=<span class="cs">"dispToastIcon"</span><span class="ct">&gt;</span><span class="cm">&lt;!-- ok/err SVG --&gt;</span><span class="ct">&lt;/div&gt;</span>
   <span class="ct">&lt;div&gt;</span>
@@ -7217,19 +7217,19 @@
 
 
 <!-- ══════════════════════════════════════════════
-     KPI HUB — PAGE SHELL
+     goal HUB — PAGE SHELL
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="kpihub-shell"></span>
-  <div class="ds-h2">KPI Hub Shell</div>
-  <p class="ds-desc">The KPI Hub is a four-tab admin interface. The page header contains title + subtitle + a global action button. The tab bar sits directly below the header, full-width. Each tab panel is an independent scroll container. Admin-only tabs are hidden entirely for QA Manager role — never grayed or locked.</p>
+  <span class="ds-section-anchor" id="goalhub-shell"></span>
+  <div class="ds-h2">goal Hub Shell</div>
+  <p class="ds-desc">The goal Hub is a four-tab admin interface. The page header contains title + subtitle + a global action button. The tab bar sits directly below the header, full-width. Each tab panel is an independent scroll container. Admin-only tabs are hidden entirely for QA Manager role — never grayed or locked.</p>
 
   <div class="ds-preview">
     <div style="max-width:600px;">
       <!-- Header -->
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;">
         <div>
-          <div style="font-size:22px;font-weight:800;color:var(--d50);letter-spacing:-0.02em;">KPI Hub</div>
+          <div style="font-size:22px;font-weight:800;color:var(--d50);letter-spacing:-0.02em;">goal Hub</div>
           <div style="font-size:13px;color:var(--d400);margin-top:3px;">Manage scorecards, metrics, governance rules, and data health</div>
         </div>
         <button style="display:inline-flex;align-items:center;gap:6px;background:var(--qa-accent);color:#fff;border:none;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:Urbanist,sans-serif;flex-shrink:0;white-space:nowrap;">
@@ -7264,25 +7264,25 @@
   <table class="ds-table">
     <thead><tr><th>Element</th><th>Class</th><th>Notes</th></tr></thead>
     <tbody>
-      <tr><td>Page</td><td><code>.kpi-hub-page</code></td><td>Full-height scroll container. <code>padding:24px 32px</code></td></tr>
-      <tr><td>Header</td><td><code>.kpi-hub-header</code></td><td>flex space-between, <code>gap:12px; margin-bottom:16px</code>. Left: <code>.kpi-hub-header-left</code></td></tr>
-      <tr><td>Title</td><td><code>.kpi-hub-title</code></td><td>22px/800, <code>--d50</code>, <code>letter-spacing:-0.02em</code></td></tr>
-      <tr><td>Subtitle</td><td><code>.kpi-hub-subtitle</code></td><td>13px, <code>--d400</code>, <code>margin-top:3px</code></td></tr>
-      <tr><td>Tab bar</td><td><code>.kpi-tab-bar</code></td><td>flex, <code>gap:2px; border-bottom:1px solid rgba(255,255,255,0.07); flex-shrink:0</code>. Underline pattern — no pill container, no background. Full width</td></tr>
-      <tr><td>Tab</td><td><code>.kpi-tab</code></td><td>12px/600, <code>--d400</code>. <code>border-bottom:2px solid transparent; margin-bottom:-1px</code>. Add <code>.active</code>: <code>--d50</code> text + <code>border-bottom-color:--qa-accent</code>. Tab icon stroke matches text color; active: qa-accent stroke. Tabs have SVG icons — not icon-only, label is always visible</td></tr>
+      <tr><td>Page</td><td><code>.goal-hub-page</code></td><td>Full-height scroll container. <code>padding:24px 32px</code></td></tr>
+      <tr><td>Header</td><td><code>.goal-hub-header</code></td><td>flex space-between, <code>gap:12px; margin-bottom:16px</code>. Left: <code>.goal-hub-header-left</code></td></tr>
+      <tr><td>Title</td><td><code>.goal-hub-title</code></td><td>22px/800, <code>--d50</code>, <code>letter-spacing:-0.02em</code></td></tr>
+      <tr><td>Subtitle</td><td><code>.goal-hub-subtitle</code></td><td>13px, <code>--d400</code>, <code>margin-top:3px</code></td></tr>
+      <tr><td>Tab bar</td><td><code>.goal-tab-bar</code></td><td>flex, <code>gap:2px; border-bottom:1px solid rgba(255,255,255,0.07); flex-shrink:0</code>. Underline pattern — no pill container, no background. Full width</td></tr>
+      <tr><td>Tab</td><td><code>.goal-tab</code></td><td>12px/600, <code>--d400</code>. <code>border-bottom:2px solid transparent; margin-bottom:-1px</code>. Add <code>.active</code>: <code>--d50</code> text + <code>border-bottom-color:--qa-accent</code>. Tab icon stroke matches text color; active: qa-accent stroke. Tabs have SVG icons — not icon-only, label is always visible</td></tr>
       <tr><td>Tab badge</td><td><code>.admin-tab-badge</code></td><td>16px qa-accent circle, 9px/800. Shown on Governance tab when there are pending approvals</td></tr>
-      <tr><td>Tab panel</td><td><code>.kpi-tab-panel</code></td><td>Full-width panel below tab bar. <code>display:none</code> base, <code>display:block</code> when tab active</td></tr>
-      <tr><td>Tab toolbar</td><td><code>.kpi-tab-toolbar</code></td><td>flex space-between, <code>padding:16px 0 12px</code>. Holds search/filter controls + view toggle</td></tr>
+      <tr><td>Tab panel</td><td><code>.goal-tab-panel</code></td><td>Full-width panel below tab bar. <code>display:none</code> base, <code>display:block</code> when tab active</td></tr>
+      <tr><td>Tab toolbar</td><td><code>.goal-tab-toolbar</code></td><td>flex space-between, <code>padding:16px 0 12px</code>. Holds search/filter controls + view toggle</td></tr>
       <tr><td>Admin only</td><td><code>.admin-only</code></td><td><code>display:none</code> for QA Manager role. JS sets visibility based on <code>currentRole</code>. Never gray — remove entirely</td></tr>
     </tbody>
   </table>
 </div>
 
 <!-- ══════════════════════════════════════════════
-     KPI HUB — TEMPLATE CARD
+     goal HUB — TEMPLATE CARD
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="kpihub-tpl-card"></span>
+  <span class="ds-section-anchor" id="goalhub-tpl-card"></span>
   <div class="ds-h2">Template Card</div>
   <p class="ds-desc">The core unit of the Templates tab. Cards live in a responsive auto-fill grid via <code>.template-gallery</code>. Three type variants: <strong>System</strong> (platform-provided, read-only), <strong>Custom</strong> (team-created), <strong>Forked</strong> (customised from system). <code>.tpl-active-badge</code> marks the currently applied template with a blinking dot. <code>.tpl-card-ai-actions</code> fades in on hover. List-view applies <code>.list-view</code> to the gallery wrapper for a row layout override.</p>
 
@@ -7296,13 +7296,13 @@
           <span style="display:flex;align-items:center;gap:5px;font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--ok);padding:3px 8px;background:var(--ok-bg);border:1px solid rgba(23,178,106,0.2);border-radius:20px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--ok);display:inline-block;"></span>Active</span>
         </div>
         <div style="font-size:14px;font-weight:700;color:var(--d50);letter-spacing:-0.01em;line-height:1.3;">Inbound Customer Service — Standard</div>
-        <div style="font-size:11px;color:var(--d400);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">Covers core behavioral KPIs for voice inbound: empathy, call control, resolution, script adherence, and AHT.</div>
+        <div style="font-size:11px;color:var(--d400);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">Covers core behavioral goals for voice inbound: empathy, call control, resolution, script adherence, and AHT.</div>
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
           <span style="font-size:10px;font-weight:600;color:var(--d300);padding:3px 8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:20px;">BPO</span>
           <span style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--d400);padding:3px 8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:20px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px;"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013 5.18 2 2 0 015 3h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L9.09 10.91A16 16 0 0015 16.91l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>Voice</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid rgba(255,255,255,0.05);margin-top:2px;">
-          <span style="font-size:11px;font-weight:700;color:var(--d300);">8 KPIs</span>
+          <span style="font-size:11px;font-weight:700;color:var(--d300);">8 goals</span>
           <span style="font-size:10px;color:var(--d600);font-weight:500;">Updated 3 days ago</span>
         </div>
       </div>
@@ -7318,7 +7318,7 @@
           <span style="font-size:10px;font-weight:600;color:var(--d300);padding:3px 8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:20px;">BPO</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid rgba(255,255,255,0.05);margin-top:2px;">
-          <span style="font-size:11px;font-weight:700;color:var(--d300);">6 KPIs</span>
+          <span style="font-size:11px;font-weight:700;color:var(--d300);">6 goals</span>
           <span style="font-size:10px;color:var(--d600);font-weight:500;">Updated today</span>
         </div>
       </div>
@@ -7334,7 +7334,7 @@
           <span style="font-size:10px;font-weight:600;color:var(--d300);padding:3px 8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:20px;">Healthcare</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid rgba(255,255,255,0.05);margin-top:2px;">
-          <span style="font-size:11px;font-weight:700;color:var(--d300);">8 KPIs</span>
+          <span style="font-size:11px;font-weight:700;color:var(--d300);">8 goals</span>
           <span style="font-size:10px;color:var(--d600);font-weight:500;">Forked 1 week ago</span>
         </div>
       </div>
@@ -7356,19 +7356,19 @@
       <tr><td>Meta tags</td><td><code>.tpl-card-meta</code></td><td>flex, <code>gap:6px; flex-wrap:wrap</code>. Holds <code>.tpl-industry-tag</code> + <code>.tpl-channel-tag</code></td></tr>
       <tr><td>Industry tag</td><td><code>.tpl-industry-tag</code></td><td>10px/600, ghost pill, <code>--d300</code></td></tr>
       <tr><td>Channel tag</td><td><code>.tpl-channel-tag</code></td><td>10px/600, ghost pill, <code>--d400</code>. Holds 10px channel SVG icon</td></tr>
-      <tr><td>Footer</td><td><code>.tpl-card-footer</code></td><td>flex space-between, top border. <code>.tpl-kpi-count</code> (11px/700, --d300) + <code>.tpl-updated</code> (10px, --d600)</td></tr>
+      <tr><td>Footer</td><td><code>.tpl-card-footer</code></td><td>flex space-between, top border. <code>.tpl-goal-count</code> (11px/700, --d300) + <code>.tpl-updated</code> (10px, --d600)</td></tr>
       <tr><td>AI actions</td><td><code>.tpl-card-ai-actions</code></td><td>Fades in on hover. Contains "AiMY: Suggest improvements" btn + "Fork" ghost btn. When following footer, footer border is removed</td></tr>
     </tbody>
   </table>
 </div>
 
 <!-- ══════════════════════════════════════════════
-     KPI HUB — INTEL BAR
+     goal HUB — INTEL BAR
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="kpihub-intel-bar"></span>
+  <span class="ds-section-anchor" id="goalhub-intel-bar"></span>
   <div class="ds-h2">Intel Bar</div>
-  <p class="ds-desc">A summary strip below the Templates tab toolbar. Shows aggregate stats about the current template set: active template name, total KPI count, last review date, and AiMY health signal. Read-only — no interactive controls.</p>
+  <p class="ds-desc">A summary strip below the Templates tab toolbar. Shows aggregate stats about the current template set: active template name, total goal count, last review date, and AiMY health signal. Read-only — no interactive controls.</p>
 
   <div class="ds-preview">
     <div style="display:flex;align-items:center;gap:16px;padding:12px 16px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:10px;flex-wrap:wrap;max-width:600px;">
@@ -7378,7 +7378,7 @@
       </div>
       <div style="width:1px;height:28px;background:rgba(255,255,255,0.07);flex-shrink:0;"></div>
       <div style="display:flex;flex-direction:column;gap:2px;">
-        <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--d500);">KPIs</span>
+        <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--d500);">goals</span>
         <span style="font-size:13px;font-weight:700;color:var(--d50);">8 active</span>
       </div>
       <div style="width:1px;height:28px;background:rgba(255,255,255,0.07);flex-shrink:0;"></div>
@@ -7389,7 +7389,7 @@
       <div style="width:1px;height:28px;background:rgba(255,255,255,0.07);flex-shrink:0;"></div>
       <div style="display:flex;align-items:center;gap:7px;margin-left:auto;">
         <svg width="12" height="14" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-        <span style="font-size:11px;font-weight:700;color:var(--ok);">All KPIs healthy</span>
+        <span style="font-size:11px;font-weight:700;color:var(--ok);">All goals healthy</span>
       </div>
     </div>
   </div>
@@ -7408,10 +7408,10 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     KPI HUB — METRIC TABLE (Metric Registry tab)
+     goal HUB — METRIC TABLE (Metric Registry tab)
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="kpihub-metric-table"></span>
+  <span class="ds-section-anchor" id="goalhub-metric-table"></span>
   <div class="ds-h2">Metric Card (Registry)</div>
   <p class="ds-desc">The Metric Registry tab displays each metric as a card in a responsive grid (<code>.metric-card-grid</code>). Each card shows: name, type badge, source, description, and usage count. Clicking a card opens the <code>.mdo-*</code> detail overlay. The grid supports filtering via the tab toolbar's search + type filter.</p>
 
@@ -7464,12 +7464,12 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     KPI HUB — CR CARD (Governance Change Request)
+     goal HUB — CR CARD (Governance Change Request)
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="kpihub-cr-card"></span>
+  <span class="ds-section-anchor" id="goalhub-cr-card"></span>
   <div class="ds-h2">Governance Change Request Card</div>
-  <p class="ds-desc">Used in the Governance tab to surface pending KPI weight or scoring changes awaiting approval. Each card shows who submitted the change, what changed, and the proposed vs current values. Approve/Reject action buttons live in the card footer. Admin-only — hidden for QA Manager role.</p>
+  <p class="ds-desc">Used in the Governance tab to surface pending goal weight or scoring changes awaiting approval. Each card shows who submitted the change, what changed, and the proposed vs current values. Approve/Reject action buttons live in the card footer. Admin-only — hidden for QA Manager role.</p>
 
   <div class="ds-preview">
     <div style="max-width:480px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;">
@@ -7514,12 +7514,12 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     KPI HUB — PERMISSION MATRIX
+     goal HUB — PERMISSION MATRIX
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="kpihub-perm-matrix"></span>
+  <span class="ds-section-anchor" id="goalhub-perm-matrix"></span>
   <div class="ds-h2">Permission Matrix</div>
-  <p class="ds-desc">A table mapping roles to KPI Hub capabilities. Rows = capabilities, columns = roles. Each cell is a boolean tick or dash. Rendered as a structured table inside the Governance tab. The <code>.perm-matrix-note</code> below the table clarifies what each role can and cannot do in plain language.</p>
+  <p class="ds-desc">A table mapping roles to goal Hub capabilities. Rows = capabilities, columns = roles. Each cell is a boolean tick or dash. Rendered as a structured table inside the Governance tab. The <code>.perm-matrix-note</code> below the table clarifies what each role can and cannot do in plain language.</p>
 
   <div class="ds-preview">
     <div style="max-width:500px;overflow-x:auto;">
@@ -7570,12 +7570,12 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     KPI HUB — HEALTH CARD (Audit & Health tab)
+     goal HUB — HEALTH CARD (Audit & Health tab)
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="kpihub-health-card"></span>
+  <span class="ds-section-anchor" id="goalhub-health-card"></span>
   <div class="ds-h2">Health Card</div>
-  <p class="ds-desc">Cards in the Audit &amp; Health tab showing data coverage, detected issues, and scoring variance for each KPI metric. Three severity states: <strong>ok</strong> (green icon), <strong>warn</strong> (amber border + icon), <strong>crit</strong> (red border + icon). The coverage bar animates on mount via <code>transform:scaleX()</code>. Alert rows list per-client data gaps. Variance chip signals inter-rater reliability.</p>
+  <p class="ds-desc">Cards in the Audit &amp; Health tab showing data coverage, detected issues, and scoring variance for each goal metric. Three severity states: <strong>ok</strong> (green icon), <strong>warn</strong> (amber border + icon), <strong>crit</strong> (red border + icon). The coverage bar animates on mount via <code>transform:scaleX()</code>. Alert rows list per-client data gaps. Variance chip signals inter-rater reliability.</p>
 
   <div class="ds-preview">
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;max-width:660px;">
@@ -7664,12 +7664,12 @@
 
 
 <!-- ══════════════════════════════════════════════
-     KPI HUB — KPI DETAIL OVERLAY (kdo-*)
+     goal HUB — goal DETAIL OVERLAY (kdo-*)
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="kpihub-kdo"></span>
-  <div class="ds-h2">KPI Detail Overlay</div>
-  <p class="ds-desc">A fixed-position overlay panel opened when a template card or KPI row is clicked. Two-column body: left pane shows a radial weight chart + KPI category breakdown; right pane shows a version history toggle + active client list + AiMY action zone. Entrance: <code>translateY(16px) → 0</code> at 240ms ease-spring. Shares the same <code>#151d28</code> deep-dark surface as the scorecard editor.</p>
+  <span class="ds-section-anchor" id="goalhub-kdo"></span>
+  <div class="ds-h2">goal Detail Overlay</div>
+  <p class="ds-desc">A fixed-position overlay panel opened when a template card or goal row is clicked. Two-column body: left pane shows a radial weight chart + goal category breakdown; right pane shows a version history toggle + active client list + AiMY action zone. Entrance: <code>translateY(16px) → 0</code> at 240ms ease-spring. Shares the same <code>#151d28</code> deep-dark surface as the scorecard editor.</p>
 
   <div class="ds-preview">
     <div style="background:#151d28;border:1px solid rgba(255,255,255,0.1);border-radius:20px;overflow:hidden;max-width:640px;box-shadow:0 32px 80px rgba(0,0,0,0.7);">
@@ -7680,7 +7680,7 @@
           <span style="font-size:9px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;padding:3px 8px;border-radius:20px;background:rgba(51,105,255,0.1);color:#61adf1;border:1px solid rgba(51,105,255,0.2);flex-shrink:0;">System</span>
           <div style="min-width:0;">
             <div style="font-size:18px;font-weight:800;color:var(--d50);letter-spacing:-0.02em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Inbound Customer Service — Standard</div>
-            <div style="font-size:11px;color:var(--d400);line-height:1.4;margin-top:2px;">8 KPIs · BPO · Voice · Updated 3 days ago</div>
+            <div style="font-size:11px;color:var(--d400);line-height:1.4;margin-top:2px;">8 goals · BPO · Voice · Updated 3 days ago</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
@@ -7778,7 +7778,7 @@
       <tr><td><code>.kdo-radial-legend</code></td><td>Legend list</td><td>flex-column, gap 6px, full width</td></tr>
       <tr><td><code>.kdo-legend-row</code></td><td>Single legend entry</td><td>flex, gap 8px, 11px. Holds dot + name (flex:1) + pct</td></tr>
       <tr><td><code>.kdo-legend-dot</code></td><td>8px color circle</td><td>Matches SVG segment color</td></tr>
-      <tr><td><code>.kdo-kpi-cats</code></td><td>Category rows</td><td>flex-column, gap 8px</td></tr>
+      <tr><td><code>.kdo-goal-cats</code></td><td>Category rows</td><td>flex-column, gap 8px</td></tr>
       <tr><td><code>.kdo-cat-row</code></td><td>Single category</td><td>flex, gap 12px, ghost bg + border, 10px radius. Hover: border lighten</td></tr>
       <tr><td><code>.kdo-cat-icon-wrap</code></td><td>32px icon box</td><td>8px radius, ghost bg + border, emoji/icon centered</td></tr>
       <tr><td><code>.kdo-cat-right</code></td><td>Pct + mini bar</td><td>56px wide, flex-column. <code>.kdo-cat-pct</code> (16px/800) + <code>.kdo-cat-bar/.kdo-cat-bar-fill</code> (3px)</td></tr>
@@ -7802,12 +7802,12 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     KPI HUB — METRIC DETAIL OVERLAY (mdo-*)
+     goal HUB — METRIC DETAIL OVERLAY (mdo-*)
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="kpihub-mdo"></span>
+  <span class="ds-section-anchor" id="goalhub-mdo"></span>
   <div class="ds-h2">Metric Detail Overlay</div>
-  <p class="ds-desc">Opened when a metric card is clicked in the Registry tab. Simpler than the KPI overlay — single-column body with labeled fields: description, formula (monospace), unit, data source, dependencies (pills), and a deprecation warning when applicable. Footer holds Edit + Close buttons. Shares the same shell dimensions and entrance animation as the KPI overlay.</p>
+  <p class="ds-desc">Opened when a metric card is clicked in the Registry tab. Simpler than the goal overlay — single-column body with labeled fields: description, formula (monospace), unit, data source, dependencies (pills), and a deprecation warning when applicable. Footer holds Edit + Close buttons. Shares the same shell dimensions and entrance animation as the goal overlay.</p>
 
   <div class="ds-preview">
     <div style="background:#151d28;border:1px solid rgba(255,255,255,0.1);border-radius:20px;overflow:hidden;max-width:440px;box-shadow:0 24px 64px rgba(0,0,0,0.6);">
@@ -7877,12 +7877,12 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     KPI HUB — SCORECARD EDITOR (editor-*)
+     goal HUB — SCORECARD EDITOR (editor-*)
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="kpihub-editor"></span>
+  <span class="ds-section-anchor" id="goalhub-editor"></span>
   <div class="ds-h2">Scorecard Editor</div>
-  <p class="ds-desc">A full-screen overlay that replaces the KPI Hub page when creating or editing a scorecard. Entrance: <code>translateY(16px) → 0</code>, 240ms ease-spring. Two-column body (340px left / 1fr right). Left holds metadata fields. Right holds the category editor with a live weight summary bar. The weight bar turns <code>.err</code> when category weights don't sum to 100%.</p>
+  <p class="ds-desc">A full-screen overlay that replaces the goal Hub page when creating or editing a scorecard. Entrance: <code>translateY(16px) → 0</code>, 240ms ease-spring. Two-column body (340px left / 1fr right). Left holds metadata fields. Right holds the category editor with a live weight summary bar. The weight bar turns <code>.err</code> when category weights don't sum to 100%.</p>
 
   <div class="ds-preview">
     <div style="background:#0f161e;border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;max-width:640px;">
@@ -7892,7 +7892,7 @@
           <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><polyline points="9 11 5 7 9 3"/></svg>
         </button>
         <div style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--d400);">
-          <span style="font-weight:500;">KPI Hub</span>
+          <span style="font-weight:500;">goal Hub</span>
           <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:12px;height:12px;opacity:0.4;"><polyline points="4 2 8 6 4 10"/></svg>
           <span style="font-weight:700;color:var(--d100);">Inbound CX — Standard</span>
         </div>
@@ -8007,12 +8007,12 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     KPI HUB — GOVERNANCE LAYOUT
+     goal HUB — GOVERNANCE LAYOUT
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="kpihub-governance"></span>
+  <span class="ds-section-anchor" id="goalhub-governance"></span>
   <div class="ds-h2">Governance Layout</div>
-  <p class="ds-desc">The Governance tab uses a two-column layout: a scrollable main column for change request cards, and a fixed sidebar for status filter chips. Section headers inside the main column group change requests by type (Weight Changes, KPI Additions, Deprecations). Each header holds a section title + a status filter strip. The active <code>.gov-filter-chip</code> uses qa-accent tint; pending chips show a warn-colored count badge.</p>
+  <p class="ds-desc">The Governance tab uses a two-column layout: a scrollable main column for change request cards, and a fixed sidebar for status filter chips. Section headers inside the main column group change requests by type (Weight Changes, goal Additions, Deprecations). Each header holds a section title + a status filter strip. The active <code>.gov-filter-chip</code> uses qa-accent tint; pending chips show a warn-colored count badge.</p>
 
   <div class="ds-preview">
     <div style="display:grid;grid-template-columns:1fr 220px;gap:0;max-width:600px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;overflow:hidden;min-height:180px;">
@@ -8285,7 +8285,7 @@
 <div class="ds-section">
   <span class="ds-section-anchor" id="sc-lollipop"></span>
   <div class="ds-h2">Lollipop Chart</div>
-  <p class="ds-desc">Used in the Team view to compare all agents on a single KPI. Each row is a horizontal axis with a stem line ending in a dot at the agent's score. A shared target line runs vertically across all rows. The dot's compound class encodes both color and trend direction: <code>.ok-up / .ok-stable / .warn-stable / .warn-down / .err-down</code>. Err-down dots pulse continuously via <code>@keyframes lolli-pulse</code>. Action buttons float absolutely over the right edge on hover.</p>
+  <p class="ds-desc">Used in the Team view to compare all agents on a single goal. Each row is a horizontal axis with a stem line ending in a dot at the agent's score. A shared target line runs vertically across all rows. The dot's compound class encodes both color and trend direction: <code>.ok-up / .ok-stable / .warn-stable / .warn-down / .err-down</code>. Err-down dots pulse continuously via <code>@keyframes lolli-pulse</code>. Action buttons float absolutely over the right edge on hover.</p>
 
   <div class="ds-preview">
     <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;overflow:hidden;padding:16px 16px 8px;">
@@ -8364,12 +8364,12 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     SCORECARDS — DOT PLOT (KPI distribution)
+     SCORECARDS — DOT PLOT (goal distribution)
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
   <span class="ds-section-anchor" id="sc-dotplot"></span>
   <div class="ds-h2">Dot Plot</div>
-  <p class="ds-desc">Maps each behavioral KPI to a horizontal axis inside the <code>.behav-card</code>. Three background zones (fail/watch/target) create a visual triage at a glance before reading any number. Markers are numbered circles matching the compact list below — clicking a marker highlights the corresponding row. A target line at 85% is the primary benchmark. Hover reveals a tooltip with KPI name, score, and trend.</p>
+  <p class="ds-desc">Maps each behavioral goal to a horizontal axis inside the <code>.behav-card</code>. Three background zones (fail/watch/target) create a visual triage at a glance before reading any number. Markers are numbered circles matching the compact list below — clicking a marker highlights the corresponding row. A target line at 85% is the primary benchmark. Hover reveals a tooltip with goal name, score, and trend.</p>
 
   <div class="ds-preview">
     <div style="max-width:520px;position:relative;margin:16px 4px 24px;padding:32px 60px 36px 16px;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:10px;">
@@ -8440,14 +8440,14 @@
 <div class="ds-section">
   <span class="ds-section-anchor" id="sc-heatmap"></span>
   <div class="ds-h2">Heatmap</div>
-  <p class="ds-desc">Two distinct heatmap components are used in the scorecards. <strong>Variant A</strong> (<code>.heatmap-card</code>) is a <code>&lt;table&gt;</code>-based KPI × agent matrix in the Team view — agents as columns, KPIs as rows, each cell a colored score chip. <strong>Variant B</strong> (<code>.heatmap-grid</code>) is a CSS-grid coaching frequency heatmap — agents as rows, weeks as columns — showing at a glance which agents have been coached and when.</p>
+  <p class="ds-desc">Two distinct heatmap components are used in the scorecards. <strong>Variant A</strong> (<code>.heatmap-card</code>) is a <code>&lt;table&gt;</code>-based goal × agent matrix in the Team view — agents as columns, goals as rows, each cell a colored score chip. <strong>Variant B</strong> (<code>.heatmap-grid</code>) is a CSS-grid coaching frequency heatmap — agents as rows, weeks as columns — showing at a glance which agents have been coached and when.</p>
 
-  <div class="ds-h3">Variant A — KPI × Agent table (<code>.heatmap-card</code>)</div>
+  <div class="ds-h3">Variant A — goal × Agent table (<code>.heatmap-card</code>)</div>
   <div class="ds-preview">
     <div style="background:var(--card-bg);border-radius:16px;border:1px solid var(--card-border);overflow:hidden;">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.06);">
         <div>
-          <div style="font-size:13px;font-weight:700;color:var(--d50);margin-bottom:2px;">Team KPI Heatmap</div>
+          <div style="font-size:13px;font-weight:700;color:var(--d50);margin-bottom:2px;">Team goal Heatmap</div>
           <div style="font-size:11px;color:var(--d400);">All agents · last 30 days</div>
         </div>
         <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--d400);flex-shrink:0;">
@@ -8465,7 +8465,7 @@
         <table style="border-collapse:separate;border-spacing:0;min-width:400px;">
           <thead>
             <tr>
-              <th style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--d500);padding:0 12px 8px 0;text-align:left;">KPI</th>
+              <th style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--d500);padding:0 12px 8px 0;text-align:left;">goal</th>
               <th style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--d500);padding:0 0 8px;text-align:center;">Omar</th>
               <th style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--d500);padding:0 0 8px;text-align:center;">Jamal</th>
               <th style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--d500);padding:0 0 8px;text-align:center;">Sara</th>
@@ -8571,68 +8571,68 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     SCORECARDS — KPI MINI GRID
+     SCORECARDS — goal MINI GRID
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="sc-kpi-mini"></span>
-  <div class="ds-h2">KPI Mini Grid</div>
-  <p class="ds-desc">A 6-column grid of compact KPI tiles below the agent header. Each tile shows label, value (with optional unit), delta, and target. The <code>--err/warn/ok</code> color on <code>.kpi-mini-value</code> is the only semantic signal — always pair it with the delta. Breaks to 3 columns below 1400px.</p>
+  <span class="ds-section-anchor" id="sc-goal-mini"></span>
+  <div class="ds-h2">goal Mini Grid</div>
+  <p class="ds-desc">A 6-column grid of compact goal tiles below the agent header. Each tile shows label, value (with optional unit), delta, and target. The <code>--err/warn/ok</code> color on <code>.goal-mini-value</code> is the only semantic signal — always pair it with the delta. Breaks to 3 columns below 1400px.</p>
 
   <div class="ds-preview">
     <div>
-      <div class="kpi-six-grid" style="max-width:720px">
+      <div class="goal-six-grid" style="max-width:720px">
 
-        <div class="kpi-mini">
-          <div class="kpi-mini-label">QA Score</div>
-          <div class="kpi-mini-value err">62<span class="km-unit">%</span></div>
-          <div class="kpi-mini-meta">
-            <span class="kpi-mini-delta err">↓ 11%</span>
-            <span class="kpi-mini-target">Target 85%</span>
+        <div class="goal-mini">
+          <div class="goal-mini-label">QA Score</div>
+          <div class="goal-mini-value err">62<span class="km-unit">%</span></div>
+          <div class="goal-mini-meta">
+            <span class="goal-mini-delta err">↓ 11%</span>
+            <span class="goal-mini-target">Target 85%</span>
           </div>
         </div>
 
-        <div class="kpi-mini">
-          <div class="kpi-mini-label">Empathy</div>
-          <div class="kpi-mini-value err">45<span class="km-unit">%</span></div>
-          <div class="kpi-mini-meta">
-            <span class="kpi-mini-delta err">↓ 18%</span>
-            <span class="kpi-mini-target">Target 75%</span>
+        <div class="goal-mini">
+          <div class="goal-mini-label">Empathy</div>
+          <div class="goal-mini-value err">45<span class="km-unit">%</span></div>
+          <div class="goal-mini-meta">
+            <span class="goal-mini-delta err">↓ 18%</span>
+            <span class="goal-mini-target">Target 75%</span>
           </div>
         </div>
 
-        <div class="kpi-mini">
-          <div class="kpi-mini-label">Call Control</div>
-          <div class="kpi-mini-value ok">88<span class="km-unit">%</span></div>
-          <div class="kpi-mini-meta">
-            <span class="kpi-mini-delta ok">↑ 5%</span>
-            <span class="kpi-mini-target">Target 80%</span>
+        <div class="goal-mini">
+          <div class="goal-mini-label">Call Control</div>
+          <div class="goal-mini-value ok">88<span class="km-unit">%</span></div>
+          <div class="goal-mini-meta">
+            <span class="goal-mini-delta ok">↑ 5%</span>
+            <span class="goal-mini-target">Target 80%</span>
           </div>
         </div>
 
-        <div class="kpi-mini">
-          <div class="kpi-mini-label">Resolution</div>
-          <div class="kpi-mini-value warn">61<span class="km-unit">%</span></div>
-          <div class="kpi-mini-meta">
-            <span class="kpi-mini-delta warn">↓ 7%</span>
-            <span class="kpi-mini-target">Target 80%</span>
+        <div class="goal-mini">
+          <div class="goal-mini-label">Resolution</div>
+          <div class="goal-mini-value warn">61<span class="km-unit">%</span></div>
+          <div class="goal-mini-meta">
+            <span class="goal-mini-delta warn">↓ 7%</span>
+            <span class="goal-mini-target">Target 80%</span>
           </div>
         </div>
 
-        <div class="kpi-mini">
-          <div class="kpi-mini-label">AHT</div>
-          <div class="kpi-mini-value warn">4:42<span class="km-unit">min</span></div>
-          <div class="kpi-mini-meta">
-            <span class="kpi-mini-delta err">+0:44</span>
-            <span class="kpi-mini-target">Target 4:00</span>
+        <div class="goal-mini">
+          <div class="goal-mini-label">AHT</div>
+          <div class="goal-mini-value warn">4:42<span class="km-unit">min</span></div>
+          <div class="goal-mini-meta">
+            <span class="goal-mini-delta err">+0:44</span>
+            <span class="goal-mini-target">Target 4:00</span>
           </div>
         </div>
 
-        <div class="kpi-mini">
-          <div class="kpi-mini-label">Evals / Week</div>
-          <div class="kpi-mini-value">12<span class="km-unit"></span></div>
-          <div class="kpi-mini-meta">
-            <span class="kpi-mini-delta neu">— 0</span>
-            <span class="kpi-mini-target">Target 10+</span>
+        <div class="goal-mini">
+          <div class="goal-mini-label">Evals / Week</div>
+          <div class="goal-mini-value">12<span class="km-unit"></span></div>
+          <div class="goal-mini-meta">
+            <span class="goal-mini-delta neu">— 0</span>
+            <span class="goal-mini-target">Target 10+</span>
           </div>
         </div>
 
@@ -8643,27 +8643,27 @@
   <table class="ds-table">
     <thead><tr><th>Class</th><th>Spec</th><th>Notes</th></tr></thead>
     <tbody>
-      <tr><td>.ds-kpi-six-grid</td><td>grid, repeat(6, 1fr), gap 12px; → 3 cols at &lt;1400px</td><td>Always exactly 6 tiles — one per core KPI. If fewer KPIs, leave empty tiles rather than changing column count.</td></tr>
-      <tr><td>.kpi-mini</td><td>card-bg, card-border, radius 12px, pad 14px</td><td>Hover: <code>card-border-hover</code>. Never add click behavior — these are display-only KPI tiles.</td></tr>
-      <tr><td>.kpi-mini-value.ok / .warn / .err</td><td>22px/800, semantic color</td><td>Only color the value when it deviates from target. If exactly on target, use neutral --d50.</td></tr>
+      <tr><td>.ds-goal-six-grid</td><td>grid, repeat(6, 1fr), gap 12px; → 3 cols at &lt;1400px</td><td>Always exactly 6 tiles — one per core goal. If fewer goals, leave empty tiles rather than changing column count.</td></tr>
+      <tr><td>.goal-mini</td><td>card-bg, card-border, radius 12px, pad 14px</td><td>Hover: <code>card-border-hover</code>. Never add click behavior — these are display-only goal tiles.</td></tr>
+      <tr><td>.goal-mini-value.ok / .warn / .err</td><td>22px/800, semantic color</td><td>Only color the value when it deviates from target. If exactly on target, use neutral --d50.</td></tr>
       <tr><td>.km-unit</td><td>12px/600, inherits parent color, 0.65 opacity</td><td>The unit abbreviation (%, min, etc.) inside the value. Never add spaces between value and unit in HTML.</td></tr>
-      <tr><td>.kpi-mini-delta.ok / .warn / .err / .neu</td><td>10px/700, semantic color</td><td>Period-over-period change with direction prefix. <code>.neu</code> for zero change.</td></tr>
-      <tr><td>.kpi-mini-target</td><td>10px/600, --d500</td><td>Shows the team target threshold. Right-aligned via flex space-between with delta.</td></tr>
+      <tr><td>.goal-mini-delta.ok / .warn / .err / .neu</td><td>10px/700, semantic color</td><td>Period-over-period change with direction prefix. <code>.neu</code> for zero change.</td></tr>
+      <tr><td>.goal-mini-target</td><td>10px/600, --d500</td><td>Shows the team target threshold. Right-aligned via flex space-between with delta.</td></tr>
     </tbody>
   </table>
 
-  <button class="ds-copy-btn" onclick="copyCode('sc-kpi-mini-html', this)">Copy HTML</button>
+  <button class="ds-copy-btn" onclick="copyCode('sc-goal-mini-html', this)">Copy HTML</button>
   <div class="ds-code-wrap">
-    <pre class="ds-code" id="sc-kpi-mini-html"><span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"kpi-six-grid"</span><span class="ct">&gt;</span>
-  <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"kpi-mini"</span><span class="ct">&gt;</span>
-    <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"kpi-mini-label"</span><span class="ct">&gt;</span>QA Score<span class="ct">&lt;/div&gt;</span>
-    <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"kpi-mini-value err"</span><span class="ct">&gt;</span>62<span class="ct">&lt;span</span> <span class="ck">class</span>=<span class="cs">"km-unit"</span><span class="ct">&gt;</span>%<span class="ct">&lt;/span&gt;&lt;/div&gt;</span>
-    <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"kpi-mini-meta"</span><span class="ct">&gt;</span>
-      <span class="ct">&lt;span</span> <span class="ck">class</span>=<span class="cs">"kpi-mini-delta err"</span><span class="ct">&gt;</span>↓ 11%<span class="ct">&lt;/span&gt;</span>
-      <span class="ct">&lt;span</span> <span class="ck">class</span>=<span class="cs">"kpi-mini-target"</span><span class="ct">&gt;</span>Target 85%<span class="ct">&lt;/span&gt;</span>
+    <pre class="ds-code" id="sc-goal-mini-html"><span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"goal-six-grid"</span><span class="ct">&gt;</span>
+  <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"goal-mini"</span><span class="ct">&gt;</span>
+    <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"goal-mini-label"</span><span class="ct">&gt;</span>QA Score<span class="ct">&lt;/div&gt;</span>
+    <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"goal-mini-value err"</span><span class="ct">&gt;</span>62<span class="ct">&lt;span</span> <span class="ck">class</span>=<span class="cs">"km-unit"</span><span class="ct">&gt;</span>%<span class="ct">&lt;/span&gt;&lt;/div&gt;</span>
+    <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"goal-mini-meta"</span><span class="ct">&gt;</span>
+      <span class="ct">&lt;span</span> <span class="ck">class</span>=<span class="cs">"goal-mini-delta err"</span><span class="ct">&gt;</span>↓ 11%<span class="ct">&lt;/span&gt;</span>
+      <span class="ct">&lt;span</span> <span class="ck">class</span>=<span class="cs">"goal-mini-target"</span><span class="ct">&gt;</span>Target 85%<span class="ct">&lt;/span&gt;</span>
     <span class="ct">&lt;/div&gt;</span>
   <span class="ct">&lt;/div&gt;</span>
-  <span class="cm">&lt;!-- repeat for each of the 6 KPIs --&gt;</span>
+  <span class="cm">&lt;!-- repeat for each of the 6 goals --&gt;</span>
 <span class="ct">&lt;/div&gt;</span></pre>
   </div>
 </div>
@@ -8673,17 +8673,17 @@
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
   <span class="ds-section-anchor" id="sc-behav"></span>
-  <div class="ds-h2">Behavioral KPI Breakdown</div>
-  <p class="ds-desc">The <code>.behav-card</code> is the primary KPI breakdown surface on the agent scorecard. It has two co-present views: a <strong>dot plot</strong> (scores mapped to a horizontal axis with zone bands) and a <strong>compact list</strong> (<code>.behav-list-compact</code>) below it showing every KPI as a numbered row with score, trend, and a hover-revealed action button. The two views are linked — clicking a dot plot marker highlights the corresponding row, and clicking a row opens a KPI detail drawer inline.</p>
+  <div class="ds-h2">Behavioral goal Breakdown</div>
+  <p class="ds-desc">The <code>.behav-card</code> is the primary goal breakdown surface on the agent scorecard. It has two co-present views: a <strong>dot plot</strong> (scores mapped to a horizontal axis with zone bands) and a <strong>compact list</strong> (<code>.behav-list-compact</code>) below it showing every goal as a numbered row with score, trend, and a hover-revealed action button. The two views are linked — clicking a dot plot marker highlights the corresponding row, and clicking a row opens a goal detail drawer inline.</p>
 
   <div class="ds-h3">Variant 1 — Bar row (summary mode)</div>
-  <p class="ds-desc">Used in the team view and overview contexts where the dotplot is not shown. Each KPI is a flex row: label + full-width progress bar on the left, percentage + trend on the right.</p>
+  <p class="ds-desc">Used in the team view and overview contexts where the dotplot is not shown. Each goal is a flex row: label + full-width progress bar on the left, percentage + trend on the right.</p>
 
   <div class="ds-preview">
     <div style="max-width:480px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:18px 20px 20px;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px;">
         <div>
-          <div style="font-size:13px;font-weight:700;color:var(--d50);letter-spacing:-0.005em;">Behavioral KPI breakdown</div>
+          <div style="font-size:13px;font-weight:700;color:var(--d50);letter-spacing:-0.005em;">Behavioral goal breakdown</div>
           <div style="font-size:11px;color:var(--d400);font-weight:500;margin-bottom:14px;">6 questions · ranked by impact on quality score</div>
         </div>
       </div>
@@ -8730,7 +8730,7 @@
     <thead><tr><th>Element</th><th>Class</th><th>Notes</th></tr></thead>
     <tbody>
       <tr><td>Card</td><td><code>.behav-card</code></td><td><code>background:--card-bg; border:--card-border; border-radius:16px; padding:18px 20px 20px</code></td></tr>
-      <tr><td>Header</td><td><code>.behav-card-header</code></td><td>flex, space-between, <code>gap:12px; margin-bottom:4px</code>. Right side holds action buttons (Ask AiMY + Coach failing KPIs)</td></tr>
+      <tr><td>Header</td><td><code>.behav-card-header</code></td><td>flex, space-between, <code>gap:12px; margin-bottom:4px</code>. Right side holds action buttons (Ask AiMY + Coach failing goals)</td></tr>
       <tr><td>Title</td><td><code>.behav-card-title</code></td><td>13px/700, <code>--d50</code>, <code>letter-spacing:-0.005em</code></td></tr>
       <tr><td>Subtitle</td><td><code>.behav-card-sub</code></td><td>11px/500, <code>--d400</code>, <code>margin-bottom:14px</code></td></tr>
       <tr><td>Row</td><td><code>.behav-row</code></td><td>flex, <code>gap:12px; padding:11px 0; border-bottom:1px solid rgba(255,255,255,0.04)</code>. Last child: no border</td></tr>
@@ -8742,7 +8742,7 @@
   </table>
 
   <div class="ds-h3">Variant 2 — Compact list (<code>.behav-list-compact</code>)</div>
-  <p class="ds-desc">The primary display inside the full agent scorecard. A 4-column grid: numbered marker circle · question label · score + trend · hover-revealed action button. Clicking a row opens the KPI detail drawer inline. The action button label changes by score tier: "Coach on this" (err), "View misses" (warn), "Use as exemplar" (ok).</p>
+  <p class="ds-desc">The primary display inside the full agent scorecard. A 4-column grid: numbered marker circle · question label · score + trend · hover-revealed action button. Clicking a row opens the goal detail drawer inline. The action button label changes by score tier: "Coach on this" (err), "View misses" (warn), "Use as exemplar" (ok).</p>
 
   <div class="ds-preview">
     <div style="max-width:600px;display:flex;flex-direction:column;gap:2px;">
@@ -8793,7 +8793,7 @@
     <thead><tr><th>Element</th><th>Class</th><th>Notes</th></tr></thead>
     <tbody>
       <tr><td>List wrapper</td><td><code>.behav-list-compact</code></td><td>flex-column, <code>gap:2px</code></td></tr>
-      <tr><td>Row</td><td><code>.behav-compact-row</code></td><td><code>display:grid; grid-template-columns:28px 1fr auto auto; gap:14px</code>. Add <code>.kpi-row-selectable</code> + <code>data-kpi="N"</code> for dot-plot linking</td></tr>
+      <tr><td>Row</td><td><code>.behav-compact-row</code></td><td><code>display:grid; grid-template-columns:28px 1fr auto auto; gap:14px</code>. Add <code>.goal-row-selectable</code> + <code>data-goal="N"</code> for dot-plot linking</td></tr>
       <tr><td>Marker</td><td><code>.behav-compact-marker.err/.warn/.ok</code></td><td>22px circle, numbered (1–6 matching dotplot). Background is the semantic color</td></tr>
       <tr><td>Label</td><td><code>.behav-compact-label</code></td><td>12px/600, <code>--d100</code>. Full question text — never truncate</td></tr>
       <tr><td>Stat block</td><td><code>.behav-compact-stat</code></td><td>Right-aligned, holds pct + trend stacked</td></tr>
@@ -8805,7 +8805,7 @@
 
   <div class="ds-h3">Action button labels by score tier</div>
   <table class="ds-table">
-    <thead><tr><th>Score</th><th>Tier</th><th>Button label</th><th><code>data-kpi-action</code></th></tr></thead>
+    <thead><tr><th>Score</th><th>Tier</th><th>Button label</th><th><code>data-goal-action</code></th></tr></thead>
     <tbody>
       <tr><td>&lt;70%</td><td>err</td><td>Coach on this</td><td><code>coach</code></td></tr>
       <tr><td>70–84%</td><td>warn</td><td>View misses</td><td><code>viewmisses</code></td></tr>
@@ -8822,7 +8822,7 @@
 <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"behav-card"</span><span class="ct">&gt;</span>
   <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"behav-card-header"</span><span class="ct">&gt;</span>
     <span class="ct">&lt;div&gt;</span>
-      <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"behav-card-title"</span><span class="ct">&gt;</span>Behavioral KPI breakdown<span class="ct">&lt;/div&gt;</span>
+      <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"behav-card-title"</span><span class="ct">&gt;</span>Behavioral goal breakdown<span class="ct">&lt;/div&gt;</span>
       <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"behav-card-sub"</span><span class="ct">&gt;</span>6 questions · ranked by impact on quality score<span class="ct">&lt;/div&gt;</span>
     <span class="ct">&lt;/div&gt;</span>
     <span class="cm">&lt;!-- action buttons right-side --&gt;</span>
@@ -8830,7 +8830,7 @@
 
   <span class="cm">&lt;!-- Compact list --&gt;</span>
   <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"behav-list-compact"</span><span class="ct">&gt;</span>
-    <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"behav-compact-row kpi-row-selectable"</span> <span class="ck">data-kpi</span>=<span class="cs">"1"</span><span class="ct">&gt;</span>
+    <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"behav-compact-row goal-row-selectable"</span> <span class="ck">data-goal</span>=<span class="cs">"1"</span><span class="ct">&gt;</span>
       <span class="ct">&lt;span</span> <span class="ck">class</span>=<span class="cs">"behav-compact-marker err"</span><span class="ct">&gt;</span>1<span class="ct">&lt;/span&gt;</span>
       <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"behav-compact-label"</span><span class="ct">&gt;</span>Did the agent set clear next steps?<span class="ct">&lt;/div&gt;</span>
       <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"behav-compact-stat"</span><span class="ct">&gt;</span>
@@ -8839,11 +8839,11 @@
       <span class="ct">&lt;/div&gt;</span>
       <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"behav-compact-action"</span><span class="ct">&gt;</span>
         <span class="ct">&lt;button</span> <span class="ck">class</span>=<span class="cs">"k-row-action coach k-row-hover-reveal"</span>
-                <span class="ck">data-kpi-action</span>=<span class="cs">"coach"</span> <span class="ck">data-kpi</span>=<span class="cs">"1"</span><span class="ct">&gt;</span>Coach on this<span class="ct">&lt;/button&gt;</span>
+                <span class="ck">data-goal-action</span>=<span class="cs">"coach"</span> <span class="ck">data-goal</span>=<span class="cs">"1"</span><span class="ct">&gt;</span>Coach on this<span class="ct">&lt;/button&gt;</span>
       <span class="ct">&lt;/div&gt;</span>
     <span class="ct">&lt;/div&gt;</span>
-    <span class="cm">&lt;!-- kpi-inline-coach placeholder (populated by JS) --&gt;</span>
-    <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"kpi-inline-coach"</span> <span class="ck">style</span>=<span class="cs">"display:none"</span><span class="ct">&gt;&lt;/div&gt;</span>
+    <span class="cm">&lt;!-- goal-inline-coach placeholder (populated by JS) --&gt;</span>
+    <span class="ct">&lt;div</span> <span class="ck">class</span>=<span class="cs">"goal-inline-coach"</span> <span class="ck">style</span>=<span class="cs">"display:none"</span><span class="ct">&gt;&lt;/div&gt;</span>
   <span class="ct">&lt;/div&gt;</span>
 <span class="ct">&lt;/div&gt;</span></pre>
   </div>
@@ -9059,7 +9059,7 @@
     <tbody>
       <tr><td>.ds-coaching-card</td><td>d800 60% bg, white 10% border, radius 12px, backdrop-filter blur(8px), max-width 540px</td><td>Lives inside the canvas thread (<code>.overlay-thread</code>). Same frosted glass surface as <code>.chat-msg.aimy</code>.</td></tr>
       <tr><td>.coaching-confidence</td><td>10px/600, teal, teal 7% bg, teal 20% border, radius 20px</td><td>Shows AiMY's confidence in the recommendation. Only render if confidence ≥ 80%.</td></tr>
-      <tr><td>.coaching-why</td><td>11px, --d400, left 2px border (rgba white 0.1), right-only radius 0 6px 6px 0</td><td>The rationale block. Left border acts as a blockquote indicator. Bold numbers and KPI names via <code>&lt;strong&gt;</code>.</td></tr>
+      <tr><td>.coaching-why</td><td>11px, --d400, left 2px border (rgba white 0.1), right-only radius 0 6px 6px 0</td><td>The rationale block. Left border acts as a blockquote indicator. Bold numbers and goal names via <code>&lt;strong&gt;</code>.</td></tr>
       <tr><td>.coach-btn.accept</td><td>ok 12% bg, ok 25% border, ok text</td><td>One-shot. On click: add <code>.state-accepted</code> to card → hides actions, greens header.</td></tr>
       <tr><td>.coach-btn.defer</td><td>qa-accent 8% bg, qa-accent 20% border</td><td>Toggles <code>.ds-defer-picker.open</code>. Snooze option click adds <code>.state-deferred</code> to card.</td></tr>
       <tr><td>.coach-btn.dismiss-coaching</td><td>white 3% bg, white 7% border, margin-left auto</td><td>Pushes to the far right. On click: removes card from DOM (or hides with fade).</td></tr>
@@ -9230,7 +9230,7 @@
 <div class="ds-section">
   <span class="ds-section-anchor" id="sc-eval-panel"></span>
   <div class="ds-h2">Evaluation Panel</div>
-  <p class="ds-desc">The full evaluation detail view — opens as an overlay or slide-in. Contains: header (title, subtitle, live badge), donut + bar chart section, trend strip, AiMY insight block, action row, and optionally a detail-page with <code>.eval-result-card</code>, <code>.eval-kpi-breakdown</code>, <code>.eval-sentiment-card</code>, <code>.eval-related-card</code>.</p>
+  <p class="ds-desc">The full evaluation detail view — opens as an overlay or slide-in. Contains: header (title, subtitle, live badge), donut + bar chart section, trend strip, AiMY insight block, action row, and optionally a detail-page with <code>.eval-result-card</code>, <code>.eval-goal-breakdown</code>, <code>.eval-sentiment-card</code>, <code>.eval-related-card</code>.</p>
 
   <div class="ds-preview">
     <div style="max-width:500px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.2);">
@@ -9258,7 +9258,7 @@
       <!-- Action row -->
       <div style="display:flex;align-items:center;gap:8px;padding:14px 20px 16px;">
         <button style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:9px 16px;border-radius:8px;background:rgba(240,68,56,0.08);border:1px solid rgba(240,68,56,0.22);color:#f04438;font-size:12px;font-weight:700;font-family:Urbanist,sans-serif;cursor:pointer;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px;"><path d="M9 14l-4-4 4-4M5 10h14M15 14l4 4-4 4"/></svg>Raise dispute
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px;"><path d="M9 14l-4-4 4-4M5 10h14M15 14l4 4-4 4"/></svg>Raise justify
         </button>
         <button style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:9px 16px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.10);color:var(--d300);font-size:12px;font-weight:700;font-family:Urbanist,sans-serif;cursor:pointer;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export
@@ -9278,10 +9278,10 @@
       <tr><td>Bar row</td><td><code>.eval-bar-row</code></td><td>flex-column, <code>gap:4px; padding:4px 6px; border-radius:8px</code>. Clickable — hover bg. Contains <code>.eval-bar-top</code> + <code>.eval-bar-track/.eval-bar-fill</code></td></tr>
       <tr><td>Bar label dot</td><td><code>.eval-dot</code></td><td>7px circle, color matches fill. Sits inline in <code>.eval-bar-label</code></td></tr>
       <tr><td>Causes float</td><td><code>.eval-causes-float</code></td><td>Absolutely positioned tooltip-style panel. Hidden (<code>opacity:0; visibility:hidden</code>). Add <code>.visible</code> on bar row hover</td></tr>
-      <tr><td>Trend strip</td><td><code>.eval-trend-strip</code></td><td>flex row of <code>.eval-trend-ok</code> (positive signal) + <code>.eval-borderline-badge</code> (warn pill for borderline KPIs)</td></tr>
+      <tr><td>Trend strip</td><td><code>.eval-trend-strip</code></td><td>flex row of <code>.eval-trend-ok</code> (positive signal) + <code>.eval-borderline-badge</code> (warn pill for borderline goals)</td></tr>
       <tr><td>AiMY insight</td><td><code>.eval-insight</code></td><td>Blue-tinted, brand left border (3px). Header: <code>.eval-insight-header</code> + AiMY logo + <code>.eval-insight-label</code>. Body: <code>.eval-insight-text</code> with <code>.hl-warn / .hl-err</code> inline highlights</td></tr>
-      <tr><td>Dispute btn</td><td><code>.eval-dispute-btn</code></td><td>Full-width err-tinted button. Add <code>.dimmed</code> (opacity 0.4, pointer-events none) when confidence is too low to dispute</td></tr>
-      <tr><td>Export btn</td><td><code>.eval-export-btn</code></td><td>Full-width ghost button beside dispute btn</td></tr>
+      <tr><td>justify btn</td><td><code>.eval-justify-btn</code></td><td>Full-width err-tinted button. Add <code>.dimmed</code> (opacity 0.4, pointer-events none) when confidence is too low to justify</td></tr>
+      <tr><td>Export btn</td><td><code>.eval-export-btn</code></td><td>Full-width ghost button beside justify btn</td></tr>
     </tbody>
   </table>
 
@@ -9290,7 +9290,7 @@
     <thead><tr><th>Card</th><th>Class</th><th>Key children</th></tr></thead>
     <tbody>
       <tr><td>Result summary</td><td><code>.eval-result-card</code></td><td><code>.erc-score-num</code> (32px/800) + <code>.erc-score-label</code> + <code>.erc-badges</code> (flag row)</td></tr>
-      <tr><td>KPI breakdown</td><td><code>.eval-kpi-breakdown</code></td><td><code>.ekb-title</code> + <code>.ekb-row</code> per KPI → <code>.ekb-row-top</code> (question + score) + <code>.ekb-rationale</code></td></tr>
+      <tr><td>goal breakdown</td><td><code>.eval-goal-breakdown</code></td><td><code>.ekb-title</code> + <code>.ekb-row</code> per goal → <code>.ekb-row-top</code> (question + score) + <code>.ekb-rationale</code></td></tr>
       <tr><td>Sentiment</td><td><code>.eval-sentiment-card</code></td><td><code>.esc-header</code> (title + score) + <code>.esc-bar-track/.esc-bar-fill</code> + <code>.esc-trend</code></td></tr>
       <tr><td>Related evals</td><td><code>.eval-related-card</code></td><td><code>.erel-header</code> + <code>.erel-section-label</code> + <code>.erel-row</code> (date + agent + score)</td></tr>
     </tbody>
@@ -9399,7 +9399,7 @@
 <div class="ds-section">
   <span class="ds-section-anchor" id="sc-memory-panel"></span>
   <div class="ds-h2">Memory Panel</div>
-  <p class="ds-desc">AiMY's persistent knowledge surface for a specific agent. Sits at the top of the agent scorecard, above the KPI grid. Shows how long AiMY has been tracking the agent, accumulated evidence stats, the primary detected pattern, a trajectory confidence bar, and an expandable full detection timeline. Styled with an AI gradient tint (blue→teal) and a top-edge gradient shimmer line via <code>::before</code>. The <code>.memory-cue</code> pill is a compact variant used inside the <code>.ai-insight-panel</code> header to signal session continuity.</p>
+  <p class="ds-desc">AiMY's persistent knowledge surface for a specific agent. Sits at the top of the agent scorecard, above the goal grid. Shows how long AiMY has been tracking the agent, accumulated evidence stats, the primary detected pattern, a trajectory confidence bar, and an expandable full detection timeline. Styled with an AI gradient tint (blue→teal) and a top-edge gradient shimmer line via <code>::before</code>. The <code>.memory-cue</code> pill is a compact variant used inside the <code>.ai-insight-panel</code> header to signal session continuity.</p>
 
   <div class="ds-preview">
     <div style="background:linear-gradient(135deg,rgba(0,102,255,0.06) 0%,rgba(111,223,226,0.04) 100%);border:1px solid rgba(111,223,226,0.14);border-radius:12px;padding:14px 18px;position:relative;overflow:hidden;max-width:580px;">
@@ -9496,12 +9496,12 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     KPI DETAIL DRAWER
+     goal DETAIL DRAWER
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="sc-kpi-drawer"></span>
-  <div class="ds-h2">KPI Detail Drawer</div>
-  <p class="ds-desc">An inline expand panel that opens inside <code>.behav-card</code> between the dot plot and the compact list when a marker or row is clicked. It slides down via <code>max-height</code> animation (<code>0 → 600px</code>, 200ms ease-spring) and renders the KPI number badge, full question title, score, mini progress bar, explanation body, and action buttons. The wrapper <code>#kpiDetailDrawer</code> is permanently in the DOM — content is injected by JS.</p>
+  <span class="ds-section-anchor" id="sc-goal-drawer"></span>
+  <div class="ds-h2">goal Detail Drawer</div>
+  <p class="ds-desc">An inline expand panel that opens inside <code>.behav-card</code> between the dot plot and the compact list when a marker or row is clicked. It slides down via <code>max-height</code> animation (<code>0 → 600px</code>, 200ms ease-spring) and renders the goal number badge, full question title, score, mini progress bar, explanation body, and action buttons. The wrapper <code>#goalDetailDrawer</code> is permanently in the DOM — content is injected by JS.</p>
 
   <div class="ds-preview">
     <div style="margin:0;border-top:1px solid rgba(255,255,255,0.07);border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(0,0,0,0.18);padding:16px 20px;max-width:560px;">
@@ -9532,17 +9532,17 @@
   <table class="ds-table">
     <thead><tr><th>Element</th><th>Class</th><th>Notes</th></tr></thead>
     <tbody>
-      <tr><td>Wrapper</td><td><code>#kpiDetailDrawer</code></td><td>Always in DOM. <code>margin:0 -20px; padding:0 20px</code> — bleeds to card edges. Dark bg, top+bottom borders. Add <code>.kpi-drawer-open</code> to show, <code>.kpi-drawer-closing</code> to animate out</td></tr>
-      <tr><td>Open state</td><td><code>.kpi-drawer-open</code></td><td><code>opacity:1; max-height:600px; transform:translateY(0)</code> at 200ms ease-spring</td></tr>
-      <tr><td>Closing state</td><td><code>.kpi-drawer-closing</code></td><td><code>opacity:0; max-height:0; transform:translateY(4px)</code> at 120ms — applied by JS before removing from view</td></tr>
-      <tr><td>Header</td><td><code>.kpi-drawer-header</code></td><td>flex, <code>gap:10px; margin-bottom:12px</code>. Holds num badge + title + score + close button</td></tr>
-      <tr><td>Number badge</td><td><code>.kpi-drawer-num.err/.warn/.ok</code></td><td>24px square, 6px radius. Tinted bg + semantic text color matching marker</td></tr>
-      <tr><td>Title</td><td><code>.kpi-drawer-title</code></td><td>13px/700, <code>--d50</code>, <code>flex:1</code></td></tr>
-      <tr><td>Score</td><td><code>.kpi-drawer-score</code></td><td>20px/800, <code>letter-spacing:-0.02em</code>. Color set inline from JS</td></tr>
-      <tr><td>Close button</td><td><code>.kpi-drawer-close</code></td><td>Ghost ×. Hover: <code>--d200</code></td></tr>
-      <tr><td>Mini bar</td><td><code>.kpi-drawer-minibar</code> + <code>.kpi-drawer-minibar-fill</code></td><td>6px track. Fill width animates from 0 → score% on open (600ms ease-spring). Color set inline</td></tr>
-      <tr><td>Body</td><td><code>.kpi-drawer-body</code></td><td>12px, <code>--d300</code>, <code>line-height:1.65</code>. AiMY-generated explanation of why this KPI is failing</td></tr>
-      <tr><td>Actions</td><td><code>.kpi-drawer-actions</code></td><td>flex, <code>gap:6px; flex-wrap:wrap</code>. Holds qa-accent primary btn + ghost secondary btns</td></tr>
+      <tr><td>Wrapper</td><td><code>#goalDetailDrawer</code></td><td>Always in DOM. <code>margin:0 -20px; padding:0 20px</code> — bleeds to card edges. Dark bg, top+bottom borders. Add <code>.goal-drawer-open</code> to show, <code>.goal-drawer-closing</code> to animate out</td></tr>
+      <tr><td>Open state</td><td><code>.goal-drawer-open</code></td><td><code>opacity:1; max-height:600px; transform:translateY(0)</code> at 200ms ease-spring</td></tr>
+      <tr><td>Closing state</td><td><code>.goal-drawer-closing</code></td><td><code>opacity:0; max-height:0; transform:translateY(4px)</code> at 120ms — applied by JS before removing from view</td></tr>
+      <tr><td>Header</td><td><code>.goal-drawer-header</code></td><td>flex, <code>gap:10px; margin-bottom:12px</code>. Holds num badge + title + score + close button</td></tr>
+      <tr><td>Number badge</td><td><code>.goal-drawer-num.err/.warn/.ok</code></td><td>24px square, 6px radius. Tinted bg + semantic text color matching marker</td></tr>
+      <tr><td>Title</td><td><code>.goal-drawer-title</code></td><td>13px/700, <code>--d50</code>, <code>flex:1</code></td></tr>
+      <tr><td>Score</td><td><code>.goal-drawer-score</code></td><td>20px/800, <code>letter-spacing:-0.02em</code>. Color set inline from JS</td></tr>
+      <tr><td>Close button</td><td><code>.goal-drawer-close</code></td><td>Ghost ×. Hover: <code>--d200</code></td></tr>
+      <tr><td>Mini bar</td><td><code>.goal-drawer-minibar</code> + <code>.goal-drawer-minibar-fill</code></td><td>6px track. Fill width animates from 0 → score% on open (600ms ease-spring). Color set inline</td></tr>
+      <tr><td>Body</td><td><code>.goal-drawer-body</code></td><td>12px, <code>--d300</code>, <code>line-height:1.65</code>. AiMY-generated explanation of why this goal is failing</td></tr>
+      <tr><td>Actions</td><td><code>.goal-drawer-actions</code></td><td>flex, <code>gap:6px; flex-wrap:wrap</code>. Holds qa-accent primary btn + ghost secondary btns</td></tr>
     </tbody>
   </table>
 
@@ -9550,9 +9550,9 @@
   <table class="ds-table">
     <thead><tr><th>Class</th><th>Applied to</th><th>Effect</th></tr></thead>
     <tbody>
-      <tr><td><code>.kpi-row-selectable</code></td><td><code>.behav-compact-row</code></td><td>Cursor pointer + hover bg. Add to every row</td></tr>
-      <tr><td><code>.kpi-row-active</code></td><td><code>.behav-compact-row</code></td><td>Slightly elevated bg — applied to the row whose drawer is currently open. "Click to view detail" tooltip suppressed</td></tr>
-      <tr><td><code>.kpi-inline-coach</code></td><td>Sibling div after each row</td><td>Hidden by default (<code>display:none</code>). Populated by JS when "Coach on this" is clicked. Indented coaching prompt panel</td></tr>
+      <tr><td><code>.goal-row-selectable</code></td><td><code>.behav-compact-row</code></td><td>Cursor pointer + hover bg. Add to every row</td></tr>
+      <tr><td><code>.goal-row-active</code></td><td><code>.behav-compact-row</code></td><td>Slightly elevated bg — applied to the row whose drawer is currently open. "Click to view detail" tooltip suppressed</td></tr>
+      <tr><td><code>.goal-inline-coach</code></td><td>Sibling div after each row</td><td>Hidden by default (<code>display:none</code>). Populated by JS when "Coach on this" is clicked. Indented coaching prompt panel</td></tr>
     </tbody>
   </table>
 </div>
@@ -9862,12 +9862,12 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     WHY-SCORE + WEEKLY KPI CELLS (why-* / wk-*)
+     WHY-SCORE + WEEKLY goal CELLS (why-* / wk-*)
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
   <span class="ds-section-anchor" id="sc-why-score"></span>
   <div class="ds-h2">Why This Score</div>
-  <p class="ds-desc">A collapsible explanation drawer attached to the eval score in the roster card or agent header. A ghost trigger button opens <code>.why-score-body</code> which shows a plain-text explanation + a list of per-KPI rows (<code>.why-kpi-rows</code>). Each row uses <code>.wk-*</code> classes: <code>.wk-name</code> (flex:1 label), <code>.wk-score</code> (right-aligned number), <code>.wk-status</code> (pass/fail/border label using <code>.wk-pass</code>, <code>.wk-fail</code>, <code>.wk-border</code> color modifiers).</p>
+  <p class="ds-desc">A collapsible explanation drawer attached to the eval score in the roster card or agent header. A ghost trigger button opens <code>.why-score-body</code> which shows a plain-text explanation + a list of per-goal rows (<code>.why-goal-rows</code>). Each row uses <code>.wk-*</code> classes: <code>.wk-name</code> (flex:1 label), <code>.wk-score</code> (right-aligned number), <code>.wk-status</code> (pass/fail/border label using <code>.wk-pass</code>, <code>.wk-fail</code>, <code>.wk-border</code> color modifiers).</p>
   <div class="ds-preview">
     <div style="max-width:320px;">
       <button style="display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-size:11px;font-weight:700;color:var(--d400);font-family:Urbanist,sans-serif;padding:0;">
@@ -9875,7 +9875,7 @@
         <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:11px;height:11px;"><path d="M3 4.5L6 7.5L9 4.5"/></svg>
       </button>
       <div style="padding-top:10px;">
-        <p style="font-size:12px;color:var(--d300);line-height:1.6;margin:0 0 8px;">Score is 64 — dragged down by two failing KPIs that account for 55% of the total weight.</p>
+        <p style="font-size:12px;color:var(--d300);line-height:1.6;margin:0 0 8px;">Score is 64 — dragged down by two failing goals that account for 55% of the total weight.</p>
         <div style="display:flex;flex-direction:column;gap:5px;">
           <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--d300);padding:5px 8px;border-radius:6px;background:rgba(255,255,255,0.03);">
             <span style="flex:1;">Did agent set next steps?</span>
@@ -9903,8 +9903,8 @@
       <tr><td>Trigger</td><td><code>.why-score-trigger</code></td><td>Ghost btn, 11px/700, --d400. Add <code>.open</code> to rotate chevron 180°</td></tr>
       <tr><td>Body</td><td><code>.why-score-body</code></td><td><code>display:none; padding-top:10px</code>. Add <code>.open</code> to show</td></tr>
       <tr><td>Text</td><td><code>.why-score-text</code></td><td>12px, <code>--d300</code>, <code>line-height:1.6; margin-bottom:8px</code></td></tr>
-      <tr><td>Rows</td><td><code>.why-kpi-rows</code></td><td>flex-column, gap 5px</td></tr>
-      <tr><td>Row</td><td><code>.why-kpi-row</code></td><td>flex, gap 8px, 11px, ghost bg, 6px radius. Holds <code>.wk-name</code> + <code>.wk-score</code> + <code>.wk-status</code></td></tr>
+      <tr><td>Rows</td><td><code>.why-goal-rows</code></td><td>flex-column, gap 5px</td></tr>
+      <tr><td>Row</td><td><code>.why-goal-row</code></td><td>flex, gap 8px, 11px, ghost bg, 6px radius. Holds <code>.wk-name</code> + <code>.wk-score</code> + <code>.wk-status</code></td></tr>
       <tr><td>Name</td><td><code>.wk-name</code></td><td>flex:1</td></tr>
       <tr><td>Score</td><td><code>.wk-score</code></td><td>font-weight:700, min-width:30px, right-aligned</td></tr>
       <tr><td>Status</td><td><code>.wk-status</code></td><td>min-width:38px, right-aligned. Add <code>.wk-pass</code> (ok), <code>.wk-fail</code> (err), or <code>.wk-border</code> (warn)</td></tr>
@@ -9918,10 +9918,10 @@
 <div class="ds-section">
   <span class="ds-section-anchor" id="sc-utility-chips"></span>
   <div class="ds-h2">Utility Chips</div>
-  <p class="ds-desc">Two small inline chips used across the scorecards and disputes flows.</p>
+  <p class="ds-desc">Two small inline chips used across the scorecards and justifys flows.</p>
 
   <div class="ds-h3">Open Actions Chip (<code>.open-actions-chip</code>)</div>
-  <p class="ds-desc">Attached to a brief card or roster row to show how many coaching/dispute actions are still open and how long the oldest one has been waiting. Warn-tinted pill.</p>
+  <p class="ds-desc">Attached to a brief card or roster row to show how many coaching/justify actions are still open and how long the oldest one has been waiting. Warn-tinted pill.</p>
   <div class="ds-preview">
     <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--d300);background:rgba(247,144,9,0.07);border:1px solid rgba(247,144,9,0.2);border-radius:20px;padding:4px 10px;">
       <span style="font-weight:800;color:var(--warn);">2</span> open actions ·
@@ -9935,14 +9935,14 @@
     </tbody>
   </table>
 
-  <div class="ds-h3">AiMY Decision Summary (<code>.ads-*</code>) — Disputes</div>
-  <p class="ds-desc">Shown in the dispute workspace after a decision is confirmed. A teal-tinted confirmation block with a header (AiMY logo + "Decision logged"), a narrative sentence, and teal ghost action buttons. Rendered as a replacement for the decision zone once the ruling is saved.</p>
+  <div class="ds-h3">AiMY Decision Summary (<code>.ads-*</code>) — justifys</div>
+  <p class="ds-desc">Shown in the justify workspace after a decision is confirmed. A teal-tinted confirmation block with a header (AiMY logo + "Decision logged"), a narrative sentence, and teal ghost action buttons. Rendered as a replacement for the decision zone once the ruling is saved.</p>
   <div class="ds-preview">
     <div style="display:flex;flex-direction:column;gap:10px;padding:16px;background:rgba(111,223,226,0.05);border:1px solid rgba(111,223,226,0.18);border-radius:12px;max-width:440px;">
       <div style="display:flex;align-items:center;gap:8px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--teal);">
         <svg width="10" height="12" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>Decision logged · May 9, 2026 14:32
       </div>
-      <p style="font-size:13px;color:var(--d200);line-height:1.7;margin:0;">Partial adjustment applied — <strong style="color:var(--d50);">Empathy KPI raised from 47% to 55%</strong>. Call Control upheld. Quality score delta: <strong style="color:var(--d50);">+8pts</strong>.</p>
+      <p style="font-size:13px;color:var(--d200);line-height:1.7;margin:0;">Partial adjustment applied — <strong style="color:var(--d50);">Empathy goal raised from 47% to 55%</strong>. Call Control upheld. Quality score delta: <strong style="color:var(--d50);">+8pts</strong>.</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button style="font-size:11px;font-weight:700;padding:6px 14px;border-radius:8px;border:1px solid rgba(111,223,226,0.25);background:rgba(111,223,226,0.07);color:var(--teal);cursor:pointer;font-family:Urbanist,sans-serif;">Notify agent</button>
         <button style="font-size:11px;font-weight:700;padding:6px 14px;border-radius:8px;border:1px solid rgba(111,223,226,0.25);background:rgba(111,223,226,0.07);color:var(--teal);cursor:pointer;font-family:Urbanist,sans-serif;">Export decision</button>
@@ -9961,12 +9961,12 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     DISPUTES — DISPUTE ROW
+     justifyS — justify ROW
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="disputes-row"></span>
-  <div class="ds-h2">Dispute Row</div>
-  <p class="ds-desc">Each row in the disputes queue list. Three state variants — Pending, In Review, Resolved — plus an SLA-breached variant (red tint). Selected state uses <code>--qa-accent</code> tint. <code>.disp-status-dot</code> is the only visual status signal; <code>.disp-status-label</code> is visually hidden for screen readers only. The <code>--with-suggest</code> modifier restructures the row into a two-row flex layout when an AiMY suggest strip is embedded below.</p>
+  <span class="ds-section-anchor" id="justifys-row"></span>
+  <div class="ds-h2">justify Row</div>
+  <p class="ds-desc">Each row in the justifys queue list. Three state variants — Pending, In Review, Resolved — plus an SLA-breached variant (red tint). Selected state uses <code>--qa-accent</code> tint. <code>.disp-status-dot</code> is the only visual status signal; <code>.disp-status-label</code> is visually hidden for screen readers only. The <code>--with-suggest</code> modifier restructures the row into a two-row flex layout when an AiMY suggest strip is embedded below.</p>
 
   <div class="ds-preview">
     <div style="display:flex;flex-direction:column;max-width:340px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;overflow:hidden;">
@@ -10034,7 +10034,7 @@
       <tr><td>Status dot</td><td><code>.disp-status-dot.pending/.in-review/.resolved</code></td><td>8px circle. pending=warn, in-review=brand, resolved=ok. <code>margin-top:5px; flex-shrink:0</code></td></tr>
       <tr><td>Agent name</td><td><code>.disp-row-agent</code></td><td>13px/700, <code>--d100</code>, truncated</td></tr>
       <tr><td>Eval ID</td><td><code>.disp-eval-id</code></td><td>9px/600, <code>--d600</code>, <code>display:block; margin-top:1px</code></td></tr>
-      <tr><td>KPIs</td><td><code>.disp-row-kpis</code></td><td>10px, <code>--d400</code>, truncated. Shows disputed KPI names</td></tr>
+      <tr><td>goals</td><td><code>.disp-row-goals</code></td><td>10px, <code>--d400</code>, truncated. Shows justifyd goal names</td></tr>
       <tr><td>Auditor</td><td><code>.disp-row-auditor</code></td><td>9px, <code>--d600</code>, <code>margin-top:1px</code></td></tr>
       <tr><td>Right col</td><td><code>.disp-row-right</code></td><td>flex-column, align-items flex-end, gap 4px, flex-shrink 0</td></tr>
       <tr><td>Timestamp</td><td><code>.disp-time</code></td><td>10px, <code>--d600</code></td></tr>
@@ -10045,10 +10045,10 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     DISPUTES — SLA INDICATORS
+     justifyS — SLA INDICATORS
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="disputes-sla"></span>
+  <span class="ds-section-anchor" id="justifys-sla"></span>
   <div class="ds-h2">SLA Indicators</div>
   <p class="ds-desc">SLA status is signalled at two levels: the <strong>section label</strong> above a group of rows (carries an animated dot when any row in the group is breached) and the <strong>SLA badge</strong> inside <code>.disp-row-right</code> of individual rows. Section labels also group rows by status (Pending · In Review · Resolved) and carry a count badge.</p>
 
@@ -10085,10 +10085,10 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     DISPUTES — AiMY SUGGEST STRIP
+     justifyS — AiMY SUGGEST STRIP
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="disputes-suggest"></span>
+  <span class="ds-section-anchor" id="justifys-suggest"></span>
   <div class="ds-h2">AiMY Suggest Strip</div>
   <p class="ds-desc">An inline suggestion band embedded inside a <code>.disp-row--with-suggest</code> row, below the main row content. AiMY surfaces a one-line resolution recommendation with a confidence level. The strip uses the AI gradient left border and teal text. Dismissing it via the × button removes the <code>--with-suggest</code> modifier and reverts the row to normal height.</p>
 
@@ -10110,7 +10110,7 @@
         <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(0,102,255,0.05);border-top:1px solid rgba(0,102,255,0.08);font-size:11px;">
           <svg width="12" height="14" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
           <span style="color:var(--teal);font-weight:700;">AiMY:</span>
-          <span style="color:var(--d300);flex:1;">Pattern consistent with 3 prior resolved disputes — likely scoreable. Suggest <strong style="color:var(--d100);">partial adjustment on Empathy only.</strong></span>
+          <span style="color:var(--d300);flex:1;">Pattern consistent with 3 prior resolved justifys — likely scoreable. Suggest <strong style="color:var(--d100);">partial adjustment on Empathy only.</strong></span>
           <button style="background:none;border:none;color:var(--d500);cursor:pointer;font-size:13px;flex-shrink:0;line-height:1;padding:0 2px;">✕</button>
         </div>
       </div>
@@ -10131,12 +10131,12 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     DISPUTES — CHANGE REQUEST PANEL (cr-*)
+     justifyS — CHANGE REQUEST PANEL (cr-*)
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="disputes-detail"></span>
+  <span class="ds-section-anchor" id="justifys-detail"></span>
   <div class="ds-h2">Change Request Panel</div>
-  <p class="ds-desc">The detail panel shown when a dispute row is selected. Displays the auditor's original assessment as a structured document: label (teal, uppercase), body text, section titles, an AiMY insight block, a KPI trend table, and action buttons. The panel is scrollable and not a modal — it lives in <code>.disp-detail-col</code> alongside the queue list.</p>
+  <p class="ds-desc">The detail panel shown when a justify row is selected. Displays the auditor's original assessment as a structured document: label (teal, uppercase), body text, section titles, an AiMY insight block, a goal trend table, and action buttons. The panel is scrollable and not a modal — it lives in <code>.disp-detail-col</code> alongside the queue list.</p>
 
   <div class="ds-preview">
     <div style="max-width:480px;display:flex;flex-direction:column;gap:0;">
@@ -10149,7 +10149,7 @@
         Agent scored <strong style="color:var(--d50);">47% on Empathy</strong> — 3 consecutive interactions with tone degradation during escalation. The scoring criteria used was the updated v2.1 rubric but the agent was <strong style="color:var(--d50);">still trained on v1.9</strong>. Recommend partial adjustment pending rubric alignment.
       </div>
       <!-- Section title -->
-      <div style="font-size:10px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--d400);margin-bottom:5px;">KPI Trend (last 6 weeks)</div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--d400);margin-bottom:5px;">goal Trend (last 6 weeks)</div>
       <!-- Trend table -->
       <div style="border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.07);margin-bottom:10px;font-size:11px;">
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;padding:7px 12px;gap:8px;background:rgba(0,0,0,0.2);font-weight:700;color:var(--d400);font-size:10px;text-transform:uppercase;letter-spacing:0.04em;">
@@ -10194,18 +10194,18 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     DISPUTES — WORKSPACE (APA + AiMY draft banner)
+     justifyS — WORKSPACE (APA + AiMY draft banner)
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="disputes-workspace"></span>
-  <div class="ds-h2">Dispute Workspace</div>
+  <span class="ds-section-anchor" id="justifys-workspace"></span>
+  <div class="ds-h2">justify Workspace</div>
   <p class="ds-desc">The active review surface in the detail column. Contains: the AiMY draft banner (pre-populated decision suggestion), the agent performance annotation panel (<code>.apa-*</code>), and optionally the overturn score editor. The workspace is where the reviewer reads AiMY's suggested ruling, accepts or clears it, and either confirms or overrides.</p>
 
   <div class="ds-h3">AiMY Draft Banner</div>
   <div class="ds-preview">
     <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(0,102,255,0.06);border:1px solid rgba(0,102,255,0.18);border-radius:10px;max-width:480px;">
       <svg width="13" height="15" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
-      <span style="flex:1;font-size:12px;color:var(--d200);line-height:1.5;"><strong style="color:var(--d50);font-weight:700;">AiMY draft ruling:</strong> Partial adjustment recommended — Empathy KPI overturned (+8pts), Call Control upheld.</span>
+      <span style="flex:1;font-size:12px;color:var(--d200);line-height:1.5;"><strong style="color:var(--d50);font-weight:700;">AiMY draft ruling:</strong> Partial adjustment recommended — Empathy goal overturned (+8pts), Call Control upheld.</span>
       <button style="font-size:11px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid rgba(51,105,255,0.25);background:rgba(51,105,255,0.1);color:#61adf1;cursor:pointer;font-family:Urbanist,sans-serif;white-space:nowrap;flex-shrink:0;">Accept</button>
       <button style="font-size:11px;font-weight:700;padding:5px 10px;border-radius:7px;border:1px solid rgba(255,255,255,0.1);background:none;color:var(--d400);cursor:pointer;font-family:Urbanist,sans-serif;flex-shrink:0;">Clear</button>
     </div>
@@ -10267,12 +10267,12 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     DISPUTES — DECISION ZONE
+     justifyS — DECISION ZONE
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="disputes-decision"></span>
+  <span class="ds-section-anchor" id="justifys-decision"></span>
   <div class="ds-h2">Decision Zone</div>
-  <p class="ds-desc">The ruling form where the reviewer picks an outcome. A row of <code>.decision-tab</code> pills (Uphold / Partial Adjust / Overturn) acts as a single-select. Selecting "Partial Adjust" or "Overturn" reveals the <code>.kpi-adjuster-list</code> and <code>.overturn-panel</code>. Once a decision is confirmed, the <code>.aimy-decision-summary</code> strip replaces the tab row.</p>
+  <p class="ds-desc">The ruling form where the reviewer picks an outcome. A row of <code>.decision-tab</code> pills (Uphold / Partial Adjust / Overturn) acts as a single-select. Selecting "Partial Adjust" or "Overturn" reveals the <code>.goal-adjuster-list</code> and <code>.overturn-panel</code>. Once a decision is confirmed, the <code>.aimy-decision-summary</code> strip replaces the tab row.</p>
 
   <div class="ds-preview">
     <div style="max-width:480px;">
@@ -10290,7 +10290,7 @@
         <button style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 14px;border-radius:10px;border:1px solid rgba(var(--qa-accent-rgb),0.35);background:var(--qa-accent-dim);color:var(--qa-accent);cursor:pointer;font-family:Urbanist,sans-serif;min-width:100px;">
           <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;margin-bottom:2px;flex-shrink:0;"><path d="M1 7h12M7 1v12"/></svg>
           <span style="font-size:12px;font-weight:700;">Partial Adjust</span>
-          <span style="font-size:10px;font-weight:400;color:rgba(var(--qa-accent-rgb),0.7);">Change some KPIs</span>
+          <span style="font-size:10px;font-weight:400;color:rgba(var(--qa-accent-rgb),0.7);">Change some goals</span>
         </button>
         <button style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:var(--d300);cursor:pointer;font-family:Urbanist,sans-serif;min-width:100px;">
           <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;margin-bottom:2px;flex-shrink:0;"><line x1="3" y1="3" x2="11" y2="11"/><line x1="11" y1="3" x2="3" y2="11"/></svg>
@@ -10298,7 +10298,7 @@
           <span style="font-size:10px;font-weight:400;color:var(--d500);">Full rescore</span>
         </button>
       </div>
-      <!-- KPI adjuster (shown for partial/overturn) -->
+      <!-- goal adjuster (shown for partial/overturn) -->
       <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
         <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:10px 12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;">
           <div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--d100);">
@@ -10320,8 +10320,8 @@
       <tr><td>Tabs row</td><td><code>.decision-tabs</code></td><td>flex, <code>gap:8px; margin-bottom:16px; flex-wrap:wrap</code></td></tr>
       <tr><td>Tab</td><td><code>.decision-tab</code></td><td>flex-column, centered. Holds SVG icon + label + <code>.decision-tab-sub</code>. Ghost bg + border</td></tr>
       <tr><td>Active tab</td><td><code>.decision-tab.active</code></td><td>qa-accent tint bg + border + text color. Pre-selected by AiMY recommendation</td></tr>
-      <tr><td>KPI adjuster list</td><td><code>.kpi-adjuster-list</code></td><td>flex-column, <code>gap:10px; margin-bottom:14px</code>. Hidden until Partial/Overturn tab selected</td></tr>
-      <tr><td>Adjuster row</td><td><code>.kpi-adjuster-row</code></td><td>2-col grid: <code>.kpi-adjuster-name</code> (flex, checkbox + label) | <code>.kpi-adjuster-controls</code> (number input + % label)</td></tr>
+      <tr><td>goal adjuster list</td><td><code>.goal-adjuster-list</code></td><td>flex-column, <code>gap:10px; margin-bottom:14px</code>. Hidden until Partial/Overturn tab selected</td></tr>
+      <tr><td>Adjuster row</td><td><code>.goal-adjuster-row</code></td><td>2-col grid: <code>.goal-adjuster-name</code> (flex, checkbox + label) | <code>.goal-adjuster-controls</code> (number input + % label)</td></tr>
       <tr><td>Score input</td><td><code>.overturn-score-input</code></td><td>52px wide, center-aligned number. <code>focus</code>: qa-accent border. <code>.overturn-pct</code> sits beside it (16px/700, --d300)</td></tr>
     </tbody>
   </table>
@@ -10337,12 +10337,12 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     DISPUTES — AUDIT TRAIL
+     justifyS — AUDIT TRAIL
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="disputes-audit"></span>
+  <span class="ds-section-anchor" id="justifys-audit"></span>
   <div class="ds-h2">Audit Trail</div>
-  <p class="ds-desc">A chronological log of every action taken on a dispute — opened, reviewed, decision made, agent notified. Each event is a flex row with an icon (semantic tint), label, and timestamp. Read-only; never interactive. Always visible once a dispute has been touched.</p>
+  <p class="ds-desc">A chronological log of every action taken on a justify — opened, reviewed, decision made, agent notified. Each event is a flex row with an icon (semantic tint), label, and timestamp. Read-only; never interactive. Always visible once a justify has been touched.</p>
 
   <div class="ds-preview">
     <div style="display:flex;flex-direction:column;gap:0;max-width:440px;">
@@ -10365,7 +10365,7 @@
       <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;">
         <div style="width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.06);color:var(--d400);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px;"><rect x="2" y="2" width="8" height="8" rx="1.5"/><line x1="4" y1="5" x2="8" y2="5"/><line x1="4" y1="7" x2="6" y2="7"/></svg></div>
         <div style="flex:1;min-width:0;">
-          <div style="font-size:11px;font-weight:700;color:var(--d100);">Dispute opened</div>
+          <div style="font-size:11px;font-weight:700;color:var(--d100);">justify opened</div>
           <div style="font-size:10px;color:var(--d400);margin-top:1px;">Submitted by Nour K. · #EVL-20240821-0041</div>
         </div>
         <span style="font-size:10px;color:var(--d600);flex-shrink:0;margin-top:1px;">6h ago</span>
@@ -10387,12 +10387,12 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     DISPUTES — MODAL SYSTEM + CREATE DISPUTE WIZARD
+     justifyS — MODAL SYSTEM + CREATE justify WIZARD
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
-  <span class="ds-section-anchor" id="disputes-modal"></span>
-  <div class="ds-h2">Modal + Create Dispute Wizard</div>
-  <p class="ds-desc">Two modal variants: <strong>standard</strong> (<code>.modal-box</code>, max-width 420px) for confirmations and warnings, and <strong>wide</strong> (<code>.modal-box--wide</code>, 560px) for the multi-step Create Dispute wizard. The overlay uses <code>position:fixed; inset:0</code>, backdrop blur, and scale entrance. The wizard uses a <code>.cd-steps</code> progress indicator with active/done states.</p>
+  <span class="ds-section-anchor" id="justifys-modal"></span>
+  <div class="ds-h2">Modal + Create justify Wizard</div>
+  <p class="ds-desc">Two modal variants: <strong>standard</strong> (<code>.modal-box</code>, max-width 420px) for confirmations and warnings, and <strong>wide</strong> (<code>.modal-box--wide</code>, 560px) for the multi-step Create justify wizard. The overlay uses <code>position:fixed; inset:0</code>, backdrop blur, and scale entrance. The wizard uses a <code>.cd-steps</code> progress indicator with active/done states.</p>
 
   <div class="ds-preview" style="display:flex;gap:16px;flex-wrap:wrap;">
 
@@ -10429,7 +10429,7 @@
     </tbody>
   </table>
 
-  <div class="ds-h3">Create Dispute wizard steps</div>
+  <div class="ds-h3">Create justify wizard steps</div>
   <table class="ds-table">
     <thead><tr><th>Element</th><th>Class</th><th>States</th></tr></thead>
     <tbody>
@@ -10452,7 +10452,7 @@
       <tr><td><code>.cd-agent-list</code></td><td>flex-column, gap 3px, max-height 220px, overflow-y auto</td></tr>
       <tr><td><code>.cd-agent-row</code></td><td>Ghost btn row. <code>.selected</code>: qa-accent tint. Holds avatar + <code>.cd-agent-info</code> (name + meta)</td></tr>
       <tr><td><code>.cd-selected-eval</code></td><td>qa-accent tinted confirmation block showing selected eval. Holds <code>.cd-sel-label</code>, <code>.cd-sel-row</code> (agent + ID + score badge + clear btn)</td></tr>
-      <tr><td><code>.cd-kpi-grid</code></td><td>2-col grid of <code>.cd-kpi-check</code> checkbox rows. checked: qa-accent tint</td></tr>
+      <tr><td><code>.cd-goal-grid</code></td><td>2-col grid of <code>.cd-goal-check</code> checkbox rows. checked: qa-accent tint</td></tr>
       <tr><td><code>.cd-upload-zone</code></td><td>Dashed border dropzone. Hover: qa-accent tint. <code>.cd-upload-hint</code> (10px caption)</td></tr>
       <tr><td><code>.cd-footer</code></td><td>flex, right-aligned, top border. Back + Next/Submit buttons</td></tr>
       <tr><td><code>.cd-success-icon</code></td><td>48px ok-tinted circle with ok checkmark SVG. Shown on step 3 success</td></tr>
@@ -11091,9 +11091,9 @@ function _flashCopyBtn(btn) {
     'Foundations':     '🎨',
     'Components':      '⬡',
     'AiMY Canvas':     '✦',
-    'KPI Hub':         '📊',
+    'goal Hub':         '📊',
     'Scorecards':      '📋',
-    'Disputes':        '⚖',
+    'justifys':        '⚖',
     'Data Ingestion':  '📥',
   };
 
@@ -11295,7 +11295,7 @@ function toggleFrictionData(btn) {
 }
 
 /* ═══════════════════════════════════════════════════
-   KPI FEED DEMO — passing toggle
+   goal FEED DEMO — passing toggle
 ═══════════════════════════════════════════════════ */
 function toggleDemoPassingSection(btn) {
   const section = document.getElementById('demoPassingSection');
@@ -11304,7 +11304,7 @@ function toggleDemoPassingSection(btn) {
   const svg = btn.querySelector('svg');
   if (svg) svg.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
   const label = btn.querySelector('.passing-toggle-label');
-  if (label) label.textContent = isOpen ? 'Hide passing KPIs' : 'Passing KPIs · 3';
+  if (label) label.textContent = isOpen ? 'Hide passing goals' : 'Passing goals · 3';
 }
 
 /* ═══════════════════════════════════════════════════
@@ -11371,7 +11371,7 @@ function demoSendOverlay() {
 
 
 /* ═══════════════════════════════════════════════════
-   DISPUTES DEMOS
+   justifyS DEMOS
 ═══════════════════════════════════════════════════ */
 function demoAcceptSuggest(btn) {
   btn.textContent = '✓ Assigned';

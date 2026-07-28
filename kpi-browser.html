@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AiMY QA — KPI Browser</title>
+    <title>AiMY QA — goal Browser</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -85,7 +85,7 @@
       .state-detected-pill:focus-visible,
       .passing-toggle:focus-visible,
       .bcard:focus-visible,
-      .kpi-brief:focus-visible,
+      .goal-brief:focus-visible,
       .feed-item:focus-visible {
         outline: 2px solid var(--brand);
         outline-offset: 2px;
@@ -543,7 +543,7 @@
 
       /* ══ MERGED COMPONENT CSS (Unaltered from V2B files) ══════════════════════════════ */
 
-      /* 1. Briefing Cards (kpi-card-v2b) */
+      /* 1. Briefing Cards (goal-card-v2b) */
       .bcard {
         background: var(--card-bg);
         border-radius: 16px;
@@ -824,7 +824,7 @@
         color: var(--d300);
       }
 
-      /* 2. Narrative Card (quality-kpi-v2b) */
+      /* 2. Narrative Card (quality-goal-v2b) */
       .narrative-card {
         background: var(--card-bg);
         border-radius: 16px;
@@ -1005,13 +1005,13 @@
         overflow: visible;
       }
 
-      /* 3. KPI Feed (quality-kpi-v2b) */
-      .kpi-feed {
+      /* 3. goal Feed (quality-goal-v2b) */
+      .goal-feed {
         display: flex;
         flex-direction: column;
         gap: 8px;
       }
-      .kpi-brief {
+      .goal-brief {
         display: flex;
         gap: 12px;
         align-items: flex-start;
@@ -1022,14 +1022,14 @@
         transition: all var(--transition-fast);
         cursor: pointer;
       }
-      .kpi-brief:hover {
+      .goal-brief:hover {
         background: rgba(30, 40, 54, 0.9);
         border-color: rgba(255, 255, 255, 0.12);
         transform: translateX(2px);
       }
-      /* .kpi-brief.kf-err  { border-left-color:var(--err);  } */
-      /* .kpi-brief.kf-warn { border-left-color:var(--warn); } */
-      /* .kpi-brief.kf-ok   { border-left-color:var(--ok);   } */
+      /* .goal-brief.kf-err  { border-left-color:var(--err);  } */
+      /* .goal-brief.kf-warn { border-left-color:var(--warn); } */
+      /* .goal-brief.kf-ok   { border-left-color:var(--ok);   } */
       .kf-rank {
         font-size: 9px;
         font-weight: 700;
@@ -3565,7 +3565,7 @@
         flex-shrink: 0;
         color: var(--d600);
       }
-      .eval-cause-item .cause-kpi {
+      .eval-cause-item .cause-goal {
         font-weight: 600;
         color: var(--d50);
         flex: 1;
@@ -3941,13 +3941,13 @@
             My Profile
           </a>
           <div class="sidebar-section-label">Configure</div>
-          <a class="nav-item active" href="kpi-browser.html">
+          <a class="nav-item active" href="goal-browser.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="4" width="18" height="16" rx="2"></rect>
               <line x1="3" y1="10" x2="21" y2="10"></line>
               <line x1="9" y1="4" x2="9" y2="20"></line>
             </svg>
-            KPI Hub
+            goal Hub
           </a>
           <a class="nav-item" href="data-ingestion.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3968,19 +3968,19 @@
       </div>
 
       <div class="app-main">
-        <!-- ════ KPI HUB PAGE ══════════════════════════════════════════ -->
-        <div class="kpi-hub-page dashboard-scroll" id="kpiHubPage">
+        <!-- ════ goal HUB PAGE ══════════════════════════════════════════ -->
+        <div class="goal-hub-page dashboard-scroll" id="goalHubPage">
 
           <!-- Page header -->
-          <div class="kpi-hub-header">
-            <div class="kpi-hub-header-left">
-              <h1 class="kpi-hub-title">KPI Hub</h1>
-              <p class="kpi-hub-subtitle">Manage scoring templates and govern platform metric definitions</p>
+          <div class="goal-hub-header">
+            <div class="goal-hub-header-left">
+              <h1 class="goal-hub-title">goal Hub</h1>
+              <p class="goal-hub-subtitle">Manage scoring templates and govern platform metric definitions</p>
             </div>
             <!-- Role badge — visual signal of current access level -->
-            <div class="kpi-role-badge" id="kpiRoleBadge">
+            <div class="goal-role-badge" id="goalRoleBadge">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <span id="kpiRoleLabel">QA Manager</span>
+              <span id="goalRoleLabel">QA Manager</span>
             </div>
             <!-- Dev-only role toggle — remove before shipping -->
             <button class="role-toggle-dev" id="roleToggleBtn" onclick="toggleRole()" title="Toggle role (dev only)">
@@ -4000,23 +4000,23 @@
           </div> -->
 
           <!-- Tab bar — role-gated: QA Manager sees Templates only; Admin sees all 4 -->
-          <div class="kpi-tab-bar" id="kpiTabBar">
-            <button class="kpi-tab active" data-tab="templates" onclick="switchKpiTab('templates')">
+          <div class="goal-tab-bar" id="goalTabBar">
+            <button class="goal-tab active" data-tab="templates" onclick="switchgoalTab('templates')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
               Templates
             </button>
             <!-- Admin-only tabs — hidden entirely for QA Manager role -->
-            <button class="kpi-tab admin-only" data-tab="registry" onclick="switchKpiTab('registry')">
+            <button class="goal-tab admin-only" data-tab="registry" onclick="switchgoalTab('registry')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
               Metric Registry
               <span class="admin-tab-badge">Admin</span>
             </button>
-            <button class="kpi-tab admin-only" data-tab="governance" onclick="switchKpiTab('governance')">
+            <button class="goal-tab admin-only" data-tab="governance" onclick="switchgoalTab('governance')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               Governance
               <span class="admin-tab-badge">Admin</span>
             </button>
-            <button class="kpi-tab admin-only" data-tab="health" onclick="switchKpiTab('health')">
+            <button class="goal-tab admin-only" data-tab="health" onclick="switchgoalTab('health')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
               Metric Health
               <span class="admin-tab-badge">Admin</span>
@@ -4024,10 +4024,10 @@
           </div>
 
           <!-- ── TAB: TEMPLATES ─────────────────────────────────────────── -->
-          <div class="kpi-tab-panel active" id="tab-templates">
+          <div class="goal-tab-panel active" id="tab-templates">
 
             <!-- Active filter strip -->
-            <div class="kpi-active-strip" id="tplActiveStrip">
+            <div class="goal-active-strip" id="tplActiveStrip">
               <span class="afs-label">Viewing</span>
               <button class="afs-clear-all" id="tplClearAll">Clear all</button>
             </div>
@@ -4054,12 +4054,12 @@
             </div>
 
             <!-- View toggle bar (no dropdowns) -->
-            <div class="kpi-tab-toolbar">
-              <div class="kpi-view-toggle">
-                <button class="kpi-view-btn active" id="viewGrid" onclick="setView('grid')" aria-label="Grid view">
+            <div class="goal-tab-toolbar">
+              <div class="goal-view-toggle">
+                <button class="goal-view-btn active" id="viewGrid" onclick="setView('grid')" aria-label="Grid view">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                 </button>
-                <button class="kpi-view-btn" id="viewList" onclick="setView('list')" aria-label="List view">
+                <button class="goal-view-btn" id="viewList" onclick="setView('list')" aria-label="List view">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
                 </button>
               </div>
@@ -4092,7 +4092,7 @@
                   </span>
                 </div>
                 <div class="tpl-card-footer">
-                  <span class="tpl-kpi-count">12 KPIs</span>
+                  <span class="tpl-goal-count">12 goals</span>
                   <span class="tpl-updated">Updated 3 days ago</span>
                 </div>
                 <div class="tpl-card-ai-actions">
@@ -4120,7 +4120,7 @@
                   </span>
                 </div>
                 <div class="tpl-card-footer">
-                  <span class="tpl-kpi-count">9 KPIs</span>
+                  <span class="tpl-goal-count">9 goals</span>
                   <span class="tpl-updated">Updated 1 week ago</span>
                 </div>
                 <div class="tpl-card-ai-actions">
@@ -4143,7 +4143,7 @@
                   </span>
                 </div>
                 <div class="tpl-card-footer">
-                  <span class="tpl-kpi-count">10 KPIs</span>
+                  <span class="tpl-goal-count">10 goals</span>
                   <span class="tpl-updated">Updated 5 days ago</span>
                 </div>
                 <div class="tpl-card-ai-actions">
@@ -4166,7 +4166,7 @@
                   </span>
                 </div>
                 <div class="tpl-card-footer">
-                  <span class="tpl-kpi-count">8 KPIs</span>
+                  <span class="tpl-goal-count">8 goals</span>
                   <span class="tpl-updated">Updated 2 weeks ago</span>
                 </div>
                 <div class="tpl-card-ai-actions">
@@ -4207,7 +4207,7 @@
                   </span>
                 </div>
                 <div class="tpl-card-footer">
-                  <span class="tpl-kpi-count">11 KPIs</span>
+                  <span class="tpl-goal-count">11 goals</span>
                   <span class="tpl-updated">Updated 2 days ago</span>
                 </div>
                 <div class="tpl-card-ai-actions">
@@ -4233,7 +4233,7 @@
                   </span>
                 </div>
                 <div class="tpl-card-footer">
-                  <span class="tpl-kpi-count">8 KPIs</span>
+                  <span class="tpl-goal-count">8 goals</span>
                   <span class="tpl-updated">Updated 5 days ago</span>
                 </div>
                 <div class="tpl-card-ai-actions">
@@ -4259,7 +4259,7 @@
                   </span>
                 </div>
                 <div class="tpl-card-footer">
-                  <span class="tpl-kpi-count">13 KPIs</span>
+                  <span class="tpl-goal-count">13 goals</span>
                   <span class="tpl-updated">Updated yesterday</span>
                 </div>
                 <div class="tpl-card-ai-actions">
@@ -4285,7 +4285,7 @@
                   </span>
                 </div>
                 <div class="tpl-card-footer">
-                  <span class="tpl-kpi-count">9 KPIs</span>
+                  <span class="tpl-goal-count">9 goals</span>
                   <span class="tpl-updated">Updated 3 days ago</span>
                 </div>
                 <div class="tpl-card-ai-actions">
@@ -4311,7 +4311,7 @@
                   </span>
                 </div>
                 <div class="tpl-card-footer">
-                  <span class="tpl-kpi-count">14 KPIs</span>
+                  <span class="tpl-goal-count">14 goals</span>
                   <span class="tpl-updated">Updated today</span>
                 </div>
                 <div class="tpl-card-ai-actions">
@@ -4334,7 +4334,7 @@
                   </span>
                 </div>
                 <div class="tpl-card-footer">
-                  <span class="tpl-kpi-count">10 KPIs</span>
+                  <span class="tpl-goal-count">10 goals</span>
                   <span class="tpl-updated">Updated 2 weeks ago</span>
                 </div>
                 <div class="tpl-card-ai-actions">
@@ -4357,7 +4357,7 @@
                   </span>
                 </div>
                 <div class="tpl-card-footer">
-                  <span class="tpl-kpi-count">11 KPIs</span>
+                  <span class="tpl-goal-count">11 goals</span>
                   <span class="tpl-updated">Updated 1 week ago</span>
                 </div>
                 <div class="tpl-card-ai-actions">
@@ -4380,7 +4380,7 @@
                   </span>
                 </div>
                 <div class="tpl-card-footer">
-                  <span class="tpl-kpi-count">7 KPIs</span>
+                  <span class="tpl-goal-count">7 goals</span>
                   <span class="tpl-updated">Updated 3 weeks ago</span>
                 </div>
                 <div class="tpl-card-ai-actions">
@@ -4406,10 +4406,10 @@
           </div><!-- /tab-templates -->
 
           <!-- ── TAB: METRIC REGISTRY (Admin only) ─────────────────────── -->
-          <div class="kpi-tab-panel" id="tab-registry">
+          <div class="goal-tab-panel" id="tab-registry">
 
             <!-- Active filter strip -->
-            <div class="kpi-active-strip" id="regActiveStrip">
+            <div class="goal-active-strip" id="regActiveStrip">
               <span class="afs-label">Viewing</span>
               <button class="afs-clear-all" id="regClearAll">Clear all</button>
             </div>
@@ -4436,7 +4436,7 @@
             </div>
 
             <!-- No dropdowns: filters injected via AiMY bar chips -->
-            <div class="kpi-tab-toolbar">
+            <div class="goal-tab-toolbar">
               <!-- Inline search for Metric Registry -->
               <div style="position:relative;flex:1;max-width:260px">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -4462,7 +4462,7 @@
           </div><!-- /tab-registry -->
 
           <!-- ── TAB: GOVERNANCE (Admin only) ──────────────────────────── -->
-          <div class="kpi-tab-panel" id="tab-governance">
+          <div class="goal-tab-panel" id="tab-governance">
 
             <div class="governance-layout">
 
@@ -4509,7 +4509,7 @@
                         oninput="auditActiveFilters['Actor']=this.value.trim()||undefined;if(!this.value.trim())delete auditActiveFilters['Actor'];renderActiveStrip('auditActiveStrip',auditActiveFilters);renderAuditLog()"
                         autocomplete="off"/>
                     </div>
-                    <div class="kpi-active-strip" id="auditActiveStrip" style="margin-bottom:0;padding:3px 10px">
+                    <div class="goal-active-strip" id="auditActiveStrip" style="margin-bottom:0;padding:3px 10px">
                       <span class="afs-label">Filter</span>
                       <button class="afs-clear-all" id="auditClearAll">Clear</button>
                     </div>
@@ -4597,10 +4597,10 @@
           </div>
 
           <!-- ── TAB: METRIC HEALTH (Admin only) ───────────────────────── -->
-          <div class="kpi-tab-panel" id="tab-health">
+          <div class="goal-tab-panel" id="tab-health">
 
             <!-- Active filter strip -->
-            <div class="kpi-active-strip" id="healthActiveStrip">
+            <div class="goal-active-strip" id="healthActiveStrip">
               <span class="afs-label">Viewing</span>
               <button class="afs-clear-all" id="healthClearAll">Clear all</button>
             </div>
@@ -4617,7 +4617,7 @@
               </div>
             </div>
 
-            <div class="kpi-tab-toolbar">
+            <div class="goal-tab-toolbar">
               <div class="health-summary-pills" id="healthSummaryPills"></div>
             </div>
 
@@ -4627,7 +4627,7 @@
 
           </div>
 
-        </div><!-- /kpi-hub-page -->
+        </div><!-- /goal-hub-page -->
 
         <!-- ══════════════════════════════════════════════════════════════
              TEMPLATE PREVIEW PANEL
@@ -4638,8 +4638,8 @@
              TEMPLATE DETAIL OVERLAY — full-screen centered canvas
              Replaces right-panel. Consistent with AiMY Canvas pattern.
         ════════════════════════════════════════════════════════════════ -->
-        <div class="kpi-overlay-backdrop" id="tplDetailBackdrop" onclick="closePreview()"></div>
-        <div class="kpi-detail-overlay" id="tplDetailOverlay" role="dialog" aria-modal="true" aria-label="Template detail">
+        <div class="goal-overlay-backdrop" id="tplDetailBackdrop" onclick="closePreview()"></div>
+        <div class="goal-detail-overlay" id="tplDetailOverlay" role="dialog" aria-modal="true" aria-label="Template detail">
 
           <div class="kdo-shell">
             <!-- Header bar -->
@@ -4694,10 +4694,10 @@
                 <div class="kdo-version-list" id="kdoVersionList"></div>
               </div>
 
-              <!-- Right: KPI categories + AiMY action zone -->
+              <!-- Right: goal categories + AiMY action zone -->
               <div class="kdo-right">
-                <div class="kdo-section-label">KPI categories</div>
-                <div class="kdo-kpi-cats" id="kdoKpiCats"></div>
+                <div class="kdo-section-label">goal categories</div>
+                <div class="kdo-goal-cats" id="kdogoalCats"></div>
 
                 <!-- AiMY action zone — knowledge to action -->
                 <div class="kdo-aimy-zone" id="kdoAimyZone">
@@ -4718,7 +4718,7 @@
         <!-- ══════════════════════════════════════════════════════════════
              VERSION HISTORY OVERLAY (layered over template detail)
         ════════════════════════════════════════════════════════════════ -->
-        <div class="kpi-overlay-backdrop" id="versionBackdrop" onclick="closeVersionPanel();event.stopPropagation();" style="z-index:461"></div>
+        <div class="goal-overlay-backdrop" id="versionBackdrop" onclick="closeVersionPanel();event.stopPropagation();" style="z-index:461"></div>
         <div class="kdo-version-overlay" id="versionOverlay" role="dialog" aria-modal="true" aria-label="Version history">
           <div class="kdo-version-overlay-header">
             <button class="editor-back-btn" onclick="closeVersionPanel()">
@@ -4733,33 +4733,33 @@
         </div>
 
         <!-- Rollback confirmation modal -->
-        <div class="kpi-modal-backdrop" id="rollbackBackdrop" onclick="closeRollbackModal()"></div>
-        <div class="kpi-modal" id="rollbackModal" role="dialog" aria-modal="true" aria-label="Rollback confirmation">
-          <div class="kpi-modal-header">
-            <div class="kpi-modal-icon" style="background:var(--warn-bg);color:var(--warn);border:1px solid rgba(247,144,9,0.25)">
+        <div class="goal-modal-backdrop" id="rollbackBackdrop" onclick="closeRollbackModal()"></div>
+        <div class="goal-modal" id="rollbackModal" role="dialog" aria-modal="true" aria-label="Rollback confirmation">
+          <div class="goal-modal-header">
+            <div class="goal-modal-icon" style="background:var(--warn-bg);color:var(--warn);border:1px solid rgba(247,144,9,0.25)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
             </div>
             <div>
-              <h3 class="kpi-modal-title">Rollback template?</h3>
-              <p class="kpi-modal-subtitle" id="rollbackSubtitle">This will replace the current version.</p>
+              <h3 class="goal-modal-title">Rollback template?</h3>
+              <p class="goal-modal-subtitle" id="rollbackSubtitle">This will replace the current version.</p>
             </div>
             <button class="tpl-preview-close" onclick="closeRollbackModal()" style="margin-left:auto">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
-          <div class="kpi-modal-body">
-            <div class="kpi-modal-impact">
-              <div class="kpi-impact-row warn">
+          <div class="goal-modal-body">
+            <div class="goal-modal-impact">
+              <div class="goal-impact-row warn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                 <span>Applies to <strong>future evaluations only.</strong> Historical evaluations scored with the current version are not re-scored.</span>
               </div>
-              <div class="kpi-impact-row" id="rollbackImpactClients">
+              <div class="goal-impact-row" id="rollbackImpactClients">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 <span id="rollbackImpactText">—</span>
               </div>
             </div>
           </div>
-          <div class="kpi-modal-footer">
+          <div class="goal-modal-footer">
             <button class="sec-btn" onclick="closeRollbackModal()">Cancel</button>
             <button class="tpl-cta-activate" style="background:var(--warn);box-shadow:0 2px 10px rgba(247,144,9,0.3)" onclick="confirmRollback()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
@@ -4771,59 +4771,59 @@
         <!-- ══════════════════════════════════════════════════════════════
              METRIC CREATE / EDIT FORM MODAL
         ════════════════════════════════════════════════════════════════ -->
-        <div class="kpi-modal-backdrop" id="metricFormBackdrop" onclick="closeMetricForm()"></div>
-        <div class="kpi-modal" id="metricFormModal" style="width:500px" role="dialog" aria-modal="true" aria-label="Metric form">
-          <div class="kpi-modal-header">
-            <div class="kpi-modal-icon brand">
+        <div class="goal-modal-backdrop" id="metricFormBackdrop" onclick="closeMetricForm()"></div>
+        <div class="goal-modal" id="metricFormModal" style="width:500px" role="dialog" aria-modal="true" aria-label="Metric form">
+          <div class="goal-modal-header">
+            <div class="goal-modal-icon brand">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
             </div>
             <div>
-              <h3 class="kpi-modal-title" id="metricFormTitle">New metric</h3>
-              <p class="kpi-modal-subtitle">Metric definitions are the building blocks all templates are composed from.</p>
+              <h3 class="goal-modal-title" id="metricFormTitle">New metric</h3>
+              <p class="goal-modal-subtitle">Metric definitions are the building blocks all templates are composed from.</p>
             </div>
             <button class="tpl-preview-close" onclick="closeMetricForm()" style="margin-left:auto">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
-          <div class="kpi-modal-body" style="gap:14px">
+          <div class="goal-modal-body" style="gap:14px">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-              <div class="kpi-modal-field" style="grid-column:1/-1">
-                <label class="kpi-modal-label">Metric name <span style="color:var(--err)">*</span></label>
-                <input class="filter-select kpi-modal-input" id="mfName" type="text" placeholder="e.g. Empathy Score" autocomplete="off"/>
-                <p class="kpi-field-error" id="mfNameError" style="display:none">Name is required and must be unique</p>
+              <div class="goal-modal-field" style="grid-column:1/-1">
+                <label class="goal-modal-label">Metric name <span style="color:var(--err)">*</span></label>
+                <input class="filter-select goal-modal-input" id="mfName" type="text" placeholder="e.g. Empathy Score" autocomplete="off"/>
+                <p class="goal-field-error" id="mfNameError" style="display:none">Name is required and must be unique</p>
               </div>
-              <div class="kpi-modal-field">
-                <label class="kpi-modal-label">Type <span style="color:var(--err)">*</span></label>
+              <div class="goal-modal-field">
+                <label class="goal-modal-label">Type <span style="color:var(--err)">*</span></label>
                 <select class="editor-select" id="mfType" tabindex="-1" aria-hidden="true"><option value="">Select type…</option><option>Compliance</option><option>Performance</option><option>Sentiment</option><option>Efficiency</option></select>
-                <div class="kpi-dropdown" id="mfTypeDropdown"><button class="kpi-dropdown-trigger placeholder" type="button" onclick="toggleDropdown('mfTypeDropdown')"><span id="mfTypeLabel">Select type…</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="kpi-dropdown-menu" id="mfTypeMenu" role="listbox"><div class="kpi-dropdown-option placeholder-opt" onclick="pickDropdown('mfTypeDropdown','')">Select type…</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfTypeDropdown','Compliance')">Compliance</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfTypeDropdown','Performance')">Performance</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfTypeDropdown','Sentiment')">Sentiment</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfTypeDropdown','Efficiency')">Efficiency</div></div></div>
+                <div class="goal-dropdown" id="mfTypeDropdown"><button class="goal-dropdown-trigger placeholder" type="button" onclick="toggleDropdown('mfTypeDropdown')"><span id="mfTypeLabel">Select type…</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="goal-dropdown-menu" id="mfTypeMenu" role="listbox"><div class="goal-dropdown-option placeholder-opt" onclick="pickDropdown('mfTypeDropdown','')">Select type…</div><div class="goal-dropdown-option" onclick="pickDropdown('mfTypeDropdown','Compliance')">Compliance</div><div class="goal-dropdown-option" onclick="pickDropdown('mfTypeDropdown','Performance')">Performance</div><div class="goal-dropdown-option" onclick="pickDropdown('mfTypeDropdown','Sentiment')">Sentiment</div><div class="goal-dropdown-option" onclick="pickDropdown('mfTypeDropdown','Efficiency')">Efficiency</div></div></div>
               </div>
-              <div class="kpi-modal-field">
-                <label class="kpi-modal-label">Data source <span style="color:var(--err)">*</span></label>
+              <div class="goal-modal-field">
+                <label class="goal-modal-label">Data source <span style="color:var(--err)">*</span></label>
                 <select class="editor-select" id="mfSource" tabindex="-1" aria-hidden="true"><option value="">Select source…</option><option>AiMY Connect</option><option>Zendesk</option><option>S3 Transcripts</option><option>AiMY QA Engine</option></select>
-                <div class="kpi-dropdown" id="mfSourceDropdown"><button class="kpi-dropdown-trigger placeholder" type="button" onclick="toggleDropdown('mfSourceDropdown')"><span id="mfSourceLabel">Select source…</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="kpi-dropdown-menu" id="mfSourceMenu" role="listbox"><div class="kpi-dropdown-option" onclick="pickDropdown('mfSourceDropdown','AiMY Connect')">AiMY Connect</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfSourceDropdown','Zendesk')">Zendesk</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfSourceDropdown','S3 Transcripts')">S3 Transcripts</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfSourceDropdown','AiMY QA Engine')">AiMY QA Engine</div></div></div>
+                <div class="goal-dropdown" id="mfSourceDropdown"><button class="goal-dropdown-trigger placeholder" type="button" onclick="toggleDropdown('mfSourceDropdown')"><span id="mfSourceLabel">Select source…</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="goal-dropdown-menu" id="mfSourceMenu" role="listbox"><div class="goal-dropdown-option" onclick="pickDropdown('mfSourceDropdown','AiMY Connect')">AiMY Connect</div><div class="goal-dropdown-option" onclick="pickDropdown('mfSourceDropdown','Zendesk')">Zendesk</div><div class="goal-dropdown-option" onclick="pickDropdown('mfSourceDropdown','S3 Transcripts')">S3 Transcripts</div><div class="goal-dropdown-option" onclick="pickDropdown('mfSourceDropdown','AiMY QA Engine')">AiMY QA Engine</div></div></div>
               </div>
-              <div class="kpi-modal-field" style="grid-column:1/-1">
-                <label class="kpi-modal-label">Calculation method</label>
+              <div class="goal-modal-field" style="grid-column:1/-1">
+                <label class="goal-modal-label">Calculation method</label>
                 <textarea class="editor-textarea" id="mfCalc" rows="2" placeholder="e.g. Binary pass/fail based on keyword presence in transcript. Weighted 0–10 by QA reviewer."></textarea>
               </div>
-              <div class="kpi-modal-field" style="grid-column:1/-1">
-                <label class="kpi-modal-label">Description</label>
+              <div class="goal-modal-field" style="grid-column:1/-1">
+                <label class="goal-modal-label">Description</label>
                 <textarea class="editor-textarea" id="mfDesc" rows="2" placeholder="What does this metric measure and why does it matter?"></textarea>
               </div>
-              <div class="kpi-modal-field">
-                <label class="kpi-modal-label">Owner <span style="color:var(--err)">*</span></label>
+              <div class="goal-modal-field">
+                <label class="goal-modal-label">Owner <span style="color:var(--err)">*</span></label>
                 <select class="editor-select" id="mfOwner" tabindex="-1" aria-hidden="true"><option value="">Assign owner…</option><option>Ahmed Mahfouz</option><option>Nour Wael</option><option>QA Team</option></select>
-                <div class="kpi-dropdown" id="mfOwnerDropdown"><button class="kpi-dropdown-trigger placeholder" type="button" onclick="toggleDropdown('mfOwnerDropdown')"><span id="mfOwnerLabel">Assign owner…</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="kpi-dropdown-menu" id="mfOwnerMenu" role="listbox"><div class="kpi-dropdown-option" onclick="pickDropdown('mfOwnerDropdown','Ahmed Mahfouz')">Ahmed Mahfouz</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfOwnerDropdown','Nour Wael')">Nour Wael</div><div class="kpi-dropdown-option" onclick="pickDropdown('mfOwnerDropdown','QA Team')">QA Team</div></div></div>
+                <div class="goal-dropdown" id="mfOwnerDropdown"><button class="goal-dropdown-trigger placeholder" type="button" onclick="toggleDropdown('mfOwnerDropdown')"><span id="mfOwnerLabel">Assign owner…</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="goal-dropdown-menu" id="mfOwnerMenu" role="listbox"><div class="goal-dropdown-option" onclick="pickDropdown('mfOwnerDropdown','Ahmed Mahfouz')">Ahmed Mahfouz</div><div class="goal-dropdown-option" onclick="pickDropdown('mfOwnerDropdown','Nour Wael')">Nour Wael</div><div class="goal-dropdown-option" onclick="pickDropdown('mfOwnerDropdown','QA Team')">QA Team</div></div></div>
               </div>
             </div>
-            <div class="kpi-modal-impact">
-              <div class="kpi-impact-row">
+            <div class="goal-modal-impact">
+              <div class="goal-impact-row">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 <span>Saving as Draft does not affect any live evaluations. Submitting for approval triggers the governance review workflow.</span>
               </div>
             </div>
           </div>
-          <div class="kpi-modal-footer">
+          <div class="goal-modal-footer">
             <button class="sec-btn" onclick="closeMetricForm()">Cancel</button>
             <button class="sec-btn" onclick="saveMetricDraft()" style="border-color:rgba(255,255,255,0.12);color:var(--d300)">Save draft</button>
             <button class="tpl-cta-activate" onclick="submitMetricForApproval()">
@@ -4834,24 +4834,24 @@
         </div>
 
         <!-- Change request detail modal -->
-        <div class="kpi-modal-backdrop" id="crDetailBackdrop" onclick="closeCRDetail()"></div>
-        <div class="kpi-modal" id="crDetailModal" style="width:500px" role="dialog" aria-modal="true" aria-label="Change request">
-          <div class="kpi-modal-header">
-            <div class="kpi-modal-icon" id="crDetailIcon" style="background:var(--warn-bg);color:var(--warn);border:1px solid rgba(247,144,9,0.25)">
+        <div class="goal-modal-backdrop" id="crDetailBackdrop" onclick="closeCRDetail()"></div>
+        <div class="goal-modal" id="crDetailModal" style="width:500px" role="dialog" aria-modal="true" aria-label="Change request">
+          <div class="goal-modal-header">
+            <div class="goal-modal-icon" id="crDetailIcon" style="background:var(--warn-bg);color:var(--warn);border:1px solid rgba(247,144,9,0.25)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             </div>
             <div>
-              <h3 class="kpi-modal-title" id="crDetailTitle">Change request</h3>
-              <p class="kpi-modal-subtitle" id="crDetailSubtitle">—</p>
+              <h3 class="goal-modal-title" id="crDetailTitle">Change request</h3>
+              <p class="goal-modal-subtitle" id="crDetailSubtitle">—</p>
             </div>
             <button class="tpl-preview-close" onclick="closeCRDetail()" style="margin-left:auto">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
-          <div class="kpi-modal-body" id="crDetailBody">
+          <div class="goal-modal-body" id="crDetailBody">
             <!-- Populated by JS -->
           </div>
-          <div class="kpi-modal-footer" id="crDetailFooter">
+          <div class="goal-modal-footer" id="crDetailFooter">
             <!-- Populated by JS based on status -->
           </div>
         </div>
@@ -4859,10 +4859,10 @@
         <!-- ════ FLOATING AIMY INPUT BAR (scoped to app-main) ══════════ -->
         <div class="aimy-float-wrap" id="aimyFloatWrap">
 
-          <!-- KPI Hub filter tray — context-aware chips per tab -->
-          <div class="kpi-filter-tray" id="kpiFilterTray">
-            <div class="kpi-filter-tray-inner">
-              <span class="kpi-tray-label" id="kpiTrayLabel">Filter via AiMY</span>
+          <!-- goal Hub filter tray — context-aware chips per tab -->
+          <div class="goal-filter-tray" id="goalFilterTray">
+            <div class="goal-filter-tray-inner">
+              <span class="goal-tray-label" id="goalTrayLabel">Filter via AiMY</span>
             </div>
           </div>
 
@@ -5074,26 +5074,26 @@
 
 
       /* ══════════════════════════════════════════════════════════════
-         KPI HUB — PAGE STYLES
+         goal HUB — PAGE STYLES
       ════════════════════════════════════════════════════════════════ */
 
-      .kpi-hub-page {
+      .goal-hub-page {
         display: block;
       }
 
       /* Page header */
-      .kpi-hub-header {
+      .goal-hub-header {
         display: flex;
         align-items: center;
         gap: 16px;
         padding: 20px 0 16px;
         flex-shrink: 0;
       }
-      .kpi-hub-header-left {
+      .goal-hub-header-left {
         flex: 1;
         min-width: 0;
       }
-      .kpi-hub-title {
+      .goal-hub-title {
         font-size: 22px;
         font-weight: 800;
         color: var(--d50);
@@ -5101,14 +5101,14 @@
         line-height: 1.15;
         margin-bottom: 4px;
       }
-      .kpi-hub-subtitle {
+      .goal-hub-subtitle {
         font-size: 12px;
         color: var(--d400);
         font-weight: 400;
       }
 
       /* Role badge */
-      .kpi-role-badge {
+      .goal-role-badge {
         display: flex;
         align-items: center;
         gap: 6px;
@@ -5123,14 +5123,14 @@
         border-radius: 20px;
         flex-shrink: 0;
       }
-      .kpi-role-badge svg {
+      .goal-role-badge svg {
         width: 11px;
         height: 11px;
         stroke: currentColor;
         fill: none;
       }
       /* Admin role gets accent treatment */
-      .kpi-role-badge.admin {
+      .goal-role-badge.admin {
         color: var(--qa-accent);
         border-color: rgba(var(--qa-accent-rgb),0.28);
         background: rgba(var(--qa-accent-rgb),0.07);
@@ -5165,7 +5165,7 @@
       }
 
       /* Tab bar */
-      .kpi-tab-bar {
+      .goal-tab-bar {
         display: flex;
         align-items: center;
         gap: 2px;
@@ -5174,7 +5174,7 @@
         flex-shrink: 0;
         margin-bottom: 0;
       }
-      .kpi-tab {
+      .goal-tab {
         display: flex;
         align-items: center;
         gap: 7px;
@@ -5192,22 +5192,22 @@
         white-space: nowrap;
         position: relative;
       }
-      .kpi-tab svg {
+      .goal-tab svg {
         width: 13px;
         height: 13px;
         stroke: currentColor;
         fill: none;
         flex-shrink: 0;
       }
-      .kpi-tab:hover {
+      .goal-tab:hover {
         color: var(--d200, #e8edf2);
         background: rgba(255,255,255,0.03);
       }
-      .kpi-tab.active {
+      .goal-tab.active {
         color: var(--d50);
         border-bottom-color: var(--qa-accent);
       }
-      .kpi-tab.active svg {
+      .goal-tab.active svg {
         stroke: var(--qa-accent);
       }
 
@@ -5223,20 +5223,20 @@
         color: var(--qa-accent);
         border: 1px solid rgba(var(--qa-accent-rgb),0.2);
       }
-      .kpi-tab.active .admin-tab-badge {
+      .goal-tab.active .admin-tab-badge {
         background: rgba(var(--qa-accent-rgb),0.15);
       }
 
       /* Tab panels */
-      .kpi-tab-panel {
+      .goal-tab-panel {
         display: none;
       }
-      .kpi-tab-panel.active {
+      .goal-tab-panel.active {
         display: block;
       }
 
       /* ── Filter bar ──────────────────────────────────────────── */
-      .kpi-filter-bar {
+      .goal-filter-bar {
         display: flex;
         align-items: center;
         gap: 8px;
@@ -5245,7 +5245,7 @@
         flex-shrink: 0;
         flex-wrap: wrap;
       }
-      .kpi-search-wrap {
+      .goal-search-wrap {
         display: flex;
         align-items: center;
         gap: 8px;
@@ -5256,10 +5256,10 @@
         min-width: 200px;
         transition: border-color var(--transition-base);
       }
-      .kpi-search-wrap:focus-within {
+      .goal-search-wrap:focus-within {
         border-color: rgba(var(--qa-accent-rgb),0.45);
       }
-      .kpi-search-wrap svg {
+      .goal-search-wrap svg {
         width: 13px;
         height: 13px;
         color: var(--d400);
@@ -5267,7 +5267,7 @@
         fill: none;
         flex-shrink: 0;
       }
-      .kpi-search-input {
+      .goal-search-input {
         background: none;
         border: none;
         outline: none;
@@ -5277,17 +5277,17 @@
         color: var(--d50);
         width: 100%;
       }
-      .kpi-search-input::placeholder {
+      .goal-search-input::placeholder {
         color: var(--d500);
       }
-      .kpi-filter-select {
+      .goal-filter-select {
         font-family: "Urbanist", sans-serif;
         -webkit-appearance: none;
       }
-      .kpi-filter-spacer {
+      .goal-filter-spacer {
         flex: 1;
       }
-      .kpi-view-toggle {
+      .goal-view-toggle {
         display: flex;
         gap: 2px;
         padding: 3px;
@@ -5295,7 +5295,7 @@
         border: 1px solid rgba(255,255,255,0.06);
         border-radius: 8px;
       }
-      .kpi-view-btn {
+      .goal-view-btn {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -5308,15 +5308,15 @@
         color: var(--d400);
         transition: all var(--transition-fast);
       }
-      .kpi-view-btn:hover {
+      .goal-view-btn:hover {
         color: var(--d300);
         background: rgba(255,255,255,0.05);
       }
-      .kpi-view-btn.active {
+      .goal-view-btn.active {
         background: var(--d700);
         color: var(--d50);
       }
-      .kpi-view-btn svg {
+      .goal-view-btn svg {
         width: 13px;
         height: 13px;
         stroke: currentColor;
@@ -5511,7 +5511,7 @@
         padding-top: 8px;
         margin-top: 4px;
       }
-      .tpl-kpi-count {
+      .tpl-goal-count {
         font-size: 11px;
         font-weight: 700;
         color: var(--d300);
@@ -5852,7 +5852,7 @@
         flex-shrink: 0;
         flex-wrap: wrap;
       }
-      .tpl-preview-kpi-count {
+      .tpl-preview-goal-count {
         font-size: 10px;
         font-weight: 700;
         color: var(--d300);
@@ -5918,18 +5918,18 @@
         letter-spacing: 0;
       }
 
-      /* KPI category rows */
-      .kpi-category-row {
+      /* goal category rows */
+      .goal-category-row {
         display: flex;
         align-items: center;
         gap: 10px;
         padding: 10px 0;
         border-bottom: 1px solid rgba(255,255,255,0.04);
       }
-      .kpi-category-row:last-child {
+      .goal-category-row:last-child {
         border-bottom: none;
       }
-      .kpi-cat-icon {
+      .goal-cat-icon {
         width: 28px;
         height: 28px;
         border-radius: 7px;
@@ -5941,21 +5941,21 @@
         flex-shrink: 0;
         font-size: 13px;
       }
-      .kpi-cat-body {
+      .goal-cat-body {
         flex: 1;
         min-width: 0;
       }
-      .kpi-cat-name {
+      .goal-cat-name {
         font-size: 12px;
         font-weight: 700;
         color: var(--d100);
         margin-bottom: 2px;
       }
-      .kpi-cat-count {
+      .goal-cat-count {
         font-size: 10px;
         color: var(--d500);
       }
-      .kpi-cat-weight-wrap {
+      .goal-cat-weight-wrap {
         display: flex;
         flex-direction: column;
         align-items: flex-end;
@@ -5963,20 +5963,20 @@
         flex-shrink: 0;
         width: 70px;
       }
-      .kpi-cat-weight {
+      .goal-cat-weight {
         font-size: 14px;
         font-weight: 800;
         color: var(--d50);
         letter-spacing: -0.02em;
       }
-      .kpi-cat-bar-track {
+      .goal-cat-bar-track {
         width: 70px;
         height: 3px;
         background: rgba(255,255,255,0.08);
         border-radius: 2px;
         overflow: hidden;
       }
-      .kpi-cat-bar-fill {
+      .goal-cat-bar-fill {
         height: 100%;
         border-radius: 2px;
         background: var(--brand);
@@ -6092,7 +6092,7 @@
       }
 
       /* ── Modal ──────────────────────────────────────────────────── */
-      .kpi-modal-backdrop {
+      .goal-modal-backdrop {
         position: fixed;
         inset: var(--topbar-height) 0 0 0;
         background: rgba(0,0,0,0.55);
@@ -6102,11 +6102,11 @@
         backdrop-filter: blur(4px);
         transition: opacity 200ms ease;
       }
-      .kpi-modal-backdrop.open {
+      .goal-modal-backdrop.open {
         opacity: 1;
         pointer-events: all;
       }
-      .kpi-modal {
+      .goal-modal {
         position: fixed;
         top: calc(50% + var(--topbar-height) / 2);
         left: 50%;
@@ -6122,19 +6122,19 @@
         box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
         transition: opacity 220ms cubic-bezier(0.22,1,0.36,1), transform 220ms cubic-bezier(0.22,1,0.36,1);
       }
-      .kpi-modal.open {
+      .goal-modal.open {
         opacity: 1;
         pointer-events: all;
         transform: translate(-50%, -50%) scale(1);
       }
-      .kpi-modal-header {
+      .goal-modal-header {
         display: flex;
         align-items: flex-start;
         gap: 12px;
         padding: 20px 20px 16px;
         border-bottom: 1px solid rgba(255,255,255,0.07);
       }
-      .kpi-modal-icon {
+      .goal-modal-icon {
         width: 34px;
         height: 34px;
         border-radius: 9px;
@@ -6143,53 +6143,53 @@
         justify-content: center;
         flex-shrink: 0;
       }
-      .kpi-modal-icon.ok {
+      .goal-modal-icon.ok {
         background: var(--ok-bg);
         color: var(--ok);
         border: 1px solid rgba(23,178,106,0.25);
       }
-      .kpi-modal-icon.brand {
+      .goal-modal-icon.brand {
         background: rgba(111,223,226,0.08);
         color: var(--teal);
         border: 1px solid rgba(111,223,226,0.2);
       }
-      .kpi-modal-icon svg {
+      .goal-modal-icon svg {
         width: 15px;
         height: 15px;
         stroke: currentColor;
         fill: none;
       }
-      .kpi-modal-title {
+      .goal-modal-title {
         font-size: 15px;
         font-weight: 800;
         color: var(--d50);
         letter-spacing: -0.01em;
         margin-bottom: 3px;
       }
-      .kpi-modal-subtitle {
+      .goal-modal-subtitle {
         font-size: 11px;
         color: var(--d400);
         line-height: 1.5;
       }
-      .kpi-modal-body {
+      .goal-modal-body {
         padding: 20px;
         display: flex;
         flex-direction: column;
         gap: 16px;
       }
-      .kpi-modal-field {
+      .goal-modal-field {
         display: flex;
         flex-direction: column;
         gap: 6px;
       }
-      .kpi-modal-label {
+      .goal-modal-label {
         font-size: 10px;
         font-weight: 700;
         letter-spacing: 0.06em;
         text-transform: uppercase;
         color: var(--d500);
       }
-      .kpi-modal-value {
+      .goal-modal-value {
         font-size: 13px;
         font-weight: 600;
         color: var(--d100);
@@ -6198,24 +6198,24 @@
         border: 1px solid rgba(255,255,255,0.07);
         border-radius: 8px;
       }
-      .kpi-modal-select {
+      .goal-modal-select {
         width: 100%;
         padding: 9px 14px;
         font-size: 13px;
       }
-      .kpi-modal-input {
+      .goal-modal-input {
         width: 100%;
         padding: 9px 14px;
         font-size: 13px;
         outline: none;
         font-family: "Urbanist", sans-serif;
       }
-      .kpi-modal-input:focus {
+      .goal-modal-input:focus {
         border-color: rgba(var(--qa-accent-rgb),0.4);
         outline: none;
       }
       /* Impact info box */
-      .kpi-modal-impact {
+      .goal-modal-impact {
         display: flex;
         flex-direction: column;
         gap: 8px;
@@ -6224,7 +6224,7 @@
         border: 1px solid rgba(255,255,255,0.06);
         border-radius: 10px;
       }
-      .kpi-impact-row {
+      .goal-impact-row {
         display: flex;
         align-items: flex-start;
         gap: 8px;
@@ -6232,27 +6232,27 @@
         color: var(--d400);
         line-height: 1.5;
       }
-      .kpi-impact-row svg {
+      .goal-impact-row svg {
         stroke: #61adf1;
         fill: none;
         flex-shrink: 0;
         margin-top: 1px;
       }
-      .kpi-impact-row strong {
+      .goal-impact-row strong {
         color: var(--d100);
         font-weight: 700;
       }
-      .kpi-impact-row.warn svg {
+      .goal-impact-row.warn svg {
         stroke: var(--warn);
       }
-      .kpi-modal-footer {
+      .goal-modal-footer {
         display: flex;
         gap: 8px;
         justify-content: flex-end;
         padding: 16px 20px;
         border-top: 1px solid rgba(255,255,255,0.07);
       }
-      .kpi-modal-footer .tpl-cta-activate:disabled {
+      .goal-modal-footer .tpl-cta-activate:disabled {
         opacity: 0.4;
         cursor: not-allowed;
         box-shadow: none;
@@ -6537,12 +6537,12 @@
       }
 
       /* ── Custom dropdown ──────────────────────────────────────── */
-      .kpi-dropdown {
+      .goal-dropdown {
         position: relative;
         width: 100%;
         font-family: "Urbanist", sans-serif;
       }
-      .kpi-dropdown-trigger {
+      .goal-dropdown-trigger {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -6561,26 +6561,26 @@
         transition: border-color 150ms, background 150ms;
         user-select: none;
       }
-      .kpi-dropdown-trigger.placeholder { color: var(--d600); }
-      .kpi-dropdown-trigger:hover {
+      .goal-dropdown-trigger.placeholder { color: var(--d600); }
+      .goal-dropdown-trigger:hover {
         background: rgba(255,255,255,0.07);
         border-color: rgba(255,255,255,0.18);
         color: var(--d100);
       }
-      .kpi-dropdown-trigger.open {
+      .goal-dropdown-trigger.open {
         border-color: rgba(var(--qa-accent-rgb),0.4);
         background: rgba(255,255,255,0.06);
         color: var(--d50);
       }
-      .kpi-dropdown-trigger svg {
+      .goal-dropdown-trigger svg {
         width: 13px;
         height: 13px;
         flex-shrink: 0;
         color: var(--d500);
         transition: transform 150ms;
       }
-      .kpi-dropdown-trigger.open svg { transform: rotate(180deg); }
-      .kpi-dropdown-menu {
+      .goal-dropdown-trigger.open svg { transform: rotate(180deg); }
+      .goal-dropdown-menu {
         position: absolute;
         top: calc(100% + 4px);
         left: 0;
@@ -6599,14 +6599,14 @@
         max-height: 240px;
         overflow-y: auto;
       }
-      .kpi-dropdown-menu::-webkit-scrollbar { width: 3px; }
-      .kpi-dropdown-menu::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
-      .kpi-dropdown-menu.open {
+      .goal-dropdown-menu::-webkit-scrollbar { width: 3px; }
+      .goal-dropdown-menu::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+      .goal-dropdown-menu.open {
         opacity: 1;
         transform: translateY(0) scale(1);
         pointer-events: all;
       }
-      .kpi-dropdown-option {
+      .goal-dropdown-option {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -6619,16 +6619,16 @@
         transition: background 100ms, color 100ms;
         border-bottom: 1px solid rgba(255,255,255,0.04);
       }
-      .kpi-dropdown-option:last-child { border-bottom: none; }
-      .kpi-dropdown-option:hover {
+      .goal-dropdown-option:last-child { border-bottom: none; }
+      .goal-dropdown-option:hover {
         background: rgba(255,255,255,0.06);
         color: var(--d50);
       }
-      .kpi-dropdown-option.selected {
+      .goal-dropdown-option.selected {
         color: var(--qa-accent);
         background: rgba(var(--qa-accent-rgb),0.08);
       }
-      .kpi-dropdown-option.selected::after {
+      .goal-dropdown-option.selected::after {
         content: "";
         width: 6px;
         height: 6px;
@@ -6636,12 +6636,12 @@
         background: var(--qa-accent);
         flex-shrink: 0;
       }
-      .kpi-dropdown-option.placeholder-opt {
+      .goal-dropdown-option.placeholder-opt {
         color: var(--d600);
         font-style: italic;
         font-size: 12px;
       }
-      .kpi-dropdown-option .opt-sub {
+      .goal-dropdown-option .opt-sub {
         font-size: 10px;
         color: var(--d500);
         font-weight: 400;
@@ -6649,7 +6649,7 @@
         margin-top: 1px;
       }
       /* conflict/replace sub-label */
-      .kpi-dropdown-option .opt-replace {
+      .goal-dropdown-option .opt-replace {
         font-size: 10px;
         color: var(--warn);
         font-weight: 600;
@@ -6727,7 +6727,7 @@
         margin: 0;
       }
 
-      /* KPI category editor rows */
+      /* goal category editor rows */
       .editor-add-cat-btn {
         display: flex;
         align-items: center;
@@ -7808,7 +7808,7 @@
       }
 
       /* ── Shared helpers ─────────────────────────────────────── */
-      .kpi-field-error {
+      .goal-field-error {
         font-size: 10px;
         color: var(--err);
         margin: 0;
@@ -7816,11 +7816,11 @@
       }
 
       /* ══════════════════════════════════════════════════════════════
-         KPI HUB v3 — FILTER CHIP SYSTEM (matches index.html pattern)
+         goal HUB v3 — FILTER CHIP SYSTEM (matches index.html pattern)
       ════════════════════════════════════════════════════════════════ */
 
       /* Active filter strip */
-      .kpi-active-strip {
+      .goal-active-strip {
         display: none;
         align-items: center;
         gap: 6px;
@@ -7837,7 +7837,7 @@
         animation: afsEntrance 180ms ease both;
       }
       @keyframes afsEntrance { from { opacity:0; transform:translateY(-4px); } }
-      .kpi-active-strip::before {
+      .goal-active-strip::before {
         content:"";
         position:absolute;
         top:0; left:0; right:0;
@@ -7846,14 +7846,14 @@
         background-size: 200% 100%;
         animation: glassShimmer 4s linear infinite;
       }
-      .kpi-active-strip.visible { display:flex; margin-top: 12px; }
-      .kpi-active-strip .afs-label {
+      .goal-active-strip.visible { display:flex; margin-top: 12px; }
+      .goal-active-strip .afs-label {
         font-size: 9px; font-weight: 700; color: rgba(99,169,255,0.5);
         letter-spacing: 0.08em; text-transform: uppercase;
         white-space: nowrap; flex-shrink: 0;
         padding-right: 8px; border-right: 1px solid rgba(255,255,255,0.07);
       }
-      .kpi-active-strip .afs-chip {
+      .goal-active-strip .afs-chip {
         display:flex; align-items:center; gap:4px;
         background: rgba(99,169,255,0.08); border: 1px solid rgba(99,169,255,0.18);
         border-radius: 20px; padding: 3px 9px;
@@ -7861,26 +7861,26 @@
         font-family:"Urbanist",sans-serif; white-space:nowrap;
         animation: chipPop 220ms cubic-bezier(0.34,1.56,0.64,1) both;
       }
-      .kpi-active-strip .afs-chip strong { color:#a8ccff; font-weight:700; }
-      .kpi-active-strip .afs-chip-x {
+      .goal-active-strip .afs-chip strong { color:#a8ccff; font-weight:700; }
+      .goal-active-strip .afs-chip-x {
         background:none; border:none; color:rgba(168,204,255,0.35);
         cursor:pointer; font-size:13px; line-height:1;
         padding:0 0 0 3px; font-family:"Urbanist",sans-serif;
         transition:color var(--transition-fast);
         display:flex; align-items:center;
       }
-      .kpi-active-strip .afs-chip-x:hover { color:rgba(168,204,255,0.8); }
-      .kpi-active-strip .afs-clear-all {
+      .goal-active-strip .afs-chip-x:hover { color:rgba(168,204,255,0.8); }
+      .goal-active-strip .afs-clear-all {
         margin-left:auto; background:none; border:none;
         font-size:9.5px; font-weight:600; color:rgba(255,255,255,0.18);
         cursor:pointer; font-family:"Urbanist",sans-serif;
         letter-spacing:0.04em; transition:color var(--transition-fast);
         flex-shrink:0; padding:3px 0;
       }
-      .kpi-active-strip .afs-clear-all:hover { color:rgba(168,204,255,0.6); }
+      .goal-active-strip .afs-clear-all:hover { color:rgba(168,204,255,0.6); }
 
-      /* KPI-scoped filter tray — sits above AiMY bar, context per tab */
-      .kpi-filter-tray {
+      /* goal-scoped filter tray — sits above AiMY bar, context per tab */
+      .goal-filter-tray {
         position:absolute;
         bottom: calc(100% + 6px);
         left:0; right:0;
@@ -7889,8 +7889,8 @@
         transform:translateY(5px);
         transition: opacity 160ms ease, transform 160ms cubic-bezier(0.22,1,0.36,1);
       }
-      .kpi-filter-tray.visible { opacity:1; transform:translateY(0); pointer-events:all; }
-      .kpi-filter-tray-inner {
+      .goal-filter-tray.visible { opacity:1; transform:translateY(0); pointer-events:all; }
+      .goal-filter-tray-inner {
         display:flex; align-items:center; gap:5px; flex-wrap:wrap;
         background: rgba(14,20,30,0.78);
         border: 1px solid rgba(99,169,255,0.10);
@@ -7900,22 +7900,22 @@
         box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 20px rgba(0,0,0,0.35), 0 0 24px rgba(51,105,255,0.06);
         max-width:760px; width:100%; position:relative; overflow:hidden;
       }
-      .kpi-filter-tray-inner::before {
+      .goal-filter-tray-inner::before {
         content:""; position:absolute; top:0; left:0; right:0; height:1px;
         background:linear-gradient(90deg, transparent, rgba(99,169,255,0.35) 30%, rgba(139,79,244,0.25) 60%, transparent);
         background-size:200% 100%; animation:glassShimmer 3.5s linear infinite;
       }
-      .kpi-filter-tray-inner::after {
+      .goal-filter-tray-inner::after {
         content:""; position:absolute; inset:0; border-radius:inherit;
         background:linear-gradient(180deg,rgba(255,255,255,0.03) 0%,transparent 55%); pointer-events:none;
       }
-      .kpi-tray-label {
+      .goal-tray-label {
         font-size:9px; font-weight:700; color:rgba(99,169,255,0.45);
         letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap;
         padding-right:7px; border-right:1px solid rgba(255,255,255,0.07);
         margin-right:1px; flex-shrink:0; position:relative; z-index:1;
       }
-      .kpi-filter-tray .filter-chip {
+      .goal-filter-tray .filter-chip {
         background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
         border-radius:20px; padding:4px 12px; font-size:10.5px; font-weight:600;
         color:rgba(255,255,255,0.55); cursor:pointer; font-family:"Urbanist",sans-serif;
@@ -7923,16 +7923,16 @@
         box-shadow:inset 0 1px 0 rgba(255,255,255,0.07);
         transition: background 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms cubic-bezier(0.34,1.56,0.64,1);
       }
-      .kpi-filter-tray .filter-chip:hover {
+      .goal-filter-tray .filter-chip:hover {
         background:rgba(51,105,255,0.10); border-color:rgba(99,169,255,0.28);
         color:rgba(197,220,255,0.9); transform:translateY(-1px);
       }
-      .kpi-filter-tray .filter-chip.pressed {
+      .goal-filter-tray .filter-chip.pressed {
         background:rgba(139,79,244,0.10); border-color:rgba(139,79,244,0.28); color:rgba(210,185,255,0.9);
       }
 
       /* Tab toolbar — thin strip above content, below tab bar */
-      .kpi-tab-toolbar {
+      .goal-tab-toolbar {
         display:flex; align-items:center; gap:8px;
         padding:10px 0 16px;
         border-bottom:1px solid rgba(255,255,255,0.05);
@@ -7941,16 +7941,16 @@
       /* ══════════════════════════════════════════════════════════════
          TEMPLATE DETAIL OVERLAY
       ════════════════════════════════════════════════════════════════ */
-      .kpi-overlay-backdrop {
+      .goal-overlay-backdrop {
         position:fixed; inset:var(--topbar-height) 0 0 0; z-index:455;
         background:rgba(0,0,0,0.6);
         backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
         opacity:0; pointer-events:none;
         transition:opacity 260ms ease;
       }
-      .kpi-overlay-backdrop.open { opacity:1; pointer-events:all; }
+      .goal-overlay-backdrop.open { opacity:1; pointer-events:all; }
 
-      .kpi-detail-overlay {
+      .goal-detail-overlay {
         position:fixed;
         top:calc(var(--topbar-height) + 16px); left:50%; transform:translateX(-50%) translateY(16px);
         width:min(900px, 94vw); max-height:calc(100vh - var(--topbar-height) - 32px);
@@ -7958,7 +7958,7 @@
         opacity:0; pointer-events:none;
         transition:opacity 260ms cubic-bezier(0.22,1,0.36,1), transform 260ms cubic-bezier(0.22,1,0.36,1);
       }
-      .kpi-detail-overlay.open {
+      .goal-detail-overlay.open {
         opacity:1; pointer-events:all; transform:translateX(-50%) translateY(0);
       }
       .kdo-shell {
@@ -8125,8 +8125,8 @@
         flex-shrink:0;
       }
 
-      /* KPI category rows in overlay */
-      .kdo-kpi-cats { display:flex; flex-direction:column; gap:8px; }
+      /* goal category rows in overlay */
+      .kdo-goal-cats { display:flex; flex-direction:column; gap:8px; }
       .kdo-cat-row {
         display:flex; align-items:center; gap:12px;
         padding:12px 14px;
@@ -8716,7 +8716,7 @@
 
           const delay = 800 + Math.random() * 500;
           setTimeout(() => {
-            // Route through KPI-aware response engine if available,
+            // Route through goal-aware response engine if available,
             // otherwise fall back to dashboard stubs
             if (typeof buildAimyResponse === 'function') {
               appendAiMsg(buildAimyResponse(userText, {}));
@@ -8762,8 +8762,8 @@
           handleOverlaySend();
         };
 
-        /* ── Expose canvas API globally so KPI Hub can drive it ────── */
-        window._kpiCanvas = {
+        /* ── Expose canvas API globally so goal Hub can drive it ────── */
+        window._goalCanvas = {
           open: function(msg) {
             if (!overlayOpen) openOverlay(null);
             if (msg) {
@@ -8789,7 +8789,7 @@
     <script>
 
       /* ══════════════════════════════════════════════════════════════
-         KPI HUB v3 — JAVASCRIPT
+         goal HUB v3 — JAVASCRIPT
          AI Native Knowledge to Action
       ════════════════════════════════════════════════════════════════ */
 
@@ -8800,7 +8800,7 @@
       let activePreviewCard    = null;
       let currentPreviewTemplate = null;
       let pendingRollbackVersion = null;
-      let kpiActiveFilters     = {};
+      let goalActiveFilters     = {};
       let regActiveFilters     = {};
       let healthActiveFilters  = {};
       let auditActiveFilters   = {};
@@ -8813,17 +8813,17 @@
         'Financial Services — Voice': {
           industry:'Financial Services', channel:'Voice', type:'System Default',
           desc:'Compliance-first scoring for regulated financial contact centres',
-          kpiCount:'12 KPIs', updated:'Updated 3 days ago',
+          goalCount:'12 goals', updated:'Updated 3 days ago',
           categories:[
-            {icon:'📋',name:'Compliance & Regulatory',count:'4 KPIs',weight:35},
-            {icon:'🤝',name:'Customer Empathy',count:'3 KPIs',weight:25},
-            {icon:'⚡',name:'Resolution Efficiency',count:'3 KPIs',weight:25},
-            {icon:'📞',name:'Call Handling Protocol',count:'2 KPIs',weight:15},
+            {icon:'📋',name:'Compliance & Regulatory',count:'4 goals',weight:35},
+            {icon:'🤝',name:'Customer Empathy',count:'3 goals',weight:25},
+            {icon:'⚡',name:'Resolution Efficiency',count:'3 goals',weight:25},
+            {icon:'📞',name:'Call Handling Protocol',count:'2 goals',weight:15},
           ],
           activeClients:[{name:'Heliox Financial',date:'12 Jan 2025',evals:'1,842'}],
           versions:[
             {id:'v4',label:'v4 — Current',current:true,author:'Ahmed Mahfouz',date:'2 days ago',diff:'Increased Compliance weight from 30% → 35%. Reduced Empathy from 30% → 25%.'},
-            {id:'v3',label:'v3',current:false,author:'Nour Wael',date:'3 weeks ago',diff:'Added "Call Handling Protocol" category. Total KPIs: 10 → 12.'},
+            {id:'v3',label:'v3',current:false,author:'Nour Wael',date:'3 weeks ago',diff:'Added "Call Handling Protocol" category. Total goals: 10 → 12.'},
             {id:'v2',label:'v2',current:false,author:'Ahmed Mahfouz',date:'2 months ago',diff:'Renamed "Accuracy" to "Resolution Efficiency". No weight changes.'},
             {id:'v1',label:'v1 — Initial',current:false,author:'System',date:'6 months ago',diff:'Template created from Financial Services baseline.'},
           ],
@@ -8831,12 +8831,12 @@
         'Telecom — Chat': {
           industry:'Telecom', channel:'Chat', type:'System Default',
           desc:'Optimised for technical support over chat with first-contact resolution focus',
-          kpiCount:'9 KPIs', updated:'Updated 1 week ago',
+          goalCount:'9 goals', updated:'Updated 1 week ago',
           categories:[
-            {icon:'🔧',name:'Technical Accuracy',count:'3 KPIs',weight:40},
-            {icon:'⏱',name:'Response Speed',count:'2 KPIs',weight:30},
-            {icon:'🤝',name:'Customer Empathy',count:'2 KPIs',weight:20},
-            {icon:'📝',name:'Documentation',count:'2 KPIs',weight:10},
+            {icon:'🔧',name:'Technical Accuracy',count:'3 goals',weight:40},
+            {icon:'⏱',name:'Response Speed',count:'2 goals',weight:30},
+            {icon:'🤝',name:'Customer Empathy',count:'2 goals',weight:20},
+            {icon:'📝',name:'Documentation',count:'2 goals',weight:10},
           ],
           activeClients:[{name:'Meridian Telecom',date:'3 Feb 2025',evals:'3,110'}],
           versions:[
@@ -8847,12 +8847,12 @@
         'Healthcare — Email (Custom)': {
           industry:'Healthcare', channel:'Email', type:'Custom',
           desc:'Adapted for patient communication with empathy and accuracy weighting',
-          kpiCount:'11 KPIs', updated:'Updated 2 days ago',
+          goalCount:'11 goals', updated:'Updated 2 days ago',
           categories:[
-            {icon:'💙',name:'Empathy & Tone',count:'3 KPIs',weight:30},
-            {icon:'✅',name:'Medical Accuracy',count:'4 KPIs',weight:40},
-            {icon:'🔒',name:'Privacy Compliance',count:'2 KPIs',weight:20},
-            {icon:'📋',name:'Documentation Quality',count:'2 KPIs',weight:10},
+            {icon:'💙',name:'Empathy & Tone',count:'3 goals',weight:30},
+            {icon:'✅',name:'Medical Accuracy',count:'4 goals',weight:40},
+            {icon:'🔒',name:'Privacy Compliance',count:'2 goals',weight:20},
+            {icon:'📋',name:'Documentation Quality',count:'2 goals',weight:10},
           ],
           activeClients:[{name:'VitaCare Health',date:'20 Jan 2025',evals:'987'}],
           versions:[
@@ -8864,11 +8864,11 @@
         'Retail — Ticket (Custom)': {
           industry:'Retail', channel:'Ticket', type:'Custom',
           desc:'Returns and escalation flow scoring for high-volume retail support',
-          kpiCount:'8 KPIs', updated:'Updated 5 days ago',
+          goalCount:'8 goals', updated:'Updated 5 days ago',
           categories:[
-            {icon:'🔄',name:'Returns Processing',count:'3 KPIs',weight:45},
-            {icon:'🤝',name:'Customer Empathy',count:'3 KPIs',weight:35},
-            {icon:'⚡',name:'Resolution Speed',count:'2 KPIs',weight:20},
+            {icon:'🔄',name:'Returns Processing',count:'3 goals',weight:45},
+            {icon:'🤝',name:'Customer Empathy',count:'3 goals',weight:35},
+            {icon:'⚡',name:'Resolution Speed',count:'2 goals',weight:20},
           ],
           activeClients:[],
           versions:[{id:'v1',label:'v1 — Current',current:true,author:'Nour Wael',date:'5 days ago',diff:'Template created.'}],
@@ -8876,12 +8876,12 @@
         'Travel — Voice (Forked)': {
           industry:'Travel', channel:'Voice', type:'Forked',
           desc:'Forked from Financial Services — Voice; re-weighted for hospitality context',
-          kpiCount:'14 KPIs', updated:'Updated today',
+          goalCount:'14 goals', updated:'Updated today',
           categories:[
-            {icon:'✈️',name:'Travel Product Knowledge',count:'4 KPIs',weight:30},
-            {icon:'💙',name:'Hospitality & Warmth',count:'4 KPIs',weight:30},
-            {icon:'⚡',name:'Booking Efficiency',count:'3 KPIs',weight:25},
-            {icon:'🔒',name:'Data Security',count:'3 KPIs',weight:15},
+            {icon:'✈️',name:'Travel Product Knowledge',count:'4 goals',weight:30},
+            {icon:'💙',name:'Hospitality & Warmth',count:'4 goals',weight:30},
+            {icon:'⚡',name:'Booking Efficiency',count:'3 goals',weight:25},
+            {icon:'🔒',name:'Data Security',count:'3 goals',weight:15},
           ],
           activeClients:[{name:'SkyWay Travel',date:'1 Mar 2025',evals:'412'}],
           versions:[
@@ -8892,12 +8892,12 @@
         'Telecom — Email (Forked)': {
           industry:'Telecom', channel:'Email', type:'Forked',
           desc:'Forked from Telecom — Chat; adapted for async email resolution flows',
-          kpiCount:'10 KPIs', updated:'Updated 2 weeks ago',
+          goalCount:'10 goals', updated:'Updated 2 weeks ago',
           categories:[
-            {icon:'🔧',name:'Technical Accuracy',count:'3 KPIs',weight:35},
-            {icon:'📝',name:'Written Communication',count:'3 KPIs',weight:35},
-            {icon:'⚡',name:'Resolution Quality',count:'2 KPIs',weight:20},
-            {icon:'📋',name:'Process Adherence',count:'2 KPIs',weight:10},
+            {icon:'🔧',name:'Technical Accuracy',count:'3 goals',weight:35},
+            {icon:'📝',name:'Written Communication',count:'3 goals',weight:35},
+            {icon:'⚡',name:'Resolution Quality',count:'2 goals',weight:20},
+            {icon:'📋',name:'Process Adherence',count:'2 goals',weight:10},
           ],
           activeClients:[],
           versions:[{id:'v1',label:'v1 — Current',current:true,author:'Nour Wael',date:'2 weeks ago',diff:'Forked from Telecom — Chat v2. Replaced Response Speed with Written Communication.'}],
@@ -8990,17 +8990,17 @@
       function applyRole() {
         const isAdmin = currentRole === 'admin';
         document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdmin ? '' : 'none');
-        const badge = document.getElementById('kpiRoleBadge');
-        const label = document.getElementById('kpiRoleLabel');
-        badge.className = 'kpi-role-badge' + (isAdmin ? ' admin' : '');
+        const badge = document.getElementById('goalRoleBadge');
+        const label = document.getElementById('goalRoleLabel');
+        badge.className = 'goal-role-badge' + (isAdmin ? ' admin' : '');
         label.textContent = isAdmin ? 'Admin' : 'QA Manager';
-        if (!isAdmin && activeTab !== 'templates') switchKpiTab('templates');
+        if (!isAdmin && activeTab !== 'templates') switchgoalTab('templates');
         updateFilterTray();
         syncActiveCardBadges();
         syncCustomEmptyState();
         updateHubSummaryBar();
       }
-      // A7: KPI Hub page-level AiMY summary
+      // A7: goal Hub page-level AiMY summary
       function updateHubSummaryBar() {
         const bar = document.getElementById('aimyHubSummaryBar');
         const ctx = document.getElementById('hubSummaryContext');
@@ -9015,12 +9015,12 @@
         if (!parts.length) { bar.style.display='none'; return; }
         ctx.textContent = parts.join(' · ');
         chips.innerHTML = (pending.length
-          ? `<button class="aib-chip" onclick="switchKpiTab('governance');document.getElementById('aimyHubSummaryBar').style.display='none'">
+          ? `<button class="aib-chip" onclick="switchgoalTab('governance');document.getElementById('aimyHubSummaryBar').style.display='none'">
                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                Review CR${pending.length>1?'s':''}
              </button>` : '') +
           (crits.length
-          ? `<button class="aib-chip secondary" onclick="switchKpiTab('health');document.getElementById('aimyHubSummaryBar').style.display='none'">
+          ? `<button class="aib-chip secondary" onclick="switchgoalTab('health');document.getElementById('aimyHubSummaryBar').style.display='none'">
                Health alerts
              </button>` : '') +
           `<button class="aib-dismiss" onclick="document.getElementById('aimyHubSummaryBar').style.display='none'" aria-label="Dismiss"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
@@ -9056,10 +9056,10 @@
         currentRole = currentRole === 'manager' ? 'admin' : 'manager';
         applyRole();
       }
-      function switchKpiTab(tab) {
+      function switchgoalTab(tab) {
         activeTab = tab;
-        document.querySelectorAll('.kpi-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
-        document.querySelectorAll('.kpi-tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + tab));
+        document.querySelectorAll('.goal-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+        document.querySelectorAll('.goal-tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + tab));
         if (tab === 'registry') {
           renderMetricCards();
           const rb = document.getElementById('aimyRegistryBar');
@@ -9119,13 +9119,13 @@
       };
 
       function updateFilterTray() {
-        const tray  = document.getElementById('kpiFilterTray');
-        const inner = tray.querySelector('.kpi-filter-tray-inner');
+        const tray  = document.getElementById('goalFilterTray');
+        const inner = tray.querySelector('.goal-filter-tray-inner');
         inner.innerHTML = '';
         const ctx = FILTER_CONTEXTS[activeTab];
         if (!ctx) { tray.classList.remove('visible'); return; }
         const label = document.createElement('span');
-        label.className = 'kpi-tray-label'; label.textContent = ctx.label;
+        label.className = 'goal-tray-label'; label.textContent = ctx.label;
         inner.appendChild(label);
         ctx.chips.forEach(chip => {
           const btn = document.createElement('button');
@@ -9151,7 +9151,7 @@
       }
 
       function clearTabFilters() {
-        if (activeTab==='templates')  { kpiActiveFilters  = {}; renderActiveStrip('tplActiveStrip', kpiActiveFilters); filterTemplatesByObj(); }
+        if (activeTab==='templates')  { goalActiveFilters  = {}; renderActiveStrip('tplActiveStrip', goalActiveFilters); filterTemplatesByObj(); }
         if (activeTab==='registry')   {
           regActiveFilters  = {};
           renderActiveStrip('regActiveStrip', regActiveFilters);
@@ -9172,11 +9172,11 @@
       // Tray visibility wired to float input focus (mirrors index.html)
       document.addEventListener('DOMContentLoaded', function() {
         const floatInput = document.getElementById('aimyFloatInput');
-        const kpiTray    = document.getElementById('kpiFilterTray');
-        if (floatInput && kpiTray) {
-          floatInput.addEventListener('focus', () => kpiTray.classList.add('visible'));
-          floatInput.addEventListener('blur',  () => setTimeout(() => kpiTray.classList.remove('visible'), 160));
-          kpiTray.addEventListener('mousedown', e => e.preventDefault());
+        const goalTray    = document.getElementById('goalFilterTray');
+        if (floatInput && goalTray) {
+          floatInput.addEventListener('focus', () => goalTray.classList.add('visible'));
+          floatInput.addEventListener('blur',  () => setTimeout(() => goalTray.classList.remove('visible'), 160));
+          goalTray.addEventListener('mousedown', e => e.preventDefault());
         }
         // Wire clear-all buttons
         ['tplClearAll','regClearAll','auditClearAll','healthClearAll'].forEach(id => {
@@ -9215,17 +9215,17 @@
       }
 
       // Parse filter text from AiMY bar
-      function parseKpiFilter(text) {
+      function parsegoalFilter(text) {
         const m = text.match(/Filter\s+\w+\s+by\s+([^:]+):\s*(.+)/i);
         if (m) return {key: m[1].trim(), value: m[2].trim()};
         return null;
       }
 
-      function applyKpiFilter(text) {
-        const parsed = parseKpiFilter(text);
+      function applygoalFilter(text) {
+        const parsed = parsegoalFilter(text);
         if (!parsed) return;
         const {key, value} = parsed;
-        if (activeTab==='templates')  { kpiActiveFilters[key]   = value; renderActiveStrip('tplActiveStrip', kpiActiveFilters);   filterTemplatesByObj(); }
+        if (activeTab==='templates')  { goalActiveFilters[key]   = value; renderActiveStrip('tplActiveStrip', goalActiveFilters);   filterTemplatesByObj(); }
         if (activeTab==='registry')   { regActiveFilters[key]   = value; renderActiveStrip('regActiveStrip', regActiveFilters);   renderMetricCards(); }
         if (activeTab==='governance') { auditActiveFilters[key] = value; renderActiveStrip('auditActiveStrip', auditActiveFilters); renderAuditLog(); }
         if (activeTab==='health')     { healthActiveFilters[key]= value; renderActiveStrip('healthActiveStrip', healthActiveFilters); renderHealth(); }
@@ -9249,7 +9249,7 @@
       // TEMPLATE GALLERY
       // ──────────────────────────────────────────────────────────
       function filterTemplatesByObj() {
-        const f = kpiActiveFilters;
+        const f = goalActiveFilters;
         let visible = 0;
         document.querySelectorAll('.tpl-card').forEach(card => {
           const show =
@@ -9302,8 +9302,8 @@
         // Radial chart
         buildRadialChart(tpl.categories);
 
-        // KPI categories (right column)
-        document.getElementById('kdoKpiCats').innerHTML = tpl.categories.map((c,i) => `
+        // goal categories (right column)
+        document.getElementById('kdogoalCats').innerHTML = tpl.categories.map((c,i) => `
           <div class="kdo-cat-row">
             <div class="kdo-cat-icon-wrap">${c.icon}</div>
             <div class="kdo-cat-info">
@@ -9699,14 +9699,14 @@
       // Primary action surface: all CTAs funnel here
       // ──────────────────────────────────────────────────────────
       // ──────────────────────────────────────────────────────────
-      // CANVAS ENGINE — every KPI Hub action routes here
+      // CANVAS ENGINE — every goal Hub action routes here
       // ──────────────────────────────────────────────────────────
 
       function injectCanvasAction(prompt, contextData) {
         closePreview();
         closeMetricDetail();
 
-        const canvas = window._kpiCanvas;
+        const canvas = window._goalCanvas;
         if (!canvas) return;
 
         // Open canvas and deliver message + context-aware AI reply
@@ -9753,7 +9753,7 @@ ${conflicts.length ? `<br><strong>Clients with an existing template</strong> (ac
 
 <br><br>${suggestions}
 
-<br><br>Common reasons to fork: adjusting weights for a specific region or client, adding a new KPI category, or piloting a scoring change before committing it. The fork will appear in <em>Custom Templates</em> with a "Forked from ${tpl}" label.
+<br><br>Common reasons to fork: adjusting weights for a specific region or client, adding a new goal category, or piloting a scoring change before committing it. The fork will appear in <em>Custom Templates</em> with a "Forked from ${tpl}" label.
 
 <br><br><strong>What should I name the fork?</strong> Enter a name in the editor that just opened. Once you publish it, you can assign it to any client.`;
         }
@@ -9991,7 +9991,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           return 'Deploying applies the change to <strong>future evaluations only</strong> — no historical re-scoring occurs.' + (readyToDeploy.length > 1 ? ' You currently have <strong>' + readyToDeploy.length + ' approved CRs</strong> ready to deploy.' : '') + '<br><br>Post-deploy: check Metric Health within the next evaluation cycle. If coverage drops, verify the Data Ingestion pipeline for the affected source.';
         }
         if (p.includes('permission') || (p.includes('role') && p.includes('access'))) {
-          return `The permission matrix controls what each role can do across KPI Hub. Changes take effect immediately and are audit-logged.<br><br><strong>Current model:</strong><br>• <em>QA Analyst</em> — view metrics only<br>• <em>QA Manager</em> — view and edit; cannot approve or deprecate<br>• <em>Admin</em> — full access, always on<br><br>Permission escalation (granting approve to Analyst) should be reviewed quarterly.`;
+          return `The permission matrix controls what each role can do across goal Hub. Changes take effect immediately and are audit-logged.<br><br><strong>Current model:</strong><br>• <em>QA Analyst</em> — view metrics only<br>• <em>QA Manager</em> — view and edit; cannot approve or deprecate<br>• <em>Admin</em> — full access, always on<br><br>Permission escalation (granting approve to Analyst) should be reviewed quarterly.`;
         }
 
         // ── METRIC HEALTH branches ──────────────────────────────
@@ -10000,11 +10000,11 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           return 'Coverage gaps mean the metric isn’t receiving data from all expected sources.<br><br><strong>Most common causes:</strong><br>1. <strong>Data ingestion failure</strong> — pipeline from source (Zendesk, Freshdesk, S3) isn’t delivering. Check the Data page.<br>2. <strong>Metric not mapped</strong> — template uses this metric but source field isn’t configured for that client.<br>3. <strong>Client onboarding gap</strong> — new client hasn’t completed integration setup.<br><br>' + (crits.length ? 'Currently critical: <strong>' + crits.map(function(d){return d.name;}).join(', ') + '</strong>. Start there.' : 'No critical gaps right now.');
         }
         if (p.includes('variance') || p.includes('score dist') || p.includes('inconsistent')) {
-          return `High variance usually signals one of three things:<br><br>1. <strong>Ambiguous criteria</strong> — reviewers are interpreting the KPI differently. Tighten the scoring criteria in the template editor.<br>2. <strong>Genuine performance spread</strong> — coaching signal, not a data problem. Surface in the Reviews tab.<br>3. <strong>Source mismatch</strong> — metric is pulling from different channels for different clients.<br><br>Compare the template’s scoring criteria with the evaluation results in the Reviews tab for the affected agents.`;
+          return `High variance usually signals one of three things:<br><br>1. <strong>Ambiguous criteria</strong> — reviewers are interpreting the goal differently. Tighten the scoring criteria in the template editor.<br>2. <strong>Genuine performance spread</strong> — coaching signal, not a data problem. Surface in the Reviews tab.<br>3. <strong>Source mismatch</strong> — metric is pulling from different channels for different clients.<br><br>Compare the template’s scoring criteria with the evaluation results in the Reviews tab for the affected agents.`;
         }
 
         // ── FALLBACK ────────────────────────────────────────────
-        return `I&#39;m scanning the KPI Hub for you… Here's a quick summary of current state:
+        return `I&#39;m scanning the goal Hub for you… Here's a quick summary of current state:
 
 <br><br>• <strong>${Object.keys(TEMPLATES).length} templates</strong> configured — ${Object.values(TEMPLATES).filter(t=>t.activeClients?.length>0).length} active across ${Object.keys(ACTIVE_CLIENT_TEMPLATES).length} clients
 • <strong>${METRICS.filter(m=>m.status==='Active').length} active metrics</strong>, ${METRICS.filter(m=>m.status==='Draft').length} in draft, ${METRICS.filter(m=>m.status==='Deprecated').length} deprecated
@@ -10129,7 +10129,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         // Inject backdrop
         const bd = document.createElement('div');
         bd.id = 'mdoBackdrop';
-        bd.className = 'kpi-overlay-backdrop';
+        bd.className = 'goal-overlay-backdrop';
         bd.style.zIndex = '455';
         bd.onclick = closeMetricDetail;
         document.body.appendChild(bd);
@@ -10307,7 +10307,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         const blob = new Blob([csv], {type:'text/csv'});
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a');
-        a.href = url; a.download = 'kpi-hub-audit-log.csv'; a.click();
+        a.href = url; a.download = 'goal-hub-audit-log.csv'; a.click();
         URL.revokeObjectURL(url);
         if (typeof showToast==='function') showToast('Audit log exported', filtered.length + ' entries downloaded');
       }
@@ -10400,23 +10400,23 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         if (title) title.textContent = cr.id + ' — ' + cr.status;
         if (subtitle) subtitle.textContent = cr.metric;
         if (body) body.innerHTML = `
-          <div class="kpi-modal-field">
-            <label class="kpi-modal-label">Description</label>
-            <div class="kpi-modal-value" style="font-size:12px">${cr.desc}</div>
+          <div class="goal-modal-field">
+            <label class="goal-modal-label">Description</label>
+            <div class="goal-modal-value" style="font-size:12px">${cr.desc}</div>
           </div>
-          <div class="kpi-modal-field">
-            <label class="kpi-modal-label">Change</label>
-            <div class="kpi-modal-value" style="display:flex;align-items:center;gap:8px;font-size:12px">
+          <div class="goal-modal-field">
+            <label class="goal-modal-label">Change</label>
+            <div class="goal-modal-value" style="display:flex;align-items:center;gap:8px;font-size:12px">
               <span style="color:var(--d400);text-decoration:${cr.status==='Rejected'?'line-through':''}">${cr.before}</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               <span style="color:${cr.status==='Rejected'?'var(--d600)':'#61adf1'};font-weight:700">${cr.after}</span>
             </div>
           </div>
-          ${cr.affectedClients.length ? `<div class="kpi-modal-field"><label class="kpi-modal-label">Affected clients</label><div class="kpi-modal-value" style="font-size:12px">${cr.affectedClients.join(', ')}</div></div>` : ''}
-          ${cr.decision ? `<div class="kpi-modal-field"><label class="kpi-modal-label">Decision rationale</label><div class="kpi-modal-value" style="font-size:12px;font-style:italic">${cr.decision}</div></div>` : ''}
-          <div class="kpi-modal-field">
-            <label class="kpi-modal-label">Submitted by</label>
-            <div class="kpi-modal-value" style="display:flex;align-items:center;gap:8px;font-size:12px">
+          ${cr.affectedClients.length ? `<div class="goal-modal-field"><label class="goal-modal-label">Affected clients</label><div class="goal-modal-value" style="font-size:12px">${cr.affectedClients.join(', ')}</div></div>` : ''}
+          ${cr.decision ? `<div class="goal-modal-field"><label class="goal-modal-label">Decision rationale</label><div class="goal-modal-value" style="font-size:12px;font-style:italic">${cr.decision}</div></div>` : ''}
+          <div class="goal-modal-field">
+            <label class="goal-modal-label">Submitted by</label>
+            <div class="goal-modal-value" style="display:flex;align-items:center;gap:8px;font-size:12px">
               <span class="cr-proposer-avatar">${cr.proposerInitials}</span>
               ${cr.proposer} · ${cr.date}
             </div>
@@ -10452,20 +10452,20 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         if (title) title.textContent = 'Approve change request';
         if (subtitle) subtitle.textContent = cr.id + ' — ' + cr.metric;
         if (body) body.innerHTML = `
-          <div class="kpi-modal-field">
-            <label class="kpi-modal-label">Proposed change</label>
-            <div class="kpi-modal-value" style="display:flex;align-items:center;gap:8px;font-size:12px">
+          <div class="goal-modal-field">
+            <label class="goal-modal-label">Proposed change</label>
+            <div class="goal-modal-value" style="display:flex;align-items:center;gap:8px;font-size:12px">
               <span style="color:var(--err);font-weight:700">${cr.before}</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               <span style="color:var(--ok);font-weight:700">${cr.after}</span>
             </div>
           </div>
-          <div class="kpi-modal-field">
-            <label class="kpi-modal-label">Decision rationale <span style="color:var(--d600);font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+          <div class="goal-modal-field">
+            <label class="goal-modal-label">Decision rationale <span style="color:var(--d600);font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
             <textarea class="editor-textarea" id="crDecisionRationale" rows="3" placeholder="Explain your approval decision for the audit log…" style="font-size:12px"></textarea>
           </div>
-          <div class="kpi-modal-impact">
-            <div class="kpi-impact-row">
+          <div class="goal-modal-impact">
+            <div class="goal-impact-row">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
               <span>Approved changes move to <strong>Approved</strong> status and await deployment. ${cr.affectedTemplates} template${cr.affectedTemplates!==1?'s':''} affected${cr.affectedClients.length?' — '+cr.affectedClients.join(', '):''}</span>
             </div>
@@ -10494,18 +10494,18 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         if (title) title.textContent = 'Reject change request';
         if (subtitle) subtitle.textContent = cr.id + ' — ' + cr.metric;
         if (body) body.innerHTML = `
-          <div class="kpi-modal-field">
-            <label class="kpi-modal-label">Proposed change (will be rejected)</label>
-            <div class="kpi-modal-value" style="display:flex;align-items:center;gap:8px;font-size:12px;opacity:0.6;text-decoration:line-through">
+          <div class="goal-modal-field">
+            <label class="goal-modal-label">Proposed change (will be rejected)</label>
+            <div class="goal-modal-value" style="display:flex;align-items:center;gap:8px;font-size:12px;opacity:0.6;text-decoration:line-through">
               <span>${cr.before}</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               <span>${cr.after}</span>
             </div>
           </div>
-          <div class="kpi-modal-field">
-            <label class="kpi-modal-label">Rejection reason <span style="color:var(--err)">*</span></label>
+          <div class="goal-modal-field">
+            <label class="goal-modal-label">Rejection reason <span style="color:var(--err)">*</span></label>
             <textarea class="editor-textarea" id="crDecisionRationale" rows="3" placeholder="Explain why this change is being rejected…" style="font-size:12px"></textarea>
-            <p class="kpi-field-error" id="crRejectReasonError" style="display:none">Rejection reason is required</p>
+            <p class="goal-field-error" id="crRejectReasonError" style="display:none">Rejection reason is required</p>
           </div>`;
         if (footer) footer.innerHTML = `
           <button class="sec-btn" onclick="closeCRDetail()">Cancel</button>
@@ -10531,20 +10531,20 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         if (title) title.textContent = 'Deploy approved change';
         if (subtitle) subtitle.textContent = cr.id + ' — ' + cr.metric;
         if (body) body.innerHTML = `
-          <div class="kpi-modal-field">
-            <label class="kpi-modal-label">Change</label>
-            <div class="kpi-modal-value" style="display:flex;align-items:center;gap:8px;font-size:12px">
+          <div class="goal-modal-field">
+            <label class="goal-modal-label">Change</label>
+            <div class="goal-modal-value" style="display:flex;align-items:center;gap:8px;font-size:12px">
               <span style="color:var(--d400)">${cr.before}</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               <span style="color:#61adf1;font-weight:700">${cr.after}</span>
             </div>
           </div>
-          <div class="kpi-modal-impact">
-            <div class="kpi-impact-row warn">
+          <div class="goal-modal-impact">
+            <div class="goal-impact-row warn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
               <span>Applies to <strong>future evaluations only.</strong> Historical evaluations are not re-scored.</span>
             </div>
-            <div class="kpi-impact-row">
+            <div class="goal-impact-row">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
               <span>${cr.affectedTemplates} template${cr.affectedTemplates!==1?'s':''} affected${cr.affectedClients.length?' — '+cr.affectedClients.join(', '):''}</span>
             </div>
@@ -10831,16 +10831,16 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       function openNewTemplateModal() {
         currentPreviewTemplate = null;
         // Switch the fork modal to "New template" mode
-        const titleEl = document.querySelector('#forkModal .kpi-modal-title');
-        const subtitleEl = document.querySelector('#forkModal .kpi-modal-subtitle');
-        const sourceField = document.querySelector('#forkModal .kpi-modal-field:first-child');
-        const iconEl = document.querySelector('#forkModal .kpi-modal-icon');
+        const titleEl = document.querySelector('#forkModal .goal-modal-title');
+        const subtitleEl = document.querySelector('#forkModal .goal-modal-subtitle');
+        const sourceField = document.querySelector('#forkModal .goal-modal-field:first-child');
+        const iconEl = document.querySelector('#forkModal .goal-modal-icon');
         const confirmBtn = document.querySelector('#forkModal .tpl-cta-fork');
         if (titleEl) titleEl.textContent = 'New template';
         if (subtitleEl) subtitleEl.textContent = 'Create a blank scoring template from scratch.';
         if (sourceField) sourceField.style.display = 'none';
         if (iconEl) {
-          iconEl.className = 'kpi-modal-icon';
+          iconEl.className = 'goal-modal-icon';
           iconEl.style.background = 'var(--brand-dim)';
           iconEl.style.color = 'var(--brand)';
           iconEl.style.border = '1px solid rgba(51,105,255,0.25)';
@@ -10862,10 +10862,10 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       function openForkModalDirect() {
         const sourceName = (currentPreviewTemplate || '').replace(/ \(Custom\)| \(Forked\)/,'');
         // Restore fork-mode UI (in case new-template mode changed it)
-        const titleEl = document.querySelector('#forkModal .kpi-modal-title');
-        const subtitleEl = document.querySelector('#forkModal .kpi-modal-subtitle');
-        const sourceField = document.querySelector('#forkModal .kpi-modal-field:first-child');
-        const iconEl = document.querySelector('#forkModal .kpi-modal-icon');
+        const titleEl = document.querySelector('#forkModal .goal-modal-title');
+        const subtitleEl = document.querySelector('#forkModal .goal-modal-subtitle');
+        const sourceField = document.querySelector('#forkModal .goal-modal-field:first-child');
+        const iconEl = document.querySelector('#forkModal .goal-modal-icon');
         const confirmBtn = document.querySelector('#forkModal button[onclick="confirmFork()"]') ||
                            document.querySelector('#forkModal .tpl-cta-fork') ||
                            document.querySelector('#forkModal .tpl-cta-activate');
@@ -10874,7 +10874,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         if (sourceField) sourceField.style.display = '';
         if (iconEl) {
           iconEl.removeAttribute('style');
-          iconEl.className = 'kpi-modal-icon brand';
+          iconEl.className = 'goal-modal-icon brand';
           iconEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h3"/><line x1="18" y1="9" x2="18" y2="15"/></svg>';
         }
         if (confirmBtn) {
@@ -10926,7 +10926,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           TEMPLATES[name] = {
             industry, channel, desc,
             type: sourceKey && sourceKey !== '—' ? 'Custom' : 'Custom',
-            kpiCount: '0 KPIs', updated: 'Just now',
+            goalCount: '0 goals', updated: 'Just now',
             categories: [], activeClients: [], versions: [{id:'v1',label:'v1 — Current',current:true,author:'Nour Wael',date:'Just now',diff:'Initial version.'}]
           };
           // Inject new card HTML before the empty state
@@ -10946,7 +10946,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
             card.className = 'tpl-card';
             card.dataset.industry = industry; card.dataset.channel = channel; card.dataset.type = 'Custom'; card.dataset.name = name;
             card.setAttribute('onclick','openPreview(this)');
-            card.innerHTML = `<div class="tpl-card-header"><div class="tpl-type-badge" style="background:rgba(111,223,226,0.1);color:var(--teal);border:1px solid rgba(111,223,226,0.25)">Custom</div><div class="tpl-active-badge" style="display:none"><span class="tpl-active-dot"></span> Active</div></div><div class="tpl-card-name">${name}</div><div class="tpl-card-desc">${desc||'Custom template'}</div><div class="tpl-card-meta"><span class="tpl-industry-tag">${industry}</span><span class="tpl-channel-tag">${channel}</span></div><div class="tpl-card-footer"><span class="tpl-kpi-count">0 KPIs</span><span class="tpl-updated">Just now</span></div><div class="tpl-card-ai-actions"><button class="tpl-ai-btn ghost" onclick="event.stopPropagation();openPreview(this.closest('.tpl-card'))">Preview</button></div>`;
+            card.innerHTML = `<div class="tpl-card-header"><div class="tpl-type-badge" style="background:rgba(111,223,226,0.1);color:var(--teal);border:1px solid rgba(111,223,226,0.25)">Custom</div><div class="tpl-active-badge" style="display:none"><span class="tpl-active-dot"></span> Active</div></div><div class="tpl-card-name">${name}</div><div class="tpl-card-desc">${desc||'Custom template'}</div><div class="tpl-card-meta"><span class="tpl-industry-tag">${industry}</span><span class="tpl-channel-tag">${channel}</span></div><div class="tpl-card-footer"><span class="tpl-goal-count">0 goals</span><span class="tpl-updated">Just now</span></div><div class="tpl-card-ai-actions"><button class="tpl-ai-btn ghost" onclick="event.stopPropagation();openPreview(this.closest('.tpl-card'))">Preview</button></div>`;
             if (emptyState) gallery.insertBefore(card, emptyState);
             else gallery.appendChild(card);
           }
@@ -11028,7 +11028,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       function publishEditor()    { closeEditor(); closePreview(); if(typeof showToast==='function') showToast('Template published','Now visible in the gallery'); }
 
       // ──────────────────────────────────────────────────────────
-      // CANVAS — patch handleFloatSubmit to route KPI Hub filters
+      // CANVAS — patch handleFloatSubmit to route goal Hub filters
       // ──────────────────────────────────────────────────────────
       const _origHandleFloat = typeof handleFloatSubmit !== 'undefined' ? handleFloatSubmit : null;
       window.addEventListener('load', function() {
@@ -11037,11 +11037,11 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         if (!floatInput || !floatSend) return;
 
         // Wire filter tray visibility to float input focus
-        const kpiTray = document.getElementById('kpiFilterTray');
-        if (kpiTray && floatInput) {
-          floatInput.addEventListener('focus', () => kpiTray.classList.add('visible'));
-          floatInput.addEventListener('blur',  () => setTimeout(() => kpiTray.classList.remove('visible'), 200));
-          kpiTray.addEventListener('mousedown', e => e.preventDefault());
+        const goalTray = document.getElementById('goalFilterTray');
+        if (goalTray && floatInput) {
+          floatInput.addEventListener('focus', () => goalTray.classList.add('visible'));
+          floatInput.addEventListener('blur',  () => setTimeout(() => goalTray.classList.remove('visible'), 200));
+          goalTray.addEventListener('mousedown', e => e.preventDefault());
         }
 
         // Wire clear-all strip buttons
@@ -11050,13 +11050,13 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           if (el) el.addEventListener('click', clearTabFilters);
         });
 
-        function kpiHandleSubmit() {
+        function goalHandleSubmit() {
           const text = floatInput.value.trim();
           if (!text) return;
           const isFilterText = /^filter\s+\w+\s+by\s+/i.test(text) || /^reset\s+all/i.test(text);
           if (isFilterText) {
             if (/reset/i.test(text)) { clearTabFilters(); floatInput.value=''; return; }
-            applyKpiFilter(text);
+            applygoalFilter(text);
             floatInput.value='';
             const floatBar = document.getElementById('aimyFloatBar');
             if (floatBar) { floatBar.classList.remove('filter-applied'); void floatBar.offsetWidth; floatBar.classList.add('filter-applied'); }
@@ -11065,8 +11065,8 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           // Default to canvas
           if (typeof openOverlay==='function') openOverlay(text);
         }
-        floatSend.addEventListener('click', kpiHandleSubmit);
-        floatInput.addEventListener('keydown', e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); kpiHandleSubmit(); } });
+        floatSend.addEventListener('click', goalHandleSubmit);
+        floatInput.addEventListener('keydown', e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); goalHandleSubmit(); } });
       });
 
       // ──────────────────────────────────────────────────────────
@@ -11152,7 +11152,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         });
       });
 
-      // ── AiMY overlay suggestion chips for KPI Hub ──────────────
+      // ── AiMY overlay suggestion chips for goal Hub ──────────────
       (function() {
         const el = document.getElementById('overlaySuggestions');
         if (!el) return;
@@ -11211,8 +11211,8 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
 
       function toggleDropdown(id) {
         const wrap    = document.getElementById(id);
-        const trigger = wrap.querySelector('.kpi-dropdown-trigger');
-        const menu    = wrap.querySelector('.kpi-dropdown-menu');
+        const trigger = wrap.querySelector('.goal-dropdown-trigger');
+        const menu    = wrap.querySelector('.goal-dropdown-menu');
         const isOpen  = menu.classList.contains('open');
         // Close any other open dropdown
         if (_openDropdown && _openDropdown !== id) closeDropdown(_openDropdown);
@@ -11229,8 +11229,8 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       function closeDropdown(id) {
         const wrap    = document.getElementById(id);
         if (!wrap) return;
-        wrap.querySelector('.kpi-dropdown-trigger')?.classList.remove('open');
-        wrap.querySelector('.kpi-dropdown-menu')?.classList.remove('open');
+        wrap.querySelector('.goal-dropdown-trigger')?.classList.remove('open');
+        wrap.querySelector('.goal-dropdown-menu')?.classList.remove('open');
         wrap.setAttribute('aria-expanded', 'false');
         if (_openDropdown === id) _openDropdown = null;
       }
@@ -11250,10 +11250,10 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       // pickDropdown: selects a value, syncs the hidden <select>, fires change event
       function pickDropdown(dropdownId, value) {
         const wrap      = document.getElementById(dropdownId);
-        const trigger   = wrap.querySelector('.kpi-dropdown-trigger');
+        const trigger   = wrap.querySelector('.goal-dropdown-trigger');
         const labelEl   = trigger.querySelector('span');
-        const menu      = wrap.querySelector('.kpi-dropdown-menu');
-        const options   = menu.querySelectorAll('.kpi-dropdown-option');
+        const menu      = wrap.querySelector('.goal-dropdown-menu');
+        const options   = menu.querySelectorAll('.goal-dropdown-option');
         const isEmpty   = !value;
 
         // Update label and placeholder styling
@@ -11295,8 +11295,8 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       function initDropdownFromSelect(dropdownId, selectEl, selectedValue) {
         const wrap  = document.getElementById(dropdownId);
         if (!wrap) return;
-        const menu    = wrap.querySelector('.kpi-dropdown-menu');
-        const trigger = wrap.querySelector('.kpi-dropdown-trigger');
+        const menu    = wrap.querySelector('.goal-dropdown-menu');
+        const trigger = wrap.querySelector('.goal-dropdown-trigger');
         const labelEl = trigger.querySelector('span');
         if (!menu) return;
 
@@ -11304,7 +11304,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         Array.from(selectEl.options).forEach(opt => {
           if (!opt.value && !opt.textContent.trim()) return;
           const div = document.createElement('div');
-          div.className = 'kpi-dropdown-option' + (!opt.value ? ' placeholder-opt' : '');
+          div.className = 'goal-dropdown-option' + (!opt.value ? ' placeholder-opt' : '');
           if (opt.value === selectedValue) div.classList.add('selected');
 
           // Check if the option text has a replacement note (contains ' — replaces ')
@@ -11337,14 +11337,14 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       // pickDropdownDirect: pick with explicit label (used when label != value)
       function pickDropdownDirect(dropdownId, value, label) {
         const wrap    = document.getElementById(dropdownId);
-        const trigger = wrap.querySelector('.kpi-dropdown-trigger');
+        const trigger = wrap.querySelector('.goal-dropdown-trigger');
         const labelEl = trigger.querySelector('span');
-        const menu    = wrap.querySelector('.kpi-dropdown-menu');
+        const menu    = wrap.querySelector('.goal-dropdown-menu');
 
         labelEl.textContent = label || value || 'Select…';
         trigger.classList.toggle('placeholder', !value);
 
-        menu.querySelectorAll('.kpi-dropdown-option').forEach(opt => {
+        menu.querySelectorAll('.goal-dropdown-option').forEach(opt => {
           opt.classList.remove('selected');
         });
         // Can't reliably match by text when labels differ from values — just clear all
@@ -11398,13 +11398,13 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           const chSel  = document.getElementById('editorChannel');
           if (indSel) {
             document.getElementById('editorIndustryLabel').textContent = indSel.value || 'Financial Services';
-            document.getElementById('editorIndustryDropdown').querySelectorAll('.kpi-dropdown-option').forEach(o => {
+            document.getElementById('editorIndustryDropdown').querySelectorAll('.goal-dropdown-option').forEach(o => {
               o.classList.toggle('selected', o.textContent.trim() === indSel.value);
             });
           }
           if (chSel) {
             document.getElementById('editorChannelLabel').textContent = chSel.value || 'Voice';
-            document.getElementById('editorChannelDropdown').querySelectorAll('.kpi-dropdown-option').forEach(o => {
+            document.getElementById('editorChannelDropdown').querySelectorAll('.goal-dropdown-option').forEach(o => {
               o.classList.toggle('selected', o.textContent.trim() === chSel.value);
             });
           }
@@ -11419,11 +11419,11 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           ['mfTypeDropdown','mfSourceDropdown','mfOwnerDropdown'].forEach(function(id) {
             const wrap = document.getElementById(id);
             if (!wrap) return;
-            const trigger = wrap.querySelector('.kpi-dropdown-trigger');
+            const trigger = wrap.querySelector('.goal-dropdown-trigger');
             const labelEl = trigger.querySelector('span');
-            const menu    = wrap.querySelector('.kpi-dropdown-menu');
+            const menu    = wrap.querySelector('.goal-dropdown-menu');
             if (trigger) trigger.classList.add('placeholder');
-            if (menu) menu.querySelectorAll('.kpi-dropdown-option').forEach(o => o.classList.remove('selected'));
+            if (menu) menu.querySelectorAll('.goal-dropdown-option').forEach(o => o.classList.remove('selected'));
             // Reset label to placeholder
             const defaults = {mfTypeDropdown:'Select type…', mfSourceDropdown:'Select source…', mfOwnerDropdown:'Assign owner…'};
             if (labelEl) labelEl.textContent = defaults[id] || 'Select…';
@@ -11435,55 +11435,55 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
 
         <!-- ════ FORK NAME MODAL ══════════════════════════════════════════ -->
         <!-- ════ PERMISSION CONFIRM MODAL ══════════════════════════════ -->
-        <div class="kpi-modal-backdrop" id="permConfirmBackdrop" onclick="closePermConfirm()" style="z-index:620"></div>
-        <div class="kpi-modal" id="permConfirmModal" role="dialog" aria-modal="true" aria-label="Confirm permission change" style="z-index:630">
-          <div class="kpi-modal-header">
-            <div class="kpi-modal-icon" id="permConfirmIcon" style="background:var(--warn-bg);color:var(--warn);border:1px solid rgba(247,144,9,0.25)">
+        <div class="goal-modal-backdrop" id="permConfirmBackdrop" onclick="closePermConfirm()" style="z-index:620"></div>
+        <div class="goal-modal" id="permConfirmModal" role="dialog" aria-modal="true" aria-label="Confirm permission change" style="z-index:630">
+          <div class="goal-modal-header">
+            <div class="goal-modal-icon" id="permConfirmIcon" style="background:var(--warn-bg);color:var(--warn);border:1px solid rgba(247,144,9,0.25)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             </div>
             <div>
-              <h3 class="kpi-modal-title" id="permConfirmTitle">Grant permission?</h3>
-              <p class="kpi-modal-subtitle">This affects all users in the selected role.</p>
+              <h3 class="goal-modal-title" id="permConfirmTitle">Grant permission?</h3>
+              <p class="goal-modal-subtitle">This affects all users in the selected role.</p>
             </div>
             <button class="tpl-preview-close" onclick="closePermConfirm()" style="margin-left:auto">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
-          <div class="kpi-modal-body">
+          <div class="goal-modal-body">
             <p id="permConfirmBody" style="font-size:13px;color:var(--d300);line-height:1.6"></p>
           </div>
-          <div class="kpi-modal-footer">
+          <div class="goal-modal-footer">
             <button class="sec-btn" onclick="closePermConfirm()">Cancel</button>
             <button class="tpl-cta-activate" id="permConfirmBtn" onclick="confirmPermChange()" style="background:var(--ok);box-shadow:0 2px 10px rgba(23,178,106,0.3)">Confirm</button>
           </div>
         </div>
 
-        <div class="kpi-modal-backdrop" id="forkBackdrop" onclick="closeForkModal()"></div>
-        <div class="kpi-modal" id="forkModal" role="dialog" aria-modal="true" aria-label="Fork template">
-          <div class="kpi-modal-header">
-            <div class="kpi-modal-icon brand">
+        <div class="goal-modal-backdrop" id="forkBackdrop" onclick="closeForkModal()"></div>
+        <div class="goal-modal" id="forkModal" role="dialog" aria-modal="true" aria-label="Fork template">
+          <div class="goal-modal-header">
+            <div class="goal-modal-icon brand">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h3"/><line x1="18" y1="9" x2="18" y2="15"/></svg>
             </div>
             <div>
-              <h3 class="kpi-modal-title">Fork &amp; Customize</h3>
-              <p class="kpi-modal-subtitle">Creates an editable copy. The original is never modified.</p>
+              <h3 class="goal-modal-title">Fork &amp; Customize</h3>
+              <p class="goal-modal-subtitle">Creates an editable copy. The original is never modified.</p>
             </div>
             <button class="tpl-preview-close" onclick="closeForkModal()" style="margin-left:auto">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
-          <div class="kpi-modal-body">
-            <div class="kpi-modal-field">
-              <label class="kpi-modal-label">Forking from</label>
-              <div class="kpi-modal-value" id="forkSourceName">—</div>
+          <div class="goal-modal-body">
+            <div class="goal-modal-field">
+              <label class="goal-modal-label">Forking from</label>
+              <div class="goal-modal-value" id="forkSourceName">—</div>
             </div>
-            <div class="kpi-modal-field">
-              <label class="kpi-modal-label">New template name</label>
+            <div class="goal-modal-field">
+              <label class="goal-modal-label">New template name</label>
               <input class="editor-input" id="forkNewName" type="text" placeholder="e.g. Financial Services — Voice (MENA)" autocomplete="off"/>
-              <p class="kpi-field-error" id="forkNameError" style="display:none">Name is required</p>
+              <p class="goal-field-error" id="forkNameError" style="display:none">Name is required</p>
             </div>
           </div>
-          <div class="kpi-modal-footer">
+          <div class="goal-modal-footer">
             <button class="sec-btn" onclick="closeForkModal()">Cancel</button>
             <button class="tpl-cta-fork" onclick="confirmFork()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h3"/><line x1="18" y1="9" x2="18" y2="15"/></svg>
@@ -11493,51 +11493,51 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         </div>
 
         <!-- ════ ACTIVATION MODAL ══════════════════════════════════════════ -->
-        <div class="kpi-modal-backdrop" id="activationBackdrop" onclick="closeActivationModal()"></div>
-        <div class="kpi-modal" id="activationModal" role="dialog" aria-modal="true" aria-label="Activate template">
-          <div class="kpi-modal-header">
-            <div class="kpi-modal-icon ok">
+        <div class="goal-modal-backdrop" id="activationBackdrop" onclick="closeActivationModal()"></div>
+        <div class="goal-modal" id="activationModal" role="dialog" aria-modal="true" aria-label="Activate template">
+          <div class="goal-modal-header">
+            <div class="goal-modal-icon ok">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <div>
-              <h3 class="kpi-modal-title">Activate template</h3>
-              <p class="kpi-modal-subtitle">Assign this template to a client. Future evaluations will use it immediately.</p>
+              <h3 class="goal-modal-title">Activate template</h3>
+              <p class="goal-modal-subtitle">Assign this template to a client. Future evaluations will use it immediately.</p>
             </div>
             <button class="tpl-preview-close" onclick="closeActivationModal()" style="margin-left:auto">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
-          <div class="kpi-modal-body">
-            <div class="kpi-modal-field">
-              <label class="kpi-modal-label">Template</label>
-              <div class="kpi-modal-value" id="activationTemplateName">—</div>
+          <div class="goal-modal-body">
+            <div class="goal-modal-field">
+              <label class="goal-modal-label">Template</label>
+              <div class="goal-modal-value" id="activationTemplateName">—</div>
             </div>
-            <div class="kpi-modal-field">
-              <label class="kpi-modal-label">Assign to client</label>
+            <div class="goal-modal-field">
+              <label class="goal-modal-label">Assign to client</label>
               <select class="editor-select" id="activationClientSelect" tabindex="-1" aria-hidden="true"></select>
-              <div class="kpi-dropdown" id="activationDropdown">
-                <button class="kpi-dropdown-trigger placeholder" type="button" id="activationDropdownTrigger"
+              <div class="goal-dropdown" id="activationDropdown">
+                <button class="goal-dropdown-trigger placeholder" type="button" id="activationDropdownTrigger"
                   onclick="toggleDropdown('activationDropdown')" aria-label="Select a client">
                   <span id="activationDropdownLabel">Select a client…</span>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
-                <div class="kpi-dropdown-menu" id="activationDropdownMenu" role="listbox">
+                <div class="goal-dropdown-menu" id="activationDropdownMenu" role="listbox">
                   <!-- Populated by openActivationModal() -->
                 </div>
               </div>
             </div>
-            <div class="kpi-modal-impact">
-              <div class="kpi-impact-row">
+            <div class="goal-modal-impact">
+              <div class="goal-impact-row">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 <span>Applies to <strong>future evaluations only.</strong> Historical evaluations are not re-scored.</span>
               </div>
-              <div class="kpi-impact-row warn" id="activationConflictWarn" style="display:none">
+              <div class="goal-impact-row warn" id="activationConflictWarn" style="display:none">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
                 <span>This client already has an active template. Activating will replace it.</span>
               </div>
             </div>
           </div>
-          <div class="kpi-modal-footer">
+          <div class="goal-modal-footer">
             <button class="sec-btn" onclick="closeActivationModal()">Cancel</button>
             <button class="tpl-cta-activate" id="activationConfirmBtn" onclick="confirmActivation()" disabled>
               Activate for <span id="activationClientLabel">client</span>
@@ -11554,7 +11554,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
                 </button>
                 <div class="editor-breadcrumb">
-                  <span class="editor-bc-parent">KPI Hub</span>
+                  <span class="editor-bc-parent">goal Hub</span>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
                   <span class="editor-bc-current" id="editorBreadcrumb">New template</span>
                 </div>
@@ -11580,8 +11580,8 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
                   <div class="editor-field"><label class="editor-label">Template name</label><input class="editor-input" id="editorName" type="text" placeholder="Template name" oninput="syncEditorBreadcrumb()"/></div>
                   <div class="editor-field"><label class="editor-label">Description</label><textarea class="editor-textarea" id="editorDesc" rows="3" placeholder="Describe what this template is optimised for…"></textarea></div>
                   <div class="editor-field-row">
-                    <div class="editor-field"><label class="editor-label">Industry</label><select class="editor-select" id="editorIndustry" tabindex="-1" aria-hidden="true"><option>Financial Services</option><option>Telecom</option><option>Healthcare</option><option>Retail</option><option>Travel</option></select><div class="kpi-dropdown" id="editorIndustryDropdown"><button class="kpi-dropdown-trigger" type="button" id="editorIndustryTrigger" onclick="toggleDropdown('editorIndustryDropdown')"><span id="editorIndustryLabel">Financial Services</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="kpi-dropdown-menu" id="editorIndustryMenu" role="listbox"><div class="kpi-dropdown-option selected" onclick="pickDropdown('editorIndustryDropdown','Financial Services')">Financial Services</div><div class="kpi-dropdown-option" onclick="pickDropdown('editorIndustryDropdown','Telecom')">Telecom</div><div class="kpi-dropdown-option" onclick="pickDropdown('editorIndustryDropdown','Healthcare')">Healthcare</div><div class="kpi-dropdown-option" onclick="pickDropdown('editorIndustryDropdown','Retail')">Retail</div><div class="kpi-dropdown-option" onclick="pickDropdown('editorIndustryDropdown','Travel')">Travel</div></div></div></div>
-                    <div class="editor-field"><label class="editor-label">Channel</label><select class="editor-select" id="editorChannel" tabindex="-1" aria-hidden="true"><option>Voice</option><option>Chat</option><option>Email</option><option>Ticket</option></select><div class="kpi-dropdown" id="editorChannelDropdown"><button class="kpi-dropdown-trigger" type="button" id="editorChannelTrigger" onclick="toggleDropdown('editorChannelDropdown')"><span id="editorChannelLabel">Voice</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="kpi-dropdown-menu" id="editorChannelMenu" role="listbox"><div class="kpi-dropdown-option selected" onclick="pickDropdown('editorChannelDropdown','Voice')">Voice</div><div class="kpi-dropdown-option" onclick="pickDropdown('editorChannelDropdown','Chat')">Chat</div><div class="kpi-dropdown-option" onclick="pickDropdown('editorChannelDropdown','Email')">Email</div><div class="kpi-dropdown-option" onclick="pickDropdown('editorChannelDropdown','Ticket')">Ticket</div></div></div></div>
+                    <div class="editor-field"><label class="editor-label">Industry</label><select class="editor-select" id="editorIndustry" tabindex="-1" aria-hidden="true"><option>Financial Services</option><option>Telecom</option><option>Healthcare</option><option>Retail</option><option>Travel</option></select><div class="goal-dropdown" id="editorIndustryDropdown"><button class="goal-dropdown-trigger" type="button" id="editorIndustryTrigger" onclick="toggleDropdown('editorIndustryDropdown')"><span id="editorIndustryLabel">Financial Services</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="goal-dropdown-menu" id="editorIndustryMenu" role="listbox"><div class="goal-dropdown-option selected" onclick="pickDropdown('editorIndustryDropdown','Financial Services')">Financial Services</div><div class="goal-dropdown-option" onclick="pickDropdown('editorIndustryDropdown','Telecom')">Telecom</div><div class="goal-dropdown-option" onclick="pickDropdown('editorIndustryDropdown','Healthcare')">Healthcare</div><div class="goal-dropdown-option" onclick="pickDropdown('editorIndustryDropdown','Retail')">Retail</div><div class="goal-dropdown-option" onclick="pickDropdown('editorIndustryDropdown','Travel')">Travel</div></div></div></div>
+                    <div class="editor-field"><label class="editor-label">Channel</label><select class="editor-select" id="editorChannel" tabindex="-1" aria-hidden="true"><option>Voice</option><option>Chat</option><option>Email</option><option>Ticket</option></select><div class="goal-dropdown" id="editorChannelDropdown"><button class="goal-dropdown-trigger" type="button" id="editorChannelTrigger" onclick="toggleDropdown('editorChannelDropdown')"><span id="editorChannelLabel">Voice</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="goal-dropdown-menu" id="editorChannelMenu" role="listbox"><div class="goal-dropdown-option selected" onclick="pickDropdown('editorChannelDropdown','Voice')">Voice</div><div class="goal-dropdown-option" onclick="pickDropdown('editorChannelDropdown','Chat')">Chat</div><div class="goal-dropdown-option" onclick="pickDropdown('editorChannelDropdown','Email')">Email</div><div class="goal-dropdown-option" onclick="pickDropdown('editorChannelDropdown','Ticket')">Ticket</div></div></div></div>
                   </div>
                 </div>
                 <div class="editor-weight-summary" id="editorWeightSummary">
@@ -11598,7 +11598,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
               <div class="editor-right">
                 <div class="editor-section">
                   <div class="editor-section-header">
-                    <div class="editor-section-title">KPI Categories</div>
+                    <div class="editor-section-title">goal Categories</div>
                     <button class="editor-add-cat-btn" onclick="addEditorCategory()">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                       Add category

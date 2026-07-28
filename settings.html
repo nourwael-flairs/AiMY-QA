@@ -111,7 +111,7 @@
       .state-detected-pill:focus-visible,
       .passing-toggle:focus-visible,
       .bcard:focus-visible,
-      .kpi-brief:focus-visible,
+      .goal-brief:focus-visible,
       .feed-item:focus-visible {
         outline: 2px solid var(--brand);
         outline-offset: 2px;
@@ -1169,7 +1169,7 @@
 
       /* ══ MERGED COMPONENT CSS (Unaltered from V2B files) ══════════════════════════════ */
 
-      /* 1. Briefing Cards (kpi-card-v2b) */
+      /* 1. Briefing Cards (goal-card-v2b) */
       .bcard {
         background: var(--card-bg);
         border-radius: 16px;
@@ -1451,7 +1451,7 @@
         color: var(--d300);
       }
 
-      /* 2. Narrative Card (quality-kpi-v2b) */
+      /* 2. Narrative Card (quality-goal-v2b) */
       .narrative-card {
         background: var(--card-bg);
         border-radius: 16px;
@@ -1632,13 +1632,13 @@
         overflow: visible;
       }
 
-      /* 3. KPI Feed (quality-kpi-v2b) */
-      .kpi-feed {
+      /* 3. goal Feed (quality-goal-v2b) */
+      .goal-feed {
         display: flex;
         flex-direction: column;
         gap: 8px;
       }
-      .kpi-brief {
+      .goal-brief {
         display: flex;
         gap: 10px;
         align-items: flex-start;
@@ -1649,14 +1649,14 @@
         transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
         cursor: pointer;
       }
-      .kpi-brief:hover {
+      .goal-brief:hover {
         background: rgba(30, 40, 54, 0.9);
         border-color: rgba(255, 255, 255, 0.12);
         transform: translateX(2px);
       }
-      /* .kpi-brief.kf-err  { border-left-color:var(--err);  } */
-      /* .kpi-brief.kf-warn { border-left-color:var(--warn); } */
-      /* .kpi-brief.kf-ok   { border-left-color:var(--ok);   } */
+      /* .goal-brief.kf-err  { border-left-color:var(--err);  } */
+      /* .goal-brief.kf-warn { border-left-color:var(--warn); } */
+      /* .goal-brief.kf-ok   { border-left-color:var(--ok);   } */
       .kf-rank {
         font-size: 9px;
         font-weight: 700;
@@ -2118,7 +2118,7 @@
       }
       /* scaleX grows from left anchor — origin must be set on fill elements */
       .driver-bar-fill,
-      .scorecard-kpi-bar {
+      .scorecard-goal-bar {
         transform-origin: left center;
       }
       .driver-bar-stat {
@@ -3170,7 +3170,7 @@
          80ms ease-out = immediate, then snaps back quickly. */
       .bcard:active,
       .v2-chip:active,
-      .kpi-brief:active,
+      .goal-brief:active,
       .action-btn:active,
       .nav-item:active,
       .topnav-tab:active,
@@ -3637,7 +3637,7 @@
         .skeleton,
         .driver-bar-fill,
         .eval-bar-fill,
-        .scorecard-kpi-bar {
+        .scorecard-goal-bar {
           animation: none !important;
           transition: none !important;
         }
@@ -3683,7 +3683,7 @@
         }
         .bcard:hover,
         .v2-chip:hover,
-        .kpi-brief:hover,
+        .goal-brief:hover,
         .action-btn:hover,
         .quick-action-btn:hover,
         .ask-aimy-chart-btn:hover,
@@ -3693,7 +3693,7 @@
         }
         .bcard:active,
         .v2-chip:active,
-        .kpi-brief:active,
+        .goal-brief:active,
         .action-btn:active,
         .nav-item:active,
         .topnav-tab:active,
@@ -4603,7 +4603,7 @@
         flex-shrink: 0;
         color: var(--d600);
       }
-      .eval-cause-item .cause-kpi {
+      .eval-cause-item .cause-goal {
         font-weight: 600;
         color: var(--d50);
         flex: 1;
@@ -4747,7 +4747,7 @@
       }
 
       /* ── Friction feed (bottom section) ─────────────────────── */
-      /* ── Eval panel sub-sections (Products + KPIs) ─────────────────── */
+      /* ── Eval panel sub-sections (Products + goals) ─────────────────── */
       /* Bar row right-side stats: review count + avg quality score */
       .eval-bar-count {
         font-size: 12px;
@@ -4775,15 +4775,15 @@
         color: var(--d500);
         padding: 4px 0 6px;
       }
-            /* KPI rows — pointer cursor + canvas-fire indicator */
-      .eval-kpi-row {
+            /* goal rows — pointer cursor + canvas-fire indicator */
+      .eval-goal-row {
         cursor: pointer;
       }
-      .eval-kpi-row:hover {
+      .eval-goal-row:hover {
         background: rgba(255,255,255,0.04);
         border-radius: 6px;
       }
-      .eval-kpi-row:hover .eval-bar-label {
+      .eval-goal-row:hover .eval-bar-label {
         color: var(--d100);
       }
 
@@ -5298,20 +5298,20 @@
       .scorecard-metric:last-child { border-right: none; }
       .scorecard-metric-val { font-size: 15px; font-weight: 700; color: var(--d50); display: block; }
       .scorecard-metric-lbl { font-size: 10px; color: var(--d500); margin-top: 2px; display: block; }
-      .scorecard-kpis { padding: 10px 14px 12px; }
-      .scorecard-kpi-row {
+      .scorecard-goals { padding: 10px 14px 12px; }
+      .scorecard-goal-row {
         display: flex; align-items: center; gap: 8px;
         padding: 5px 0;
         border-bottom: 1px solid rgba(255,255,255,0.04);
       }
-      .scorecard-kpi-row:last-child { border-bottom: none; }
-      .scorecard-kpi-name { font-size: 11px; color: var(--d300); flex: 1; }
-      .scorecard-kpi-bar-wrap {
+      .scorecard-goal-row:last-child { border-bottom: none; }
+      .scorecard-goal-name { font-size: 11px; color: var(--d300); flex: 1; }
+      .scorecard-goal-bar-wrap {
         width: 80px; height: 5px; background: rgba(255,255,255,0.07);
         border-radius: 20px; overflow: hidden; flex-shrink: 0;
       }
-      .scorecard-kpi-bar { height: 100%; border-radius: 20px; }
-      .scorecard-kpi-val { font-size: 11px; font-weight: 600; color: var(--d50); width: 32px; text-align: right; flex-shrink: 0; }
+      .scorecard-goal-bar { height: 100%; border-radius: 20px; }
+      .scorecard-goal-val { font-size: 11px; font-weight: 600; color: var(--d50); width: 32px; text-align: right; flex-shrink: 0; }
       .scorecard-footer {
         display: flex; align-items: center; justify-content: space-between;
         padding: 8px 14px;
@@ -6062,13 +6062,13 @@
             My Profile
           </a>
           <div class="sidebar-section-label">Configure</div>
-          <a class="nav-item" href="kpi-browser.html">
+          <a class="nav-item" href="goal-browser.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="4" width="18" height="16" rx="2"></rect>
               <line x1="3" y1="10" x2="21" y2="10"></line>
               <line x1="9" y1="4" x2="9" y2="20"></line>
             </svg>
-            KPI Hub
+            goal Hub
           </a>
           <a class="nav-item" href="data-ingestion.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -6132,7 +6132,7 @@
             <div class="set-card">
               <div class="set-card-head"><div class="set-card-title">AI Evaluation Rules</div></div>
               <div class="set-card-sub">What AiMY analyses automatically across every review. Each finding is paired with a contextual action on the dashboard.</div>
-              <div class="set-row"><div class="set-row-text"><div class="set-row-title">KPI Failure Detection</div><div class="set-row-desc">Parse review comments for KPI-failure patterns.</div></div><div class="set-row-control"><label class="toggle"><input type="checkbox" checked aria-label="KPI Failure Detection"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div></div>
+              <div class="set-row"><div class="set-row-text"><div class="set-row-title">goal Failure Detection</div><div class="set-row-desc">Parse review comments for goal-failure patterns.</div></div><div class="set-row-control"><label class="toggle"><input type="checkbox" checked aria-label="goal Failure Detection"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div></div>
               <div class="set-row"><div class="set-row-text"><div class="set-row-title">Product Risk Alerts</div><div class="set-row-desc">Auto-flag products with high fail rates.</div></div><div class="set-row-control"><label class="toggle"><input type="checkbox" checked aria-label="Product Risk Alerts"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div></div>
               <div class="set-row"><div class="set-row-text"><div class="set-row-title">Auto Coaching Recommendations</div><div class="set-row-desc">Generate coaching plans from QA data.</div></div><div class="set-row-control"><label class="toggle"><input type="checkbox" checked aria-label="Auto Coaching Recommendations"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div></div>
               <div class="set-row"><div class="set-row-text"><div class="set-row-title">Weekly Score Trend Analysis</div><div class="set-row-desc">Track and visualise quality trend by week.</div></div><div class="set-row-control"><label class="toggle"><input type="checkbox" checked aria-label="Weekly Score Trend Analysis"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div></div>
@@ -6152,7 +6152,7 @@
                 Create rule
               </button>
             </div>
-            <div class="rule-list" id="ruleList" style="margin-top:18px"><div class="rule-row" data-rule><div class="rule-main"><div class="rule-top"><span class="rule-name">Product fail-rate breach</span><span class="tag tag-err">Critical</span></div><p class="rule-sentence">When <b>product fail rate</b> is <b>above 15%</b>, notify <b>QA Supervisor</b>.</p><div class="rule-channels"><span class="tag tag-neutral">In-app</span><span class="tag tag-neutral">Email</span></div></div><div class="rule-actions"><label class="toggle"><input type="checkbox" checked aria-label="Enable Product fail-rate breach"><div class="toggle-track"></div><div class="toggle-thumb"></div></label><button class="btn btn-ghost btn-sm" type="button" data-action="edit-rule">Edit</button></div></div><div class="rule-row" data-rule><div class="rule-main"><div class="rule-top"><span class="rule-name">KPI failure surge</span><span class="tag tag-warn">Warning</span></div><p class="rule-sentence">When <b>KPI failure count</b> is <b>above 80</b>, notify <b>Team Lead</b>.</p><div class="rule-channels"><span class="tag tag-neutral">In-app</span></div></div><div class="rule-actions"><label class="toggle"><input type="checkbox" checked aria-label="Enable KPI failure surge"><div class="toggle-track"></div><div class="toggle-thumb"></div></label><button class="btn btn-ghost btn-sm" type="button" data-action="edit-rule">Edit</button></div></div><div class="rule-row" data-rule><div class="rule-main"><div class="rule-top"><span class="rule-name">Pass-rate shortfall</span><span class="tag tag-err">Critical</span></div><p class="rule-sentence">When <b>overall pass rate</b> is <b>below 85%</b>, notify <b>Director of Quality</b>.</p><div class="rule-channels"><span class="tag tag-neutral">Email</span></div></div><div class="rule-actions"><label class="toggle"><input type="checkbox" checked aria-label="Enable Pass-rate shortfall"><div class="toggle-track"></div><div class="toggle-thumb"></div></label><button class="btn btn-ghost btn-sm" type="button" data-action="edit-rule">Edit</button></div></div><div class="rule-row disabled" data-rule><div class="rule-main"><div class="rule-top"><span class="rule-name">Weekly trend decline</span><span class="tag tag-warn">Warning</span></div><p class="rule-sentence">When the <b>weekly trend</b> declines <b>more than 2%</b>, notify <b>Operations Manager</b>.</p><div class="rule-channels"><span class="tag tag-neutral">In-app</span></div></div><div class="rule-actions"><label class="toggle"><input type="checkbox" aria-label="Enable Weekly trend decline"><div class="toggle-track"></div><div class="toggle-thumb"></div></label><button class="btn btn-ghost btn-sm" type="button" data-action="edit-rule">Edit</button></div></div></div>
+            <div class="rule-list" id="ruleList" style="margin-top:18px"><div class="rule-row" data-rule><div class="rule-main"><div class="rule-top"><span class="rule-name">Product fail-rate breach</span><span class="tag tag-err">Critical</span></div><p class="rule-sentence">When <b>product fail rate</b> is <b>above 15%</b>, notify <b>QA Supervisor</b>.</p><div class="rule-channels"><span class="tag tag-neutral">In-app</span><span class="tag tag-neutral">Email</span></div></div><div class="rule-actions"><label class="toggle"><input type="checkbox" checked aria-label="Enable Product fail-rate breach"><div class="toggle-track"></div><div class="toggle-thumb"></div></label><button class="btn btn-ghost btn-sm" type="button" data-action="edit-rule">Edit</button></div></div><div class="rule-row" data-rule><div class="rule-main"><div class="rule-top"><span class="rule-name">goal failure surge</span><span class="tag tag-warn">Warning</span></div><p class="rule-sentence">When <b>goal failure count</b> is <b>above 80</b>, notify <b>Team Lead</b>.</p><div class="rule-channels"><span class="tag tag-neutral">In-app</span></div></div><div class="rule-actions"><label class="toggle"><input type="checkbox" checked aria-label="Enable goal failure surge"><div class="toggle-track"></div><div class="toggle-thumb"></div></label><button class="btn btn-ghost btn-sm" type="button" data-action="edit-rule">Edit</button></div></div><div class="rule-row" data-rule><div class="rule-main"><div class="rule-top"><span class="rule-name">Pass-rate shortfall</span><span class="tag tag-err">Critical</span></div><p class="rule-sentence">When <b>overall pass rate</b> is <b>below 85%</b>, notify <b>Director of Quality</b>.</p><div class="rule-channels"><span class="tag tag-neutral">Email</span></div></div><div class="rule-actions"><label class="toggle"><input type="checkbox" checked aria-label="Enable Pass-rate shortfall"><div class="toggle-track"></div><div class="toggle-thumb"></div></label><button class="btn btn-ghost btn-sm" type="button" data-action="edit-rule">Edit</button></div></div><div class="rule-row disabled" data-rule><div class="rule-main"><div class="rule-top"><span class="rule-name">Weekly trend decline</span><span class="tag tag-warn">Warning</span></div><p class="rule-sentence">When the <b>weekly trend</b> declines <b>more than 2%</b>, notify <b>Operations Manager</b>.</p><div class="rule-channels"><span class="tag tag-neutral">In-app</span></div></div><div class="rule-actions"><label class="toggle"><input type="checkbox" aria-label="Enable Weekly trend decline"><div class="toggle-track"></div><div class="toggle-thumb"></div></label><button class="btn btn-ghost btn-sm" type="button" data-action="edit-rule">Edit</button></div></div></div>
           </div>
 
           <div class="set-card">
@@ -6337,7 +6337,7 @@
               <div class="full"><div class="builder-section-label">Trigger</div></div>
               <div class="field">
                 <label class="field-label">Metric</label>
-                <div class="v2-dropdown full" data-dropdown data-name="metric"><button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-label-text">Product fail rate</span><svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"></polyline></svg></button><div class="v2-dropdown-panel" role="listbox"><div class="v2-dropdown-option selected" role="option" data-value="fail">Product fail rate</div><div class="v2-dropdown-option" role="option" data-value="kpi">KPI failure count</div><div class="v2-dropdown-option" role="option" data-value="pass">Overall pass rate</div><div class="v2-dropdown-option" role="option" data-value="sla">SLA compliance</div><div class="v2-dropdown-option" role="option" data-value="trend">Weekly trend</div><div class="v2-dropdown-option" role="option" data-value="grammar">Grammar failures</div></div></div>
+                <div class="v2-dropdown full" data-dropdown data-name="metric"><button class="v2-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="dd-label-text">Product fail rate</span><svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"></polyline></svg></button><div class="v2-dropdown-panel" role="listbox"><div class="v2-dropdown-option selected" role="option" data-value="fail">Product fail rate</div><div class="v2-dropdown-option" role="option" data-value="goal">goal failure count</div><div class="v2-dropdown-option" role="option" data-value="pass">Overall pass rate</div><div class="v2-dropdown-option" role="option" data-value="sla">SLA compliance</div><div class="v2-dropdown-option" role="option" data-value="trend">Weekly trend</div><div class="v2-dropdown-option" role="option" data-value="grammar">Grammar failures</div></div></div>
               </div>
               <div class="field">
                 <label class="field-label">Condition</label>
@@ -6819,7 +6819,7 @@
         });
 
         /* ── Rule-builder live preview ─────────────────────── */
-        var COUNT_METRICS = { kpi: true, grammar: true };
+        var COUNT_METRICS = { goal: true, grammar: true };
         function currentUnit() {
           var m = ddValue("metric").value;
           return COUNT_METRICS[m] ? "" : "%";
@@ -7160,7 +7160,7 @@
           critical: [
             'What\u2019s driving the SLA compliance drop to 61%?',
             'Which 5 agents are below threshold and what\u2019s the common failure?',
-            'Generate a coaching plan for the 3 failing KPIs',
+            'Generate a coaching plan for the 3 failing goals',
             'Summarise today\u2019s quality score and the fastest fixes'
           ],
           improving: [
@@ -7169,16 +7169,16 @@
             'Export a board-ready quality summary for this period',
             'Is the first response time slip a risk to watch?'
           ],
-          dispute: [
+          justify: [
             'What\u2019s the status of DISP-0441 and DISP-0438?',
-            'Which 3 disputes are awaiting auditor response?',
-            'What checklist item appears in 7 of 9 recent disputes?',
-            'Recommend a training intervention for the recurring dispute pattern'
+            'Which 3 justifys are awaiting auditor response?',
+            'What checklist item appears in 7 of 9 recent justifys?',
+            'Recommend a training intervention for the recurring justify pattern'
           ],
           explore: [
             'Compare Q3 vs Q4 quality drivers',
             'Which agents are at risk of drift before next period?',
-            'Are any KPI thresholds due for recalibration before Q1?',
+            'Are any goal thresholds due for recalibration before Q1?',
             'Schedule a cycle review \u2014 what should it cover?'
           ]
         };
@@ -7193,9 +7193,9 @@
             const tagsEl = document.getElementById('overlayContextTags');
             if (!tagsEl) return;
             const scenarioContextMap = {
-              critical:  ['today\u2019s KPI data', '3 KPIs failing', 'Nov score dip'],
-              improving: ['all KPIs trending up', 'today\u2019s quality data'],
-              dispute:   ['5 open disputes', '2 past SLA window', 'today\u2019s data'],
+              critical:  ['today\u2019s goal data', '3 goals failing', 'Nov score dip'],
+              improving: ['all goals trending up', 'today\u2019s quality data'],
+              justify:   ['5 open justifys', '2 past SLA window', 'today\u2019s data'],
               explore:   ['quality stable', 'no active alerts', 'today\u2019s data']
             };
             const tags = (typeof activeScenario !== 'undefined' && scenarioContextMap[activeScenario])
@@ -7331,10 +7331,10 @@
               "I can generate a targeted coaching plan for this checklist cluster — want me to do that now?",
           },
           {
-            keys: ["dispute", "overdue", "disp-0441", "disp-0438", "past sla", "sla window"],
+            keys: ["justify", "overdue", "disp-0441", "disp-0438", "past sla", "sla window"],
             response:
               "<strong>DISP-0441</strong> and <strong>DISP-0438</strong> are both past the 48-hour SLA window — DISP-0441 by 31 hours, DISP-0438 by 19 hours. " +
-              "Both disputes were filed by agents contesting checklist scoring on empathy items, and both are awaiting auditor response. " +
+              "Both justifys were filed by agents contesting checklist scoring on empathy items, and both are awaiting auditor response. " +
               "If unresolved today there is an escalation risk to the agents’ team leads. " +
               "I’d suggest assigning them to an available senior auditor immediately. Do you want me to surface who is available?",
           },
@@ -7342,8 +7342,8 @@
             keys: ["quality score", "overall", "today", "83", "summary"],
             response:
               "Today’s overall quality score is <strong>83%</strong>, down 4 points from yesterday’s 87%. " +
-              "The drop is driven by three converging issues: SLA compliance at 61%, five agents below threshold, and two unresolved disputes adding noise to the audit queue. " +
-              "The score is recoverable today if the SLA gap in billing is addressed and the two overdue disputes are closed. " +
+              "The drop is driven by three converging issues: SLA compliance at 61%, five agents below threshold, and two unresolved justifys adding noise to the audit queue. " +
+              "The score is recoverable today if the SLA gap in billing is addressed and the two overdue justifys are closed. " +
               "Should I generate a prioritised action plan for the shift?",
           },
           {
@@ -7363,8 +7363,8 @@
             link: { label: 'View breached tickets in Reviews', href: 'agent-scorecards.html' } },
           { keys: ['agent', 'below threshold', '5 agents', 'omar', 'sara', 'khaled'],
             link: { label: 'Open agent scorecards', href: 'agent-scorecards.html' } },
-          { keys: ['dispute', 'disp-0441', 'disp-0438', 'overdue', 'auditor'],
-            link: { label: 'Go to Disputes queue', href: 'disputes.html' } },
+          { keys: ['justify', 'disp-0441', 'disp-0438', 'overdue', 'auditor'],
+            link: { label: 'Go to justifys queue', href: 'justifys.html' } },
           { keys: ['empathy', 'coaching plan', 'coaching brief', 'follow-up clarity', 'survey', 'script'],
             link: { label: 'Review coaching evaluations', href: 'agent-scorecards.html' } },
         ];
@@ -7388,7 +7388,7 @@
           if (!matched) {
             matched =
               "Today’s quality score is <strong>83%</strong>, 4 points below yesterday. " +
-              "Active issues: SLA compliance at 61%, 5 agents below threshold, and 2 overdue disputes. " +
+              "Active issues: SLA compliance at 61%, 5 agents below threshold, and 2 overdue justifys. " +
               "Would you like me to drill into any of these areas?";
           }
 
@@ -7722,7 +7722,7 @@
         // Maps bcard alertId to its corresponding summary signal element ID
         var ALERT_TO_SIGNAL = {
           'sla-breach':   'summarySignal1',
-          'kpi-failures': 'summarySignal2',
+          'goal-failures': 'summarySignal2',
           'sentiment':    'summarySignal2',  // both agent-related signals map to signal 2
           'quality':      null               // no direct signal tile — quality is ambient
         };
@@ -7806,9 +7806,9 @@
         /* ── Alert data ───────────────────────────────────────────────── */
         const ALERT_DATA = [
           { id:'sla-breach', priority:'p1', type:'SLA Breach', badge:'P1 \u00b7 Critical', summary:'First response SLA compliance at 61% \u2014 29pts below the 90% threshold. 23 breaches this week, up from 14.', evidence:[{label:'SLA compliance',val:'61%',delta:'\u219329pts'},{label:'Breaches this week',val:'23',delta:'\u21919 vs last week'},{label:'Avg first response',val:'45 min',delta:''}], cta:'View breached tickets', ctaClass:'primary-p1' },
-          { id:'kpi-failures', priority:'p1', type:'KPI Failures', badge:'P1 \u00b7 Urgent', summary:'3 KPIs actively failing \u2014 empathy is the biggest gap, down 8% this period.', evidence:[{label:'Empathy score',val:'32%',delta:'\u2193\u22128%'},{label:'Failed interactions',val:'184',delta:''}], cta:'Start coaching plan', ctaClass:'primary-p1', coachingAction:true },
+          { id:'goal-failures', priority:'p1', type:'goal Failures', badge:'P1 \u00b7 Urgent', summary:'3 goals actively failing \u2014 empathy is the biggest gap, down 8% this period.', evidence:[{label:'Empathy score',val:'32%',delta:'\u2193\u22128%'},{label:'Failed interactions',val:'184',delta:''}], cta:'Start coaching plan', ctaClass:'primary-p1', coachingAction:true },
           { id:'sentiment', priority:'p1', type:'Sentiment', badge:'P1 \u00b7 Urgent', summary:'Negative sentiment rising week over week \u2014 3 agents driving most of it.', evidence:[{label:'Negative interactions',val:'39',delta:'\u2191 rising'},{label:'Agents flagged',val:'3',delta:''}], cta:'Review escalation handling', ctaClass:'primary-p1' },
-          { id:'quality', priority:'p2', type:'Quality Score', badge:'P2 \u00b7 Watch', summary:'Quality at 87.3% \u2014 2.7% below the 90% SLA target. 3 failing KPIs are the primary drag.', evidence:[{label:'Current avg',val:'87.3%',delta:'\u2191+5.2%'},{label:'Gap to SLA',val:'\u22122.7%',delta:''}], cta:"See what's blocking target", ctaClass:'primary-p2' }
+          { id:'quality', priority:'p2', type:'Quality Score', badge:'P2 \u00b7 Watch', summary:'Quality at 87.3% \u2014 2.7% below the 90% SLA target. 3 failing goals are the primary drag.', evidence:[{label:'Current avg',val:'87.3%',delta:'\u2191+5.2%'},{label:'Gap to SLA',val:'\u22122.7%',delta:''}], cta:"See what's blocking target", ctaClass:'primary-p2' }
         ];
 
         /* ── Open canvas with alerts ─────────────────────────────────── */
@@ -7873,7 +7873,7 @@
           if (isCoaching) {
             window.openCanvasWithCoaching('Omar Adel','OA',
               'Run a targeted empathy coaching session focusing on billing escalation calls.',
-              'Omar has failed the <strong>Empathy during escalations</strong> KPI in 4 of his last 5 evaluated calls.',
+              'Omar has failed the <strong>Empathy during escalations</strong> goal in 4 of his last 5 evaluated calls.',
               'High');
             return;
           }
@@ -8175,14 +8175,14 @@
             body: '11% of total evaluated as borderline this period. Small coaching changes on survey promotion and empathy scoring could move most of them to a pass.',
             meta: '313 tickets · 11% of total',
             action: 'See borderline tickets →',
-            prompt: '313 tickets were borderline this period. List them ranked by closeness to pass threshold, identify the 1–2 KPI failures per ticket, and show the fastest coaching intervention per agent.'
+            prompt: '313 tickets were borderline this period. List them ranked by closeness to pass threshold, identify the 1–2 goal failures per ticket, and show the fastest coaching intervention per agent.'
           },
           {
             badge: 'Watch', badgeCls: 'adr-badge-warn',
             title: 'Survey promotion slipping — monitor before it becomes a failure',
             body: 'Survey promo sits at 49%, just below the 50% threshold. Trending up 3% but not yet stable.',
             meta: '49% current · 50% threshold',
-            action: 'Track KPI trend →',
+            action: 'Track goal trend →',
             prompt: 'Survey promotion is at 49% — 1pt below threshold. Show week-by-week trend for 6 weeks, agents dragging the rate down, and the single most effective prompt change to stabilise it.'
           },
           {
@@ -8199,7 +8199,7 @@
             body: 'Customer Support trailing Technical Support by 9pts on average quality score. Gap widened 3pts since last period.',
             meta: 'CS: 82% · TS: 91% · −9pts gap',
             action: 'Open AiMY canvas →',
-            prompt: 'Customer Support trails Technical Support by 9pts — 82% vs 91%. Side-by-side breakdown: top failing KPIs per team, agents dragging each team, and coaching actions to close the gap.'
+            prompt: 'Customer Support trails Technical Support by 9pts — 82% vs 91%. Side-by-side breakdown: top failing goals per team, agents dragging each team, and coaching actions to close the gap.'
           }
         ];
 
@@ -8293,7 +8293,7 @@
           }
           if (label.startsWith('Start coaching plan')) {
             btn.addEventListener('click', function(e) { e.stopPropagation();
-              openCanvasCard('kpi-failures', 'Loading KPI failure breakdown across products…');
+              openCanvasCard('goal-failures', 'Loading goal failure breakdown across products…');
             });
           }
           if (label.startsWith('Review escalation handling')) {
@@ -8326,8 +8326,8 @@
           appendSystemMsg('Loading scorecard for ' + agentName + '…');
 
           setTimeout(function() {
-            /* Scorecard data — stub matching Omar Adel's known KPI state */
-            const kpis = [
+            /* Scorecard data — stub matching Omar Adel's known goal state */
+            const goals = [
               { name: 'Empathy during escalations', pct: 32,  color: 'var(--err)' },
               { name: 'Follow-up clarity',           pct: 48,  color: 'var(--warn)' },
               { name: 'Survey promotion',             pct: 49,  color: 'var(--warn)' },
@@ -8370,7 +8370,7 @@
             metrics.className = 'scorecard-metrics';
             [
               { val: '47',  lbl: 'Evals this month' },
-              { val: '3',   lbl: 'KPIs failing' },
+              { val: '3',   lbl: 'goals failing' },
               { val: '−8%', lbl: 'vs last period' },
             ].forEach(function(m) {
               const cell = document.createElement('div');
@@ -8383,25 +8383,25 @@
               metrics.appendChild(cell);
             });
 
-            /* KPI bars */
-            const kpisEl = document.createElement('div');
-            kpisEl.className = 'scorecard-kpis';
-            kpis.forEach(function(k) {
+            /* goal bars */
+            const goalsEl = document.createElement('div');
+            goalsEl.className = 'scorecard-goals';
+            goals.forEach(function(k) {
               const row = document.createElement('div');
-              row.className = 'scorecard-kpi-row';
+              row.className = 'scorecard-goal-row';
               const nm = document.createElement('span');
-              nm.className = 'scorecard-kpi-name'; nm.textContent = k.name;
+              nm.className = 'scorecard-goal-name'; nm.textContent = k.name;
               const barWrap = document.createElement('div');
-              barWrap.className = 'scorecard-kpi-bar-wrap';
+              barWrap.className = 'scorecard-goal-bar-wrap';
               const bar = document.createElement('div');
-              bar.className = 'scorecard-kpi-bar';
+              bar.className = 'scorecard-goal-bar';
               bar.style.width = k.pct + '%';
               bar.style.background = k.color;
               barWrap.appendChild(bar);
               const val = document.createElement('span');
-              val.className = 'scorecard-kpi-val'; val.textContent = k.pct + '%';
+              val.className = 'scorecard-goal-val'; val.textContent = k.pct + '%';
               row.appendChild(nm); row.appendChild(barWrap); row.appendChild(val);
-              kpisEl.appendChild(row);
+              goalsEl.appendChild(row);
             });
 
             /* Footer */
@@ -8421,7 +8421,7 @@
 
             card.appendChild(hdr);
             card.appendChild(metrics);
-            card.appendChild(kpisEl);
+            card.appendChild(goalsEl);
             card.appendChild(footer);
 
             const outer = document.createElement('div');
@@ -8474,10 +8474,10 @@
             disclaimer: 'SLA Compliance is estimated from review pass/fail ratio. AHT is calculated from ticket timestamps. First Response Time requires SLA sheet data.',
             actions: [{ label: 'View all breached tickets', cls: 'ada-primary' }, { label: 'Trigger SLA recovery plan', cls: 'ada-secondary' }]
           },
-          'kpi-failures': {
-            priority: 'p1', title: 'KPI Failure Breakdown',
+          'goal-failures': {
+            priority: 'p1', title: 'goal Failure Breakdown',
             badge: 'P1 · Urgent',
-            summary: '3 KPIs are actively failing across the portfolio. Incorrect status alone accounts for 150 incidents — 103 in Objectif Lune. Coaching plan grouped by agent impact below.',
+            summary: '3 goals are actively failing across the portfolio. Incorrect status alone accounts for 150 incidents — 103 in Objectif Lune. Coaching plan grouped by agent impact below.',
             rows: [
               { label: 'Incorrect status — Objectif Lune', val: '103 failures', badge: 'adr-badge-err', badgeText: '#1 driver' },
               { label: 'Incorrect status — Qvidian', val: '47 failures', badge: 'adr-badge-err', badgeText: 'combined: 150' },
@@ -8488,8 +8488,8 @@
               { label: 'Fastest fix', val: 'Status accuracy coaching', badge: 'adr-badge-warn', badgeText: 'est. −48 failures removed' },
             ],
             metrics: [
-              { label: 'TOTAL FAILURES', value: '252',   state: 'err',  target: 'Across 3 KPIs' },
-              { label: 'TOP KPI',        value: '150',   state: 'err',  target: 'Incorrect status' },
+              { label: 'TOTAL FAILURES', value: '252',   state: 'err',  target: 'Across 3 goals' },
+              { label: 'TOP goal',        value: '150',   state: 'err',  target: 'Incorrect status' },
               { label: 'AGENTS AT RISK', value: '7',     state: 'warn', target: 'Below threshold' }
             ],
             chart: {
@@ -8502,7 +8502,7 @@
               ]
             },
             disclaimer: 'Failure counts reflect this week’s evaluated tickets. Target bars represent zero-failure goal. Coaching impact estimated from historical recovery rates.',
-            actions: [{ label: 'Generate coaching plan', cls: 'ada-primary' }, { label: 'Open KPI Hub', cls: 'ada-secondary' }]
+            actions: [{ label: 'Generate coaching plan', cls: 'ada-primary' }, { label: 'Open goal Hub', cls: 'ada-secondary' }]
           },
           'sentiment': {
             priority: 'p1', title: 'Negative Sentiment Breakdown',
@@ -8565,7 +8565,7 @@
               ]
             },
             disclaimer: 'Quality scores are calculated from evaluated tickets in this period. Products with fewer than 50 tickets may show variance.',
-            actions: [{ label: 'Open KPI breakdown', cls: 'ada-primary' }, { label: 'Create improvement plan', cls: 'ada-secondary' }]
+            actions: [{ label: 'Open goal breakdown', cls: 'ada-primary' }, { label: 'Create improvement plan', cls: 'ada-secondary' }]
           }
         };
 

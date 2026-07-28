@@ -69,8 +69,8 @@
         --tint-accent: rgba(var(--qa-accent-rgb),0.06);
       }
       /* Tabular figures everywhere numbers change, so layout never shifts */
-      .kpi-current, .kpi-target, .prof-standing-val, .prof-standing-sub, .coach-prog-pct,
-      .fb-kpi-chip b, .empfb-chip b, .tl-when { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+      .goal-current, .goal-target, .prof-standing-val, .prof-standing-sub, .coach-prog-pct,
+      .fb-goal-chip b, .empfb-chip b, .tl-when { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
       @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
       }
@@ -242,42 +242,42 @@
         box-shadow: var(--elev-1);
       }
 
-      /* ── KPI cards ── */
-      .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
-      .kpi-card {
+      /* ── goal cards ── */
+      .goal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+      .goal-card {
         background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px 18px;
         display: flex; flex-direction: column; gap: 12px; position: relative; overflow: hidden;
         box-shadow: var(--elev-1);
         transition: border-color 200ms var(--ease-hover), transform 200ms var(--ease-hover), box-shadow 200ms var(--ease-hover);
       }
-      .kpi-card.exceed { background: linear-gradient(180deg, var(--tint-ok), transparent 62%), var(--card-bg); }
-      .kpi-card.below { background: linear-gradient(180deg, var(--tint-err), transparent 62%), var(--card-bg); }
-      .kpi-card:hover { border-color: var(--card-border-hover); transform: translateY(-2px); box-shadow: var(--elev-2); }
-      .kpi-card:active { transform: translateY(0) scale(0.995); transition-duration: 90ms; }
-      .kpi-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-      .kpi-name { font-size: 14px; font-weight: 700; }
-      .kpi-tag { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
-      .kpi-tag.exceed { background: var(--ok-bg); color: var(--ok); }
-      .kpi-tag.meets { background: var(--brand-dim); color: #7ba3ff; }
-      .kpi-tag.below { background: var(--err-bg); color: var(--err); }
-      .kpi-values { display: flex; align-items: baseline; gap: 8px; }
-      .kpi-current { font-size: 28px; font-weight: 800; }
-      .kpi-target { font-size: 12px; color: var(--d400); }
-      .kpi-bar { height: 7px; border-radius: 4px; background: rgba(255,255,255,0.07); overflow: hidden; position: relative; }
-      .kpi-bar-fill { height: 100%; border-radius: 4px; }
-      .kpi-bar-fill.exceed { background: var(--ok); } .kpi-bar-fill.meets { background: var(--brand); } .kpi-bar-fill.below { background: var(--err); }
-      .kpi-bar-target { position: absolute; top: -2px; width: 2px; height: 11px; background: var(--d200); opacity: 0.8; }
-      .kpi-hint { font-size: 12px; color: var(--d300); line-height: 1.5; display: flex; gap: 8px; align-items: flex-start; }
-      .kpi-hint .ai-ico { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; }
-      .kpi-coach-btn {
+      .goal-card.exceed { background: linear-gradient(180deg, var(--tint-ok), transparent 62%), var(--card-bg); }
+      .goal-card.below { background: linear-gradient(180deg, var(--tint-err), transparent 62%), var(--card-bg); }
+      .goal-card:hover { border-color: var(--card-border-hover); transform: translateY(-2px); box-shadow: var(--elev-2); }
+      .goal-card:active { transform: translateY(0) scale(0.995); transition-duration: 90ms; }
+      .goal-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+      .goal-name { font-size: 14px; font-weight: 700; }
+      .goal-tag { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
+      .goal-tag.exceed { background: var(--ok-bg); color: var(--ok); }
+      .goal-tag.meets { background: var(--brand-dim); color: #7ba3ff; }
+      .goal-tag.below { background: var(--err-bg); color: var(--err); }
+      .goal-values { display: flex; align-items: baseline; gap: 8px; }
+      .goal-current { font-size: 28px; font-weight: 800; }
+      .goal-target { font-size: 12px; color: var(--d400); }
+      .goal-bar { height: 7px; border-radius: 4px; background: rgba(255,255,255,0.07); overflow: hidden; position: relative; }
+      .goal-bar-fill { height: 100%; border-radius: 4px; }
+      .goal-bar-fill.exceed { background: var(--ok); } .goal-bar-fill.meets { background: var(--brand); } .goal-bar-fill.below { background: var(--err); }
+      .goal-bar-target { position: absolute; top: -2px; width: 2px; height: 11px; background: var(--d200); opacity: 0.8; }
+      .goal-hint { font-size: 12px; color: var(--d300); line-height: 1.5; display: flex; gap: 8px; align-items: flex-start; }
+      .goal-hint .ai-ico { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; }
+      .goal-coach-btn {
         align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; font-family: inherit; cursor: pointer;
         font-size: 11.5px; font-weight: 700; padding: 7px 12px; border-radius: 8px;
         background: var(--qa-accent-dim); color: var(--qa-accent); border: 1px solid rgba(var(--qa-accent-rgb), 0.28);
         transition: background 150ms var(--ease-hover), transform 150ms var(--ease-hover);
       }
-      .kpi-coach-btn:hover { background: rgba(var(--qa-accent-rgb), 0.22); }
-      .kpi-coach-btn:active { transform: scale(0.97); }
-      .kpi-coach-btn svg { width: 13px; height: 13px; }
+      .goal-coach-btn:hover { background: rgba(var(--qa-accent-rgb), 0.22); }
+      .goal-coach-btn:active { transform: scale(0.97); }
+      .goal-coach-btn svg { width: 13px; height: 13px; }
 
       /* ── Goals timeline ── */
       .timeline { position: relative; padding-left: 6px; }
@@ -311,9 +311,9 @@
       .fb-type.negative { background: var(--err-bg); color: var(--err); }
       .fb-from { font-size: 12px; color: var(--d300); font-weight: 600; }
       .fb-date { font-size: 11px; color: var(--d500); margin-left: auto; }
-      .fb-kpis { display: flex; flex-wrap: wrap; gap: 6px; }
-      .fb-kpi-chip { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,0.05); color: var(--d200); border: 1px solid var(--card-border); }
-      .fb-kpi-chip b { color: var(--d50); }
+      .fb-goals { display: flex; flex-wrap: wrap; gap: 6px; }
+      .fb-goal-chip { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,0.05); color: var(--d200); border: 1px solid var(--card-border); }
+      .fb-goal-chip b { color: var(--d50); }
       .fb-insight { font-size: 12.5px; color: var(--d300); line-height: 1.55; display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; background: rgba(var(--qa-accent-rgb),0.06); border: 1px solid rgba(var(--qa-accent-rgb),0.16); border-radius: 10px; }
       .fb-insight .ai-ico { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; }
       .fb-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -322,17 +322,17 @@
       .fb-btn svg { width: 13px; height: 13px; }
       .fb-btn.ack { background: var(--ok); color: #06210f; }
       .fb-btn.ack:hover { filter: brightness(1.08); }
-      .fb-btn.dispute { background: rgba(255,255,255,0.05); color: var(--d200); border-color: var(--card-border); }
-      .fb-btn.dispute:hover { border-color: var(--err); color: var(--err); }
+      .fb-btn.justify { background: rgba(255,255,255,0.05); color: var(--d200); border-color: var(--card-border); }
+      .fb-btn.justify:hover { border-color: var(--err); color: var(--err); }
       .fb-btn.ghost { background: transparent; color: var(--d400); }
       .fb-btn.ghost:hover { color: var(--d200); }
       .fb-btn.review { background: rgba(111,223,226,0.10); color: var(--teal); border-color: rgba(111,223,226,0.28); }
       .fb-btn.review:hover { background: rgba(111,223,226,0.18); }
-      /* loop-state — reused concept from Reviews for ack/dispute status */
+      /* loop-state — reused concept from Reviews for ack/justify status */
       .loop-state { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700; padding: 7px 12px; border-radius: 8px; }
       .loop-state svg { width: 13px; height: 13px; }
       .loop-state.acknowledged { background: var(--ok-bg); color: var(--ok); }
-      .loop-state.disputed { background: var(--warn-bg); color: var(--warn); }
+      .loop-state.justifyd { background: var(--warn-bg); color: var(--warn); }
       .loop-state.upheld { background: var(--ok-bg); color: var(--ok); }
       .loop-state.declined { background: rgba(255,255,255,0.05); color: var(--d300); }
       .loop-state.escalated { background: var(--err-bg); color: var(--err); }
@@ -541,9 +541,9 @@
             My Profile
           </a>
           <div class="sidebar-section-label">Configure</div>
-          <a class="nav-item" href="kpi-browser.html">
+          <a class="nav-item" href="goal-browser.html">
             <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="3" y1="10" x2="21" y2="10"></line><line x1="9" y1="4" x2="9" y2="20"></line></svg>
-            KPI Hub
+            goal Hub
           </a>
           <a class="nav-item" href="data-ingestion.html">
             <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
@@ -584,14 +584,14 @@
             <span class="prof-pill"><span class="dot err"></span> 1 escalated to Feedback Manager</span>
           </div>
 
-          <!-- ═══ SECTION 1 — KPIs & how to exceed ═══ -->
+          <!-- ═══ SECTION 1 — goals & how to exceed ═══ -->
           <div class="prof-section">
             <div class="prof-section-head">
               <h2>My goals — where I stand &amp; how to exceed</h2>
               <span class="sub">· live from evaluations · target lines shown</span>
               <span class="spacer"></span>
             </div>
-            <div class="kpi-grid" id="kpiGrid"><!-- injected --></div>
+            <div class="goal-grid" id="goalGrid"><!-- injected --></div>
           </div>
 
           <!-- ═══ SECTION 2 — Goals timeline ═══ -->
@@ -642,7 +642,7 @@
           <div class="prof-section">
             <div class="prof-section-head">
               <h2>My feedback</h2>
-              <span class="sub">· negative feedback needs your acknowledgement or dispute</span>
+              <span class="sub">· negative feedback needs your acknowledgement or justify</span>
             </div>
             <div class="fb-list" id="fbList"><!-- injected --></div>
           </div>
@@ -726,10 +726,10 @@
 
     <div class="toast" id="toast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span id="toastMsg"></span></div>
 
-    <!-- Dispute reason modal — the agent must state why before submitting -->
+    <!-- justify reason modal — the agent must state why before submitting -->
     <style>
-      .fb-dispute-reason { width:100%; font-size:12px; color:var(--d400); margin-top:6px; padding:8px 11px; background:rgba(255,255,255,0.03); border:1px solid var(--card-border); border-radius:9px; line-height:1.45; }
-      .fb-dispute-reason b { color:var(--d200); }
+      .fb-justify-reason { width:100%; font-size:12px; color:var(--d400); margin-top:6px; padding:8px 11px; background:rgba(255,255,255,0.03); border:1px solid var(--card-border); border-radius:9px; line-height:1.45; }
+      .fb-justify-reason b { color:var(--d200); }
       .dr-overlay { position:fixed; inset:0; z-index:400; background:rgba(6,9,13,0.6); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:none; align-items:center; justify-content:center; padding:32px; }
       .dr-overlay.open { display:flex; animation:drIn 200ms var(--ease-hover) both; }
       @keyframes drIn { from { opacity:0; } to { opacity:1; } }
@@ -741,7 +741,7 @@
       .dr-x { margin-left:auto; width:30px; height:30px; border-radius:8px; border:1px solid var(--card-border); background:transparent; color:var(--d400); font-size:18px; cursor:pointer; line-height:1; flex-shrink:0; }
       .dr-x:hover { color:var(--d100); border-color:var(--card-border-hover); }
       .dr-body { padding:2px 22px 6px; }
-      .dr-kpis { font-size:11.5px; font-weight:600; color:var(--err); margin-bottom:10px; }
+      .dr-goals { font-size:11.5px; font-weight:600; color:var(--err); margin-bottom:10px; }
       .dr-label { display:flex; align-items:center; font-size:12px; font-weight:700; color:var(--d200); margin-bottom:8px; }
       .dr-req { font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:var(--warn); background:var(--warn-bg); padding:2px 7px; border-radius:5px; margin-left:8px; }
       .dr-textarea { width:100%; min-height:100px; background:rgba(255,255,255,0.04); border:1px solid var(--card-border); border-radius:12px; padding:12px 14px; color:var(--d50); font-family:inherit; font-size:13px; line-height:1.5; resize:vertical; }
@@ -756,31 +756,31 @@
       .dr-btn.primary:hover { filter:brightness(1.08); }
       .dr-btn.primary:disabled { opacity:0.4; cursor:not-allowed; }
     </style>
-    <div class="dr-overlay" id="disputeReasonModal" role="dialog" aria-modal="true" aria-label="Dispute feedback">
+    <div class="dr-overlay" id="justifyReasonModal" role="dialog" aria-modal="true" aria-label="justify feedback">
       <div class="dr-modal">
         <div class="dr-head">
           <div>
-            <h3>Dispute this feedback</h3>
+            <h3>justify this feedback</h3>
             <div class="dr-sub">Tell your reviewer why you believe this evaluation is inaccurate. They’ll read it and reassess.</div>
           </div>
-          <button class="dr-x" onclick="closeDisputeReason()" aria-label="Cancel">×</button>
+          <button class="dr-x" onclick="closejustifyReason()" aria-label="Cancel">×</button>
         </div>
         <div class="dr-body">
-          <div class="dr-kpis" id="drKpis"></div>
-          <label class="dr-label" for="drReason">Reason for dispute <span class="dr-req">required</span></label>
+          <div class="dr-goals" id="drgoals"></div>
+          <label class="dr-label" for="drReason">Reason for justify <span class="dr-req">required</span></label>
           <textarea class="dr-textarea" id="drReason" rows="4" oninput="drValidate()" placeholder="e.g. The call dropped before I could confirm the next step, so the Follow-up Confirmation score doesn’t reflect what actually happened on the interaction."></textarea>
           <div class="dr-hint">Be specific — cite the interaction and the goal. A reviewer will uphold, overturn, or adjust the evaluation.</div>
         </div>
         <div class="dr-foot">
-          <button class="dr-btn ghost" onclick="closeDisputeReason()">Cancel</button>
-          <button class="dr-btn primary" id="drSubmit" onclick="submitDisputeReason()" disabled>Submit dispute</button>
+          <button class="dr-btn ghost" onclick="closejustifyReason()">Cancel</button>
+          <button class="dr-btn primary" id="drSubmit" onclick="submitjustifyReason()" disabled>Submit justify</button>
         </div>
       </div>
     </div>
 
     <script>
       /* ── Mock employee data (mirrors the FEEDBACK model used on Reviews) ── */
-      const MY_KPIS = [
+      const MY_goalS = [
         { name: 'Empathy & Active Listening', current: 91, target: 80, status: 'exceed',
           hint: 'I’ve tracked you at 91% against the 80% target and flagged you as exemplary to Lina. To excel further: keep mirroring the caller’s language in your opening line — that one habit drives most of your lift.' },
         { name: 'Tone & Professionalism', current: 88, target: 80, status: 'exceed',
@@ -797,26 +797,26 @@
 
       const MY_FEEDBACK = [
         { id: 'fb-201', type: 'negative', from: 'Lina Haddad (Supervisor)', date: '2 days ago', ack: 'pending',
-          kpis: [{ name: 'Follow-up Confirmation', prior: 68, current: 64 }, { name: 'Survey Promotion', prior: 74, current: 71 }],
+          goals: [{ name: 'Follow-up Confirmation', prior: 68, current: 64 }, { name: 'Survey Promotion', prior: 74, current: 71 }],
           insight: 'I detected two goals slipping and flagged them to Lina, who sent you this feedback. Criteria: Follow-up Confirmation at 64% and Survey Promotion at 71%, both under the 80% target. To improve: restate the next step and timeline on every close — I’ve built a coaching plan that should recover both within 3 weeks.',
           reminder: 'I reminded you 2× — acknowledge within 3 days or this escalates to your Feedback Manager.',
           followUp: 'Supervisor follow-up scheduled in 21 days: "Did Omar improve?"' },
         { id: 'fb-202', type: 'positive', from: 'Lina Haddad (Supervisor)', date: '1 week ago', ack: null,
-          kpis: [{ name: 'Empathy & Active Listening', prior: 84, current: 91 }],
+          goals: [{ name: 'Empathy & Active Listening', prior: 84, current: 91 }],
           insight: 'I spotted your Empathy climb from 84% to 91% — 15 pts clear of target — and shared the win with Lina. To excel even more: keep leading with acknowledgement before troubleshooting; here’s how top performers push past 92%.' },
-        { id: 'fb-205', type: 'negative', from: 'Lina Haddad (Supervisor)', date: '2 weeks ago', ack: 'disputed', resolution: 'upheld', adjustFrom: 64, adjustTo: 71,
-          kpis: [{ name: 'Follow-up Confirmation', prior: 71, current: 71 }],
-          disputeReason: 'The call dropped before I could confirm the next step, so the Follow-up Confirmation score didn’t reflect what actually happened on the interaction.',
-          insight: 'I took your dispute to a reviewer with the call recording. They agreed the drop wasn’t on you — I re-scored Follow-up Confirmation from 64% to 71% and notified Lina. The loop is closed on my side.' },
-        { id: 'fb-206', type: 'negative', from: 'AiMY (auto-detected)', date: '3 weeks ago', ack: 'disputed', resolution: 'declined',
-          kpis: [{ name: 'Survey Promotion', prior: 71, current: 71 }],
-          disputeReason: 'I felt the survey prompt isn’t always appropriate on billing calls.',
-          insight: 'A reviewer looked at your dispute and the 12 flagged closes. The survey prompt was expected on all of them, so the original 71% stands. To recover it, I added the CSAT-invite drill to your active plan.' },
+        { id: 'fb-205', type: 'negative', from: 'Lina Haddad (Supervisor)', date: '2 weeks ago', ack: 'justifyd', resolution: 'upheld', adjustFrom: 64, adjustTo: 71,
+          goals: [{ name: 'Follow-up Confirmation', prior: 71, current: 71 }],
+          justifyReason: 'The call dropped before I could confirm the next step, so the Follow-up Confirmation score didn’t reflect what actually happened on the interaction.',
+          insight: 'I took your justify to a reviewer with the call recording. They agreed the drop wasn’t on you — I re-scored Follow-up Confirmation from 64% to 71% and notified Lina. The loop is closed on my side.' },
+        { id: 'fb-206', type: 'negative', from: 'AiMY (auto-detected)', date: '3 weeks ago', ack: 'justifyd', resolution: 'declined',
+          goals: [{ name: 'Survey Promotion', prior: 71, current: 71 }],
+          justifyReason: 'I felt the survey prompt isn’t always appropriate on billing calls.',
+          insight: 'A reviewer looked at your justify and the 12 flagged closes. The survey prompt was expected on all of them, so the original 71% stands. To recover it, I added the CSAT-invite drill to your active plan.' },
         { id: 'fb-204', type: 'negative', from: 'AiMY (auto-detected)', date: '4 weeks ago', ack: 'escalated',
-          kpis: [{ name: 'Script Adherence', prior: 80, current: 74 }],
+          goals: [{ name: 'Script Adherence', prior: 80, current: 74 }],
           insight: 'I opened this when Script Adherence slipped to 74% and asked you to acknowledge it 3×. It went un-acknowledged, so I escalated it to your Feedback Manager — acknowledging now still closes the loop.' },
         { id: 'fb-203', type: 'negative', from: 'AiMY (auto-detected)', date: '5 weeks ago', ack: 'acknowledged',
-          kpis: [{ name: 'Script Adherence', prior: 76, current: 80 }],
+          goals: [{ name: 'Script Adherence', prior: 76, current: 80 }],
           insight: 'I opened this when Script Adherence dropped to 76%; you’ve since recovered it to the 80% target, so I’ve closed it with your supervisor. Keep using the updated snippets and it will hold.' },
       ];
 
@@ -840,22 +840,22 @@
       const AI = '<svg class="ai-ico" viewBox="0 0 18 20"><use href="#aimy-logo-small" /></svg>';
       const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
 
-      /* ── Render KPIs ── */
-      function renderKpis() {
+      /* ── Render goals ── */
+      function rendergoals() {
         const map = { exceed: 'Exceeds', meets: 'Meets', below: 'Below' };
-        document.getElementById('kpiGrid').innerHTML = MY_KPIS.map(k => {
+        document.getElementById('goalGrid').innerHTML = MY_goalS.map(k => {
           const pct = Math.min(100, Math.round(k.current));
           const tpos = Math.min(100, k.target);
           return `
-          <div class="kpi-card ${k.status}">
-            <div class="kpi-card-top">
-              <span class="kpi-name">${k.name}</span>
-              <span class="kpi-tag ${k.status}">${map[k.status]}</span>
+          <div class="goal-card ${k.status}">
+            <div class="goal-card-top">
+              <span class="goal-name">${k.name}</span>
+              <span class="goal-tag ${k.status}">${map[k.status]}</span>
             </div>
-            <div class="kpi-values"><span class="kpi-current">${k.current}%</span><span class="kpi-target">target ${k.target}%</span></div>
-            <div class="kpi-bar"><div class="kpi-bar-fill ${k.status}" style="width:${pct}%"></div><div class="kpi-bar-target" style="left:${tpos}%"></div></div>
-            <div class="kpi-hint">${AI}<span>${k.hint}</span></div>
-            <button class="kpi-coach-btn" onclick="openCanvasQuery('${k.status === 'exceed' ? 'How do I exceed even further on ' : 'How do I improve '}${k.name.replace(/'/g, '')}?')">
+            <div class="goal-values"><span class="goal-current">${k.current}%</span><span class="goal-target">target ${k.target}%</span></div>
+            <div class="goal-bar"><div class="goal-bar-fill ${k.status}" style="width:${pct}%"></div><div class="goal-bar-target" style="left:${tpos}%"></div></div>
+            <div class="goal-hint">${AI}<span>${k.hint}</span></div>
+            <button class="goal-coach-btn" onclick="openCanvasQuery('${k.status === 'exceed' ? 'How do I exceed even further on ' : 'How do I improve '}${k.name.replace(/'/g, '')}?')">
               <svg viewBox="0 0 18 20"><use href="#aimy-logo-small" /></svg>
               ${k.status === 'exceed' ? 'Ask how to exceed more' : 'Ask AiMY how to improve'}
             </button>
@@ -866,16 +866,16 @@
       /* ── Render feedback inbox ── */
       function renderFeedback() {
         document.getElementById('fbList').innerHTML = MY_FEEDBACK.map(f => {
-          const chips = f.kpis.map(k => `<span class="fb-kpi-chip">${k.name} <b>${k.current}%</b> ${k.prior != null ? `<span style="color:var(--d500)">(was ${k.prior}%)</span>` : ''}</span>`).join('');
+          const chips = f.goals.map(k => `<span class="fb-goal-chip">${k.name} <b>${k.current}%</b> ${k.prior != null ? `<span style="color:var(--d500)">(was ${k.prior}%)</span>` : ''}</span>`).join('');
           let actions = '';
-          const reasonBlock = f.disputeReason ? `<div class="fb-dispute-reason"><b>Your reason:</b> ${escapeHtml(f.disputeReason)}</div>` : '';
+          const reasonBlock = f.justifyReason ? `<div class="fb-justify-reason"><b>Your reason:</b> ${escapeHtml(f.justifyReason)}</div>` : '';
           if (f.type === 'negative') {
             if (f.ack === 'pending') {
               actions = `
                 <button class="fb-btn ack" onclick="acknowledgeFeedback('${f.id}')">${CHECK} Acknowledge</button>
-                <button class="fb-btn dispute" onclick="openDisputeReason('${f.id}')">
+                <button class="fb-btn justify" onclick="openjustifyReason('${f.id}')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                  Dispute
+                  justify
                 </button>`;
             } else if (f.ack === 'acknowledged') {
               actions = `<span class="loop-state acknowledged">${CHECK} Acknowledged</span>`;
@@ -884,14 +884,14 @@
               actions = `<span class="loop-state escalated"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg> Escalated to Feedback Manager</span>
                 <button class="fb-btn ack" onclick="acknowledgeFeedback('${f.id}')">${CHECK} Acknowledge now</button>
                 <button class="fb-btn review" onclick="openCanvasQuery('Why was my Script Adherence feedback escalated to the Feedback Manager, and what do I do now?')">Review</button>`;
-            } else if (f.ack === 'disputed' && f.resolution === 'upheld') {
-              actions = `<span class="loop-state upheld">${CHECK} Dispute upheld · re-scored ${f.adjustFrom}% → ${f.adjustTo}%</span>
-                <button class="fb-btn review" onclick="openCanvasQuery('Show me how my disputed Follow-up Confirmation score was re-evaluated and adjusted.')">Review</button>${reasonBlock}`;
-            } else if (f.ack === 'disputed' && f.resolution === 'declined') {
-              actions = `<span class="loop-state declined"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> Dispute declined · score stands</span>
-                <button class="fb-btn review" onclick="openCanvasQuery('Why was my Survey Promotion dispute declined, and how do I recover the score?')">Review</button>${reasonBlock}`;
-            } else if (f.ack === 'disputed') {
-              actions = `<span class="loop-state disputed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg> Disputed · under review</span>${reasonBlock}`;
+            } else if (f.ack === 'justifyd' && f.resolution === 'upheld') {
+              actions = `<span class="loop-state upheld">${CHECK} justify upheld · re-scored ${f.adjustFrom}% → ${f.adjustTo}%</span>
+                <button class="fb-btn review" onclick="openCanvasQuery('Show me how my justifyd Follow-up Confirmation score was re-evaluated and adjusted.')">Review</button>${reasonBlock}`;
+            } else if (f.ack === 'justifyd' && f.resolution === 'declined') {
+              actions = `<span class="loop-state declined"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> justify declined · score stands</span>
+                <button class="fb-btn review" onclick="openCanvasQuery('Why was my Survey Promotion justify declined, and how do I recover the score?')">Review</button>${reasonBlock}`;
+            } else if (f.ack === 'justifyd') {
+              actions = `<span class="loop-state justifyd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg> justifyd · under review</span>${reasonBlock}`;
             }
           }
           const followup = f.followUp ? `<div class="fb-followup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>${f.followUp}</div>` : '';
@@ -903,7 +903,7 @@
               <span class="fb-from">${f.from}</span>
               <span class="fb-date">${f.date}</span>
             </div>
-            <div class="fb-kpis">${chips}</div>
+            <div class="fb-goals">${chips}</div>
             <div class="fb-insight">${AI}<span>${f.insight}</span></div>
             <div class="fb-actions">${actions || (f.type === 'positive' ? `<button class="fb-btn ghost" onclick="openCanvasQuery('How do I exceed even further on the goals in my positive feedback?')">Ask AiMY how to exceed more →</button>` : '')}</div>
             ${reminder}
@@ -935,15 +935,15 @@
           </div>`).join('');
       }
 
-      /* ── Create a persistent coaching plan from a KPI ── */
+      /* ── Create a persistent coaching plan from a goal ── */
       function startCoachingPlan(name, status) {
         if (status === 'exceed') { openCanvasQuery('How do I maintain and further exceed on ' + name + '?'); return; }
         const existing = MY_COACHING.find(c => c.title.indexOf(name) === 0 && !c.done);
         if (existing) { showToast('You already have an active plan for ' + name); document.getElementById('coachGrid').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
-        const kpi = MY_KPIS.find(k => k.name === name);
-        const target = kpi ? kpi.target : 80;
+        const goal = MY_goalS.find(k => k.name === name);
+        const target = goal ? goal.target : 80;
         MY_COACHING.unshift({
-          title: name + ' → Meets', goal: 'Move ' + (kpi ? kpi.current + '%' : '') + ' → ' + target + '% target', pct: 0, done: false, isNew: true,
+          title: name + ' → Meets', goal: 'Move ' + (goal ? goal.current + '%' : '') + ' → ' + target + '% target', pct: 0, done: false, isNew: true,
           steps: [
             { t: 'Watch the "' + name + '" micro-lesson', done: false },
             { t: 'Practice the target behaviour on 10 contacts', done: false },
@@ -979,30 +979,30 @@
         const f = MY_FEEDBACK.find(x => x.id === id);
         if (f) { f.ack = 'acknowledged'; renderFeedback(); showToast('Feedback acknowledged — your supervisor was notified'); }
       }
-      /* ── Dispute requires a written reason ── */
+      /* ── justify requires a written reason ── */
       function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
       let drCurrentId = null;
-      function openDisputeReason(id) {
+      function openjustifyReason(id) {
         drCurrentId = id;
         const f = MY_FEEDBACK.find(x => x.id === id);
-        const kpis = f ? f.kpis.map(k => k.name).join(', ') : '';
-        document.getElementById('drKpis').textContent = kpis ? 'Disputing: ' + kpis : '';
+        const goals = f ? f.goals.map(k => k.name).join(', ') : '';
+        document.getElementById('drgoals').textContent = goals ? 'Disputing: ' + goals : '';
         const t = document.getElementById('drReason');
         t.value = '';
         document.getElementById('drSubmit').disabled = true;
-        document.getElementById('disputeReasonModal').classList.add('open');
+        document.getElementById('justifyReasonModal').classList.add('open');
         setTimeout(() => t.focus(), 60);
       }
-      function closeDisputeReason() { document.getElementById('disputeReasonModal').classList.remove('open'); drCurrentId = null; }
+      function closejustifyReason() { document.getElementById('justifyReasonModal').classList.remove('open'); drCurrentId = null; }
       function drValidate() { document.getElementById('drSubmit').disabled = document.getElementById('drReason').value.trim().length < 10; }
-      function submitDisputeReason() {
+      function submitjustifyReason() {
         const v = document.getElementById('drReason').value.trim();
         if (v.length < 10) return;
         const f = MY_FEEDBACK.find(x => x.id === drCurrentId);
-        if (f) { f.ack = 'disputed'; f.disputeReason = v; renderFeedback(); showToast('Dispute submitted with your reason — a reviewer will assess it'); }
-        closeDisputeReason();
+        if (f) { f.ack = 'justifyd'; f.justifyReason = v; renderFeedback(); showToast('justify submitted with your reason — a reviewer will assess it'); }
+        closejustifyReason();
       }
-      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDisputeReason(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closejustifyReason(); });
 
       /* ── Toast ── */
       let toastTimer;
@@ -1066,16 +1066,16 @@
          where AiMY surfaces what it did and what you owe as canvas cards. */
       const MY_REMINDERS = [
         { sev: 'warn', type: 'Acknowledgement due', when: '3 days left',
-          body: 'Your feedback on <b>Follow-up Confirmation</b> and <b>Survey Promotion</b> is still un-acknowledged. Acknowledge or dispute it before it escalates to your Feedback Manager.',
+          body: 'Your feedback on <b>Follow-up Confirmation</b> and <b>Survey Promotion</b> is still un-acknowledged. Acknowledge or justify it before it escalates to your Feedback Manager.',
           acts: [ { label: 'Acknowledge now', kind: 'primary', do: () => { acknowledgeFeedback('fb-201'); showToast('Feedback acknowledged — your supervisor was notified'); scrollToFeedback('fb-201'); } },
-                  { label: 'Dispute', kind: 'ghost', do: () => openDisputeReason('fb-201') } ] },
+                  { label: 'justify', kind: 'ghost', do: () => openjustifyReason('fb-201') } ] },
         { sev: 'accent', type: 'Coaching check-in', when: 'in 4 days',
           body: 'I’ll review 5 of your closes on <b>Follow-up Confirmation → Meets</b> (plan at 60%). Keep restating the next step + timeline and you’re on pace to close by mid-Aug.',
           acts: [ { label: 'Open my plan', kind: 'primary', do: () => scrollToCoaching() },
                   { label: 'Ask AiMY', kind: 'ghost', do: () => openCanvasQuery('How do I finish my Follow-up Confirmation coaching plan faster?') } ] },
-        { sev: 'ok', type: 'Dispute resolved', when: 'today',
-          body: 'A reviewer <b>upheld your dispute</b> on Follow-up Confirmation — I re-scored it <span style="color:var(--ok);font-weight:700">64% → 71%</span> and notified Lina. The loop is closed.',
-          acts: [ { label: 'Review', kind: 'primary', do: () => openCanvasQuery('Show me how my disputed Follow-up Confirmation score was re-evaluated and adjusted.') } ] },
+        { sev: 'ok', type: 'justify resolved', when: 'today',
+          body: 'A reviewer <b>upheld your justify</b> on Follow-up Confirmation — I re-scored it <span style="color:var(--ok);font-weight:700">64% → 71%</span> and notified Lina. The loop is closed.',
+          acts: [ { label: 'Review', kind: 'primary', do: () => openCanvasQuery('Show me how my justifyd Follow-up Confirmation score was re-evaluated and adjusted.') } ] },
       ];
       const SEV_DOT = { warn: 'var(--warn)', err: 'var(--err)', ok: 'var(--ok)', accent: 'var(--qa-accent)' };
       const SEV_CLASS = { warn: 'warn', err: 'err', ok: 'ok', accent: '' };
@@ -1122,7 +1122,7 @@
           return `You're already <b>exceeding</b> here, and I've flagged that to your supervisor. To excel further: lead with acknowledgement before troubleshooting, and add a personalised sign-off on every close. I'll watch your rolling average and alert you the moment it dips, so you never slip below target.`;
         }
         if (s.includes('feedback')) {
-          return `I detected the drop and flagged your latest feedback on <b>Follow-up Confirmation</b> (64%) and <b>Survey Promotion</b> (71%) — both under the 80% target. You can <b>Acknowledge</b> it if you agree, or <b>Dispute</b> it if you think my read was wrong, and a reviewer will assess it. Either way, the coaching plan I built should recover both within 3 weeks.`;
+          return `I detected the drop and flagged your latest feedback on <b>Follow-up Confirmation</b> (64%) and <b>Survey Promotion</b> (71%) — both under the 80% target. You can <b>Acknowledge</b> it if you agree, or <b>justify</b> it if you think my read was wrong, and a reviewer will assess it. Either way, the coaching plan I built should recover both within 3 weeks.`;
         }
         return `Here's how I work for you: I watch your goals, open feedback the moment something changes, and build a step-by-step plan I follow up on until you hit the goal. Name a goal and I'll show you what was flagged, on what criteria, and how to improve it — or how to excel further if you're already above target.`;
       }
@@ -1144,7 +1144,7 @@
       document.addEventListener('keydown', e => { if (e.key === 'Escape') overlay.classList.remove('open'); });
 
       /* init */
-      renderKpis();
+      rendergoals();
       renderFeedback();
       renderCoaching();
     </script>
