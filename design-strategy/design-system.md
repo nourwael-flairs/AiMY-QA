@@ -194,12 +194,27 @@ Components required by the **Knowledge-to-Action Doctrine**. These are not optio
 | **Briefing card (extended)** | `.bcard-ack-row`, `.bcard-ack-btn(.is-acked)`, `.bcard-dismiss-picker(.open)`, `.bcard-dismiss-reason` | `#bcard-extended` | §5.9 — every item is dismissible with a captured reason; reversible dismissals offer Undo |
 | **Entry modes** | `.entry-action` + `.em-direct/-investigate/-prompt/-review`, `.em-ico`; spec tag `.entry-mode-tag` | `#entry-modes` | §3 — classification is **mandatory and explicit** at design time. An unclassified action fails review |
 | **Memory panel** | `.memory-panel`, `.mem-head/.mem-age/.mem-thread/.mem-line/.mem-who/.mem-what/.mem-foot` | `#sc-memory-panel` | §4 continuity — shows what is carried forward and lets the user drop it |
-| **Governance change request** | `.gov-cr-card`, `.gov-cr-head/-title/-diff/-current/-proposed/-label/-val/-arrow/-rationale/-blast/-actions` | `#goalhub-cr-card` | §3.1 rung 3 — governed config changes get a diff, a rationale, a blast radius, and an audit note |
-| **Decision zone** | `.decision-zone`, `.dz-prompt/.dz-consequence/.dz-actions/.dz-spacer/.dz-meta` | `#justifys-decision` | §3 — **Accept · Edit · Reject**. Edit is not optional |
-| **Audit trail** | `.audit-trail`, `.audit-entry(.is-ok/.is-warn/.is-err/.is-ai)`, `.audit-ico/-main/-action/-actor/-who/-side/-time`, `.audit-revert`, `.audit-irreversible` | `#justifys-audit` | Level 6 — every entry names actor, action, time, and reversibility. AiMY's own actions are never disguised as the user's |
-| **Modal + wizard** | `.modal` + `.steps/.step(.done/.active)` + carried `.ctx-chips` | `#justifys-modal` | §7.2 — the structured destination. The canvas does not replace workflows that need ordered inputs or a durable record |
+| **Governance change request** | `.gov-cr-card`, `.gov-cr-head/-title/-diff/-current/-proposed/-label/-val/-arrow/-rationale/-blast/-actions` | `#kpihub-cr-card` | §3.1 rung 3 — governed config changes get a diff, a rationale, a blast radius, and an audit note |
+| **Decision zone** | `.decision-zone`, `.dz-prompt/.dz-consequence/.dz-actions/.dz-spacer/.dz-meta` | `#disputes-decision` | §3 — **Accept · Edit · Reject**. Edit is not optional |
+| **Audit trail** | `.audit-trail`, `.audit-entry(.is-ok/.is-warn/.is-err/.is-ai)`, `.audit-ico/-main/-action/-actor/-who/-side/-time`, `.audit-revert`, `.audit-irreversible` | `#disputes-audit` | Level 6 — every entry names actor, action, time, and reversibility. AiMY's own actions are never disguised as the user's |
+| **Modal + wizard** | `.modal` + `.steps/.step(.done/.active)` + carried `.ctx-chips` | `#disputes-modal` | §7.2 — the structured destination. The canvas does not replace workflows that need ordered inputs or a durable record |
 | **AI unavailable** | `.ai-unavailable(.is-degraded)`, `.aiu-mark/-title/-body/-fallback/-note` | `#ai-unavailable` | §6.7, Level 7 — a designed state. Must say **what still works** and never lose staged work to an outage |
 | **Confirmation ladder** | documentation table (binds rungs to existing components) | `#confirmation-ladder` | §3.1 — confirmation is proportional to consequence; the ladder runs one way only |
+
+### Knowledge v2 Primitives
+
+Built for **AiMY Knowledge v2** (`AiMY_Knowledge_v2_Design_Direction.md`), but none of them are Knowledge-specific — trust state in particular is a shared primitive precisely because it has to render inside other agents' surfaces.
+
+| Component | Classes | Anchor | Requirement |
+|---|---|---|---|
+| **Trust state** | `.trust-state` + `.ts-verified/-due/-expired/-unverified/-superseded`, `.is-excluded`, `data-trust-state`; `.trust-line` | `#trust-state` | Knowledge §6.2 (D1) — required on every knowledge object. **A second axis, independent of work state**: an object can be `drafted` and `expired` at once. Uses semantic tokens only, **never `--accent`**, so it reads identically when cited inside a re-themed host surface |
+| **Answer trust disclosure** | `.trust-disclosure(.has-exclusion)`, `.td-row(.is-ok/.is-warn/.is-err)`, `.td-text`, `.td-action` | `#trust-disclosure` | Knowledge §7.4 — every answer states its grounding. The exclusion case must never be silent, or a governance gap is indistinguishable from a corpus gap |
+| **Citation preview** | `.cite-wrap`, `.cite-preview(.is-open)`, `.cp-head/-title/-passage/-foot/-src`, `.cite-action(.is-flag/.is-flagged)`, `.cite.is-flagged/.is-excluded` | `#cite-preview` | Knowledge §7.3, §7.5 (D2) — verification rung 3, the one carrying the most traffic. Opens on hover **and** `:focus-within`; feedback is captured **per citation**, not per answer |
+| **Set-scope operations** | `.set-scope-bar`, `.ss-count/-num/-scope/-actions/-clear`, `.ss-preview`, `.ss-effect(.is-ok/.is-warn/.is-skip)` | `#set-scope` | Knowledge §4 (D3) — bulk work over a filtered collection. The scope statement and the skip line are both mandatory: a bulk op that silently no-ops on part of its selection reports success the user has no reason to distrust |
+| **Aggregate briefing card** | `.bcard.is-aggregate`, `.agg-summary/-stat`, `.agg-list/-row/-label/-val/-bar/-more` | `#bcard-aggregate` | Knowledge §10.3 blocks 3 and 7 (D4) — a briefing item whose subject is a cluster, not a record. `.agg-more` is required when the list is truncated, or a broad problem reads as a narrow one |
+| **Type cards** | `.type-card(.is-compact)`, `.tc-head/-type/-title/-summary/-body/-fields/-list(.is-negative)/-quote/-tags/-gov/-action`, `.tc-approval(.is-approved/.is-pending/.is-internal)` | `#type-cards` | Knowledge §6.3 (G1) — eight templates over one **fixed governance row**. Type by icon + label, never colour. `.is-compact` is the embedded form required by §8.1 |
+| **Document viewer** | `.doc-view`, `.dv-head/-meta/-title/-gov/-gov-item/-notice/-body/-rel/-rel-item/-actions` | `#doc-view` | Knowledge §6.4 (G2) — trust state **above the body** in a fixed position. Carries the relationship set (related · superseded-by · contradicts) named in §6.1 but absent from the library |
+| **Version history & restore** | `.ver-list/.ver-item(.is-current/.is-ai)`, `.ver-mark/-label/-author/-time/-tag`, `.ver-compare/.vc-*`, `.ver-restore/.vr-effect` | `#version-history` | Knowledge §6.5 (G3) — AI edits are **ordinary versions with an AI author**, never a parallel history. Restore is a commit surface stating its effect, and is additive |
 
 ---
 
@@ -249,7 +264,7 @@ The doctrine's §0 binding rule: *"Where this document names a component, that n
 | Ambient conversational entry | Float Input Bar · Filter Tray | `#canvas-float` · `#canvas-filter-tray` |
 | Explain what AiMY detected | Context Zone | `#context-zone` |
 | Hold the active conversation | Canvas Overlay · Chat Messages | `#canvas-overlay` · `#canvas-messages` |
-| Govern consequential changes | Governance Change Request · Decision Zone · Audit Trail · Modal + Wizard | `#goalhub-cr-card` · `#justifys-decision` · `#justifys-audit` · `#justifys-modal` |
+| Govern consequential changes | Governance Change Request · Decision Zone · Audit Trail · Modal + Wizard | `#kpihub-cr-card` · `#disputes-decision` · `#disputes-audit` · `#disputes-modal` |
 | Confidence disclosure | Confidence Badge | `#sc-conf-badge` |
 | Reversible / completed work | AiMY Toast with `.aimy-toast-undo` | `#canvas-toast` |
 | Empty, loading, unavailable | Empty & Loading States · AI Unavailable | `#states` · `#ai-unavailable` |
@@ -321,12 +336,48 @@ Found while closing the gaps above; all were pre-existing.
 | Native `<select>` elements | 7 | L3 | All migrated to `.v2-dropdown`; `.ds-select` retired. Zero `<select>` elements remain |
 | Duplicated `<!-- END MAIN -->` comment | 1 | — | Removed |
 | Light-mode neutral fill flattening semantic tints on `.conf-badge` and `.audit-ico` | 2 | L1 | Light override scoped with `:not()` so level and status modifiers keep their tint |
+| `.progress-bar-fill` animating `width` at **600ms** | 1 | L4 | Now `transform: scaleX(var(--fill))` with `transform-origin: left`, 300ms. **Breaking change** — set the level with `--fill` (0–1), not `style="width:%"`. The five in-page usages and the code sample were migrated |
+| `.score-ring-fill` transitioning `stroke-dashoffset` at **800ms** | 1 | L4 | Reduced to `--t-slow` (300ms). `stroke-dashoffset` is retained — it is the only way to draw an SVG arc — but the ceiling still applies |
+| `.ds-switch .thumb` animating `left` | 1 | L4 | Now `transform: translateX()`; `left` relayouts, `transform` composites |
+| Inline `onkeydown=""` on the canvas textarea | 1 | L4 | Missed by the first sweep, which matched `onclick` only. Now `data-submit-on-enter` + a delegated `keydown` listener. **Zero inline event handlers of any kind remain** |
 
 ### 10.5 Still open
 
 - **Canonical 7-level framework reconciliation** — the doctrine's §8 notes its gate is codified locally and should be reconciled with any canonical FlairsTech definition.
 
-### 10.6 Closed since the audit
+### 10.6 AiMY Knowledge v2 — open dependency register
+
+Against `AiMY_Knowledge_v2_Design_Direction.md` §12. Every component binding in that document's §9.4 resolved on audit **except trust state**, which the document itself flagged.
+
+| Dep | Status | Resolution |
+|---|---|---|
+| **D1 — Trust state primitive**<br>*blocks the card design and the briefing* | ✅ **Built** | `#trust-state` — five values, `data-trust-state`, `.is-excluded` for the retrieval consequence. Built as a **shared** primitive with semantic tokens only and no `--accent` dependency, per Knowledge §1.1/§8.1. The §7.4 answer-level disclosure ships alongside it at `#trust-disclosure` — it was an unnumbered requirement with no component |
+| **D2 — Citation hover preview + per-citation feedback**<br>*blocks the answer surface* | ✅ **Built** | `#cite-preview` — the intermediate verification rung. Rungs 1 (`.cite`) and 2 (`.source-list`) already existed; rung 4 is navigation. Preview opens on hover **and** focus, and per-citation flagging routes into the correction loop rather than terminating in a rating |
+| **D3 — Set-scope AI operations**<br>*blocks Library bulk curation* | ✅ **Built** | `#set-scope` — selection bar with a mandatory scope statement, effect preview including skips, and explicit binding to the confirmation ladder rungs |
+| **D4 — Coverage-gap block shape** | ✅ **Built** | `#bcard-aggregate` — resolved as a `.bcard` variant, as the document anticipated. Same meta row, conclusion, action row and ack/dismiss row; only the evidence zone changes |
+| **D5 — Ownership and usage data granularity** | ⬜ **Not a design-system dependency** | Platform data availability. The design system supplies the blocks; whether composition can rank them per user is a data question. If it degrades to entitlement-only, no component changes — the briefing simply renders a shorter set, and `#states` covers the honest empty case |
+| **D6 — Permission-aware retrieval** | ⬜ **Not a design-system dependency** | Retrieval-layer capability. It does carry one design obligation: where the guarantee does not hold, the limitation must be stated on-screen. Bind that to `.banner.warn` or `.inline-note.warn`, and use `#trust-disclosure` on answers — both exist |
+
+**Not blockers, but worth stating:** the direction document's §7.1 (one input routed on intent) and §7.2 (scope before query) need no new components — `.search-field`, `.cmdk`, `.aimy-float-bar` and `.filter-tray`/`.filter-chip` cover them. §8's embedded-service contract is a *constraint on usage*, not a component: it is satisfied by the answer-surface components carrying no shell dependency, which is why trust state was built accent-free.
+
+### 10.7 Knowledge v2 — §12.1 component gaps
+
+Second audit, against the revised direction document. Its three declared gaps were confirmed absent and are now built. Its claim that *"everything else resolves today"* was checked item by item and holds, with the two exceptions noted below.
+
+| Gap | Status | Resolution |
+|---|---|---|
+| **G1 — Eight type card templates**<br>*blocks the workbench, the viewer, and embedded citations* | ✅ **Built** | `#type-cards`. Article · Ticket · ICP · Campaign · Marketing Asset · Success Story · Blog · Web Page, each with a distinct body zone over an identical governance row. `.is-compact` supplies the §8.1 embedded form — title, type, trust, one action |
+| **G2 — Document viewer shell**<br>*blocks the viewer* | ✅ **Built** | `#doc-view`. Composes existing primitives into a reading shell: trust in a fixed position above the body, constant governance chrome, type-appropriate body slot, and exclusion / supersession notices that state the consequence **and** the route out of it |
+| **G3 — Version comparison and restore**<br>*blocks the editor* | ✅ **Built** | `#version-history`. Single history with AI-authored versions marked rather than segregated, `del`/`ins` comparison reusing the suggestion-review diff shape, and restore as a commit surface stating rollback, downstream effect, and that history is preserved |
+
+**Found in the audit but not listed as a gap.** The object anatomy in §6.1 names a **relationships** set — related objects, superseded-by, contradicts — with no component anywhere in the library, and §6.4 depends on it ("a superseded object resolves to its successor with the relationship stated"). Built as part of G2: `.dv-rel` / `.dv-rel-item`, with `.is-contradiction` reading as a finding rather than a neighbour, and `.is-successor` as the way forward.
+
+**Judgement calls, flagged rather than decided:**
+
+- **Approval state is kept out of trust state.** §12.2 asks whether approval becomes a sixth trust value or stays a separate field. `.tc-approval` is therefore built *outside* `.trust-state` — the conservative choice, since folding it in now would pre-empt the ruling and change a primitive that ships into other agents' surfaces. If the ruling makes it a trust value, the field folds in and the eight templates are unaffected.
+- **Retrieval results (§7.1) and displacement notices (§10.3) have no dedicated component.** Both are compositions of existing parts — `.list-group` or `.cmdk` for a ranked result set, `.inline-note` / `.banner` for a displacement statement. Neither was declared a gap and neither needs a new primitive, but neither has a worked reference either. Raise one if the composition proves non-obvious in build.
+
+### 10.8 Closed since the audit
 
 - **`--qa-accent`** — withdrawn. Accents are **global**: one `--accent` token re-themed per product (§1). There is no QA-specific accent token, so there was nothing to swap and no Talent collision to resolve. The doctrine's open flag has been retracted.
 - **`.ds-select` vs `.v2-dropdown`** — resolved in favour of the custom dropdown; see §10.3.

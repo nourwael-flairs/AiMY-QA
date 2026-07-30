@@ -214,7 +214,7 @@ Each doctrine responsibility maps to named entries in `design-doc.html`. **Use t
 | Ambient conversational entry | Float Input Bar, Filter Tray | `#canvas-float` · `#canvas-filter-tray` |
 | Explain what AiMY detected | Context Zone — detected state, confidence, alternatives, contextual suggestions | `#context-zone` |
 | Hold the active conversation | Canvas Overlay, Chat Messages, thinking indicator (`.typing-dots`) | `#canvas-overlay` · `#canvas-messages` |
-| Govern consequential changes | Governance Change Request Card — `.gov-cr-diff`, `.gov-cr-current`, `.gov-cr-proposed`, `.gov-cr-actions`; Decision Zone; Audit Trail; Modal + Wizard | `#goalhub-cr-card` · `#justifys-decision` · `#justifys-audit` · `#justifys-modal` |
+| Govern consequential changes | Governance Change Request Card — `.gov-cr-diff`, `.gov-cr-current`, `.gov-cr-proposed`, `.gov-cr-actions`; Decision Zone; Audit Trail; Modal + Wizard | `#kpihub-cr-card` · `#disputes-decision` · `#disputes-audit` · `#disputes-modal` |
 | Confidence disclosure | Confidence Badge — `.conf-badge` + `.conf-high` / `.conf-medium` / `.conf-low` | `#sc-conf-badge` |
 | **Proportional confirmation (§3.1)** | **Confirmation Ladder — binds each of the four rungs to its component** | **`#confirmation-ladder`** |
 | Reversible / completed work | AiMY Toast with `.aimy-toast-undo` | `#canvas-toast` |

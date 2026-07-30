@@ -1,6 +1,16 @@
 ﻿<!doctype html>
 <html lang="en">
   <head>
+    <script>
+      /* Theme applied PRE-PAINT — before the stylesheet renders — so the page
+         never flashes dark before switching to light (design-system.md §4). */
+      (function () {
+        try {
+          var t = localStorage.getItem('aimy-ds-theme');
+          if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        } catch (e) {}
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AiMY QA — Data Ingestion</title>
@@ -18,6 +28,11 @@
       }
 
       :root {
+        /* Needed by the theme toggle and the light overrides below. Same
+           values as index.html — these pages never had the wash scale. */
+        --wash-3: rgba(255,255,255,0.04);
+        --wash-6: rgba(255,255,255,0.07);
+        --t-fast: var(--transition-fast);
         --ai: linear-gradient(104deg, #0066ff 0%, #61adf1 47%, #6fdfe2 100%);
         /* Richer navy-tinted dark palette matching V1 */
         --d950: #080b10;
@@ -62,6 +77,11 @@
         /* Layout Variables */
         --sidebar-width: 220px;
         --topbar-height: 60px;
+      
+        /* ── Gradients (design-system index.html:84-86, verbatim) ── */
+        --grad-avatar: linear-gradient(135deg,#7c3aed,#3369ff);
+        --grad-ellipse-1: radial-gradient(ellipse at center, rgba(0,102,255,0.18) 0%, rgba(97,173,241,0.1) 28%, transparent 60%);
+        --grad-ellipse-2: radial-gradient(ellipse at center, rgba(111,223,226,0.1) 0%, rgba(139,79,244,0.07) 38%, transparent 60%);
       }
 
       /* ── Accessibility: global focus-visible.
@@ -120,13 +140,7 @@
         transform: translate(-50%, -50%);
         width: 1300px;
         height: 1050px;
-        background: radial-gradient(
-          ellipse at center,
-          rgba(0, 102, 255, 0.24) 0%,
-          rgba(97, 173, 241, 0.15) 28%,
-          rgba(111, 223, 226, 0.09) 52%,
-          transparent 70%
-        );
+        background: var(--grad-ellipse-1);
       }
       #appEllipse::after {
         content: "";
@@ -135,12 +149,7 @@
         right: -4%;
         width: 750px;
         height: 650px;
-        background: radial-gradient(
-          ellipse at center,
-          rgba(111, 223, 226, 0.11) 0%,
-          rgba(139, 79, 244, 0.08) 38%,
-          transparent 66%
-        );
+        background: var(--grad-ellipse-2);
       }
       /* Ellipse rendered as a real DOM element — see #appEllipse in HTML */
 
@@ -181,25 +190,22 @@
       }
 
       /* Calls button */
-      .topnav-calls {
-        margin-right: 16px;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-      }
-      .topnav-calls svg,
-      .topnav-calls img {
-        display: block;
-      }
 
       /* Product tabs — pill container matching the SVG reference */
       .topnav-tabs {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
         display: flex;
         align-items: center;
         gap: 0;
-        flex: 1;
         justify-content: center;
+        pointer-events: none;
       }
+      .topnav-tabs > * { pointer-events: auto; }
+      /* The right-hand cluster keeps its own edge; the spacer absorbs the
+         difference so nothing fights the absolutely-centred strip. */
+      .topnav-spacer { flex: 1; }
       .topnav-tabs-inner {
         display: flex;
         align-items: center;
@@ -221,6 +227,7 @@
         transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
         border: 1px solid transparent;
         white-space: nowrap;
+        text-decoration: none;
       }
       .topnav-tab:hover {
         background: rgba(255, 255, 255, 0.05);
@@ -373,9 +380,9 @@
       .sidebar-section-label {
         font-size: 10px;
         font-weight: 700;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
-        color: var(--d600);
+        color: var(--d500);
         padding: 4px 16px 6px;
         margin-top: 16px;
       }
@@ -404,7 +411,7 @@
       .nav-item.active {
         background: var(--qa-accent-dim);
         color: var(--qa-accent);
-        border-color: rgba(var(--qa-accent-rgb), 0.28);
+        border-color: rgba(var(--qa-accent-rgb), 0.22);
         box-shadow: 0 0 20px rgba(var(--qa-accent-rgb), 0.08);
       }
       /* AI Chat & Canvas — subtle AI gradient border to mark it as the primary surface */
@@ -2329,6 +2336,7 @@
 
       /* AI bubble icon on the left — the small AiMY logo in a circle */
       .aimy-float-icon {
+        position: relative;
         width: 36px;
         height: 36px;
         border-radius: 50%;
@@ -3747,6 +3755,255 @@
       .eval-view-all:hover {
         color: var(--d50);
       }
+      /* ══════════════════════════════════════════════════════════════════
+         LIGHT THEME
+         ──────────────────────────────────────────────────────────────────
+         Ported from the design system (design-strategy/index.html:177).
+         design-system.md §4: overrides are TOKEN-LEVEL only — never fork
+         component markup per theme. Dark stays the default; light is opt-in
+         via <html data-theme="light">, persisted to localStorage under
+         `aimy-ds-theme` and applied pre-paint so there is no flash.
+
+         The neutral ramp inverts, so --d50 remains "strongest text" and
+         --d950 remains "furthest surface" in both themes and no component
+         has to know which theme it is in.
+      ══════════════════════════════════════════════════════════════════ */
+      :root[data-theme="light"] {
+        /* Neutral ramp inverted */
+        --d950: #f7fafc;
+        --d900: #eef2f6;
+        --d850: #e4eaf0;
+        --d800: #d8e0e8;
+        --d750: #c8d2dc;
+        --d700: #b0bcca;
+        --d600: #6e7d8d;  /* muted labels — #8b9aaa fails 3:1 on white */
+        --d500: #637280;
+        --d400: #566472;
+        --d300: #3a4653;
+        --d200: #2a3540;
+        --d100: #1c2630;
+        --d50:  #10151b;
+
+        /* Brand tints denser for contrast on white */
+        --brand-dim:  rgba(51,105,255,0.12);
+        --qa-accent-dim: rgba(139,79,244,0.12);
+        --accent-dim: rgba(139,79,244,0.12);
+        /* --teal is a light cyan; darken for legible text on white */
+        --teal: #0d8f95;
+
+        /* Semantic hues darkened one step — dark-mode mid-tones fail contrast
+           as text on white. Tint backgrounds stay pale. */
+        --ok:   #0e9257;
+        --warn: #b26205;
+        --err:  #d92d20;
+        --info: #067dc2;
+        --ok-bg:   rgba(23,178,106,0.14);
+        --warn-bg: rgba(247,144,9,0.14);
+        --err-bg:  rgba(240,68,56,0.14);
+        --info-bg: rgba(14,165,233,0.14);
+
+        /* Surfaces */
+        --body-bg:           #f4f6f9;
+        --card-bg:           #ffffff;
+        --card-bg-raised:    #f7f9fc;
+        --card-border:       rgba(16,24,40,0.10);
+        --card-border-hover: rgba(16,24,40,0.18);
+
+        /* Theme-aware helpers */
+        --ai-text: #1f5fd0;
+        --hairline: rgba(16,24,40,0.09);
+        --text-strong: #10151b;
+
+        /* Elevation — cooler, softer on light */
+        --elev-1: 0 1px 2px rgba(16,24,40,0.08);
+        --elev-2: 0 1px 2px rgba(16,24,40,0.06), 0 8px 22px rgba(16,24,40,0.10);
+        --elev-3: 0 2px 6px rgba(16,24,40,0.08), 0 18px 48px rgba(16,24,40,0.12);
+
+        /* Status surface tints */
+        --tint-ok: rgba(23,178,106,0.07);
+        --tint-err: rgba(240,68,56,0.06);
+        --tint-warn: rgba(247,144,9,0.07);
+        --tint-accent: rgba(139,79,244,0.06);
+
+        /* Surface washes — ink instead of white (see --wash-* above) */
+        --wash-1: rgba(16,24,40,0.03);
+        --wash-2: rgba(16,24,40,0.04);
+        --wash-3: rgba(16,24,40,0.05);
+        --wash-4: rgba(16,24,40,0.065);
+        --wash-5: rgba(16,24,40,0.075);
+        --wash-6: rgba(16,24,40,0.09);
+        --wash-7: rgba(16,24,40,0.1);
+        --wash-8: rgba(16,24,40,0.13);
+        --wash-9: rgba(16,24,40,0.15);
+        --wash-10: rgba(16,24,40,0.19);
+        --wash-11: rgba(16,24,40,0.24);
+        --wash-12: rgba(16,24,40,0.3);
+
+        /* Ellipses: same hues at ~1/3 alpha. The design system defines no
+           light variant; at dark alphas these read as haze on a white body. */
+        --grad-ellipse-1: radial-gradient(ellipse at center, rgba(0,102,255,0.07) 0%, rgba(97,173,241,0.04) 28%, transparent 60%);
+        --grad-ellipse-2: radial-gradient(ellipse at center, rgba(111,223,226,0.05) 0%, rgba(139,79,244,0.035) 38%, transparent 60%);
+
+
+        --panel-bg: rgba(255,255,255,0.96);
+        --glass-bg: rgba(255,255,255,0.85);
+        --glass-border: rgba(16,24,40,0.10);
+        /* --card-border-focus and --code-bg are identical in both themes */
+      }
+
+      /* ── Scoped chrome corrections ────────────────────────────────────
+         design-system.md §4 allows "a small set of scoped chrome/component
+         rules" beyond the token layer. These are the places where a value is
+         structurally dark rather than tokenised. */
+      :root[data-theme="light"] body { background: var(--body-bg); }
+      /* The AiMY float bar and canvas are dark glass in dark; light glass in light. */
+      /* The float bar keeps its full treatment in light — surface, visible
+         border, elevation and the accent focus ring. The first pass flattened
+         it to plain white, which read as borderless. */
+      :root[data-theme="light"] .aimy-float-bar {
+        background: #ffffff;
+        border: 1px solid rgba(16,24,40,0.14);
+        box-shadow: 0 8px 32px rgba(16,24,40,0.10),
+                    0 0 0 1px rgba(16,24,40,0.03),
+                    inset 0 1px 0 rgba(255,255,255,0.9);
+      }
+      :root[data-theme="light"] .aimy-float-bar:focus-within {
+        border-color: rgba(var(--qa-accent-rgb), 0.55);
+        box-shadow: 0 12px 40px rgba(16,24,40,0.14),
+                    0 0 0 3px rgba(var(--qa-accent-rgb), 0.16),
+                    0 0 24px rgba(var(--qa-accent-rgb), 0.10);
+      }
+      :root[data-theme="light"] .aimy-overlay { background: rgba(244,246,249,0.86); }
+      :root[data-theme="light"] .overlay-input-bar,
+      :root[data-theme="light"] .msg-bubble { background: var(--card-bg); }
+      :root[data-theme="light"] .chat-msg.user .msg-bubble { background: var(--qa-accent-dim); color: var(--d50); }
+      /* ── Solid semantic fills in light ────────────────────────────────
+         These chips use DARK text on a bright fill, which reads well against
+         dark-theme --ok (#17b26a, 6.6:1). Light darkens --ok to #0e9257 for
+         text legibility, and dark-on-dark-green drops to 3.5:1. White on the
+         same fill is 4.1:1, so the text inverts rather than the fill — the
+         chip keeps its meaning and its colour. */
+      :root[data-theme="light"] .ag-act.yes,
+      :root[data-theme="light"] .fbt-act.yes,
+      :root[data-theme="light"] .ag-act.primary,
+      :root[data-theme="light"] .mb-action.primary,
+      :root[data-theme="light"] .notif-cta.primary-p1,
+      :root[data-theme="light"] .notif-cta.primary-p2,
+      :root[data-theme="light"] .k-action-primary,
+      :root[data-theme="light"] .ins-act,
+      :root[data-theme="light"] .hrp-attn-action,
+      :root[data-theme="light"] .dismiss-reason-confirm { color: #fff; }
+      :root[data-theme="light"] .ag-act.yes:hover,
+      :root[data-theme="light"] .fbt-act.yes:hover,
+
+      /* ── Filter strip: original dark identity restored ────────────────
+         The light-contrast pass replaced two muted values with full-strength
+         tokens — the chip text went from 55% white to solid --d300 and the
+         label from a 45% blue to --ai-text — which brightened the strip and
+         changed its look. The dark values below are the originals; light gets
+         its own muted equivalents rather than the dark ones being altered. */
+      :root[data-theme="light"] .filter-chip { color: rgba(16,24,40,0.62); }
+      :root[data-theme="light"] .filter-tray-label { color: rgba(31,95,208,0.72); }
+      :root[data-theme="light"] .filter-chip:hover { color: rgba(16,24,40,0.92); }
+
+      /* Solid-green confirm buttons: dark text works on dark-theme --ok
+         (#17b26a) but not on light's darker #0e9257. */
+      :root[data-theme="light"] .fbt-fb.yes,
+      :root[data-theme="light"] .fbt-fb.yes:hover { color: #fff; }
+
+      /* ── Sidebar nav items — design-system .ds-nav-link (index.html:483)
+         Item-level only. The topnav and sidebar keep their original
+         transparent backgrounds; the design system's translucent+blurred
+         chrome is a different shell treatment and is not applied here. */
+
+      .nav-item:hover { background: var(--wash-3); color: var(--d200); }
+      :root[data-theme="light"] .nav-item:hover { background: rgba(16,24,40,0.05); color: var(--d100); }
+      :root[data-theme="light"] .sidebar-section-label { color: var(--d500); }
+
+      /* The float bar's mark sits on a dark navy puck built for dark mode.
+         On a white bar that reads as a heavy hole, so light gets a pale
+         accent wash and the brand-gradient logo carries the colour. */
+      :root[data-theme="light"] .aimy-float-icon {
+        background: linear-gradient(135deg, rgba(139,79,244,0.14) 0%, rgba(51,105,255,0.12) 100%);
+        border-color: rgba(139,79,244,0.28);
+        box-shadow: 0 0 12px rgba(139,79,244,0.12);
+      }
+      :root[data-theme="light"] .overlay-badge { background: var(--wash-2); }
+
+      /* The design-system toast is dark glass; light needs its own surface or
+         its title, sub and Undo all sit near-invisible on it. */
+      :root[data-theme="light"] .aimy-toast {
+        background: rgba(255, 255, 255, 0.92);
+        border-color: var(--card-border);
+        box-shadow: 0 12px 40px rgba(16,24,40,0.16), 0 0 0 1px rgba(16,24,40,0.04);
+      }
+      :root[data-theme="light"] .aimy-toast-divider { background: var(--hairline); }
+
+      /* ══════════════════════════════════════════════════════════════════
+         CANVAS RENDER BLOCKS
+         ──────────────────────────────────────────────────────────────────
+         Ported from agent-scorecards.html (4415 / 4499 / 4507). These were
+         never defined here, so every render the Dashboard added — the
+         decision zones, the charts cut from the briefing — drew its type
+         label as full-size body text instead of a 9px uppercase badge.
+
+         The label carries no AiMY mark on purpose: the message avatar
+         beside the bubble already says who is speaking. The svg rule stays
+         so that any icon added here is sized rather than dropped in raw.
+      ══════════════════════════════════════════════════════════════════ */
+      .canvas-render {
+        width: 100%; max-width: 720px;
+        padding: 0 4px;
+      }
+      .canvas-type-label {
+        font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
+        text-transform: uppercase; color: var(--d500);
+        margin-bottom: 6px;
+        display: flex; align-items: center; gap: 5px;
+      }
+      .canvas-type-label svg { width: 10px; height: 10px; color: var(--ai-text); }
+      .canvas-action-row {
+        display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;
+      }
+
+      /* Scrollbars */
+      /* Panels whose fill is a literal dark colour rather than a token. */
+      :root[data-theme="light"] .filter-tray-inner { background: rgba(255,255,255,0.97); border-color: var(--card-border); }
+      :root[data-theme="light"] .overlay-input-bar,
+      :root[data-theme="light"] .aimy-float-bar { border-color: var(--card-border); }
+      :root[data-theme="light"] .v2-dropdown-panel,
+      :root[data-theme="light"] .tl-dd-menu,
+      :root[data-theme="light"] .menu,
+      :root[data-theme="light"] .eval-causes-float { background: var(--card-bg); border-color: var(--card-border); }
+      :root[data-theme="light"] .modal { background: var(--card-bg); }
+      :root[data-theme="light"] ::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.18); }
+      :root[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: rgba(16,24,40,0.30); }
+      /* The background blob is tuned for a dark canvas */
+      /* Solid-fill buttons keep white text in both themes */
+      :root[data-theme="light"] .em-direct,
+      :root[data-theme="light"] .btn-brand { color: #fff; }
+
+      /* ── Theme toggle ───────────────────────────────────────────────────
+         design-system.md §4: dark is the default, light is opt-in, the choice
+         persists to localStorage under `aimy-ds-theme`, and it is applied
+         pre-paint so the page never flashes the wrong theme. */
+      .theme-toggle {
+        width: 34px; height: 34px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        background: var(--wash-3); border: 1px solid var(--card-border);
+        color: var(--d400); cursor: pointer; flex-shrink: 0;
+        transition: background-color var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+      }
+      .theme-toggle:hover { background: var(--wash-6); color: var(--d100); border-color: var(--card-border-hover); }
+      .theme-toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+      .theme-toggle svg { width: 16px; height: 16px; }
+      /* The icon shows the theme you would switch TO, not the one you are in,
+         which is what the button's aria-label has always said ("Switch to
+         light theme" while dark). Sun on dark, moon on light. */
+      .theme-toggle .icon-moon { display: none; }
+      :root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+      :root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+
     </style>
   </head>
   <body>
@@ -3830,45 +4087,12 @@
         </div>
       </div>
 
-      <!-- Calls button -->
-      <div class="topnav-calls">
-        <svg
-          width="84"
-          height="36"
-          viewBox="0 0 84 44"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M0 22C0 9.84974 9.84974 0 22 0H62C74.1503 0 84 9.84974 84 22C84 34.1503 74.1503 44 62 44H22C9.84974 44 0 34.1503 0 22Z"
-            fill="#2E3439"
-          />
-          <path
-            d="M0 22C0 9.84974 9.84974 0 22 0C34.1503 0 44 9.84974 44 22C44 34.1503 34.1503 44 22 44C9.84974 44 0 34.1503 0 22Z"
-            fill="#444D55"
-          />
-          <path
-            d="M23.7081 17.0003C24.5221 17.1591 25.2701 17.5572 25.8565 18.1436C26.4429 18.73 26.841 19.478 26.9998 20.292M23.7081 13.667C25.3992 13.8549 26.9761 14.6121 28.18 15.8145C29.3839 17.0169 30.1431 18.5928 30.3331 20.2837M20.5223 23.5529C19.521 22.5516 18.7303 21.4194 18.1503 20.2113C18.1004 20.1074 18.0755 20.0555 18.0563 19.9897C17.9882 19.7561 18.0371 19.4692 18.1788 19.2714C18.2187 19.2157 18.2663 19.1681 18.3616 19.0728C18.6529 18.7815 18.7986 18.6358 18.8938 18.4893C19.253 17.9369 19.253 17.2248 18.8938 16.6724C18.7986 16.5259 18.6529 16.3802 18.3616 16.0889L18.1992 15.9265C17.7563 15.4836 17.5349 15.2622 17.2971 15.1419C16.8241 14.9027 16.2655 14.9027 15.7926 15.1419C15.5547 15.2622 15.3333 15.4836 14.8904 15.9265L14.7591 16.0578C14.3177 16.4992 14.0971 16.7199 13.9285 17.0199C13.7415 17.3528 13.607 17.8699 13.6082 18.2517C13.6092 18.5959 13.6759 18.831 13.8094 19.3014C14.5269 21.8292 15.8806 24.2145 17.8706 26.2045C19.8606 28.1945 22.2459 29.5482 24.7737 30.2657C25.2441 30.3992 25.4793 30.466 25.8234 30.467C26.2053 30.4681 26.7224 30.3337 27.0553 30.1467C27.3553 29.9781 27.576 29.7574 28.0173 29.3161L28.1487 29.1847C28.5916 28.7419 28.813 28.5204 28.9333 28.2826C29.1725 27.8096 29.1725 27.2511 28.9333 26.7781C28.813 26.5403 28.5916 26.3189 28.1487 25.876L27.9863 25.7136C27.695 25.4223 27.5493 25.2766 27.4028 25.1814C26.8504 24.8222 26.1383 24.8222 25.5858 25.1814C25.4394 25.2766 25.2937 25.4223 25.0024 25.7136C24.9071 25.8089 24.8595 25.8565 24.8038 25.8964C24.6059 26.038 24.319 26.087 24.0854 26.0189C24.0197 25.9997 23.9677 25.9747 23.8638 25.9249C22.6558 25.3449 21.5236 24.5542 20.5223 23.5529Z"
-            stroke="white"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M70 19L64 25L58 19"
-            stroke="white"
-            stroke-width="1.66667"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </div>
-
       <!-- Product tabs -->
+      <div class="topnav-spacer"></div>
       <div class="topnav-tabs">
         <div class="topnav-tabs-inner">
           <div class="topnav-tab">Connect</div>
-          <div class="topnav-tab">Knowledge</div>
+          <a class="topnav-tab" href="https://aimy-knowledge.nour-ali.workers.dev/" title="Switch to AiMY Knowledge">Knowledge</a>
           <div class="topnav-tab">Analytics</div>
           <div class="topnav-tab">Talent</div>
           <div class="topnav-tab active">
@@ -3882,7 +4106,13 @@
       </div>
 
       <!-- Right side -->
+      <div class="topnav-spacer"></div>
       <div class="topnav-right">
+        <button class="theme-toggle" id="themeToggle" type="button"
+                aria-label="Switch to light theme" title="Switch theme">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
         <div class="topnav-bell">
           <svg viewBox="0 0 24 24">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -3944,7 +4174,7 @@
               <line x1="3" y1="10" x2="21" y2="10"></line>
               <line x1="9" y1="4" x2="9" y2="20"></line>
             </svg>
-            goal Hub
+            Goal Hub
           </a>
           <a class="nav-item active" href="data-ingestion.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3973,7 +4203,6 @@
           <div class="di-page-header">
             <div class="di-page-header-left">
               <h1 class="di-page-title">Data Ingestion</h1>
-              <span class="di-page-sub">Pipeline health &amp; source management</span>
             </div>
             <div class="di-page-header-right">
               <button class="di-btn di-btn-ghost di-btn-sm" onclick="diOpenWizard()">
@@ -4314,7 +4543,7 @@
         <div class="aimy-float-wrap" id="aimyFloatWrap">
 
           <div class="aimy-float-bar" id="aimyFloatBar">
-            <div class="aimy-float-icon" style="width: 32px; height: 32px">
+            <div class="aimy-float-icon">
               <svg width="23" height="25" viewBox="0 0 18 20">
                 <use href="#aimy-logo-small" />
               </svg>
@@ -4399,7 +4628,7 @@
           <!-- Input bar inside overlay -->
           <div class="overlay-input-wrap" id="overlayInputWrap">
             <div class="overlay-input-bar">
-              <div class="aimy-float-icon" style="width: 32px; height: 32px">
+              <div class="aimy-float-icon">
                 <svg width="23" height="25" viewBox="0 0 18 20">
                   <use href="#aimy-logo-small" />
                 </svg>
@@ -5766,6 +5995,24 @@
       .di-pause-tip-msg strong { color: var(--d50); }
       .di-pause-tip-actions { display: flex; gap: 8px; justify-content: flex-end; }
 
+      /* ── Sidebar nav items — design-system .ds-nav-link (index.html:483)
+         Item-level only. The topnav and sidebar keep their original
+         transparent backgrounds; the design system's translucent+blurred
+         chrome is a different shell treatment and is not applied here. */
+
+      .nav-item:hover { background: var(--wash-3); color: var(--d200); }
+      :root[data-theme="light"] .nav-item:hover { background: rgba(16,24,40,0.05); color: var(--d100); }
+
+      /* The float bar's mark sits on a dark navy puck built for dark mode.
+         On a white bar that reads as a heavy hole, so light gets a pale
+         accent wash and the brand-gradient logo carries the colour. */
+      :root[data-theme="light"] .aimy-float-icon {
+        background: linear-gradient(135deg, rgba(139,79,244,0.14) 0%, rgba(51,105,255,0.12) 100%);
+        border-color: rgba(139,79,244,0.28);
+        box-shadow: 0 0 12px rgba(139,79,244,0.12);
+      }
+      :root[data-theme="light"] .overlay-badge { background: var(--wash-2); }
+
       /* Scrollbars */
       .di-content::-webkit-scrollbar,
       .di-left-nav::-webkit-scrollbar,
@@ -5840,7 +6087,335 @@
         .di-src-card { transition: border-color 100ms, background 100ms; }
       }
 
-    </style>
+          /* ══════════════════════════════════════════════════════════════════
+         GENERATED — light-mode text colours
+         ──────────────────────────────────────────────────────────────────
+         This page's own components hardcode white text for a dark card.
+         Under light those cards turn white and the text vanishes (measured
+         as low as 1.05:1). Each rule below restates the SAME weight from
+         the neutral ramp, which inverts with the theme — so nothing moves
+         in dark and light gets readable text at the intended emphasis.
+
+         Rules painting their own saturated or gradient background are not
+         listed: white on a brand fill is right in both themes. 6 such.
+      ══════════════════════════════════════════════════════════════════ */
+      :root[data-theme="light"] .evidence-pill .ev-value { color: var(--d50); }
+      :root[data-theme="light"] .dc-val { color: var(--d50); }
+      :root[data-theme="light"] .finding-title { color: var(--d50); }
+      :root[data-theme="light"] .kf-conclusion { color: var(--d50); }
+      :root[data-theme="light"] .feed-title { color: var(--d50); }
+
+      /* ══════════════════════════════════════════════════════════════════
+         GENERATED — light-mode surfaces
+         ──────────────────────────────────────────────────────────────────
+         These components hardcode a dark panel colour, so under light they
+         stayed dark while their text correctly darkened — text and surface
+         collapsing onto each other at ~1.05:1.
+
+         Each dark surface maps to a light one by luminance rank, so the
+         depth ordering between a page's panels survives the inversion
+         instead of flattening to one white. Dark is untouched.
+      ══════════════════════════════════════════════════════════════════ */
+      :root[data-theme="light"] body { background: var(--body-bg); }
+      :root[data-theme="light"] .topnav-tab:hover { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .topnav-bell { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .topnav-bell:hover { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .topnav-user { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .topnav-user:hover { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .nav-item:hover { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .ai .priority-badge { background: rgba(255,255,255,0.2); }
+      :root[data-theme="light"] .evidence-pill { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .bcard-divider { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .expand-toggle:hover { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .bcard-data { background: rgba(255,255,255,0.3); }
+      :root[data-theme="light"] .finding-item { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .chart-expand-trigger:hover { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .goal-brief:hover { background: rgba(255,255,255,1); }
+      :root[data-theme="light"] .raw-data-toggle:hover { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .toggle-icon { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .raw-data-toggle:hover .toggle-icon { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .spike-chart-wrap { background: rgba(255,255,255,0.3); }
+      :root[data-theme="light"] .driver-label::after { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .driver-bar-track { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .sec-btn { background: rgba(16,24,40,0.02); }
+      :root[data-theme="light"] .sec-btn:hover { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .feed-header { background: rgba(255,255,255,0.22); }
+      :root[data-theme="light"] .feed-item:hover { background: rgba(16,24,40,0.025); }
+      :root[data-theme="light"] .v2-ai-input-full { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .v2-ai-input { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .range-tabs { background: rgba(255,255,255,0.35); }
+      :root[data-theme="light"] .range-tab:hover { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .compare-toggle { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .compare-toggle.active { background: rgba(255,255,255,0.16); }
+      :root[data-theme="light"] .v2-stat-divider { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .ai-insight-panel { background: rgba(255,255,255,0.17); }
+      :root[data-theme="light"] .memory-cue { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .aimy-float-bar { background: var(--body-bg); }
+      :root[data-theme="light"] .aimy-overlay { background: rgba(255,255,255,0.4); }
+      :root[data-theme="light"] .overlay-close { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .overlay-close:hover { background: rgba(16,24,40,0.1); }
+      :root[data-theme="light"] .overlay-badge { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .overlay-thread::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .msg-avatar.aimy-av { background: rgba(255,255,255,0.45); }
+      :root[data-theme="light"] .chat-msg.aimy .msg-bubble { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .overlay-input-bar { background: rgba(255,255,255,0.82); }
+      :root[data-theme="light"] .overlay-sugg-chip { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .overlay-sugg-chip:hover { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .dashboard-scroll::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.1); }
+      :root[data-theme="light"] .dashboard-scroll::-webkit-scrollbar-thumb:hover { background: rgba(16,24,40,0.2); }
+      :root[data-theme="light"] .v2-chip { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .v2-chip:hover { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .v2-chip.explore { background: rgba(255,255,255,0.14); }
+      :root[data-theme="light"] .v2-chip-badge.explore-badge { background: rgba(255,255,255,0.2); }
+      :root[data-theme="light"] .aimy-toast-divider { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .context-zone--state { background: rgba(16,24,40,0.015); }
+      :root[data-theme="light"] .state-confidence { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .state-alt:hover { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .quick-action-btn { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .eval-bar-row:hover { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .eval-bar-track { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .eval-insight { background: rgba(255,255,255,0.16); }
+      :root[data-theme="light"] .eval-sec-btn { background: rgba(16,24,40,0.02); }
+      :root[data-theme="light"] .eval-sec-btn:hover { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .eval-feed-header { background: rgba(255,255,255,0.2); }
+      :root[data-theme="light"] .di-src-card { background: rgba(16,24,40,0.025); }
+      :root[data-theme="light"] .di-src-card:hover { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .ic-zendesk { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .ic-freshdesk { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .ic-s3 { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .ic-connect { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .di-nav-item:hover { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .di-dropzone { background: rgba(16,24,40,0.015); }
+      :root[data-theme="light"] .di-format-info { background: rgba(16,24,40,0.025); }
+      :root[data-theme="light"] .di-chip { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .di-upload-idle { background: rgba(16,24,40,0.015); }
+      :root[data-theme="light"] .di-upload-next-btn { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .di-upload-next-btn:hover { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .di-upload-next-btn.ai-btn { background: rgba(255,255,255,0.18); }
+      :root[data-theme="light"] .di-upload-next-btn.ai-btn:hover { background: rgba(255,255,255,0.24); }
+      :root[data-theme="light"] .di-qitem { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .di-qitem-prog { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .di-tr:hover { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .hb-queued { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .di-stat-cell { background: rgba(16,24,40,0.025); }
+      :root[data-theme="light"] .di-sparkline { background: rgba(16,24,40,0.025); }
+      :root[data-theme="light"] .di-aimy-actions { background: rgba(255,255,255,0.14); }
+      :root[data-theme="light"] .di-icon-btn:hover { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .di-pb-avatar-icon { background: rgba(255,255,255,0.22); }
+      :root[data-theme="light"] .di-pb-divider { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .di-pb-btn-primary { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .di-pb-btn-primary:hover { background: rgba(16,24,40,0.09); }
+      :root[data-theme="light"] .di-pb-btn-ai { background: rgba(255,255,255,0.17); }
+      :root[data-theme="light"] .di-pb-btn-ai:hover { background: rgba(255,255,255,0.23); }
+      :root[data-theme="light"] .di-btn-primary:not(:disabled):hover { background: #eef2f6; }
+      :root[data-theme="light"] .di-btn-ghost { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .di-btn-ghost:hover { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .di-backdrop { background: rgba(255,255,255,0.92); }
+      :root[data-theme="light"] .di-modal { background: var(--body-bg); }
+      :root[data-theme="light"] .di-modal-x { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .di-modal-x:hover { background: rgba(16,24,40,0.09); }
+      :root[data-theme="light"] .di-field { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .di-select { background: var(--body-bg); }
+      :root[data-theme="light"] .di-select option { background: var(--body-bg); }
+      :root[data-theme="light"] .v2-dropdown-btn { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .v2-dropdown-btn:hover { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .v2-dropdown-option:hover { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .di-cfg-select { background: var(--body-bg); }
+      :root[data-theme="light"] .di-cfg-select option { background: var(--body-bg); }
+      :root[data-theme="light"] .di-ws { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .di-ws-ln { background: rgba(16,24,40,0.09); }
+      :root[data-theme="light"] .di-wiz-src-opt { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .di-test-pending { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .di-content::-webkit-scrollbar-thumb, .di-left-nav::-webkit-scrollbar-thumb, .di-modal-bd::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .di-content::-webkit-scrollbar-thumb:hover, .di-left-nav::-webkit-scrollbar-thumb:hover, .di-modal-bd::-webkit-scrollbar-thumb:hover { background: rgba(16,24,40,0.16); }
+
+      /* ══════════════════════════════════════════════════════════════════
+         GENERATED — light-mode brand hues
+         ──────────────────────────────────────────────────────────────────
+         Each of these hardcodes a token's DARK value as text (mostly
+         #61adf1, the dark --ai-text), so the light block's darkened value
+         never reached them and they sat at ~2.1:1 on white.
+
+         Matched by value identity, then restated as the token — so light
+         inherits whatever the design system already decided that token
+         becomes, rather than a second opinion invented here.
+      ══════════════════════════════════════════════════════════════════ */
+      :root[data-theme="light"] .ai .priority-badge { color: var(--ai-text); }
+      :root[data-theme="light"] .compare-toggle.active { color: var(--ai-text); }
+      :root[data-theme="light"] .ai-insight-header span { color: var(--ai-text); }
+      :root[data-theme="light"] .v2-chips-suggested span { color: var(--ai-text); }
+      :root[data-theme="light"] .v2-chip-badge.explore-badge { color: var(--ai-text); }
+      :root[data-theme="light"] .explore-action { color: var(--ai-text); }
+      :root[data-theme="light"] .aimy-toast-undo { color: var(--ai-text); }
+      :root[data-theme="light"] .state-bar-label .label-text { color: var(--ai-text); }
+      :root[data-theme="light"] .quick-action-btn:hover { color: var(--ai-text); }
+      :root[data-theme="light"] .eval-live-badge { color: var(--ai-text); }
+      :root[data-theme="light"] .eval-insight-label { color: var(--ai-text); }
+      :root[data-theme="light"] .di-upload-next-btn.ai-btn { color: var(--ai-text); }
+      :root[data-theme="light"] .di-aimy-actions-label { color: var(--ai-text); }
+      :root[data-theme="light"] .di-pb-aimy-label { color: var(--ai-text); }
+      :root[data-theme="light"] .di-pb-btn-ai { color: var(--ai-text); }
+
+      /* ── Light: the last one, by hand ────────────────────────────────
+         .di-pb-btn uses #f87171 — a lighter red than the --err token, picked
+         to read on a dark card. On white it drops to 2.1, and --err is the
+         value the design system already darkens for light. */
+      :root[data-theme="light"] .di-pb-btn { color: var(--err); }
+
+      /* ══════════════════════════════════════════════════════════════════
+         GENERATED — light depth: shadows and black overlays
+         ──────────────────────────────────────────────────────────────────
+         Both of these say "depth" on a dark page and say something else
+         on a white one.
+
+         Shadows were built at rgba(0,0,0,0.35–0.45) to register against a
+         near-black canvas. On white that is a grey halo, not an elevation
+         cue. Softened toward the values the toast and float bar already
+         use in light (0.10–0.16), which are the reference.
+
+         rgba(0,0,0,a) BACKGROUNDS are recesses — a segmented-control track
+         sunk into a dark panel. Inverting them to a white overlay turned
+         them into milky grey slabs; a recess on white is a faint dark
+         tint, so the alpha is carried across rather than the colour.
+      ══════════════════════════════════════════════════════════════════ */
+      :root[data-theme="light"] .bcard:hover { box-shadow: 0 8px 32px rgba(16,24,40,0.09),
+          0 0 0 1px rgba(255, 255, 255, 0.05); }
+      :root[data-theme="light"] .bcard.tier-primary { box-shadow: 0 12px 40px rgba(16,24,40,0.135),
+          0 0 0 1px rgba(var(--qa-accent-rgb), 0.2); }
+      :root[data-theme="light"] .bcard.tier-primary:hover { box-shadow: 0 18px 48px rgba(16,24,40,0.14),
+          0 0 0 1px rgba(var(--qa-accent-rgb), 0.3); }
+      :root[data-theme="light"] .narrative-card { box-shadow: 0 4px 24px rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .chart-v2 { box-shadow: 0 4px 24px rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .range-tab.active { box-shadow: 0 1px 4px rgba(16,24,40,0.12); }
+      :root[data-theme="light"] .chart-tooltip { box-shadow: 0 4px 12px rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .anno-card { box-shadow: 0 4px 16px rgba(16,24,40,0.09); }
+      :root[data-theme="light"] .peak-card { box-shadow: 0 4px 12px rgba(16,24,40,0.09); }
+      :root[data-theme="light"] .aimy-float-bar { box-shadow: 0 8px 32px rgba(16,24,40,0.14),
+          0 0 0 1px rgba(16,24,40,0.09),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05); }
+      :root[data-theme="light"] .aimy-float-bar:focus-within { box-shadow: 0 12px 40px rgba(16,24,40,0.14),
+          0 0 0 3px rgba(var(--qa-accent-rgb), 0.18),
+          0 0 24px rgba(var(--qa-accent-rgb), 0.12),
+          inset 0 1px 0 rgba(255, 255, 255, 0.07); }
+      :root[data-theme="light"] .overlay-input-bar { box-shadow: 0 8px 32px rgba(16,24,40,0.12),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06); }
+      :root[data-theme="light"] .overlay-input-bar:focus-within { box-shadow: 0 12px 40px rgba(16,24,40,0.14),
+          0 0 0 3px rgba(var(--qa-accent-rgb), 0.1),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08); }
+      :root[data-theme="light"] .v2-chip:hover { box-shadow: 0 8px 24px rgba(16,24,40,0.09); }
+      :root[data-theme="light"] .aimy-toast { box-shadow: 0 20px 60px rgba(16,24,40,0.14),
+          0 0 0 1px rgba(16,24,40,0.075),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06); }
+      :root[data-theme="light"] .aimy-context-panel { box-shadow: 0 4px 24px rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .eval-panel { box-shadow: 0 4px 24px rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .eval-causes-float { box-shadow: 0 8px 28px rgba(16,24,40,0.135); }
+      :root[data-theme="light"] .di-modal { box-shadow: 0 24px 64px rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .v2-dropdown-panel { box-shadow: 0 8px 32px rgba(16,24,40,0.14),
+          0 0 0 1px rgba(16,24,40,0.06),
+          inset 0 1px 0 rgba(255,255,255,0.06); }
+      :root[data-theme="light"] .di-pause-tip { box-shadow: 0 8px 32px rgba(16,24,40,0.135); }
+      :root[data-theme="light"] .bcard-data { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .spike-chart-wrap { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .feed-header { background: rgba(16,24,40,0.042); }
+      :root[data-theme="light"] .range-tabs { background: rgba(16,24,40,0.087); }
+      :root[data-theme="light"] .eval-feed-header { background: rgba(16,24,40,0.035); }
+
+      /* ══════════════════════════════════════════════════════════════════
+         GENERATED — light hairlines
+         ──────────────────────────────────────────────────────────────────
+         rgba(255,255,255,a) is the lit edge of a panel raised off a dark
+         page. On white it is invisible, so panels lose their edge and
+         controls lose their outline entirely. Inverted to the same-
+         strength dark hairline, the way the wash scale already does.
+      ══════════════════════════════════════════════════════════════════ */
+      :root[data-theme="light"] .app-topnav { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .topnav-bell { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .topnav-user { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .topnav-user:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .nav-item:hover { border-color: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .filter-bar { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .filter-select { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .filter-select:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .evidence-pill { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .bcard-data { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .finding-item { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .chart-expand-trigger { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .goal-brief { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .goal-brief:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .passing-toggle { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .passing-toggle:hover { border-color: rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .raw-data-toggle { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .toggle-icon { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .signal-action-row { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .sec-btn { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .sec-btn:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .feed-items { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .feed-header { border: 1px solid rgba(16,24,40,0.056); }
+      :root[data-theme="light"] .feed-item { border: 1px solid rgba(16,24,40,0.042); }
+      :root[data-theme="light"] .v2-controls { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .v2-ai-input-full { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .range-tabs { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .compare-toggle { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .compare-toggle:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .v2-stats-row { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .chart-tooltip { border: 1px solid rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .memory-cue { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .aimy-float-bar { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .overlay-close { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .overlay-close:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .overlay-badge { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .chat-msg.aimy .msg-bubble { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .overlay-input-bar { border: 1px solid rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .overlay-sugg-chip { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .overlay-sugg-chip:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .v2-chip { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .aimy-toast { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .context-zone--state { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .state-alt { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .state-alt:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .quick-actions-bar { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .quick-action-btn { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .eval-header { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .eval-causes-float { border: 1px solid rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .eval-sec-btn { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .eval-feed { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .eval-feed-header { border: 1px solid rgba(16,24,40,0.056); }
+      :root[data-theme="light"] .di-src-card { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .di-src-card:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .di-left-nav { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .di-nav-section + .di-nav-section { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .di-nav-add { border: 1px dashed rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .di-dropzone { border: 1.5px dashed rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .di-format-info { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .di-upload-idle { border: 1px dashed rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .di-upload-next-btn { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .di-upload-next-btn:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .di-qitem { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .di-tr + .di-tr { border: 1px solid rgba(16,24,40,0.056); }
+      :root[data-theme="light"] .di-stat-cell { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .di-sparkline { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .di-sync-event { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .di-pb-btn-primary { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .di-pb-btn-primary:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .di-btn-ghost { border-color: rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .di-modal { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .di-modal-hd { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .di-modal-ft { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .di-field { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .di-cfg-tabs { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .di-select { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .v2-dropdown-btn { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .v2-dropdown-btn:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .v2-dropdown-panel { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .di-cfg-select { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .di-ws { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .di-wiz-src-opt { border: 1.5px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .di-test-pending { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .di-pause-tip { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .di-chart-stats { border: 1px solid rgba(16,24,40,0.07); }
+
+</style>
 
 
     <script>
@@ -7170,4 +7745,24 @@
 
     })();
     </script>
-  </body>
+      <script>
+      /* Theme toggle — token-level swap, no markup forked per theme. */
+      (function () {
+        var btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        function sync() {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          btn.setAttribute('aria-label', light ? 'Switch to dark theme' : 'Switch to light theme');
+        }
+        btn.addEventListener('click', function () {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          var next = light ? 'dark' : 'light';
+          if (next === 'light') document.documentElement.setAttribute('data-theme', 'light');
+          else document.documentElement.removeAttribute('data-theme');
+          try { localStorage.setItem('aimy-ds-theme', next); } catch (e) {}
+          sync();
+        });
+        sync();
+      })();
+    </script>
+</body>

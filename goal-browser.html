@@ -1,6 +1,16 @@
 ﻿<!doctype html>
 <html lang="en">
   <head>
+    <script>
+      /* Theme applied PRE-PAINT — before the stylesheet renders — so the page
+         never flashes dark before switching to light (design-system.md §4). */
+      (function () {
+        try {
+          var t = localStorage.getItem('aimy-ds-theme');
+          if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        } catch (e) {}
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AiMY QA — goal Browser</title>
@@ -18,6 +28,11 @@
       }
 
       :root {
+        /* Needed by the theme toggle and the light overrides below. Same
+           values as index.html — these pages never had the wash scale. */
+        --wash-3: rgba(255,255,255,0.04);
+        --wash-6: rgba(255,255,255,0.07);
+        --t-fast: var(--transition-fast);
         --ai: linear-gradient(104deg, #0066ff 0%, #61adf1 47%, #6fdfe2 100%);
         /* Richer navy-tinted dark palette matching V1 */
         --d950: #080b10;
@@ -62,6 +77,11 @@
         /* Layout Variables */
         --sidebar-width: 220px;
         --topbar-height: 60px;
+      
+        /* ── Gradients (design-system index.html:84-86, verbatim) ── */
+        --grad-avatar: linear-gradient(135deg,#7c3aed,#3369ff);
+        --grad-ellipse-1: radial-gradient(ellipse at center, rgba(0,102,255,0.18) 0%, rgba(97,173,241,0.1) 28%, transparent 60%);
+        --grad-ellipse-2: radial-gradient(ellipse at center, rgba(111,223,226,0.1) 0%, rgba(139,79,244,0.07) 38%, transparent 60%);
       }
 
       /* ── Accessibility: global focus-visible.
@@ -120,13 +140,7 @@
         transform: translate(-50%, -50%);
         width: 1300px;
         height: 1050px;
-        background: radial-gradient(
-          ellipse at center,
-          rgba(0, 102, 255, 0.24) 0%,
-          rgba(97, 173, 241, 0.15) 28%,
-          rgba(111, 223, 226, 0.09) 52%,
-          transparent 70%
-        );
+        background: var(--grad-ellipse-1);
       }
       #appEllipse::after {
         content: "";
@@ -135,12 +149,7 @@
         right: -4%;
         width: 750px;
         height: 650px;
-        background: radial-gradient(
-          ellipse at center,
-          rgba(111, 223, 226, 0.11) 0%,
-          rgba(139, 79, 244, 0.08) 38%,
-          transparent 66%
-        );
+        background: var(--grad-ellipse-2);
       }
       /* Ellipse rendered as a real DOM element — see #appEllipse in HTML */
 
@@ -181,25 +190,22 @@
       }
 
       /* Calls button */
-      .topnav-calls {
-        margin-right: 16px;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-      }
-      .topnav-calls svg,
-      .topnav-calls img {
-        display: block;
-      }
 
       /* Product tabs — pill container matching the SVG reference */
       .topnav-tabs {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
         display: flex;
         align-items: center;
         gap: 0;
-        flex: 1;
         justify-content: center;
+        pointer-events: none;
       }
+      .topnav-tabs > * { pointer-events: auto; }
+      /* The right-hand cluster keeps its own edge; the spacer absorbs the
+         difference so nothing fights the absolutely-centred strip. */
+      .topnav-spacer { flex: 1; }
       .topnav-tabs-inner {
         display: flex;
         align-items: center;
@@ -221,6 +227,7 @@
         transition: all var(--transition-fast);
         border: 1px solid transparent;
         white-space: nowrap;
+        text-decoration: none;
       }
       .topnav-tab:hover {
         background: rgba(255, 255, 255, 0.05);
@@ -374,9 +381,9 @@
       .sidebar-section-label {
         font-size: 10px;
         font-weight: 700;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
-        color: var(--d600);
+        color: var(--d500);
         padding: 4px 16px 6px;
         margin-top: 16px;
       }
@@ -405,7 +412,7 @@
       .nav-item.active {
         background: var(--qa-accent-dim);
         color: var(--qa-accent);
-        border-color: rgba(var(--qa-accent-rgb), 0.28);
+        border-color: rgba(var(--qa-accent-rgb), 0.22);
         box-shadow: 0 0 20px rgba(var(--qa-accent-rgb), 0.08);
       }
       /* AI Chat & Canvas — subtle AI gradient border to mark it as the primary surface */
@@ -2329,6 +2336,7 @@
 
       /* AI bubble icon on the left — the small AiMY logo in a circle */
       .aimy-float-icon {
+        position: relative;
         width: 36px;
         height: 36px;
         border-radius: 50%;
@@ -3750,6 +3758,255 @@
       .eval-view-all:hover {
         color: var(--d50);
       }
+      /* ══════════════════════════════════════════════════════════════════
+         LIGHT THEME
+         ──────────────────────────────────────────────────────────────────
+         Ported from the design system (design-strategy/index.html:177).
+         design-system.md §4: overrides are TOKEN-LEVEL only — never fork
+         component markup per theme. Dark stays the default; light is opt-in
+         via <html data-theme="light">, persisted to localStorage under
+         `aimy-ds-theme` and applied pre-paint so there is no flash.
+
+         The neutral ramp inverts, so --d50 remains "strongest text" and
+         --d950 remains "furthest surface" in both themes and no component
+         has to know which theme it is in.
+      ══════════════════════════════════════════════════════════════════ */
+      :root[data-theme="light"] {
+        /* Neutral ramp inverted */
+        --d950: #f7fafc;
+        --d900: #eef2f6;
+        --d850: #e4eaf0;
+        --d800: #d8e0e8;
+        --d750: #c8d2dc;
+        --d700: #b0bcca;
+        --d600: #6e7d8d;  /* muted labels — #8b9aaa fails 3:1 on white */
+        --d500: #637280;
+        --d400: #566472;
+        --d300: #3a4653;
+        --d200: #2a3540;
+        --d100: #1c2630;
+        --d50:  #10151b;
+
+        /* Brand tints denser for contrast on white */
+        --brand-dim:  rgba(51,105,255,0.12);
+        --qa-accent-dim: rgba(139,79,244,0.12);
+        --accent-dim: rgba(139,79,244,0.12);
+        /* --teal is a light cyan; darken for legible text on white */
+        --teal: #0d8f95;
+
+        /* Semantic hues darkened one step — dark-mode mid-tones fail contrast
+           as text on white. Tint backgrounds stay pale. */
+        --ok:   #0e9257;
+        --warn: #b26205;
+        --err:  #d92d20;
+        --info: #067dc2;
+        --ok-bg:   rgba(23,178,106,0.14);
+        --warn-bg: rgba(247,144,9,0.14);
+        --err-bg:  rgba(240,68,56,0.14);
+        --info-bg: rgba(14,165,233,0.14);
+
+        /* Surfaces */
+        --body-bg:           #f4f6f9;
+        --card-bg:           #ffffff;
+        --card-bg-raised:    #f7f9fc;
+        --card-border:       rgba(16,24,40,0.10);
+        --card-border-hover: rgba(16,24,40,0.18);
+
+        /* Theme-aware helpers */
+        --ai-text: #1f5fd0;
+        --hairline: rgba(16,24,40,0.09);
+        --text-strong: #10151b;
+
+        /* Elevation — cooler, softer on light */
+        --elev-1: 0 1px 2px rgba(16,24,40,0.08);
+        --elev-2: 0 1px 2px rgba(16,24,40,0.06), 0 8px 22px rgba(16,24,40,0.10);
+        --elev-3: 0 2px 6px rgba(16,24,40,0.08), 0 18px 48px rgba(16,24,40,0.12);
+
+        /* Status surface tints */
+        --tint-ok: rgba(23,178,106,0.07);
+        --tint-err: rgba(240,68,56,0.06);
+        --tint-warn: rgba(247,144,9,0.07);
+        --tint-accent: rgba(139,79,244,0.06);
+
+        /* Surface washes — ink instead of white (see --wash-* above) */
+        --wash-1: rgba(16,24,40,0.03);
+        --wash-2: rgba(16,24,40,0.04);
+        --wash-3: rgba(16,24,40,0.05);
+        --wash-4: rgba(16,24,40,0.065);
+        --wash-5: rgba(16,24,40,0.075);
+        --wash-6: rgba(16,24,40,0.09);
+        --wash-7: rgba(16,24,40,0.1);
+        --wash-8: rgba(16,24,40,0.13);
+        --wash-9: rgba(16,24,40,0.15);
+        --wash-10: rgba(16,24,40,0.19);
+        --wash-11: rgba(16,24,40,0.24);
+        --wash-12: rgba(16,24,40,0.3);
+
+        /* Ellipses: same hues at ~1/3 alpha. The design system defines no
+           light variant; at dark alphas these read as haze on a white body. */
+        --grad-ellipse-1: radial-gradient(ellipse at center, rgba(0,102,255,0.07) 0%, rgba(97,173,241,0.04) 28%, transparent 60%);
+        --grad-ellipse-2: radial-gradient(ellipse at center, rgba(111,223,226,0.05) 0%, rgba(139,79,244,0.035) 38%, transparent 60%);
+
+
+        --panel-bg: rgba(255,255,255,0.96);
+        --glass-bg: rgba(255,255,255,0.85);
+        --glass-border: rgba(16,24,40,0.10);
+        /* --card-border-focus and --code-bg are identical in both themes */
+      }
+
+      /* ── Scoped chrome corrections ────────────────────────────────────
+         design-system.md §4 allows "a small set of scoped chrome/component
+         rules" beyond the token layer. These are the places where a value is
+         structurally dark rather than tokenised. */
+      :root[data-theme="light"] body { background: var(--body-bg); }
+      /* The AiMY float bar and canvas are dark glass in dark; light glass in light. */
+      /* The float bar keeps its full treatment in light — surface, visible
+         border, elevation and the accent focus ring. The first pass flattened
+         it to plain white, which read as borderless. */
+      :root[data-theme="light"] .aimy-float-bar {
+        background: #ffffff;
+        border: 1px solid rgba(16,24,40,0.14);
+        box-shadow: 0 8px 32px rgba(16,24,40,0.10),
+                    0 0 0 1px rgba(16,24,40,0.03),
+                    inset 0 1px 0 rgba(255,255,255,0.9);
+      }
+      :root[data-theme="light"] .aimy-float-bar:focus-within {
+        border-color: rgba(var(--qa-accent-rgb), 0.55);
+        box-shadow: 0 12px 40px rgba(16,24,40,0.14),
+                    0 0 0 3px rgba(var(--qa-accent-rgb), 0.16),
+                    0 0 24px rgba(var(--qa-accent-rgb), 0.10);
+      }
+      :root[data-theme="light"] .aimy-overlay { background: rgba(244,246,249,0.86); }
+      :root[data-theme="light"] .overlay-input-bar,
+      :root[data-theme="light"] .msg-bubble { background: var(--card-bg); }
+      :root[data-theme="light"] .chat-msg.user .msg-bubble { background: var(--qa-accent-dim); color: var(--d50); }
+      /* ── Solid semantic fills in light ────────────────────────────────
+         These chips use DARK text on a bright fill, which reads well against
+         dark-theme --ok (#17b26a, 6.6:1). Light darkens --ok to #0e9257 for
+         text legibility, and dark-on-dark-green drops to 3.5:1. White on the
+         same fill is 4.1:1, so the text inverts rather than the fill — the
+         chip keeps its meaning and its colour. */
+      :root[data-theme="light"] .ag-act.yes,
+      :root[data-theme="light"] .fbt-act.yes,
+      :root[data-theme="light"] .ag-act.primary,
+      :root[data-theme="light"] .mb-action.primary,
+      :root[data-theme="light"] .notif-cta.primary-p1,
+      :root[data-theme="light"] .notif-cta.primary-p2,
+      :root[data-theme="light"] .k-action-primary,
+      :root[data-theme="light"] .ins-act,
+      :root[data-theme="light"] .hrp-attn-action,
+      :root[data-theme="light"] .dismiss-reason-confirm { color: #fff; }
+      :root[data-theme="light"] .ag-act.yes:hover,
+      :root[data-theme="light"] .fbt-act.yes:hover,
+
+      /* ── Filter strip: original dark identity restored ────────────────
+         The light-contrast pass replaced two muted values with full-strength
+         tokens — the chip text went from 55% white to solid --d300 and the
+         label from a 45% blue to --ai-text — which brightened the strip and
+         changed its look. The dark values below are the originals; light gets
+         its own muted equivalents rather than the dark ones being altered. */
+      :root[data-theme="light"] .filter-chip { color: rgba(16,24,40,0.62); }
+      :root[data-theme="light"] .filter-tray-label { color: rgba(31,95,208,0.72); }
+      :root[data-theme="light"] .filter-chip:hover { color: rgba(16,24,40,0.92); }
+
+      /* Solid-green confirm buttons: dark text works on dark-theme --ok
+         (#17b26a) but not on light's darker #0e9257. */
+      :root[data-theme="light"] .fbt-fb.yes,
+      :root[data-theme="light"] .fbt-fb.yes:hover { color: #fff; }
+
+      /* ── Sidebar nav items — design-system .ds-nav-link (index.html:483)
+         Item-level only. The topnav and sidebar keep their original
+         transparent backgrounds; the design system's translucent+blurred
+         chrome is a different shell treatment and is not applied here. */
+
+      .nav-item:hover { background: var(--wash-3); color: var(--d200); }
+      :root[data-theme="light"] .nav-item:hover { background: rgba(16,24,40,0.05); color: var(--d100); }
+      :root[data-theme="light"] .sidebar-section-label { color: var(--d500); }
+
+      /* The float bar's mark sits on a dark navy puck built for dark mode.
+         On a white bar that reads as a heavy hole, so light gets a pale
+         accent wash and the brand-gradient logo carries the colour. */
+      :root[data-theme="light"] .aimy-float-icon {
+        background: linear-gradient(135deg, rgba(139,79,244,0.14) 0%, rgba(51,105,255,0.12) 100%);
+        border-color: rgba(139,79,244,0.28);
+        box-shadow: 0 0 12px rgba(139,79,244,0.12);
+      }
+      :root[data-theme="light"] .overlay-badge { background: var(--wash-2); }
+
+      /* The design-system toast is dark glass; light needs its own surface or
+         its title, sub and Undo all sit near-invisible on it. */
+      :root[data-theme="light"] .aimy-toast {
+        background: rgba(255, 255, 255, 0.92);
+        border-color: var(--card-border);
+        box-shadow: 0 12px 40px rgba(16,24,40,0.16), 0 0 0 1px rgba(16,24,40,0.04);
+      }
+      :root[data-theme="light"] .aimy-toast-divider { background: var(--hairline); }
+
+      /* ══════════════════════════════════════════════════════════════════
+         CANVAS RENDER BLOCKS
+         ──────────────────────────────────────────────────────────────────
+         Ported from agent-scorecards.html (4415 / 4499 / 4507). These were
+         never defined here, so every render the Dashboard added — the
+         decision zones, the charts cut from the briefing — drew its type
+         label as full-size body text instead of a 9px uppercase badge.
+
+         The label carries no AiMY mark on purpose: the message avatar
+         beside the bubble already says who is speaking. The svg rule stays
+         so that any icon added here is sized rather than dropped in raw.
+      ══════════════════════════════════════════════════════════════════ */
+      .canvas-render {
+        width: 100%; max-width: 720px;
+        padding: 0 4px;
+      }
+      .canvas-type-label {
+        font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
+        text-transform: uppercase; color: var(--d500);
+        margin-bottom: 6px;
+        display: flex; align-items: center; gap: 5px;
+      }
+      .canvas-type-label svg { width: 10px; height: 10px; color: var(--ai-text); }
+      .canvas-action-row {
+        display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;
+      }
+
+      /* Scrollbars */
+      /* Panels whose fill is a literal dark colour rather than a token. */
+      :root[data-theme="light"] .filter-tray-inner { background: rgba(255,255,255,0.97); border-color: var(--card-border); }
+      :root[data-theme="light"] .overlay-input-bar,
+      :root[data-theme="light"] .aimy-float-bar { border-color: var(--card-border); }
+      :root[data-theme="light"] .v2-dropdown-panel,
+      :root[data-theme="light"] .tl-dd-menu,
+      :root[data-theme="light"] .menu,
+      :root[data-theme="light"] .eval-causes-float { background: var(--card-bg); border-color: var(--card-border); }
+      :root[data-theme="light"] .modal { background: var(--card-bg); }
+      :root[data-theme="light"] ::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.18); }
+      :root[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: rgba(16,24,40,0.30); }
+      /* The background blob is tuned for a dark canvas */
+      /* Solid-fill buttons keep white text in both themes */
+      :root[data-theme="light"] .em-direct,
+      :root[data-theme="light"] .btn-brand { color: #fff; }
+
+      /* ── Theme toggle ───────────────────────────────────────────────────
+         design-system.md §4: dark is the default, light is opt-in, the choice
+         persists to localStorage under `aimy-ds-theme`, and it is applied
+         pre-paint so the page never flashes the wrong theme. */
+      .theme-toggle {
+        width: 34px; height: 34px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        background: var(--wash-3); border: 1px solid var(--card-border);
+        color: var(--d400); cursor: pointer; flex-shrink: 0;
+        transition: background-color var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+      }
+      .theme-toggle:hover { background: var(--wash-6); color: var(--d100); border-color: var(--card-border-hover); }
+      .theme-toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+      .theme-toggle svg { width: 16px; height: 16px; }
+      /* The icon shows the theme you would switch TO, not the one you are in,
+         which is what the button's aria-label has always said ("Switch to
+         light theme" while dark). Sun on dark, moon on light. */
+      .theme-toggle .icon-moon { display: none; }
+      :root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+      :root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+
     </style>
   </head>
   <body>
@@ -3833,45 +4090,12 @@
         </div>
       </div>
 
-      <!-- Calls button -->
-      <div class="topnav-calls">
-        <svg
-          width="84"
-          height="36"
-          viewBox="0 0 84 44"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M0 22C0 9.84974 9.84974 0 22 0H62C74.1503 0 84 9.84974 84 22C84 34.1503 74.1503 44 62 44H22C9.84974 44 0 34.1503 0 22Z"
-            fill="#2E3439"
-          />
-          <path
-            d="M0 22C0 9.84974 9.84974 0 22 0C34.1503 0 44 9.84974 44 22C44 34.1503 34.1503 44 22 44C9.84974 44 0 34.1503 0 22Z"
-            fill="#444D55"
-          />
-          <path
-            d="M23.7081 17.0003C24.5221 17.1591 25.2701 17.5572 25.8565 18.1436C26.4429 18.73 26.841 19.478 26.9998 20.292M23.7081 13.667C25.3992 13.8549 26.9761 14.6121 28.18 15.8145C29.3839 17.0169 30.1431 18.5928 30.3331 20.2837M20.5223 23.5529C19.521 22.5516 18.7303 21.4194 18.1503 20.2113C18.1004 20.1074 18.0755 20.0555 18.0563 19.9897C17.9882 19.7561 18.0371 19.4692 18.1788 19.2714C18.2187 19.2157 18.2663 19.1681 18.3616 19.0728C18.6529 18.7815 18.7986 18.6358 18.8938 18.4893C19.253 17.9369 19.253 17.2248 18.8938 16.6724C18.7986 16.5259 18.6529 16.3802 18.3616 16.0889L18.1992 15.9265C17.7563 15.4836 17.5349 15.2622 17.2971 15.1419C16.8241 14.9027 16.2655 14.9027 15.7926 15.1419C15.5547 15.2622 15.3333 15.4836 14.8904 15.9265L14.7591 16.0578C14.3177 16.4992 14.0971 16.7199 13.9285 17.0199C13.7415 17.3528 13.607 17.8699 13.6082 18.2517C13.6092 18.5959 13.6759 18.831 13.8094 19.3014C14.5269 21.8292 15.8806 24.2145 17.8706 26.2045C19.8606 28.1945 22.2459 29.5482 24.7737 30.2657C25.2441 30.3992 25.4793 30.466 25.8234 30.467C26.2053 30.4681 26.7224 30.3337 27.0553 30.1467C27.3553 29.9781 27.576 29.7574 28.0173 29.3161L28.1487 29.1847C28.5916 28.7419 28.813 28.5204 28.9333 28.2826C29.1725 27.8096 29.1725 27.2511 28.9333 26.7781C28.813 26.5403 28.5916 26.3189 28.1487 25.876L27.9863 25.7136C27.695 25.4223 27.5493 25.2766 27.4028 25.1814C26.8504 24.8222 26.1383 24.8222 25.5858 25.1814C25.4394 25.2766 25.2937 25.4223 25.0024 25.7136C24.9071 25.8089 24.8595 25.8565 24.8038 25.8964C24.6059 26.038 24.319 26.087 24.0854 26.0189C24.0197 25.9997 23.9677 25.9747 23.8638 25.9249C22.6558 25.3449 21.5236 24.5542 20.5223 23.5529Z"
-            stroke="white"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M70 19L64 25L58 19"
-            stroke="white"
-            stroke-width="1.66667"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </div>
-
       <!-- Product tabs -->
+      <div class="topnav-spacer"></div>
       <div class="topnav-tabs">
         <div class="topnav-tabs-inner">
           <div class="topnav-tab">Connect</div>
-          <div class="topnav-tab">Knowledge</div>
+          <a class="topnav-tab" href="https://aimy-knowledge.nour-ali.workers.dev/" title="Switch to AiMY Knowledge">Knowledge</a>
           <div class="topnav-tab">Analytics</div>
           <div class="topnav-tab">Talent</div>
           <div class="topnav-tab active">
@@ -3885,7 +4109,13 @@
       </div>
 
       <!-- Right side -->
+      <div class="topnav-spacer"></div>
       <div class="topnav-right">
+        <button class="theme-toggle" id="themeToggle" type="button"
+                aria-label="Switch to light theme" title="Switch theme">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
         <div class="topnav-bell">
           <svg viewBox="0 0 24 24">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -3947,7 +4177,7 @@
               <line x1="3" y1="10" x2="21" y2="10"></line>
               <line x1="9" y1="4" x2="9" y2="20"></line>
             </svg>
-            goal Hub
+            Goal Hub
           </a>
           <a class="nav-item" href="data-ingestion.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3968,13 +4198,13 @@
       </div>
 
       <div class="app-main">
-        <!-- ════ goal HUB PAGE ══════════════════════════════════════════ -->
+        <!-- ════ Goal Hub PAGE ══════════════════════════════════════════ -->
         <div class="goal-hub-page dashboard-scroll" id="goalHubPage">
 
           <!-- Page header -->
           <div class="goal-hub-header">
             <div class="goal-hub-header-left">
-              <h1 class="goal-hub-title">goal Hub</h1>
+              <h1 class="goal-hub-title">Goal Hub</h1>
               <p class="goal-hub-subtitle">Manage scoring templates and govern platform metric definitions</p>
             </div>
             <!-- Role badge — visual signal of current access level -->
@@ -4726,7 +4956,6 @@
             </button>
             <div>
               <h3 class="version-panel-title">Version history</h3>
-              <p class="version-panel-subtitle" id="versionPanelSubtitle">—</p>
             </div>
           </div>
           <div class="version-panel-body" id="versionPanelBody"></div>
@@ -4859,7 +5088,7 @@
         <!-- ════ FLOATING AIMY INPUT BAR (scoped to app-main) ══════════ -->
         <div class="aimy-float-wrap" id="aimyFloatWrap">
 
-          <!-- goal Hub filter tray — context-aware chips per tab -->
+          <!-- Goal Hub filter tray — context-aware chips per tab -->
           <div class="goal-filter-tray" id="goalFilterTray">
             <div class="goal-filter-tray-inner">
               <span class="goal-tray-label" id="goalTrayLabel">Filter via AiMY</span>
@@ -4867,7 +5096,7 @@
           </div>
 
           <div class="aimy-float-bar" id="aimyFloatBar">
-            <div class="aimy-float-icon" style="width: 32px; height: 32px">
+            <div class="aimy-float-icon">
               <svg width="23" height="25" viewBox="0 0 18 20">
                 <use href="#aimy-logo-small" />
               </svg>
@@ -4977,7 +5206,7 @@
           <!-- Input bar inside overlay -->
           <div class="overlay-input-wrap" id="overlayInputWrap">
             <div class="overlay-input-bar">
-              <div class="aimy-float-icon" style="width: 32px; height: 32px">
+              <div class="aimy-float-icon">
                 <svg width="23" height="25" viewBox="0 0 18 20">
                   <use href="#aimy-logo-small" />
                 </svg>
@@ -5074,7 +5303,7 @@
 
 
       /* ══════════════════════════════════════════════════════════════
-         goal HUB — PAGE STYLES
+         Goal Hub — PAGE STYLES
       ════════════════════════════════════════════════════════════════ */
 
       .goal-hub-page {
@@ -7816,7 +8045,7 @@
       }
 
       /* ══════════════════════════════════════════════════════════════
-         goal HUB v3 — FILTER CHIP SYSTEM (matches index.html pattern)
+         Goal Hub v3 — FILTER CHIP SYSTEM (matches index.html pattern)
       ════════════════════════════════════════════════════════════════ */
 
       /* Active filter strip */
@@ -8471,7 +8700,481 @@
         margin-top: 4px;
       }
     
-    </style>
+          /* ══════════════════════════════════════════════════════════════════
+         GENERATED — light-mode text colours
+         ──────────────────────────────────────────────────────────────────
+         This page's own components hardcode white text for a dark card.
+         Under light those cards turn white and the text vanishes (measured
+         as low as 1.05:1). Each rule below restates the SAME weight from
+         the neutral ramp, which inverts with the theme — so nothing moves
+         in dark and light gets readable text at the intended emphasis.
+
+         Rules painting their own saturated or gradient background are not
+         listed: white on a brand fill is right in both themes. 7 such.
+      ══════════════════════════════════════════════════════════════════ */
+      :root[data-theme="light"] .evidence-pill .ev-value { color: var(--d50); }
+      :root[data-theme="light"] .dc-val { color: var(--d50); }
+      :root[data-theme="light"] .finding-title { color: var(--d50); }
+      :root[data-theme="light"] .kf-conclusion { color: var(--d50); }
+      :root[data-theme="light"] .feed-title { color: var(--d50); }
+      :root[data-theme="light"] .goal-active-strip .afs-clear-all { color: var(--d500); }
+      :root[data-theme="light"] .goal-filter-tray .filter-chip { color: var(--d300); }
+
+      /* ══════════════════════════════════════════════════════════════════
+         GENERATED — light-mode surfaces
+         ──────────────────────────────────────────────────────────────────
+         These components hardcode a dark panel colour, so under light they
+         stayed dark while their text correctly darkened — text and surface
+         collapsing onto each other at ~1.05:1.
+
+         Each dark surface maps to a light one by luminance rank, so the
+         depth ordering between a page's panels survives the inversion
+         instead of flattening to one white. Dark is untouched.
+      ══════════════════════════════════════════════════════════════════ */
+      :root[data-theme="light"] body { background: var(--body-bg); }
+      :root[data-theme="light"] .topnav-tab:hover { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .topnav-bell { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .topnav-bell:hover { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .topnav-user { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .topnav-user:hover { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .nav-item:hover { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .ai .priority-badge { background: rgba(255,255,255,0.2); }
+      :root[data-theme="light"] .evidence-pill { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .bcard-divider { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .expand-toggle:hover { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .bcard-data { background: rgba(255,255,255,0.3); }
+      :root[data-theme="light"] .finding-item { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .chart-expand-trigger:hover { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .goal-brief:hover { background: rgba(255,255,255,1); }
+      :root[data-theme="light"] .raw-data-toggle:hover { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .toggle-icon { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .raw-data-toggle:hover .toggle-icon { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .spike-chart-wrap { background: rgba(255,255,255,0.3); }
+      :root[data-theme="light"] .driver-label::after { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .driver-bar-track { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .sec-btn { background: rgba(16,24,40,0.02); }
+      :root[data-theme="light"] .sec-btn:hover { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .feed-header { background: rgba(255,255,255,0.22); }
+      :root[data-theme="light"] .feed-item:hover { background: rgba(16,24,40,0.025); }
+      :root[data-theme="light"] .v2-ai-input-full { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .v2-ai-input { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .range-tabs { background: rgba(255,255,255,0.35); }
+      :root[data-theme="light"] .range-tab:hover { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .compare-toggle { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .compare-toggle.active { background: rgba(255,255,255,0.16); }
+      :root[data-theme="light"] .v2-stat-divider { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .ai-insight-panel { background: rgba(255,255,255,0.17); }
+      :root[data-theme="light"] .memory-cue { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .aimy-float-bar { background: var(--body-bg); }
+      :root[data-theme="light"] .aimy-overlay { background: rgba(255,255,255,0.4); }
+      :root[data-theme="light"] .overlay-close { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .overlay-close:hover { background: rgba(16,24,40,0.1); }
+      :root[data-theme="light"] .overlay-badge { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .overlay-thread::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .msg-avatar.aimy-av { background: rgba(255,255,255,0.45); }
+      :root[data-theme="light"] .chat-msg.aimy .msg-bubble { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .overlay-input-bar { background: rgba(255,255,255,0.82); }
+      :root[data-theme="light"] .overlay-sugg-chip { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .overlay-sugg-chip:hover { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .dashboard-scroll::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.1); }
+      :root[data-theme="light"] .dashboard-scroll::-webkit-scrollbar-thumb:hover { background: rgba(16,24,40,0.2); }
+      :root[data-theme="light"] .v2-chip { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .v2-chip:hover { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .v2-chip.explore { background: rgba(255,255,255,0.14); }
+      :root[data-theme="light"] .v2-chip-badge.explore-badge { background: rgba(255,255,255,0.2); }
+      :root[data-theme="light"] .aimy-toast-divider { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .context-zone--state { background: rgba(16,24,40,0.015); }
+      :root[data-theme="light"] .state-confidence { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .state-alt:hover { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .quick-action-btn { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .eval-bar-row:hover { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .eval-bar-track { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .eval-insight { background: rgba(255,255,255,0.16); }
+      :root[data-theme="light"] .eval-sec-btn { background: rgba(16,24,40,0.02); }
+      :root[data-theme="light"] .eval-sec-btn:hover { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .eval-feed-header { background: rgba(255,255,255,0.2); }
+      :root[data-theme="light"] .coming-soon-jira { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .goal-role-badge { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .goal-tab:hover { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .goal-view-toggle { background: rgba(255,255,255,0.3); }
+      :root[data-theme="light"] .goal-view-btn:hover { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .tpl-industry-tag { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .tpl-channel-tag { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .aib-chip { background: rgba(255,255,255,0.2); }
+      :root[data-theme="light"] .aib-chip:hover { background: rgba(255,255,255,0.28); }
+      :root[data-theme="light"] .aib-chip.secondary { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .aib-chip.secondary:hover { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .aib-dismiss:hover { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .tpl-ai-btn.ghost { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .tpl-ai-btn.ghost:hover { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .tpl-preview-panel { background: var(--body-bg); }
+      :root[data-theme="light"] .tpl-preview-close { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .tpl-preview-close:hover { background: rgba(16,24,40,0.1); }
+      :root[data-theme="light"] .tpl-preview-body::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .goal-cat-icon { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .goal-cat-bar-track { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .goal-modal-backdrop { background: rgba(255,255,255,0.65); }
+      :root[data-theme="light"] .goal-modal { background: var(--body-bg); }
+      :root[data-theme="light"] .goal-modal-value { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .goal-modal-impact { background: rgba(16,24,40,0.02); }
+      :root[data-theme="light"] .editor-overlay { background: var(--body-bg); }
+      :root[data-theme="light"] .editor-topbar { background: var(--body-bg); }
+      :root[data-theme="light"] .editor-back-btn { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .editor-back-btn:hover { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .editor-draft-btn { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .editor-draft-btn:hover { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .editor-right::-webkit-scrollbar-thumb, .editor-left::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .editor-input { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .editor-textarea { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .goal-dropdown-trigger { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .goal-dropdown-trigger:hover { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .goal-dropdown-trigger.open { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .goal-dropdown-menu::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .goal-dropdown-option:hover { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .editor-weight-summary { background: rgba(16,24,40,0.02); }
+      :root[data-theme="light"] .editor-weight-bar-track { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .editor-cat-row { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .editor-cat-name-input { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .editor-cat-criteria { background: rgba(16,24,40,0.02); }
+      :root[data-theme="light"] .editor-cat-weight-input { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .version-panel { background: var(--body-bg); }
+      :root[data-theme="light"] .version-panel-body::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .version-item:not(:last-child)::before { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .version-diff { background: rgba(16,24,40,0.02); }
+      :root[data-theme="light"] .tpl-history-btn:hover { background: rgba(16,24,40,0.02); }
+      :root[data-theme="light"] .metric-table th { background: var(--body-bg); }
+      :root[data-theme="light"] .metric-table tr:hover td { background: rgba(16,24,40,0.02); }
+      :root[data-theme="light"] .metric-status-badge.deprecated { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .metric-templates-count { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .metric-action-btn:hover { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .metric-detail-panel { background: var(--body-bg); }
+      :root[data-theme="light"] .metric-detail-value.formula { background: rgba(255,255,255,0.35); }
+      :root[data-theme="light"] .metric-dep-tag { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .metric-deprecation-warn { background: rgba(16,24,40,0.03); }
+      :root[data-theme="light"] .governance-main::-webkit-scrollbar-thumb, .governance-sidebar::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .cr-impact-badge { background: rgba(255,255,255,0.25); }
+      :root[data-theme="light"] .cr-status-badge.deployed { background: rgba(255,255,255,0.2); }
+      :root[data-theme="light"] .cr-view-btn:hover { background: rgba(16,24,40,0.05); }
+      :root[data-theme="light"] .audit-log-table-wrap .metric-table th { background: rgba(16,24,40,0.02); }
+      :root[data-theme="light"] .perm-toggle { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .perm-knob { background: rgba(16,24,40,0.4); }
+      :root[data-theme="light"] .health-bar-track { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .health-alert-row { background: rgba(16,24,40,0.02); }
+      :root[data-theme="light"] .goal-filter-tray-inner { background: rgba(255,255,255,0.88); }
+      :root[data-theme="light"] .goal-filter-tray .filter-chip { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .goal-filter-tray .filter-chip.pressed { background: rgba(255,255,255,0.2); }
+      :root[data-theme="light"] .goal-overlay-backdrop { background: rgba(255,255,255,0.7); }
+      :root[data-theme="light"] .kdo-shell { background: var(--body-bg); }
+      :root[data-theme="light"] .kdo-header { background: rgba(16,24,40,0.015); }
+      :root[data-theme="light"] .kdo-left::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .kdo-right::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .kdo-legend-row:hover { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .kdo-legend-row.legend-active { background: rgba(16,24,40,0.055); }
+      :root[data-theme="light"] .kdo-legend-bar-track { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .kdo-cat-row { background: rgba(16,24,40,0.025); }
+      :root[data-theme="light"] .kdo-cat-icon-wrap { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .kdo-cat-bar { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .kdo-aimy-zone { background: rgba(255,255,255,0.14); }
+      :root[data-theme="light"] .kdo-action-chip.ghost { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .kdo-action-chip.ghost:hover { background: rgba(16,24,40,0.08); }
+      :root[data-theme="light"] .kdo-version-item { background: rgba(16,24,40,0.02); }
+      :root[data-theme="light"] .kdo-version-overlay { background: var(--body-bg); }
+      :root[data-theme="light"] .metric-usage-track { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .metric-detail-overlay { background: var(--body-bg); }
+      :root[data-theme="light"] .mdo-body::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .mdo-formula { background: rgba(255,255,255,0.4); }
+      :root[data-theme="light"] .mdo-dep-tag { background: rgba(16,24,40,0.04); }
+      :root[data-theme="light"] .mdo-aimy-zone { background: rgba(255,255,255,0.14); }
+      :root[data-theme="light"] .cr-diff-row { background: rgba(255,255,255,0.28); }
+
+      /* ══════════════════════════════════════════════════════════════════
+         GENERATED — light-mode brand hues
+         ──────────────────────────────────────────────────────────────────
+         Each of these hardcodes a token's DARK value as text (mostly
+         #61adf1, the dark --ai-text), so the light block's darkened value
+         never reached them and they sat at ~2.1:1 on white.
+
+         Matched by value identity, then restated as the token — so light
+         inherits whatever the design system already decided that token
+         becomes, rather than a second opinion invented here.
+      ══════════════════════════════════════════════════════════════════ */
+      :root[data-theme="light"] .ai .priority-badge { color: var(--ai-text); }
+      :root[data-theme="light"] .compare-toggle.active { color: var(--ai-text); }
+      :root[data-theme="light"] .ai-insight-header span { color: var(--ai-text); }
+      :root[data-theme="light"] .v2-chips-suggested span { color: var(--ai-text); }
+      :root[data-theme="light"] .v2-chip-badge.explore-badge { color: var(--ai-text); }
+      :root[data-theme="light"] .explore-action { color: var(--ai-text); }
+      :root[data-theme="light"] .aimy-toast-undo { color: var(--ai-text); }
+      :root[data-theme="light"] .state-bar-label .label-text { color: var(--ai-text); }
+      :root[data-theme="light"] .quick-action-btn:hover { color: var(--ai-text); }
+      :root[data-theme="light"] .eval-live-badge { color: var(--ai-text); }
+      :root[data-theme="light"] .eval-insight-label { color: var(--ai-text); }
+      :root[data-theme="light"] .tpl-type-badge.system { color: var(--ai-text); }
+      :root[data-theme="light"] .aib-chip { color: var(--ai-text); }
+      :root[data-theme="light"] .cr-status-badge.deployed { color: var(--ai-text); }
+      :root[data-theme="light"] .kdo-type-badge { color: var(--ai-text); }
+      :root[data-theme="light"] .kdo-aimy-zone-header { color: var(--ai-text); }
+      :root[data-theme="light"] .metric-card-type { color: var(--ai-text); }
+      :root[data-theme="light"] .mdo-aimy-header { color: var(--ai-text); }
+
+      /* ── Light: the last four, by hand ───────────────────────────────
+         .goal-tray-label is the same rgba(99,169,255,0.45) as the Dashboard's
+         filter-tray label — kept at its original value in dark at your
+         request, so light gets its own darker blue rather than a dark edit.
+
+         The dropdown trigger/option text is the muted --d600, which is
+         correct on a dark panel but too light on the pale panel it now sits
+         on; one step stronger restores the intended emphasis. The selected
+         option carried the accent as 13px body text (3.18 against a 4.5 bar)
+         — the accent stays on the chip, the label takes body colour. */
+      :root[data-theme="light"] .goal-tray-label { color: rgba(31,95,208,0.72); }
+      :root[data-theme="light"] .goal-dropdown-trigger span { color: var(--d400); }
+      :root[data-theme="light"] .goal-dropdown-option { color: var(--d200); }
+      :root[data-theme="light"] .goal-dropdown-option.selected { color: var(--d100); }
+
+      /* ══════════════════════════════════════════════════════════════════
+         GENERATED — light depth: shadows and black overlays
+         ──────────────────────────────────────────────────────────────────
+         Both of these say "depth" on a dark page and say something else
+         on a white one.
+
+         Shadows were built at rgba(0,0,0,0.35–0.45) to register against a
+         near-black canvas. On white that is a grey halo, not an elevation
+         cue. Softened toward the values the toast and float bar already
+         use in light (0.10–0.16), which are the reference.
+
+         rgba(0,0,0,a) BACKGROUNDS are recesses — a segmented-control track
+         sunk into a dark panel. Inverting them to a white overlay turned
+         them into milky grey slabs; a recess on white is a faint dark
+         tint, so the alpha is carried across rather than the colour.
+      ══════════════════════════════════════════════════════════════════ */
+      :root[data-theme="light"] .bcard:hover { box-shadow: 0 8px 32px rgba(16,24,40,0.09),
+          0 0 0 1px rgba(255, 255, 255, 0.05); }
+      :root[data-theme="light"] .bcard.tier-primary { box-shadow: 0 12px 40px rgba(16,24,40,0.135),
+          0 0 0 1px rgba(var(--qa-accent-rgb), 0.2); }
+      :root[data-theme="light"] .bcard.tier-primary:hover { box-shadow: 0 18px 48px rgba(16,24,40,0.14),
+          0 0 0 1px rgba(var(--qa-accent-rgb), 0.3); }
+      :root[data-theme="light"] .narrative-card { box-shadow: 0 4px 24px rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .chart-v2 { box-shadow: 0 4px 24px rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .range-tab.active { box-shadow: 0 1px 4px rgba(16,24,40,0.12); }
+      :root[data-theme="light"] .chart-tooltip { box-shadow: 0 4px 12px rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .anno-card { box-shadow: 0 4px 16px rgba(16,24,40,0.09); }
+      :root[data-theme="light"] .peak-card { box-shadow: 0 4px 12px rgba(16,24,40,0.09); }
+      :root[data-theme="light"] .aimy-float-bar { box-shadow: 0 8px 32px rgba(16,24,40,0.14),
+          0 0 0 1px rgba(16,24,40,0.09),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05); }
+      :root[data-theme="light"] .aimy-float-bar:focus-within { box-shadow: 0 12px 40px rgba(16,24,40,0.14),
+          0 0 0 3px rgba(var(--qa-accent-rgb), 0.18),
+          0 0 24px rgba(var(--qa-accent-rgb), 0.12),
+          inset 0 1px 0 rgba(255, 255, 255, 0.07); }
+      :root[data-theme="light"] .overlay-input-bar { box-shadow: 0 8px 32px rgba(16,24,40,0.12),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06); }
+      :root[data-theme="light"] .overlay-input-bar:focus-within { box-shadow: 0 12px 40px rgba(16,24,40,0.14),
+          0 0 0 3px rgba(var(--qa-accent-rgb), 0.1),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08); }
+      :root[data-theme="light"] .v2-chip:hover { box-shadow: 0 8px 24px rgba(16,24,40,0.09); }
+      :root[data-theme="light"] .aimy-toast { box-shadow: 0 20px 60px rgba(16,24,40,0.14),
+          0 0 0 1px rgba(16,24,40,0.075),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06); }
+      :root[data-theme="light"] .aimy-context-panel { box-shadow: 0 4px 24px rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .eval-panel { box-shadow: 0 4px 24px rgba(16,24,40,0.06); }
+      :root[data-theme="light"] .eval-causes-float { box-shadow: 0 8px 28px rgba(16,24,40,0.135); }
+      :root[data-theme="light"] .tpl-card.highlighted { box-shadow: 0 0 0 2px rgba(var(--qa-accent-rgb),0.18), 0 8px 32px rgba(16,24,40,0.09) !important; }
+      :root[data-theme="light"] .tpl-card:hover { box-shadow: 0 8px 32px rgba(16,24,40,0.09), 0 0 0 1px rgba(255,255,255,0.05); }
+      :root[data-theme="light"] .tpl-card.selected { box-shadow: 0 0 0 2px rgba(var(--qa-accent-rgb),0.15), 0 8px 32px rgba(16,24,40,0.09); }
+      :root[data-theme="light"] .tpl-card.aimy-highlight { box-shadow: 0 0 0 2px rgba(97,173,241,0.12), 0 8px 32px rgba(16,24,40,0.09); }
+      :root[data-theme="light"] .tpl-preview-panel { box-shadow: -12px 0 48px rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .goal-modal { box-shadow: 0 24px 64px rgba(16,24,40,0.14), 0 0 0 1px rgba(255,255,255,0.04); }
+      :root[data-theme="light"] .goal-dropdown-menu { box-shadow: 0 16px 40px rgba(16,24,40,0.14), 0 0 0 1px rgba(255,255,255,0.04); }
+      :root[data-theme="light"] .version-panel { box-shadow: -12px 0 48px rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .goal-filter-tray-inner { box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 20px rgba(16,24,40,0.105), 0 0 24px rgba(51,105,255,0.06); }
+      :root[data-theme="light"] .kdo-shell { box-shadow: 0 32px 80px rgba(16,24,40,0.14), 0 0 0 1px rgba(255,255,255,0.04); }
+      :root[data-theme="light"] .kdo-version-overlay { box-shadow: 0 24px 64px rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .metric-card:hover { box-shadow: 0 8px 32px rgba(16,24,40,0.09); }
+      :root[data-theme="light"] .metric-detail-overlay { box-shadow: 0 32px 80px rgba(16,24,40,0.14), 0 0 0 1px rgba(255,255,255,0.04); }
+      :root[data-theme="light"] .bcard-data { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .spike-chart-wrap { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .feed-header { background: rgba(16,24,40,0.042); }
+      :root[data-theme="light"] .range-tabs { background: rgba(16,24,40,0.087); }
+      :root[data-theme="light"] .eval-feed-header { background: rgba(16,24,40,0.035); }
+      :root[data-theme="light"] .goal-view-toggle { background: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .goal-modal-backdrop { background: rgba(16,24,40,0.193); }
+      :root[data-theme="light"] .metric-detail-value.formula { background: rgba(16,24,40,0.087); }
+      :root[data-theme="light"] .cr-impact-badge { background: rgba(16,24,40,0.052); }
+      :root[data-theme="light"] .goal-overlay-backdrop { background: rgba(16,24,40,0.21); }
+      :root[data-theme="light"] .mdo-formula { background: rgba(16,24,40,0.105); }
+      :root[data-theme="light"] .cr-diff-row { background: rgba(16,24,40,0.063); }
+
+      /* ══════════════════════════════════════════════════════════════════
+         GENERATED — light hairlines
+         ──────────────────────────────────────────────────────────────────
+         rgba(255,255,255,a) is the lit edge of a panel raised off a dark
+         page. On white it is invisible, so panels lose their edge and
+         controls lose their outline entirely. Inverted to the same-
+         strength dark hairline, the way the wash scale already does.
+      ══════════════════════════════════════════════════════════════════ */
+      :root[data-theme="light"] .app-topnav { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .topnav-bell { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .topnav-user { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .topnav-user:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .nav-item:hover { border-color: rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .filter-bar { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .filter-select { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .filter-select:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .evidence-pill { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .bcard-data { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .chart-expand-trigger { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .goal-brief { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .goal-brief:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .passing-toggle { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .passing-toggle:hover { border-color: rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .raw-data-toggle { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .toggle-icon { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .signal-action-row { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .sec-btn { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .sec-btn:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .feed-items { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .feed-header { border: 1px solid rgba(16,24,40,0.056); }
+      :root[data-theme="light"] .feed-item { border: 1px solid rgba(16,24,40,0.042); }
+      :root[data-theme="light"] .v2-controls { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .v2-ai-input-full { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .range-tabs { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .compare-toggle { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .compare-toggle:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .v2-stats-row { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .chart-tooltip { border: 1px solid rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .memory-cue { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .aimy-float-bar { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .overlay-close { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .overlay-close:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .overlay-badge { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .chat-msg.aimy .msg-bubble { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .overlay-input-bar { border: 1px solid rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .overlay-sugg-chip { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .overlay-sugg-chip:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .v2-chip { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .aimy-toast { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .context-zone--state { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .state-alt { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .state-alt:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .quick-actions-bar { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .quick-action-btn { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .eval-header { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .eval-causes-float { border: 1px solid rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .eval-sec-btn { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .eval-feed { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .eval-feed-header { border: 1px solid rgba(16,24,40,0.056); }
+      :root[data-theme="light"] .coming-soon-jira { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .goal-role-badge { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .role-toggle-dev { border: 1px dashed rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .role-toggle-dev:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .goal-tab-bar { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .goal-filter-bar { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .goal-search-wrap { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .goal-view-toggle { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .tpl-industry-tag { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .tpl-channel-tag { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .tpl-card-footer { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .aib-chip.secondary { border-color: rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .tpl-card-ai-actions { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .tpl-ai-btn.ghost { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .tpl-ai-btn.ghost:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .tpl-preview-panel { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .tpl-preview-header { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .tpl-preview-close { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .tpl-preview-meta { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .goal-category-row { border: 1px solid rgba(16,24,40,0.056); }
+      :root[data-theme="light"] .goal-cat-icon { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .tpl-active-clients-table th { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .tpl-active-clients-table td { border: 1px solid rgba(16,24,40,0.056); }
+      :root[data-theme="light"] .tpl-preview-footer { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .goal-modal { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .goal-modal-header { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .goal-modal-value { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .goal-modal-impact { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .goal-modal-footer { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .editor-topbar { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .editor-back-btn { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .editor-draft-btn { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .editor-left { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .editor-input { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .editor-textarea { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .goal-dropdown-trigger { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .goal-dropdown-trigger:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .goal-dropdown-menu { border: 1px solid rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .goal-dropdown-option { border: 1px solid rgba(16,24,40,0.056); }
+      :root[data-theme="light"] .editor-weight-summary { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .editor-cat-row { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .editor-cat-row:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .editor-cat-name-input { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .editor-cat-criteria { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .editor-cat-weight-input { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .version-panel { border: 1px solid rgba(16,24,40,0.126); }
+      :root[data-theme="light"] .version-panel-header { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .version-diff { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .tpl-history-btn { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .metric-table th { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .metric-table td { border: 1px solid rgba(16,24,40,0.056); }
+      :root[data-theme="light"] .metric-status-badge.deprecated { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .metric-action-btn { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .metric-action-btn:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .metric-detail-panel { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .metric-detail-header { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .metric-detail-value.formula { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .metric-dep-tag { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .metric-deprecation-warn { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .governance-main { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .gov-filter-chip { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .gov-filter-chip:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .cr-footer { border: 1px solid rgba(16,24,40,0.056); }
+      :root[data-theme="light"] .cr-view-btn { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .audit-log-table-wrap { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .permission-matrix th { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .permission-matrix td { border: 1px solid rgba(16,24,40,0.056); }
+      :root[data-theme="light"] .perm-toggle { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .health-alert-row { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .goal-active-strip .afs-label { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .goal-tray-label { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .goal-filter-tray .filter-chip { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .goal-tab-toolbar { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .kdo-shell { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .kdo-header { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .kdo-left { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .kdo-cat-row { border: 1px solid rgba(16,24,40,0.084); }
+      :root[data-theme="light"] .kdo-cat-row:hover { border-color: rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .kdo-cat-icon-wrap { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .kdo-action-chip.ghost { border: 1px solid rgba(16,24,40,0.112); }
+      :root[data-theme="light"] .kdo-client-row { border: 1px solid rgba(16,24,40,0.056); }
+      :root[data-theme="light"] .kdo-version-toggle { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .kdo-version-toggle:hover { border-color: rgba(16,24,40,0.16); }
+      :root[data-theme="light"] .kdo-version-item { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .kdo-version-overlay { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .kdo-version-overlay-header { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .metric-card-footer { border: 1px solid rgba(16,24,40,0.07); }
+      :root[data-theme="light"] .metric-detail-overlay { border: 1px solid rgba(16,24,40,0.14); }
+      :root[data-theme="light"] .mdo-header { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .mdo-formula { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .mdo-dep-tag { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .mdo-footer { border: 1px solid rgba(16,24,40,0.098); }
+      :root[data-theme="light"] .cr-diff-row { border: 1px solid rgba(16,24,40,0.084); }
+
+      /* ── Light: the view toggle reads inside-out ─────────────────────
+         .goal-view-btn.active uses var(--d700), which on dark is one step
+         TOWARD the foreground — a chip lifted out of a near-black track. The
+         ramp inverts, so on light the same token is a mid grey and the
+         selected segment came out heavier than the track around it.
+
+         On light a selected segment is the raised, whitest thing, with a
+         hairline shadow doing the lifting instead of a fill. */
+      :root[data-theme="light"] .goal-view-btn.active {
+        background: var(--card-bg);
+        color: var(--d50);
+        box-shadow: 0 1px 2px rgba(16,24,40,0.10);
+      }
+      :root[data-theme="light"] .goal-view-btn:hover { background: rgba(16,24,40,0.04); }
+
+</style>
     <script>
       (function () {
         "use strict";
@@ -8762,7 +9465,7 @@
           handleOverlaySend();
         };
 
-        /* ── Expose canvas API globally so goal Hub can drive it ────── */
+        /* ── Expose canvas API globally so Goal Hub can drive it ────── */
         window._goalCanvas = {
           open: function(msg) {
             if (!overlayOpen) openOverlay(null);
@@ -8789,7 +9492,7 @@
     <script>
 
       /* ══════════════════════════════════════════════════════════════
-         goal HUB v3 — JAVASCRIPT
+         Goal Hub v3 — JAVASCRIPT
          AI Native Knowledge to Action
       ════════════════════════════════════════════════════════════════ */
 
@@ -9000,7 +9703,7 @@
         syncCustomEmptyState();
         updateHubSummaryBar();
       }
-      // A7: goal Hub page-level AiMY summary
+      // A7: Goal Hub page-level AiMY summary
       function updateHubSummaryBar() {
         const bar = document.getElementById('aimyHubSummaryBar');
         const ctx = document.getElementById('hubSummaryContext');
@@ -9699,7 +10402,7 @@
       // Primary action surface: all CTAs funnel here
       // ──────────────────────────────────────────────────────────
       // ──────────────────────────────────────────────────────────
-      // CANVAS ENGINE — every goal Hub action routes here
+      // CANVAS ENGINE — every Goal Hub action routes here
       // ──────────────────────────────────────────────────────────
 
       function injectCanvasAction(prompt, contextData) {
@@ -9991,7 +10694,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           return 'Deploying applies the change to <strong>future evaluations only</strong> — no historical re-scoring occurs.' + (readyToDeploy.length > 1 ? ' You currently have <strong>' + readyToDeploy.length + ' approved CRs</strong> ready to deploy.' : '') + '<br><br>Post-deploy: check Metric Health within the next evaluation cycle. If coverage drops, verify the Data Ingestion pipeline for the affected source.';
         }
         if (p.includes('permission') || (p.includes('role') && p.includes('access'))) {
-          return `The permission matrix controls what each role can do across goal Hub. Changes take effect immediately and are audit-logged.<br><br><strong>Current model:</strong><br>• <em>QA Analyst</em> — view metrics only<br>• <em>QA Manager</em> — view and edit; cannot approve or deprecate<br>• <em>Admin</em> — full access, always on<br><br>Permission escalation (granting approve to Analyst) should be reviewed quarterly.`;
+          return `The permission matrix controls what each role can do across Goal Hub. Changes take effect immediately and are audit-logged.<br><br><strong>Current model:</strong><br>• <em>QA Analyst</em> — view metrics only<br>• <em>QA Manager</em> — view and edit; cannot approve or deprecate<br>• <em>Admin</em> — full access, always on<br><br>Permission escalation (granting approve to Analyst) should be reviewed quarterly.`;
         }
 
         // ── METRIC HEALTH branches ──────────────────────────────
@@ -10004,7 +10707,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         }
 
         // ── FALLBACK ────────────────────────────────────────────
-        return `I&#39;m scanning the goal Hub for you… Here's a quick summary of current state:
+        return `I&#39;m scanning the Goal Hub for you… Here's a quick summary of current state:
 
 <br><br>• <strong>${Object.keys(TEMPLATES).length} templates</strong> configured — ${Object.values(TEMPLATES).filter(t=>t.activeClients?.length>0).length} active across ${Object.keys(ACTIVE_CLIENT_TEMPLATES).length} clients
 • <strong>${METRICS.filter(m=>m.status==='Active').length} active metrics</strong>, ${METRICS.filter(m=>m.status==='Draft').length} in draft, ${METRICS.filter(m=>m.status==='Deprecated').length} deprecated
@@ -10042,7 +10745,6 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
               <div class="metric-card-name">${m.name}</div>
               <span class="metric-card-type">${m.type}</span>
             </div>
-            <p class="metric-card-desc">${m.desc}</p>
             <div class="metric-card-usage">
               <div class="metric-usage-label">
                 <span>Evaluations scored</span>
@@ -11028,7 +11730,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       function publishEditor()    { closeEditor(); closePreview(); if(typeof showToast==='function') showToast('Template published','Now visible in the gallery'); }
 
       // ──────────────────────────────────────────────────────────
-      // CANVAS — patch handleFloatSubmit to route goal Hub filters
+      // CANVAS — patch handleFloatSubmit to route Goal Hub filters
       // ──────────────────────────────────────────────────────────
       const _origHandleFloat = typeof handleFloatSubmit !== 'undefined' ? handleFloatSubmit : null;
       window.addEventListener('load', function() {
@@ -11152,7 +11854,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         });
       });
 
-      // ── AiMY overlay suggestion chips for goal Hub ──────────────
+      // ── AiMY overlay suggestion chips for Goal Hub ──────────────
       (function() {
         const el = document.getElementById('overlaySuggestions');
         if (!el) return;
@@ -11554,7 +12256,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
                 </button>
                 <div class="editor-breadcrumb">
-                  <span class="editor-bc-parent">goal Hub</span>
+                  <span class="editor-bc-parent">Goal Hub</span>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
                   <span class="editor-bc-current" id="editorBreadcrumb">New template</span>
                 </div>
@@ -11622,5 +12324,25 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           <div class="aimy-toast-progress" id="aimyToastProgress"></div>
         </div>
 
-  </body>
+      <script>
+      /* Theme toggle — token-level swap, no markup forked per theme. */
+      (function () {
+        var btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        function sync() {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          btn.setAttribute('aria-label', light ? 'Switch to dark theme' : 'Switch to light theme');
+        }
+        btn.addEventListener('click', function () {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          var next = light ? 'dark' : 'light';
+          if (next === 'light') document.documentElement.setAttribute('data-theme', 'light');
+          else document.documentElement.removeAttribute('data-theme');
+          try { localStorage.setItem('aimy-ds-theme', next); } catch (e) {}
+          sync();
+        });
+        sync();
+      })();
+    </script>
+</body>
 </html>
