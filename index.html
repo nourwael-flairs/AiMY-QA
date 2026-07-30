@@ -324,6 +324,10 @@
          transparent backgrounds; the design system's translucent+blurred
          chrome is a different shell treatment and is not applied here. */
 
+      /* Sidebar nav — .ds-nav-label (477) / .ds-nav-link (483) */
+      .sidebar-section-label {
+        letter-spacing: 0.12em;
+      }
       .nav-item:hover { background: var(--wash-3); color: var(--d200); }
       :root[data-theme="light"] .nav-item:hover { background: rgba(16,24,40,0.05); color: var(--d100); }
       :root[data-theme="light"] .sidebar-section-label { color: var(--d500); }
@@ -703,9 +707,9 @@
       .sidebar-section-label {
         font-size: 10px;
         font-weight: 700;
-        letter-spacing: 0.12em;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: var(--d500);
+        color: var(--d600);
         padding: 4px 16px 6px;
         margin-top: 16px;
       }
