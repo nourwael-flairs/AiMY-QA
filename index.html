@@ -6093,39 +6093,12 @@
       .slv-line strong { color:var(--d50); font-weight:700; }
       .slv-signals { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
 
-      /* ── Score anchor ───────────────────────────────────────────────────
-         The review displaces "83% Today" as the HEADLINE — a score is not a
-         briefing, and it is the part that does not travel to Connect,
-         Knowledge or Talent. It does not say the number should vanish.
-
-         "What changed" and "where do I stand" are different questions, and a
-         QA manager needs both. So the narrative leads and the score sits
-         beside it as evidence (§5.7: include evidence and scope wherever they
-         affect interpretation), sized so it supports the sentence rather than
-         competing with it — 26px, not the original 52px.
-
-         Products without a headline metric simply omit this element. */
+      /* The .slv-score anchor and its meter lived here. Both role variants
+         are gone, so the rules went with them rather than staying as dead
+         CSS. .slv-body keeps the flex row — the narrative is now its only
+         child and simply fills it. */
       .slv-body { display:flex; align-items:flex-start; gap:26px; flex-wrap:wrap; }
       .slv-main { flex:1 1 460px; min-width:0; }
-      .slv-score {
-        flex:0 0 auto; align-self:stretch; text-align:left; cursor:pointer;
-        font-family:var(--font-sans); background:none; border:none; border-radius:10px;
-        transition:background-color var(--t-fast);
-        display:flex; flex-direction:column; justify-content:center; gap:5px;
-        padding:6px 10px 6px 22px; border-left:1px solid var(--hairline); min-width:172px;
-      }
-      .slv-score:hover { background:var(--wash-3); }
-      .slv-score:focus-visible { outline:2px solid var(--brand); outline-offset:2px; }
-      .slv-score-val { font-size:26px; font-weight:800; line-height:1; letter-spacing:-0.02em; color:var(--d50); font-variant-numeric:tabular-nums; }
-      .slv-score-val .u { font-size:15px; font-weight:700; color:var(--d400); margin-left:1px; }
-      .slv-score-lab { font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--d500); }
-      .slv-score-gap { font-size:11px; color:var(--warn); font-weight:600; }
-      .slv-score-meter { height:4px; border-radius:2px; background:var(--wash-6); position:relative; overflow:visible; margin-top:2px; }
-      .slv-score-meter i { position:absolute; inset:0 auto 0 0; border-radius:2px; background:var(--warn); }
-      .slv-score-meter .goal { position:absolute; top:-3px; bottom:-3px; width:1.5px; background:var(--ok); opacity:.8; border-radius:1px; }
-      @media (max-width:860px){
-        .slv-score { border-left:none; border-top:1px solid var(--hairline); padding-left:0; padding-top:14px; flex:1 1 100%; }
-      }
 
       /* ── Resume pill — the prior-thread cue (§4 continuity) ─────────────
          Review item 4 asks: "does a canvas stay open, can you leave and
@@ -6703,23 +6676,9 @@
           </div>
             </div>
 
-            <!-- Where you stand, as evidence beside the narrative — not as the
-                 headline. 87.3% is the figure the rest of the page already uses
-                 (the Quality bcard, the Director view, the canvas answers). The
-                 original ALSO showed a separate "83% today" labelled "Overall
-                 Quality Score", which read as a second, conflicting quality
-                 score; that one is not reinstated. -->
-            <button class="slv-score"
-                    data-entry-mode="investigate"
-                    data-aimy-topic="quality"
-                    data-aimy-ask="Overall quality is 87.3% against the 90% goal. Show what is holding it back and the fix sequence I staged.">
-              <span class="slv-score-lab">Quality score</span>
-              <span class="slv-score-val">87.3<span class="u">%</span></span>
-              <div class="slv-score-meter" aria-hidden="true">
-                <i style="width:87.3%"></i><span class="goal" style="left:90%"></span>
-              </div>
-              <span class="slv-score-gap">2.7 under the 90% goal</span>
-            </button>
+            <!-- The score anchor that sat here is removed. The opener answers
+                 "what changed while you were away"; the Quality Score card
+                 below answers "where do I stand", and stated it twice. -->
           </div>
         </div>
 
@@ -7194,11 +7153,17 @@
                   <!-- Row 2: range tabs + Compare + query input, all on a clean toolbar line -->
                   <div class="v2-controls">
                     <div class="range-tabs">
+                      <!-- YTD, not "All". The 12-month series is the one every
+                           other surface quotes (87.3% against the 90% goal), the
+                           one the annotations below are written for, and the one
+                           the aria-label describes. The old "All" tab pointed at
+                           a weekly slice averaging 95.9%, so the chart contradicted
+                           the briefing it sits under. -->
                       <button
                         class="range-tab active"
-                        onclick="setRange('All', this)"
+                        onclick="setRange('YTD', this)"
                       >
-                        All
+                        YTD
                       </button>
                       <button class="range-tab" onclick="setRange('90D', this)">
                         90D
@@ -8085,21 +8050,8 @@
               </div>
                 </div>
 
-                <!-- Same anchor, the metric this role is measured on. A
-                     Director is accountable for portfolio quality, not the
-                     team's daily score — §7.1, the briefing re-prioritises
-                     per role rather than just re-labelling. -->
-                <button class="slv-score"
-                        data-entry-mode="investigate"
-                        data-aimy-topic="portfolio-quadrant"
-                        data-aimy-ask="Portfolio quality is 87.3% against the 90% goal. Show quality against CSAT for all 6 portfolios.">
-                  <span class="slv-score-lab">Portfolio quality</span>
-                  <span class="slv-score-val">87.3<span class="u">%</span></span>
-                  <div class="slv-score-meter" aria-hidden="true">
-                    <i style="width:87.3%"></i><span class="goal" style="left:90%"></span>
-                  </div>
-                  <span class="slv-score-gap">2.7 under the 90% goal</span>
-                </button>
+                <!-- Score anchor removed here too, so the opener reads the
+                     same way in both roles. -->
               </div>
             </div>
 
@@ -8491,17 +8443,13 @@
       // Per-range data slices. Each entry: scores[], prevScores[], labels[],
       // statAvg, statPeak, statPeakMonth, statLow, statLowMonth, deltaText
       const RANGE_DATA = {
-        'All': {
-          labels: ['W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W14','W15','W16','W17','W18','W19','W20','W21'],
-          scores: [94,95,98,97,93,96,96,97,97,96,96,97,97,96,98,99,97,97,96],
-          prevScores: [89,90,92,91,88,91,91,92,92,91,91,92,91,91,93,94,92,92,91],
-          statAvg: '95.9%', statPeak: '99.0%', statPeakMonth: 'W18',
-          statLow: '93.7%', statLowMonth: 'W05',
-          delta: '↑ 2.1% vs prior period', deltaUp: true,
-          subtitle: 'Weekly quality average · Real workbook data when imported',
-          peakIdx: 15,
-          lowIdx: 4,
-        },
+        // An 'All' slice used to sit here: 19 weekly points averaging 95.9%,
+        // peaking at 99%. Every other range on this chart runs 82–87%, as does
+        // every other quality figure on the page, so it was ~9 points adrift of
+        // its own siblings and of the briefing directly above it. It was also
+        // the default, which is why the chart read 95.9% while the brief read
+        // 87.3%. Removed rather than corrected — its numbers matched nothing,
+        // and leaving a contradictory slice in place is what caused this.
         '90D': {
           labels: ['OCT','NOV','DEC'],
           scores: [86,74,87],
@@ -8698,9 +8646,12 @@
         window._chart_n = n;
       }
 
-      // Initialise chart on load — default to "All" weekly view
+      // Initialise chart on load — YTD, so the headline stat matches the
+      // 87.3% the briefing above it states. It also switches on the annotation
+      // cards and the anomaly band, which applyRangeToChart only shows for
+      // this range because they name specific months (May peak, Nov dip).
       document.addEventListener('DOMContentLoaded', function() {
-        applyRangeToChart('All');
+        applyRangeToChart('YTD');
       });
 
       function setRange(range, el) {
