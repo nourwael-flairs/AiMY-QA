@@ -3325,8 +3325,12 @@
       /* ══ FLOATING AIMY INPUT ════════════════════════════════════════
      Fixed to the bottom of .app-main, pill shape matching screenshot. */
 
+      /* position:fixed, not absolute — the wrap used to be positioned inside
+         .app-main, which starts after the sidebar, so the bar centred on the
+         app area rather than the page. Fixed resolves the symmetric
+         left/right against the viewport, which is the actual page centre. */
       .aimy-float-wrap {
-        position: absolute;
+        position: fixed;
         bottom: 20px;
         left: 24px;
         right: 24px;
