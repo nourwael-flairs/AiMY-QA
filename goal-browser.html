@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <script>
-      /* Theme applied PRE-PAINT — before the stylesheet renders — so the page
+      /* Theme applied PRE-PAINT, before the stylesheet renders, so the page
          never flashes dark before switching to light (design-system.md §4). */
       (function () {
         try {
@@ -13,7 +13,7 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AiMY QA — goal Browser</title>
+    <title>AiMY QA · goal Browser</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -29,7 +29,7 @@
 
       :root {
         /* Needed by the theme toggle and the light overrides below. Same
-           values as index.html — these pages never had the wash scale. */
+           values as index.html. These pages never had the wash scale. */
         --wash-3: rgba(255,255,255,0.04);
         --wash-6: rgba(255,255,255,0.07);
         --t-fast: var(--transition-fast);
@@ -49,7 +49,7 @@
         --d50: #eef2f6;
         --brand: #3369ff;
         --brand-dim: rgba(51, 105, 255, 0.15);
-        /* QA product accent — TEMPORARY PLACEHOLDER (#8b4ff4 is Talent's purple).
+        /* QA product accent. TEMPORARY PLACEHOLDER (#8b4ff4 is Talent's purple).
        Must be swapped to QA-specific magenta from Figma logo before v2 ships. */
         --qa-accent: #8b4ff4;
         --qa-accent-rgb: 139, 79, 244;
@@ -63,7 +63,7 @@
         --warn-bg: rgba(247, 144, 9, 0.12);
         --err-bg: rgba(240, 68, 56, 0.12);
 
-        /* Motion tokens — only two durations allowed. Longer motion
+        /* Motion tokens, only two durations allowed. Longer motion
        (chart animation, skeleton shimmer) defines its own keyframe. */
         --transition-fast: 150ms;
         --transition-base: 200ms;
@@ -87,7 +87,7 @@
       /* ── Accessibility: global focus-visible.
      Uses brand blue (not QA accent) because focus rings are a permanent
      part of the system, not a product-theme element. QA accent is also
-     currently a placeholder hex — using it here would ripple when it changes. */
+     currently a placeholder hex, using it here would ripple when it changes. */
       *:focus {
         outline: none;
       }
@@ -151,11 +151,11 @@
         height: 650px;
         background: var(--grad-ellipse-2);
       }
-      /* Ellipse rendered as a real DOM element — see #appEllipse in HTML */
+      /* Ellipse rendered as a real DOM element, see #appEllipse in HTML */
 
       /* ══ APP SHELL (TOPNAV + SIDEBAR + MAIN) ══════════════════════════════ */
 
-      /* Global top navbar — full width, transparent, sits above the bg ellipse */
+      /* Global top navbar, full width, transparent, sits above the bg ellipse */
       .app-topnav {
         height: var(--topbar-height);
         background: transparent;
@@ -169,7 +169,7 @@
         z-index: 100;
       }
 
-      /* Remove old gradient pseudo — transparent now */
+      /* Remove old gradient pseudo, transparent now */
       .app-topnav::before {
         display: none;
       }
@@ -191,7 +191,7 @@
 
       /* Calls button */
 
-      /* Product tabs — pill container matching the SVG reference */
+      /* Product tabs, pill container matching the SVG reference */
       .topnav-tabs {
         position: absolute;
         left: 50%;
@@ -289,6 +289,105 @@
         border: 1.5px solid #171a1c;
       }
 
+      /* ── Notifications panel ───────────────────────────────────
+         Prefix is ntf-, not notif- : .notif-* is an unrelated in-canvas alert
+         card family that already exists in three of these files.
+
+         Tokens are restricted to the set declared in ALL six files' dark :root.
+         --body-bg, --wash-5, --r-md, --r-lg, --font-sans and --elev-2 are each
+         missing from at least two of them, so the radii, the shadow and the
+         font stack are literals rather than silently-unset var() calls. */
+      .ntf-anchor { position: relative; display: flex; align-items: center; flex-shrink: 0; }
+      .topnav-bell:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 2px; }
+      .bell-dot[hidden] { display: none; }
+
+      .ntf-panel {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        z-index: 300;
+        width: 360px;
+        max-width: calc(100vw - 32px);
+        max-height: min(70vh, 520px);
+        overflow-y: auto;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 14px;
+        padding: 6px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.2);
+        font-family: "Urbanist", sans-serif;
+        text-align: left;
+      }
+      .ntf-panel[hidden] { display: none; }
+
+      /* Scrollbar, matching .dashboard-scroll / .overlay-thread rather than
+         leaving the browser default sitting inside a 14px-radius card.
+         --wash-6 and --card-border are the only wash/border tokens declared in
+         all six files' dark roots; --wash-8/--wash-11 used elsewhere are not. */
+      .ntf-panel { scrollbar-width: thin; scrollbar-color: var(--wash-6) transparent; }
+      .ntf-panel::-webkit-scrollbar { width: 6px; }
+      .ntf-panel::-webkit-scrollbar-track { background: transparent; }
+      .ntf-panel::-webkit-scrollbar-thumb { background: var(--wash-6); border-radius: 4px; }
+      .ntf-panel::-webkit-scrollbar-thumb:hover { background: var(--card-border); }
+
+      .ntf-head { display: flex; align-items: center; gap: 8px; padding: 8px 10px 10px; }
+      .ntf-head b { font-size: 12px; font-weight: 800; color: var(--d50); letter-spacing: 0.01em; }
+      .ntf-count {
+        font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 9999px;
+        background: rgba(var(--qa-accent-rgb), 0.16); color: var(--qa-accent);
+        font-variant-numeric: tabular-nums;
+      }
+      .ntf-count[hidden] { display: none; }
+      .ntf-clear {
+        margin-left: auto; background: none; border: 0; cursor: pointer;
+        font-family: inherit; font-size: 10.5px; font-weight: 600; color: var(--d500);
+        padding: 2px 4px; border-radius: 6px;
+        transition: color var(--transition-fast);
+      }
+      .ntf-clear:hover { color: var(--d100); }
+      .ntf-clear:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 1px; }
+
+      .ntf-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+      .ntf-row {
+        display: flex; gap: 9px; padding: 10px; border-radius: 10px;
+        transition: background var(--transition-fast), opacity var(--transition-fast);
+      }
+      .ntf-row:hover { background: var(--wash-3); }
+      .ntf-row.is-read { opacity: 0.45; }
+      .ntf-sev { width: 6px; height: 6px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; background: var(--d500); }
+      .ntf-sev.p1 { background: var(--err); }
+      .ntf-sev.p2 { background: var(--warn); }
+      .ntf-sev.p3 { background: var(--qa-accent); }
+      .ntf-row-main { flex: 1; min-width: 0; }
+      .ntf-row-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 3px; }
+      .ntf-row-type { font-size: 11px; font-weight: 800; color: var(--d50); }
+      .ntf-row-when { margin-left: auto; font-size: 10px; color: var(--d500); flex-shrink: 0; }
+      .ntf-row-body { margin: 0 0 7px; font-size: 11.5px; line-height: 1.5; color: var(--d400); }
+      .ntf-row-cta {
+        font-family: inherit; font-size: 10.5px; font-weight: 700; cursor: pointer;
+        padding: 4px 10px; border-radius: 9999px;
+        background: rgba(var(--qa-accent-rgb), 0.12); color: var(--qa-accent);
+        border: 1px solid rgba(var(--qa-accent-rgb), 0.26);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
+      }
+      .ntf-row-cta:hover { background: rgba(var(--qa-accent-rgb), 0.2); border-color: rgba(var(--qa-accent-rgb), 0.4); }
+      .ntf-row-cta:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 2px; }
+
+      .ntf-foot { padding: 8px 4px 4px; border-top: 1px solid var(--wash-6); margin-top: 6px; }
+      .ntf-foot-btn {
+        width: 100%; font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer;
+        padding: 8px; border-radius: 9px; background: var(--wash-3);
+        border: 1px solid var(--wash-6); color: var(--d300);
+        transition: background var(--transition-fast), color var(--transition-fast);
+      }
+      .ntf-foot-btn:hover { background: var(--wash-6); color: var(--d50); }
+      .ntf-foot-btn:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 2px; }
+      .ntf-empty { padding: 22px 12px; text-align: center; font-size: 11.5px; color: var(--d500); }
+
+      @media (prefers-reduced-motion: reduce) {
+        .ntf-row, .ntf-row-cta, .ntf-foot-btn, .ntf-clear { transition: none; }
+      }
+
       /* User pill */
       .topnav-user {
         display: flex;
@@ -340,6 +439,31 @@
         color: var(--d400);
       }
 
+      /* Version link, a destination, not a state you toggle. Quieter than a
+         product tab so it reads as chrome. Tokens limited to ones declared in
+         every file's dark :root; the radius is a literal because --r-pill is
+         undeclared in goal-browser.html and data-ingestion.html. */
+      .ver-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        flex-shrink: 0;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        font-family: "Urbanist", sans-serif;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        line-height: 1.4;
+        color: var(--d500);
+        text-decoration: none;
+        border: 1px solid var(--wash-6);
+        transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+      }
+      .ver-link:hover { background: var(--wash-6); color: var(--d100); border-color: var(--card-border); }
+      .ver-link:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 2px; }
+      .ver-link-ico { width: 10px; height: 10px; opacity: 0.75; }
+
       /* Below topnav: sidebar + main content side by side */
       .app-body {
         display: flex;
@@ -358,7 +482,7 @@
         flex-direction: column;
         flex-shrink: 0;
       }
-      /* No logo in sidebar anymore — it lives in topnav */
+      /* No logo in sidebar anymore. It lives in topnav */
       .sidebar-nav {
         padding: 24px 16px;
         display: flex;
@@ -415,7 +539,7 @@
         border-color: rgba(var(--qa-accent-rgb), 0.22);
         box-shadow: 0 0 20px rgba(var(--qa-accent-rgb), 0.08);
       }
-      /* AI Chat & Canvas — subtle AI gradient border to mark it as the primary surface */
+      /* AI Chat & Canvas, subtle AI gradient border to mark it as the primary surface */
       .nav-item.primary-surface {
         position: relative;
       }
@@ -591,7 +715,7 @@
       .bcard.p3 {
         border-color: rgba(23, 178, 106, 0.15);
       }
-      /* Tier-primary elevation — applied to the single most-urgent briefing
+      /* Tier-primary elevation, applied to the single most-urgent briefing
      card so the eye lands there first. Only one card per dashboard. */
       .bcard.tier-primary {
         box-shadow:
@@ -1707,7 +1831,7 @@
         fill: url(#sg);
       }
 
-      /* Severity dot — replaces ornamental icon badge.
+      /* Severity dot. Replaces ornamental icon badge.
      Sits inline at the left anchor of the meta row. Color matches priority. */
       .severity-dot {
         width: 8px;
@@ -1727,7 +1851,7 @@
       }
 
       /* ── Knowledge-First Quality Score Chart (from dashboardqa2) ─ */
-      /* AiMY signal bar — knowledge-first lead */
+      /* AiMY signal bar, knowledge-first lead */
       .kf-signal-action {
         font-size: 11px;
         font-weight: 700;
@@ -1755,7 +1879,7 @@
         padding: 24px;
         box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
       }
-      /* Quality Score header — 2-row layout for breathing room */
+      /* Quality Score header, 2-row layout for breathing room */
       .v2-header {
         display: flex;
         flex-direction: column;
@@ -1785,7 +1909,7 @@
         color: var(--d400);
         white-space: nowrap;
       }
-      /* Row 2: controls toolbar — range tabs left, secondary actions right */
+      /* Row 2: controls toolbar. Range tabs left, secondary actions right */
       .v2-controls {
         display: flex;
         align-items: center;
@@ -2088,7 +2212,7 @@
         text-transform: uppercase;
         color: #61adf1;
       }
-      /* Memory cue — signals continuity across sessions. Surfaces when AiMY
+      /* Memory cue, signals continuity across sessions. Surfaces when AiMY
      is picking up a thread the user was already working on. */
       .memory-cue {
         display: inline-flex;
@@ -2286,7 +2410,7 @@
       /* ══ FLOATING AIMY INPUT ════════════════════════════════════════
      Fixed to the bottom of .app-main, pill shape matching screenshot. */
 
-      /* position:fixed, not absolute — the wrap used to be positioned inside
+      /* position:fixed, not absolute, the wrap used to be positioned inside
          .app-main, which starts after the sidebar, so the bar centred on the
          app area rather than the page. Fixed resolves the symmetric
          left/right against the viewport, which is the actual page centre. */
@@ -2338,7 +2462,7 @@
         transform: translateY(8px);
       }
 
-      /* AI bubble icon on the left — the small AiMY logo in a circle */
+      /* AI bubble icon on the left, the small AiMY logo in a circle */
       .aimy-float-icon {
         position: relative;
         width: 36px;
@@ -2426,7 +2550,7 @@
         stroke: #fff;
       }
 
-      /* "Thinking" state — spinner replaces send arrow */
+      /* "Thinking" state. Spinner replaces send arrow */
       .aimy-float-send.thinking {
         background: rgba(var(--qa-accent-rgb), 0.25);
         cursor: default;
@@ -2454,7 +2578,7 @@
         }
       }
 
-      /* Filter-applied flash — brief glow on the bar */
+      /* Filter-applied flash, brief glow on the bar */
       @keyframes filterFlash {
         0% {
           border-color: rgba(var(--qa-accent-rgb), 0.7);
@@ -2499,7 +2623,7 @@
         pointer-events: all;
       }
 
-      /* Close button — top right corner */
+      /* Close button, top right corner */
       .overlay-close {
         position: absolute;
         top: 24px;
@@ -2528,7 +2652,7 @@
         stroke-width: 2;
       }
 
-      /* Overlay header badge — "AiMY Chat" label */
+      /* Overlay header badge · "AiMY Chat" label */
       .overlay-badge {
         position: absolute;
         top: 28px;
@@ -2675,7 +2799,7 @@
         }
       }
 
-      /* Overlay input bar — mirrors the floating bar but full-width */
+      /* Overlay input bar, mirrors the floating bar but full-width */
       .overlay-input-wrap {
         width: 100%;
         max-width: 720px;
@@ -2762,7 +2886,7 @@
         stroke: #fff;
       }
 
-      /* Overlay suggested prompts — shown when thread is empty */
+      /* Overlay suggested prompts, shown when thread is empty */
       .overlay-suggestions {
         display: flex;
         gap: 8px;
@@ -3009,7 +3133,7 @@
         color: var(--d400);
       }
 
-      /* ── AiMY Toast — trust-recovery pattern for destructive actions ─────────
+      /* ── AiMY Toast, trust-recovery pattern for destructive actions ─────────
      Surfaces after a chip is dismissed, offering a 5-second undo window
      and a light signal that the dismissal updates AiMY's suggestions. */
       .aimy-toast {
@@ -3120,7 +3244,7 @@
         background: rgba(97, 173, 241, 0.1);
         color: #93caff;
       }
-      /* Progress bar — runs along the very bottom edge */
+      /* Progress bar. Runs along the very bottom edge */
       .aimy-toast-progress {
         position: absolute;
         bottom: 0;
@@ -3143,7 +3267,7 @@
 
       /* ── AiMY Context Panel ────────────────────────────────────
      Two-zone card: state detection (top) + AI suggestions (bottom).
-     Linked by the AiMY detection — the detected state drives the chips.
+     Linked by the AiMY detection, the detected state drives the chips.
      Alt states always visible so the user sees what AiMY is choosing between. */
       .aimy-context-panel {
         background: var(--card-bg);
@@ -3195,7 +3319,7 @@
         color: #61adf1;
       }
 
-      /* Detected state pill — marks the currently-selected AiMY detection */
+      /* Detected state pill, marks the currently-selected AiMY detection */
       .state-detected-pill {
         display: flex;
         align-items: center;
@@ -3340,7 +3464,7 @@
         font-size: 11px;
         color: var(--d400);
       }
-      /* Default calm state — shows "Updated N min ago" style info.
+      /* Default calm state. Shows "Updated N min ago" style info.
      Red-pulse state only activates when an actual live anomaly is detected
      (apply .spike modifier class via backend state). */
       .eval-live-badge {
@@ -3365,7 +3489,7 @@
         border-radius: 50%;
         background: #61adf1;
       }
-      /* Spike state — only when a real anomaly is detected */
+      /* Spike state, only when a real anomaly is detected */
       .eval-live-badge.spike {
         background: var(--err-bg);
         color: var(--err);
@@ -3429,7 +3553,7 @@
         fill: none;
         stroke-width: 10;
         stroke-linecap: butt;
-        pointer-events: none; /* hit rings handle interaction — no gap flicker */
+        pointer-events: none; /* hit rings handle interaction, no gap flicker */
         transition:
           stroke-width var(--transition-base),
           filter var(--transition-base),
@@ -3451,7 +3575,7 @@
       .donut-arc.dimmed {
         opacity: 0.25;
       }
-      /* Invisible fat hit rings — no gaps, full donut band coverage */
+      /* Invisible fat hit rings, no gaps, full donut band coverage */
       .donut-hit {
         fill: none;
         stroke: transparent;
@@ -3525,7 +3649,7 @@
         transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      /* Floating causes tooltip — absolutely positioned, no layout shift */
+      /* Floating causes tooltip, absolutely positioned, no layout shift */
       .eval-causes-float {
         position: absolute;
         right: 0;
@@ -3766,7 +3890,7 @@
          LIGHT THEME
          ──────────────────────────────────────────────────────────────────
          Ported from the design system (design-strategy/index.html:177).
-         design-system.md §4: overrides are TOKEN-LEVEL only — never fork
+         design-system.md §4: overrides are TOKEN-LEVEL only, never fork
          component markup per theme. Dark stays the default; light is opt-in
          via <html data-theme="light">, persisted to localStorage under
          `aimy-ds-theme` and applied pre-paint so there is no flash.
@@ -3783,7 +3907,7 @@
         --d800: #d8e0e8;
         --d750: #c8d2dc;
         --d700: #b0bcca;
-        --d600: #6e7d8d;  /* muted labels — #8b9aaa fails 3:1 on white */
+        --d600: #6e7d8d;  /* muted labels, #8b9aaa fails 3:1 on white */
         --d500: #637280;
         --d400: #566472;
         --d300: #3a4653;
@@ -3798,7 +3922,7 @@
         /* --teal is a light cyan; darken for legible text on white */
         --teal: #0d8f95;
 
-        /* Semantic hues darkened one step — dark-mode mid-tones fail contrast
+        /* Semantic hues darkened one step, dark-mode mid-tones fail contrast
            as text on white. Tint backgrounds stay pale. */
         --ok:   #0e9257;
         --warn: #b26205;
@@ -3821,7 +3945,7 @@
         --hairline: rgba(16,24,40,0.09);
         --text-strong: #10151b;
 
-        /* Elevation — cooler, softer on light */
+        /* Elevation, cooler, softer on light */
         --elev-1: 0 1px 2px rgba(16,24,40,0.08);
         --elev-2: 0 1px 2px rgba(16,24,40,0.06), 0 8px 22px rgba(16,24,40,0.10);
         --elev-3: 0 2px 6px rgba(16,24,40,0.08), 0 18px 48px rgba(16,24,40,0.12);
@@ -3832,7 +3956,7 @@
         --tint-warn: rgba(247,144,9,0.07);
         --tint-accent: rgba(139,79,244,0.06);
 
-        /* Surface washes — ink instead of white (see --wash-* above) */
+        /* Surface washes, ink instead of white (see --wash-* above) */
         --wash-1: rgba(16,24,40,0.03);
         --wash-2: rgba(16,24,40,0.04);
         --wash-3: rgba(16,24,40,0.05);
@@ -3864,7 +3988,7 @@
          structurally dark rather than tokenised. */
       :root[data-theme="light"] body { background: var(--body-bg); }
       /* The AiMY float bar and canvas are dark glass in dark; light glass in light. */
-      /* The float bar keeps its full treatment in light — surface, visible
+      /* The float bar keeps its full treatment in light, surface, visible
          border, elevation and the accent focus ring. The first pass flattened
          it to plain white, which read as borderless. */
       :root[data-theme="light"] .aimy-float-bar {
@@ -3888,7 +4012,7 @@
          These chips use DARK text on a bright fill, which reads well against
          dark-theme --ok (#17b26a, 6.6:1). Light darkens --ok to #0e9257 for
          text legibility, and dark-on-dark-green drops to 3.5:1. White on the
-         same fill is 4.1:1, so the text inverts rather than the fill — the
+         same fill is 4.1:1, so the text inverts rather than the fill, the
          chip keeps its meaning and its colour. */
       :root[data-theme="light"] .ag-act.yes,
       :root[data-theme="light"] .fbt-act.yes,
@@ -3905,8 +4029,8 @@
 
       /* ── Filter strip: original dark identity restored ────────────────
          The light-contrast pass replaced two muted values with full-strength
-         tokens — the chip text went from 55% white to solid --d300 and the
-         label from a 45% blue to --ai-text — which brightened the strip and
+         tokens. The chip text went from 55% white to solid --d300 and the
+         label from a 45% blue to --ai-text, which brightened the strip and
          changed its look. The dark values below are the originals; light gets
          its own muted equivalents rather than the dark ones being altered. */
       :root[data-theme="light"] .filter-chip { color: rgba(16,24,40,0.62); }
@@ -3918,12 +4042,12 @@
       :root[data-theme="light"] .fbt-fb.yes,
       :root[data-theme="light"] .fbt-fb.yes:hover { color: #fff; }
 
-      /* ── Sidebar nav items — design-system .ds-nav-link (index.html:483)
+      /* ── Sidebar nav items, design-system .ds-nav-link (index.html:483)
          Item-level only. The topnav and sidebar keep their original
          transparent backgrounds; the design system's translucent+blurred
          chrome is a different shell treatment and is not applied here. */
 
-      /* Sidebar nav — .ds-nav-label (477) / .ds-nav-link (483) */
+      /* Sidebar nav, .ds-nav-label (477) / .ds-nav-link (483) */
       .sidebar-section-label {
         letter-spacing: 0.12em;
       }
@@ -3954,8 +4078,8 @@
          CANVAS RENDER BLOCKS
          ──────────────────────────────────────────────────────────────────
          Ported from agent-scorecards.html (4415 / 4499 / 4507). These were
-         never defined here, so every render the Dashboard added — the
-         decision zones, the charts cut from the briefing — drew its type
+         never defined here, so every render the Dashboard added, the
+         decision zones, the charts cut from the briefing, drew its type
          label as full-size body text instead of a 9px uppercase badge.
 
          The label carries no AiMY mark on purpose: the message avatar
@@ -4029,7 +4153,7 @@
           <stop offset="50%" stop-color="#61ADF1" />
           <stop offset="100%" stop-color="#6FDFE2" />
         </linearGradient>
-        <!-- Main_AiMY_Logo_small symbol — reused in float bar, overlay badge, chat avatars -->
+        <!-- Main_AiMY_Logo_small symbol, reused in float bar, overlay badge, chat avatars -->
         <symbol id="aimy-logo-small" viewBox="0 0 151.43 147.66">
           <defs>
             <radialGradient id="aimy-logo-grad" cx="75.72" cy="73.83" fx="75.72" fy="73.83" r="70.54" gradientUnits="userSpaceOnUse">
@@ -4119,17 +4243,47 @@
       <!-- Right side -->
       <div class="topnav-spacer"></div>
       <div class="topnav-right">
+        <!-- V1 opens in a new tab so the two builds can be compared side by
+             side. One link, not a segmented pair: you are on V2, so the only
+             thing worth offering is the way out. The href is the placeholder,
+             one value to change, once per file. -->
+        <a class="ver-link" href="#" target="_blank" rel="noopener noreferrer"
+           title="Open V1 in a new tab">
+          V1
+          <svg class="ver-link-ico" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+               stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4.5 2.5H2.5v7h7v-2M7 2.5h2.5V5M9.5 2.5L5.5 6.5"/>
+          </svg>
+        </a>
         <button class="theme-toggle" id="themeToggle" type="button"
                 aria-label="Switch to light theme" title="Switch theme">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
         </button>
-        <div class="topnav-bell">
-          <svg viewBox="0 0 24 24">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
-          <div class="bell-dot"></div>
+        <!-- Notifications. The bell was an inert <div> with a red dot that
+             never cleared; it is a real button now. What it opens is the task
+             queue, see the AIMY_TASKS block at the end of the page. -->
+        <div class="ntf-anchor">
+          <button class="topnav-bell" id="ntfBell" type="button"
+                  aria-haspopup="dialog" aria-expanded="false" aria-controls="ntfPanel"
+                  aria-label="Notifications">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+            <span class="bell-dot" id="ntfDot"></span>
+          </button>
+          <div class="ntf-panel" id="ntfPanel" hidden role="dialog" aria-label="Notifications">
+            <div class="ntf-head">
+              <b>Needs you</b>
+              <span class="ntf-count" id="ntfCount">6</span>
+              <button class="ntf-clear" id="ntfClear" type="button">Mark all read</button>
+            </div>
+            <ul class="ntf-list" id="ntfList"></ul>
+            <div class="ntf-foot">
+              <button class="ntf-foot-btn" id="ntfAskAll" type="button">Ask AiMY what to do first</button>
+            </div>
+          </div>
         </div>
         <div class="topnav-user">
           <div class="topnav-avatar">NW</div>
@@ -4215,19 +4369,19 @@
               <h1 class="goal-hub-title">Goal Hub</h1>
               <p class="goal-hub-subtitle">Manage scoring templates and govern platform metric definitions</p>
             </div>
-            <!-- Role badge — visual signal of current access level -->
+            <!-- Role badge, visual signal of current access level -->
             <div class="goal-role-badge" id="goalRoleBadge">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               <span id="goalRoleLabel">QA Manager</span>
             </div>
-            <!-- Dev-only role toggle — remove before shipping -->
+            <!-- Dev-only role toggle, remove before shipping -->
             <button class="role-toggle-dev" id="roleToggleBtn" onclick="toggleRole()" title="Toggle role (dev only)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               Toggle Role
             </button>
           </div>
 
-          <!-- A7: AiMY Hub Summary Bar — entry-point K→A for the full Hub -->
+          <!-- A7: AiMY Hub Summary Bar, entry-point K→A for the full Hub -->
           <!-- <div class="aimy-intelligence-bar" id="aimyHubSummaryBar" style="margin-bottom:0;margin-top:4px;display:none">
             <div class="aib-left">
               <svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
@@ -4237,13 +4391,13 @@
             <div class="aib-chips" id="hubSummaryChips"></div>
           </div> -->
 
-          <!-- Tab bar — role-gated: QA Manager sees Templates only; Admin sees all 4 -->
+          <!-- Tab bar, role-gated: QA Manager sees Templates only; Admin sees all 4 -->
           <div class="goal-tab-bar" id="goalTabBar">
             <button class="goal-tab active" data-tab="templates" onclick="switchgoalTab('templates')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
               Templates
             </button>
-            <!-- Admin-only tabs — hidden entirely for QA Manager role -->
+            <!-- Admin-only tabs, hidden entirely for QA Manager role -->
             <button class="goal-tab admin-only" data-tab="registry" onclick="switchgoalTab('registry')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
               Metric Registry
@@ -4278,12 +4432,12 @@
                 <span class="aib-context">Based on your active client (Heliox Financial) and recent audit activity</span>
               </div>
               <div class="aib-chips">
-                <button class="aib-chip" onclick="highlightTemplate('Financial Services — Voice')">
+                <button class="aib-chip" onclick="highlightTemplate('Financial Services, Voice')">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Financial Services — Voice
+                  Financial Services · Voice
                 </button>
-                <button class="aib-chip secondary" onclick="highlightTemplate('Healthcare — Email (Custom)')">
-                  Healthcare — Email
+                <button class="aib-chip secondary" onclick="highlightTemplate('Healthcare, Email (Custom)')">
+                  Healthcare · Email
                 </button>
                 <button class="aib-dismiss" onclick="document.getElementById('aimyIntelBar').style.display='none'">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -4313,14 +4467,14 @@
               <!-- Section: System Default -->
               <div class="template-section-label">System Default</div>
 
-              <div class="tpl-card" data-industry="Financial Services" data-channel="Voice" data-type="System Default" data-name="Financial Services — Voice" onclick="openPreview(this)">
+              <div class="tpl-card" data-industry="Financial Services" data-channel="Voice" data-type="System Default" data-name="Financial Services, Voice" onclick="openPreview(this)">
                 <div class="tpl-card-header">
                   <div class="tpl-type-badge system">System Default</div>
                   <div class="tpl-active-badge" style="display:none">
                     <span class="tpl-active-dot"></span> Active
                   </div>
                 </div>
-                <div class="tpl-card-name">Financial Services — Voice</div>
+                <div class="tpl-card-name">Financial Services · Voice</div>
                 <div class="tpl-card-desc">Compliance-first scoring for regulated financial contact centres</div>
                 <div class="tpl-card-meta">
                   <span class="tpl-industry-tag">Financial Services</span>
@@ -4344,11 +4498,11 @@
                 </div>
               </div>
 
-              <div class="tpl-card" data-industry="Telecom" data-channel="Chat" data-type="System Default" data-name="Telecom — Chat" onclick="openPreview(this)">
+              <div class="tpl-card" data-industry="Telecom" data-channel="Chat" data-type="System Default" data-name="Telecom, Chat" onclick="openPreview(this)">
                 <div class="tpl-card-header">
                   <div class="tpl-type-badge system">System Default</div>
                 </div>
-                <div class="tpl-card-name">Telecom — Chat</div>
+                <div class="tpl-card-name">Telecom · Chat</div>
                 <div class="tpl-card-desc">Optimised for technical support over chat with first-contact resolution focus</div>
                 <div class="tpl-card-meta">
                   <span class="tpl-industry-tag">Telecom</span>
@@ -4367,11 +4521,11 @@
                 </div>
               </div>
 
-              <div class="tpl-card" data-industry="Healthcare" data-channel="Voice" data-type="System Default" data-name="Healthcare — Voice" onclick="openPreview(this)">
+              <div class="tpl-card" data-industry="Healthcare" data-channel="Voice" data-type="System Default" data-name="Healthcare, Voice" onclick="openPreview(this)">
                 <div class="tpl-card-header">
                   <div class="tpl-type-badge system">System Default</div>
                 </div>
-                <div class="tpl-card-name">Healthcare — Voice</div>
+                <div class="tpl-card-name">Healthcare · Voice</div>
                 <div class="tpl-card-desc">Empathy-weighted scoring for patient-facing call centre interactions</div>
                 <div class="tpl-card-meta">
                   <span class="tpl-industry-tag">Healthcare</span>
@@ -4390,11 +4544,11 @@
                 </div>
               </div>
 
-              <div class="tpl-card" data-industry="Retail" data-channel="Chat" data-type="System Default" data-name="Retail — Chat" onclick="openPreview(this)">
+              <div class="tpl-card" data-industry="Retail" data-channel="Chat" data-type="System Default" data-name="Retail, Chat" onclick="openPreview(this)">
                 <div class="tpl-card-header">
                   <div class="tpl-type-badge system">System Default</div>
                 </div>
-                <div class="tpl-card-name">Retail — Chat</div>
+                <div class="tpl-card-name">Retail · Chat</div>
                 <div class="tpl-card-desc">High-volume chat scoring focused on resolution speed and CSAT optimisation</div>
                 <div class="tpl-card-meta">
                   <span class="tpl-industry-tag">Retail</span>
@@ -4428,14 +4582,14 @@
                 </button>
               </div>
 
-              <div class="tpl-card" data-industry="Healthcare" data-channel="Email" data-type="Custom" data-name="Healthcare — Email (Custom)" onclick="openPreview(this)">
+              <div class="tpl-card" data-industry="Healthcare" data-channel="Email" data-type="Custom" data-name="Healthcare, Email (Custom)" onclick="openPreview(this)">
                 <div class="tpl-card-header">
                   <div class="tpl-type-badge custom">Custom</div>
                   <div class="tpl-active-badge">
                     <span class="tpl-active-dot"></span> Active
                   </div>
                 </div>
-                <div class="tpl-card-name">Healthcare — Email</div>
+                <div class="tpl-card-name">Healthcare · Email</div>
                 <div class="tpl-card-desc">Adapted for patient communication with empathy and accuracy weighting</div>
                 <div class="tpl-card-meta">
                   <span class="tpl-industry-tag">Healthcare</span>
@@ -4457,11 +4611,11 @@
                 </div>
               </div>
 
-              <div class="tpl-card" data-industry="Retail" data-channel="Ticket" data-type="Custom" data-name="Retail — Ticket (Custom)" onclick="openPreview(this)">
+              <div class="tpl-card" data-industry="Retail" data-channel="Ticket" data-type="Custom" data-name="Retail, Ticket (Custom)" onclick="openPreview(this)">
                 <div class="tpl-card-header">
                   <div class="tpl-type-badge custom">Custom</div>
                 </div>
-                <div class="tpl-card-name">Retail — Ticket</div>
+                <div class="tpl-card-name">Retail · Ticket</div>
                 <div class="tpl-card-desc">Returns and escalation flow scoring for high-volume retail support</div>
                 <div class="tpl-card-meta">
                   <span class="tpl-industry-tag">Retail</span>
@@ -4480,14 +4634,14 @@
                 </div>
               </div>
 
-              <div class="tpl-card" data-industry="Financial Services" data-channel="Email" data-type="Custom" data-name="Financial Services — Email (Custom)" onclick="openPreview(this)">
+              <div class="tpl-card" data-industry="Financial Services" data-channel="Email" data-type="Custom" data-name="Financial Services, Email (Custom)" onclick="openPreview(this)">
                 <div class="tpl-card-header">
                   <div class="tpl-type-badge custom">Custom</div>
                   <div class="tpl-active-badge">
                     <span class="tpl-active-dot"></span> Active
                   </div>
                 </div>
-                <div class="tpl-card-name">Financial Services — Email</div>
+                <div class="tpl-card-name">Financial Services · Email</div>
                 <div class="tpl-card-desc">Regulatory-aware email audit with disclosure and tone compliance checks</div>
                 <div class="tpl-card-meta">
                   <span class="tpl-industry-tag">Financial Services</span>
@@ -4509,11 +4663,11 @@
                 </div>
               </div>
 
-              <div class="tpl-card" data-industry="Telecom" data-channel="Voice" data-type="Custom" data-name="Telecom — Voice (Custom)" onclick="openPreview(this)">
+              <div class="tpl-card" data-industry="Telecom" data-channel="Voice" data-type="Custom" data-name="Telecom, Voice (Custom)" onclick="openPreview(this)">
                 <div class="tpl-card-header">
                   <div class="tpl-type-badge custom">Custom</div>
                 </div>
-                <div class="tpl-card-name">Telecom — Voice</div>
+                <div class="tpl-card-name">Telecom · Voice</div>
                 <div class="tpl-card-desc">Scripted call flow adherence for Meridian Telecom tier-1 support agents</div>
                 <div class="tpl-card-meta">
                   <span class="tpl-industry-tag">Telecom</span>
@@ -4535,12 +4689,12 @@
               <!-- Section: Forked -->
               <div class="template-section-label">Forked</div>
 
-              <div class="tpl-card" data-industry="Travel" data-channel="Voice" data-type="Forked" data-name="Travel — Voice (Forked)" onclick="openPreview(this)">
+              <div class="tpl-card" data-industry="Travel" data-channel="Voice" data-type="Forked" data-name="Travel, Voice (Forked)" onclick="openPreview(this)">
                 <div class="tpl-card-header">
                   <div class="tpl-type-badge forked">Forked</div>
                 </div>
-                <div class="tpl-card-name">Travel — Voice</div>
-                <div class="tpl-card-desc">Forked from Financial Services — Voice; re-weighted for hospitality context</div>
+                <div class="tpl-card-name">Travel · Voice</div>
+                <div class="tpl-card-desc">Forked from Financial Services, Voice; re-weighted for hospitality context</div>
                 <div class="tpl-card-meta">
                   <span class="tpl-industry-tag">Travel</span>
                   <span class="tpl-channel-tag">
@@ -4558,12 +4712,12 @@
                 </div>
               </div>
 
-              <div class="tpl-card" data-industry="Telecom" data-channel="Email" data-type="Forked" data-name="Telecom — Email (Forked)" onclick="openPreview(this)">
+              <div class="tpl-card" data-industry="Telecom" data-channel="Email" data-type="Forked" data-name="Telecom, Email (Forked)" onclick="openPreview(this)">
                 <div class="tpl-card-header">
                   <div class="tpl-type-badge forked">Forked</div>
                 </div>
-                <div class="tpl-card-name">Telecom — Email</div>
-                <div class="tpl-card-desc">Forked from Telecom — Chat; adapted for async email resolution flows</div>
+                <div class="tpl-card-name">Telecom · Email</div>
+                <div class="tpl-card-desc">Forked from Telecom, Chat; adapted for async email resolution flows</div>
                 <div class="tpl-card-meta">
                   <span class="tpl-industry-tag">Telecom</span>
                   <span class="tpl-channel-tag">
@@ -4581,12 +4735,12 @@
                 </div>
               </div>
 
-              <div class="tpl-card" data-industry="Healthcare" data-channel="Ticket" data-type="Forked" data-name="Healthcare — Ticket (Forked)" onclick="openPreview(this)">
+              <div class="tpl-card" data-industry="Healthcare" data-channel="Ticket" data-type="Forked" data-name="Healthcare, Ticket (Forked)" onclick="openPreview(this)">
                 <div class="tpl-card-header">
                   <div class="tpl-type-badge forked">Forked</div>
                 </div>
-                <div class="tpl-card-name">Healthcare — Ticket</div>
-                <div class="tpl-card-desc">Forked from Healthcare — Email; re-scoped for ticket-based patient intake</div>
+                <div class="tpl-card-name">Healthcare · Ticket</div>
+                <div class="tpl-card-desc">Forked from Healthcare, Email; re-scoped for ticket-based patient intake</div>
                 <div class="tpl-card-meta">
                   <span class="tpl-industry-tag">Healthcare</span>
                   <span class="tpl-channel-tag">
@@ -4604,12 +4758,12 @@
                 </div>
               </div>
 
-              <div class="tpl-card" data-industry="Retail" data-channel="Voice" data-type="Forked" data-name="Retail — Voice (Forked)" onclick="openPreview(this)">
+              <div class="tpl-card" data-industry="Retail" data-channel="Voice" data-type="Forked" data-name="Retail, Voice (Forked)" onclick="openPreview(this)">
                 <div class="tpl-card-header">
                   <div class="tpl-type-badge forked">Forked</div>
                 </div>
-                <div class="tpl-card-name">Retail — Voice</div>
-                <div class="tpl-card-desc">Forked from Telecom — Chat; re-weighted for retail product knowledge checks</div>
+                <div class="tpl-card-name">Retail · Voice</div>
+                <div class="tpl-card-desc">Forked from Telecom, Chat; re-weighted for retail product knowledge checks</div>
                 <div class="tpl-card-meta">
                   <span class="tpl-industry-tag">Retail</span>
                   <span class="tpl-channel-tag">
@@ -4657,7 +4811,7 @@
               <div class="aib-left">
                 <svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
                 <span class="aib-label">AiMY recommends</span>
-                <span class="aib-context" id="regIntelContext">3 deprecated metrics in active templates — review before next evaluation run</span>
+                <span class="aib-context" id="regIntelContext">3 deprecated metrics in active templates, review before next evaluation run</span>
               </div>
               <div class="aib-chips">
                 <button class="aib-chip" onclick="applyRegFilter('Status','Deprecated');document.getElementById('aimyRegistryBar').style.display='none'">
@@ -4843,7 +4997,7 @@
               <button class="afs-clear-all" id="healthClearAll">Clear all</button>
             </div>
 
-            <!-- AiMY Intelligence Bar for Health tab — G4 fix -->
+            <!-- AiMY Intelligence Bar for Health tab, G4 fix -->
             <div class="aimy-intelligence-bar" id="aimyHealthBar">
               <div class="aib-left">
                 <svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
@@ -4873,7 +5027,7 @@
              Closes on X button or click-outside.
         ════════════════════════════════════════════════════════════════ -->
         <!-- ══════════════════════════════════════════════════════════════
-             TEMPLATE DETAIL OVERLAY — full-screen centered canvas
+             TEMPLATE DETAIL OVERLAY, full-screen centered canvas
              Replaces right-panel. Consistent with AiMY Canvas pattern.
         ════════════════════════════════════════════════════════════════ -->
         <div class="goal-overlay-backdrop" id="tplDetailBackdrop" onclick="closePreview()"></div>
@@ -4885,8 +5039,8 @@
               <div class="kdo-header-left">
                 <div class="kdo-type-badge" id="kdoTypeBadge">System Default</div>
                 <div>
-                  <h2 class="kdo-title" id="kdoTitle">—</h2>
-                  <p class="kdo-subtitle" id="kdoSubtitle">—</p>
+                  <h2 class="kdo-title" id="kdoTitle">-</h2>
+                  <p class="kdo-subtitle" id="kdoSubtitle">-</p>
                 </div>
               </div>
               <div class="kdo-header-right">
@@ -4913,7 +5067,7 @@
                   <div class="kdo-radial-svg-wrap">
                     <svg class="kdo-radial-svg" id="kdoRadialSvg" viewBox="0 0 220 220"></svg>
                     <div class="kdo-radial-center" id="kdoRadialCenter">
-                      <span class="kdo-radial-center-pct" id="kdoRadialCenterPct">—</span>
+                      <span class="kdo-radial-center-pct" id="kdoRadialCenterPct">-</span>
                       <span class="kdo-radial-center-label" id="kdoRadialCenterLabel">Weight</span>
                     </div>
                   </div>
@@ -4937,7 +5091,7 @@
                 <div class="kdo-section-label">goal categories</div>
                 <div class="kdo-goal-cats" id="kdogoalCats"></div>
 
-                <!-- AiMY action zone — knowledge to action -->
+                <!-- AiMY action zone, knowledge to action -->
                 <div class="kdo-aimy-zone" id="kdoAimyZone">
                   <div class="kdo-aimy-zone-header">
                     <svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>
@@ -4992,7 +5146,7 @@
               </div>
               <div class="goal-impact-row" id="rollbackImpactClients">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                <span id="rollbackImpactText">—</span>
+                <span id="rollbackImpactText">-</span>
               </div>
             </div>
           </div>
@@ -5079,7 +5233,7 @@
             </div>
             <div>
               <h3 class="goal-modal-title" id="crDetailTitle">Change request</h3>
-              <p class="goal-modal-subtitle" id="crDetailSubtitle">—</p>
+              <p class="goal-modal-subtitle" id="crDetailSubtitle">-</p>
             </div>
             <button class="tpl-preview-close" onclick="closeCRDetail()" style="margin-left:auto">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -5096,7 +5250,7 @@
         <!-- ════ FLOATING AIMY INPUT BAR (scoped to app-main) ══════════ -->
         <div class="aimy-float-wrap" id="aimyFloatWrap">
 
-          <!-- Goal Hub filter tray — context-aware chips per tab -->
+          <!-- Goal Hub filter tray, context-aware chips per tab -->
           <div class="goal-filter-tray" id="goalFilterTray">
             <div class="goal-filter-tray-inner">
               <span class="goal-tray-label" id="goalTrayLabel">Filter via AiMY</span>
@@ -5104,7 +5258,8 @@
           </div>
 
           <div class="aimy-float-bar" id="aimyFloatBar">
-            <div class="aimy-float-icon">
+            <div class="aimy-float-icon" id="aimyFloatIcon" role="button" tabindex="0"
+                 aria-label="Open the AiMY canvas" style="cursor:pointer;">
               <svg width="23" height="25" viewBox="0 0 18 20">
                 <use href="#aimy-logo-small" />
               </svg>
@@ -5145,7 +5300,7 @@
         </div>
 
         <!-- ════ AIMY CHAT OVERLAY (scoped to app-main) ══════════════════
-       Absolute-positioned so it covers only the main content area —
+       Absolute-positioned so it covers only the main content area,
        sidebar and topbar remain fully visible and interactive.
        Closes on Escape or close button. -->
         <div
@@ -5182,7 +5337,7 @@
 
           <!-- Conversation thread -->
           <div class="overlay-thread" id="overlayThread" aria-live="polite">
-            <!-- Suggested prompts — visible when thread is empty -->
+            <!-- Suggested prompts, visible when thread is empty -->
             <div class="overlay-suggestions" id="overlaySuggestions">
               <button
                 class="overlay-sugg-chip"
@@ -5311,7 +5466,7 @@
 
 
       /* ══════════════════════════════════════════════════════════════
-         Goal Hub — PAGE STYLES
+         Goal Hub · PAGE STYLES
       ════════════════════════════════════════════════════════════════ */
 
       .goal-hub-page {
@@ -5741,7 +5896,7 @@
         border-top: 1px solid rgba(255,255,255,0.05);
         margin-top: 2px;
       }
-      /* When AI action row follows footer, remove footer's own bottom division —
+      /* When AI action row follows footer, remove footer's own bottom division,
          the action row provides the visual break. */
       .tpl-card-footer + .tpl-card-ai-actions {
         border-top: none;
@@ -5953,7 +6108,7 @@
         display: none;
       }
 
-      /* Template highlight pulse — used by AiMY recommendations */
+      /* Template highlight pulse, used by AiMY recommendations */
       .tpl-card.aimy-highlight {
         border-color: rgba(97,173,241,0.5);
         box-shadow: 0 0 0 2px rgba(97,173,241,0.12), 0 8px 32px rgba(0,0,0,0.3);
@@ -6764,7 +6919,7 @@
       .editor-textarea:focus {
         border-color: rgba(var(--qa-accent-rgb),0.4);
       }
-      /* Native select — hidden, keeps value in sync */
+      /* Native select. Hidden, keeps value in sync */
       .editor-select {
         position: absolute;
         opacity: 0;
@@ -8053,7 +8208,7 @@
       }
 
       /* ══════════════════════════════════════════════════════════════
-         Goal Hub v3 — FILTER CHIP SYSTEM (matches index.html pattern)
+         Goal Hub v3, FILTER CHIP SYSTEM (matches index.html pattern)
       ════════════════════════════════════════════════════════════════ */
 
       /* Active filter strip */
@@ -8116,7 +8271,7 @@
       }
       .goal-active-strip .afs-clear-all:hover { color:rgba(168,204,255,0.6); }
 
-      /* goal-scoped filter tray — sits above AiMY bar, context per tab */
+      /* goal-scoped filter tray. Sits above AiMY bar, context per tab */
       .goal-filter-tray {
         position:absolute;
         bottom: calc(100% + 6px);
@@ -8168,7 +8323,7 @@
         background:rgba(139,79,244,0.10); border-color:rgba(139,79,244,0.28); color:rgba(210,185,255,0.9);
       }
 
-      /* Tab toolbar — thin strip above content, below tab bar */
+      /* Tab toolbar, thin strip above content, below tab bar */
       .goal-tab-toolbar {
         display:flex; align-items:center; gap:8px;
         padding:10px 0 16px;
@@ -8514,7 +8669,7 @@
       }
 
       /* ══════════════════════════════════════════════════════════════
-         METRIC REGISTRY — CARD GRID (no tables)
+         METRIC REGISTRY, CARD GRID (no tables)
       ════════════════════════════════════════════════════════════════ */
             .metric-card-grid {
         display:grid;
@@ -8552,7 +8707,7 @@
       }
       .metric-card-desc { font-size:11px; color:var(--d400); line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 
-      /* Usage bar — shows evaluation count as a horizontal fill */
+      /* Usage bar. Shows evaluation count as a horizontal fill */
       .metric-card-usage {
         display:flex; flex-direction:column; gap:4px;
       }
@@ -8709,12 +8864,12 @@
       }
     
           /* ══════════════════════════════════════════════════════════════════
-         GENERATED — light-mode text colours
+         GENERATED, light-mode text colours
          ──────────────────────────────────────────────────────────────────
          This page's own components hardcode white text for a dark card.
          Under light those cards turn white and the text vanishes (measured
          as low as 1.05:1). Each rule below restates the SAME weight from
-         the neutral ramp, which inverts with the theme — so nothing moves
+         the neutral ramp, which inverts with the theme, so nothing moves
          in dark and light gets readable text at the intended emphasis.
 
          Rules painting their own saturated or gradient background are not
@@ -8729,10 +8884,10 @@
       :root[data-theme="light"] .goal-filter-tray .filter-chip { color: var(--d300); }
 
       /* ══════════════════════════════════════════════════════════════════
-         GENERATED — light-mode surfaces
+         GENERATED, light-mode surfaces
          ──────────────────────────────────────────────────────────────────
          These components hardcode a dark panel colour, so under light they
-         stayed dark while their text correctly darkened — text and surface
+         stayed dark while their text correctly darkened, text and surface
          collapsing onto each other at ~1.05:1.
 
          Each dark surface maps to a light one by luminance rank, so the
@@ -8897,13 +9052,13 @@
       :root[data-theme="light"] .cr-diff-row { background: rgba(255,255,255,0.28); }
 
       /* ══════════════════════════════════════════════════════════════════
-         GENERATED — light-mode brand hues
+         GENERATED, light-mode brand hues
          ──────────────────────────────────────────────────────────────────
          Each of these hardcodes a token's DARK value as text (mostly
          #61adf1, the dark --ai-text), so the light block's darkened value
          never reached them and they sat at ~2.1:1 on white.
 
-         Matched by value identity, then restated as the token — so light
+         Matched by value identity, then restated as the token, so light
          inherits whatever the design system already decided that token
          becomes, rather than a second opinion invented here.
       ══════════════════════════════════════════════════════════════════ */
@@ -8928,21 +9083,21 @@
 
       /* ── Light: the last four, by hand ───────────────────────────────
          .goal-tray-label is the same rgba(99,169,255,0.45) as the Dashboard's
-         filter-tray label — kept at its original value in dark at your
+         filter-tray label. Kept at its original value in dark at your
          request, so light gets its own darker blue rather than a dark edit.
 
          The dropdown trigger/option text is the muted --d600, which is
          correct on a dark panel but too light on the pale panel it now sits
          on; one step stronger restores the intended emphasis. The selected
          option carried the accent as 13px body text (3.18 against a 4.5 bar)
-         — the accent stays on the chip, the label takes body colour. */
+. The accent stays on the chip, the label takes body colour. */
       :root[data-theme="light"] .goal-tray-label { color: rgba(31,95,208,0.72); }
       :root[data-theme="light"] .goal-dropdown-trigger span { color: var(--d400); }
       :root[data-theme="light"] .goal-dropdown-option { color: var(--d200); }
       :root[data-theme="light"] .goal-dropdown-option.selected { color: var(--d100); }
 
       /* ══════════════════════════════════════════════════════════════════
-         GENERATED — light depth: shadows and black overlays
+         GENERATED, light depth: shadows and black overlays
          ──────────────────────────────────────────────────────────────────
          Both of these say "depth" on a dark page and say something else
          on a white one.
@@ -8952,7 +9107,7 @@
          cue. Softened toward the values the toast and float bar already
          use in light (0.10–0.16), which are the reference.
 
-         rgba(0,0,0,a) BACKGROUNDS are recesses — a segmented-control track
+         rgba(0,0,0,a) BACKGROUNDS are recesses, a segmented-control track
          sunk into a dark panel. Inverting them to a white overlay turned
          them into milky grey slabs; a recess on white is a faint dark
          tint, so the alpha is carried across rather than the colour.
@@ -9015,7 +9170,7 @@
       :root[data-theme="light"] .cr-diff-row { background: rgba(16,24,40,0.063); }
 
       /* ══════════════════════════════════════════════════════════════════
-         GENERATED — light hairlines
+         GENERATED, light hairlines
          ──────────────────────────────────────────────────────────────────
          rgba(255,255,255,a) is the lit edge of a panel raised off a dark
          page. On white it is invisible, so panels lose their edge and
@@ -9169,7 +9324,7 @@
 
       /* ── Light: the view toggle reads inside-out ─────────────────────
          .goal-view-btn.active uses var(--d700), which on dark is one step
-         TOWARD the foreground — a chip lifted out of a near-black track. The
+         TOWARD the foreground, a chip lifted out of a near-black track. The
          ramp inverts, so on light the same token is a mid grey and the
          selected segment came out heavier than the track around it.
 
@@ -9309,6 +9464,13 @@
         }
 
         /* ── Open overlay ─────────────────────────────────────────────── */
+        /* The one way in from outside this IIFE. Every page has a canvas but
+           opens it differently and none of the openers are on window, so the
+           shared notifications panel and the float-bar logo both go through
+           this adapter. Same name and contract in all six files; this file
+           already had the same idea in window._goalCanvas below. */
+        window.aimyOpenCanvas = function (q) { openOverlay(q || null); };
+
         function openOverlay(initialText) {
           overlayOpen = true;
           overlay.classList.add("open");
@@ -9413,9 +9575,9 @@
      AiMY agent layer. The responses here are illustrative stubs.     */
         const STUB_RESPONSES = [
           "I&rsquo;ve looked across this period&rsquo;s data. The primary driver is empathy on escalation calls, which dropped <strong>8%</strong> week-over-week. I&rsquo;d suggest starting a targeted coaching session for the 3 flagged agents.",
-          "Based on current audit data: <strong>5 agents</strong> are below the 80% quality threshold. Omar A., Sara M., and Khaled R. show the steepest declines&mdash;all in the Customer Support queue.",
+          "Based on current audit data: <strong>5 agents</strong> are below the 80% quality threshold. Omar A., Sara M., and Khaled R. show the steepest declines, all in the Customer Support queue.",
           "This week&rsquo;s SLA breach count is <strong>23</strong>, up from 14 last week. The spike correlates with a surge in billing tickets on Wednesday. Do you want me to pull the affected tickets?",
-          "Quality score today sits at <strong>87.3%</strong>, which is 2.7 points below the 90% target. The improvement trajectory is positive&mdash;at current rate you&rsquo;d hit the target in approximately <strong>3 weeks</strong>.",
+          "Quality score today sits at <strong>87.3%</strong>, which is 2.7 points below the 90% target. The improvement trajectory is positive, at current rate you&rsquo;d hit the target in approximately <strong>3 weeks</strong>.",
           "I&rsquo;m tracking <strong>484 failing interactions</strong> this period. The top failure reason is missing follow-up confirmation (38% of fails), followed by survey promotion (27%). Want me to generate a coaching plan?",
         ];
         let stubIdx = 0;
@@ -9500,7 +9662,7 @@
     <script>
 
       /* ══════════════════════════════════════════════════════════════
-         Goal Hub v3 — JAVASCRIPT
+         Goal Hub v3 · JAVASCRIPT
          AI Native Knowledge to Action
       ════════════════════════════════════════════════════════════════ */
 
@@ -9521,7 +9683,7 @@
 
       // ── Template data ──────────────────────────────────────────
       const TEMPLATES = {
-        'Financial Services — Voice': {
+        'Financial Services · Voice': {
           industry:'Financial Services', channel:'Voice', type:'System Default',
           desc:'Compliance-first scoring for regulated financial contact centres',
           goalCount:'12 goals', updated:'Updated 3 days ago',
@@ -9533,13 +9695,13 @@
           ],
           activeClients:[{name:'Heliox Financial',date:'12 Jan 2025',evals:'1,842'}],
           versions:[
-            {id:'v4',label:'v4 — Current',current:true,author:'Ahmed Mahfouz',date:'2 days ago',diff:'Increased Compliance weight from 30% → 35%. Reduced Empathy from 30% → 25%.'},
+            {id:'v4',label:'v4, Current',current:true,author:'Ahmed Mahfouz',date:'2 days ago',diff:'Increased Compliance weight from 30% → 35%. Reduced Empathy from 30% → 25%.'},
             {id:'v3',label:'v3',current:false,author:'Nour Wael',date:'3 weeks ago',diff:'Added "Call Handling Protocol" category. Total goals: 10 → 12.'},
             {id:'v2',label:'v2',current:false,author:'Ahmed Mahfouz',date:'2 months ago',diff:'Renamed "Accuracy" to "Resolution Efficiency". No weight changes.'},
-            {id:'v1',label:'v1 — Initial',current:false,author:'System',date:'6 months ago',diff:'Template created from Financial Services baseline.'},
+            {id:'v1',label:'v1, Initial',current:false,author:'System',date:'6 months ago',diff:'Template created from Financial Services baseline.'},
           ],
         },
-        'Telecom — Chat': {
+        'Telecom · Chat': {
           industry:'Telecom', channel:'Chat', type:'System Default',
           desc:'Optimised for technical support over chat with first-contact resolution focus',
           goalCount:'9 goals', updated:'Updated 1 week ago',
@@ -9551,11 +9713,11 @@
           ],
           activeClients:[{name:'Meridian Telecom',date:'3 Feb 2025',evals:'3,110'}],
           versions:[
-            {id:'v2',label:'v2 — Current',current:true,author:'Nour Wael',date:'1 week ago',diff:'Reduced Documentation weight 15% → 10%. Increased Technical Accuracy 35% → 40%.'},
-            {id:'v1',label:'v1 — Initial',current:false,author:'System',date:'4 months ago',diff:'Template created from Telecom baseline.'},
+            {id:'v2',label:'v2, Current',current:true,author:'Nour Wael',date:'1 week ago',diff:'Reduced Documentation weight 15% → 10%. Increased Technical Accuracy 35% → 40%.'},
+            {id:'v1',label:'v1, Initial',current:false,author:'System',date:'4 months ago',diff:'Template created from Telecom baseline.'},
           ],
         },
-        'Healthcare — Email (Custom)': {
+        'Healthcare · Email (Custom)': {
           industry:'Healthcare', channel:'Email', type:'Custom',
           desc:'Adapted for patient communication with empathy and accuracy weighting',
           goalCount:'11 goals', updated:'Updated 2 days ago',
@@ -9567,12 +9729,12 @@
           ],
           activeClients:[{name:'VitaCare Health',date:'20 Jan 2025',evals:'987'}],
           versions:[
-            {id:'v3',label:'v3 — Current',current:true,author:'Ahmed Mahfouz',date:'2 days ago',diff:'Added Privacy Compliance category. Reduced Medical Accuracy weight 50% → 40%.'},
+            {id:'v3',label:'v3, Current',current:true,author:'Ahmed Mahfouz',date:'2 days ago',diff:'Added Privacy Compliance category. Reduced Medical Accuracy weight 50% → 40%.'},
             {id:'v2',label:'v2',current:false,author:'Nour Wael',date:'1 month ago',diff:'Increased Empathy weight 20% → 30%.'},
-            {id:'v1',label:'v1 — Initial',current:false,author:'Nour Wael',date:'3 months ago',diff:'Forked from System Default Healthcare baseline.'},
+            {id:'v1',label:'v1, Initial',current:false,author:'Nour Wael',date:'3 months ago',diff:'Forked from System Default Healthcare baseline.'},
           ],
         },
-        'Retail — Ticket (Custom)': {
+        'Retail · Ticket (Custom)': {
           industry:'Retail', channel:'Ticket', type:'Custom',
           desc:'Returns and escalation flow scoring for high-volume retail support',
           goalCount:'8 goals', updated:'Updated 5 days ago',
@@ -9582,11 +9744,11 @@
             {icon:'⚡',name:'Resolution Speed',count:'2 goals',weight:20},
           ],
           activeClients:[],
-          versions:[{id:'v1',label:'v1 — Current',current:true,author:'Nour Wael',date:'5 days ago',diff:'Template created.'}],
+          versions:[{id:'v1',label:'v1, Current',current:true,author:'Nour Wael',date:'5 days ago',diff:'Template created.'}],
         },
-        'Travel — Voice (Forked)': {
+        'Travel · Voice (Forked)': {
           industry:'Travel', channel:'Voice', type:'Forked',
-          desc:'Forked from Financial Services — Voice; re-weighted for hospitality context',
+          desc:'Forked from Financial Services, Voice; re-weighted for hospitality context',
           goalCount:'14 goals', updated:'Updated today',
           categories:[
             {icon:'✈️',name:'Travel Product Knowledge',count:'4 goals',weight:30},
@@ -9596,13 +9758,13 @@
           ],
           activeClients:[{name:'SkyWay Travel',date:'1 Mar 2025',evals:'412'}],
           versions:[
-            {id:'v2',label:'v2 — Current',current:true,author:'Ahmed Mahfouz',date:'Today',diff:'Added Travel Product Knowledge. Hospitality weight 40% → 30%.'},
-            {id:'v1',label:'v1 — Initial',current:false,author:'Nour Wael',date:'3 weeks ago',diff:'Forked from Financial Services — Voice v4.'},
+            {id:'v2',label:'v2, Current',current:true,author:'Ahmed Mahfouz',date:'Today',diff:'Added Travel Product Knowledge. Hospitality weight 40% → 30%.'},
+            {id:'v1',label:'v1, Initial',current:false,author:'Nour Wael',date:'3 weeks ago',diff:'Forked from Financial Services, Voice v4.'},
           ],
         },
-        'Telecom — Email (Forked)': {
+        'Telecom · Email (Forked)': {
           industry:'Telecom', channel:'Email', type:'Forked',
-          desc:'Forked from Telecom — Chat; adapted for async email resolution flows',
+          desc:'Forked from Telecom, Chat; adapted for async email resolution flows',
           goalCount:'10 goals', updated:'Updated 2 weeks ago',
           categories:[
             {icon:'🔧',name:'Technical Accuracy',count:'3 goals',weight:35},
@@ -9611,15 +9773,15 @@
             {icon:'📋',name:'Process Adherence',count:'2 goals',weight:10},
           ],
           activeClients:[],
-          versions:[{id:'v1',label:'v1 — Current',current:true,author:'Nour Wael',date:'2 weeks ago',diff:'Forked from Telecom — Chat v2. Replaced Response Speed with Written Communication.'}],
+          versions:[{id:'v1',label:'v1, Current',current:true,author:'Nour Wael',date:'2 weeks ago',diff:'Forked from Telecom. Chat v2. Replaced Response Speed with Written Communication.'}],
         },
       };
 
       const ACTIVE_CLIENT_TEMPLATES = {
-        'Heliox Financial':'Financial Services — Voice',
-        'Meridian Telecom':'Telecom — Chat',
-        'VitaCare Health':'Healthcare — Email (Custom)',
-        'SkyWay Travel':'Travel — Voice (Forked)',
+        'Heliox Financial':'Financial Services · Voice',
+        'Meridian Telecom':'Telecom · Chat',
+        'VitaCare Health':'Healthcare · Email (Custom)',
+        'SkyWay Travel':'Travel · Voice (Forked)',
       };
 
       const METRICS = [
@@ -9644,7 +9806,7 @@
           formula:'regression_model(sentiment_score, resolution_outcome, wait_time) → 1–5',
           dependencies:['Empathy Score','Resolution Rate','First Response Time'],usageCount:0,deprecatedBy:null},
         {id:'m6',name:'Compliance Check (Legacy)',type:'Compliance',source:'S3 Transcripts',owner:'Ahmed Mahfouz',templates:0,status:'Deprecated',
-          desc:'Original compliance scoring — superseded by Script Adherence.',
+          desc:'Original compliance scoring, superseded by Script Adherence.',
           formula:'manual_reviewer_score',
           dependencies:[],usageCount:1240,deprecatedBy:'Script Adherence'},
       ];
@@ -9661,7 +9823,7 @@
         {id:'CR-039',metric:'Resolution Rate',status:'Approved',proposer:'QA Team',proposerInitials:'QA',date:'3 days ago',
           desc:'Extend re-open window from 24h to 48h to reduce false negatives on complex tickets.',
           before:'resolved_no_reopen_24h',after:'resolved_no_reopen_48h',
-          affectedTemplates:5,affectedEvals:3100,affectedClients:['Meridian Telecom','Bloom Retail Group'],decision:'Approved — 48h aligns with SLA benchmarks.'},
+          affectedTemplates:5,affectedEvals:3100,affectedClients:['Meridian Telecom','Bloom Retail Group'],decision:'Approved, 48h aligns with SLA benchmarks.'},
         {id:'CR-038',metric:'Compliance Check (Legacy)',status:'Deployed',proposer:'Ahmed Mahfouz',proposerInitials:'AM',date:'2 weeks ago',
           desc:'Deprecated Compliance Check (Legacy) in favour of Script Adherence.',
           before:'Status: Active',after:'Status: Deprecated',
@@ -9669,7 +9831,7 @@
         {id:'CR-037',metric:'First Response Time',status:'Rejected',proposer:'Nour Wael',proposerInitials:'NW',date:'3 weeks ago',
           desc:'Proposed changing source from AiMY Connect to Zendesk for consistency.',
           before:'source: AiMY Connect',after:'source: Zendesk',
-          affectedTemplates:3,affectedEvals:2100,affectedClients:['Heliox Financial'],decision:'Rejected — AiMY Connect timestamps are more accurate for voice channels.'},
+          affectedTemplates:3,affectedEvals:2100,affectedClients:['Heliox Financial'],decision:'Rejected. AiMY Connect timestamps are more accurate for voice channels.'},
       ];
 
       const AUDIT_LOG = [
@@ -9678,7 +9840,7 @@
         {ts:'3 days ago 16:05',actor:'QA Team',action:'Modified',metric:'Resolution Rate',summary:'Approved re-open window change 24h → 48h',reqId:'CR-039'},
         {ts:'2 weeks ago 13:20',actor:'Ahmed Mahfouz',action:'Deprecated',metric:'Compliance Check (Legacy)',summary:'Deployed deprecation in favour of Script Adherence',reqId:'CR-038'},
         {ts:'3 weeks ago 10:00',actor:'Nour Wael',action:'Modified',metric:'First Response Time',summary:'Proposed source change rejected',reqId:'CR-037'},
-        {ts:'2 months ago 08:44',actor:'System',action:'Created',metric:'CSAT Proxy',summary:'Metric definition created as Draft',reqId:'—'},
+        {ts:'2 months ago 08:44',actor:'System',action:'Created',metric:'CSAT Proxy',summary:'Metric definition created as Draft',reqId:'-'},
       ];
 
       const HEALTH_DATA = [
@@ -9691,7 +9853,7 @@
         {name:'Resolution Rate',source:'Zendesk',coverage:99,variance:'Low',severity:'ok',alerts:[]},
         {name:'CSAT Proxy',source:'AiMY QA Engine',coverage:42,variance:'High',severity:'crit',
           alerts:[{client:'Heliox Financial',pct:'61%',level:'crit'},{client:'VitaCare Health',pct:'55%',level:'crit'},{client:'Meridian Telecom',pct:'48%',level:'crit'}]},
-        {name:'Compliance Check (Legacy)',source:'S3 Transcripts',coverage:0,variance:'—',severity:'crit',
+        {name:'Compliance Check (Legacy)',source:'S3 Transcripts',coverage:0,variance:'-',severity:'crit',
           alerts:[{client:'All clients',pct:'100%',level:'crit'}]},
       ];
 
@@ -9789,7 +9951,7 @@
       }
 
       // ──────────────────────────────────────────────────────────
-      // FILTER TRAY — context-aware chips, index.html pattern
+      // FILTER TRAY, context-aware chips, index.html pattern
       // ──────────────────────────────────────────────────────────
       const FILTER_CONTEXTS = {
         templates: {
@@ -9942,7 +10104,7 @@
         if (activeTab==='health')     { healthActiveFilters[key]= value; renderActiveStrip('healthActiveStrip', healthActiveFilters); renderHealth(); }
       }
 
-      // AiMY intelligence bar — highlight recommended template card
+      // AiMY intelligence bar, highlight recommended template card
       function highlightTemplate(name) {
         document.querySelectorAll(".tpl-card.aimy-highlight").forEach(c => c.classList.remove("aimy-highlight"));
         const card = document.querySelector('.tpl-card[data-name="' + name + '"]');
@@ -10051,7 +10213,7 @@
             ${!v.current ? `<button class="kdo-version-item-rollback" onclick="openRollbackModal('${v.id}','${v.label}','${name}')">Rollback</button>` : ''}
           </div>`).join('');
 
-        // AiMY action zone — Knowledge to Action
+        // AiMY action zone · Knowledge to Action
         const isActive = tpl.activeClients.length > 0;
         const tplShort = name.replace(/ \(Custom\)| \(Forked\)/,'');
         document.getElementById('kdoActionChips').innerHTML = `
@@ -10067,7 +10229,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             View evaluations
           </button>` : ''}
-          <button class="kdo-action-chip ghost" onclick="injectCanvasAction(${isActive ? '\`Analyse the live weight distribution in ${tplShort}. We have evaluation data — identify any categories where the current weight is causing score distortion or where agents are consistently underperforming relative to the weight assigned.\`' : '\`Estimate the impact of the weight distribution in ${tplShort} for this industry. No live evaluation data yet — give me your expert assessment on whether these priorities are well-balanced and flag any weight that looks miscalibrated.\`'})">
+          <button class="kdo-action-chip ghost" onclick="injectCanvasAction(${isActive ? '\`Analyse the live weight distribution in ${tplShort}. We have evaluation data, identify any categories where the current weight is causing score distortion or where agents are consistently underperforming relative to the weight assigned.\`' : '\`Estimate the impact of the weight distribution in ${tplShort} for this industry. No live evaluation data yet, give me your expert assessment on whether these priorities are well-balanced and flag any weight that looks miscalibrated.\`'})">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             ${isActive ? 'Analyse live weights' : 'Estimate weight impact'}
           </button>
@@ -10324,15 +10486,15 @@
         const tplName = (currentPreviewTemplate||'').replace(/ \(Custom\)| \(Forked\)/,'');
         // Populate modal with template name
         const nameEl = document.getElementById('activationTemplateName');
-        if (nameEl) nameEl.textContent = tplName || '—';
-        // Populate client select — mark clients that already have a template
+        if (nameEl) nameEl.textContent = tplName || '-';
+        // Populate client select, mark clients that already have a template
         const sel = document.getElementById('activationClientSelect');
         if (sel) {
           const ALL_CLIENTS = ['Heliox Financial','Meridian Telecom','VitaCare Health','Bloom Retail Group','SkyWay Travel'];
           sel.innerHTML = '<option value="">Select a client…</option>' +
             ALL_CLIENTS.map(c => {
               const existing = ACTIVE_CLIENT_TEMPLATES[c];
-              const label = existing ? c + ' — replaces ' + existing.replace(/ \(Custom\)| \(Forked\)/,'') : c;
+              const label = existing ? c + '. Replaces ' + existing.replace(/ \(Custom\)| \(Forked\)/,'') : c;
               return `<option value="${c}">${label}</option>`;
             }).join('');
           sel.value = '';
@@ -10406,11 +10568,11 @@
       }
 
       // ──────────────────────────────────────────────────────────
-      // AIMY CANVAS INJECTION — Knowledge to Action
+      // AIMY CANVAS INJECTION · Knowledge to Action
       // Primary action surface: all CTAs funnel here
       // ──────────────────────────────────────────────────────────
       // ──────────────────────────────────────────────────────────
-      // CANVAS ENGINE — every Goal Hub action routes here
+      // CANVAS ENGINE, every Goal Hub action routes here
       // ──────────────────────────────────────────────────────────
 
       function injectCanvasAction(prompt, contextData) {
@@ -10447,11 +10609,11 @@
           const conflicts = activeClients.filter(c => ACTIVE_CLIENT_TEMPLATES[c]);
           return `To activate <strong>${tpl}</strong>, select a client from the modal that just opened.
 
-<br><br><strong>Clients with no active template:</strong> ${free.length ? free.map(c=>`<em>${c}</em>`).join(', ') : 'None — all clients already have an active template.'}
+<br><br><strong>Clients with no active template:</strong> ${free.length ? free.map(c=>`<em>${c}</em>`).join(', ') : 'None, all clients already have an active template.'}
 
 ${conflicts.length ? `<br><strong>Clients with an existing template</strong> (activating will replace it): ${conflicts.map(c=>`<em>${c}</em> → <em>${ACTIVE_CLIENT_TEMPLATES[c].replace(/ \(Custom\)| \(Forked\)/,'')}</em>`).join(', ')}` : ''}
 
-<br><br>Activation applies to <strong>future evaluations only</strong> — historical scores are not re-scored. Once confirmed, I&#39;ll update the governance log automatically.`;
+<br><br>Activation applies to <strong>future evaluations only</strong>. Historical scores are not re-scored. Once confirmed, I&#39;ll update the governance log automatically.`;
         }
 
         // ── TEMPLATE: Fork ──────────────────────────────────────
@@ -10460,7 +10622,7 @@ ${conflicts.length ? `<br><strong>Clients with an existing template</strong> (ac
           const tplData = TEMPLATES[ctx.templateName] || Object.values(TEMPLATES).find(t=>t.desc && prompt.includes(t.industry)) || {};
           const cats = tplData.categories || [];
           const suggestions = cats.length ? `Current weights: ${cats.map(c=>`${c.name} ${c.weight}%`).join(', ')}.` : '';
-          return `I&#39;ll create an editable fork of <strong>${tpl}</strong> — the original is never modified.
+          return `I&#39;ll create an editable fork of <strong>${tpl}</strong>. The original is never modified.
 
 <br><br>${suggestions}
 
@@ -10477,10 +10639,10 @@ ${conflicts.length ? `<br><strong>Clients with an existing template</strong> (ac
           const totalEvals = clients.reduce((s, c) => s + parseInt(c.evals.replace(/,/g,'')) , 0);
           return `Here's the evaluation summary for <strong>${tpl}</strong>:
 
-<br><br>• <strong>Total evaluations (last 30 days):</strong> ${totalEvals.toLocaleString() || '—'}
+<br><br>• <strong>Total evaluations (last 30 days):</strong> ${totalEvals.toLocaleString() || '-'}
 • <strong>Active on:</strong> ${clients.length ? clients.map(c=>`${c.name} (${c.evals} evals)`).join(', ') : 'Not yet assigned to any client'}
 • <strong>Average quality score:</strong> 82.4%
-• <strong>Lowest-scoring category:</strong> Call Handling Protocol at 71% — below the 80% threshold
+• <strong>Lowest-scoring category:</strong> Call Handling Protocol at 71%, below the 80% threshold
 
 <br><br>3 agents are scoring below 75% on Compliance checks this week. Would you like me to flag them for a coaching session, or would you prefer to see the full agent breakdown?`;
         }
@@ -10497,7 +10659,7 @@ ${conflicts.length ? `<br><strong>Clients with an existing template</strong> (ac
           const issue = empathyPct < 25
             ? `Customer Empathy at <strong>${empathyPct}%</strong> is below the industry median of 28% for this channel. Low empathy weighting correlates with a −3 to −5 point CSAT delta in regulated sectors.`
             : compliance && compliancePct > 40
-            ? `Compliance at <strong>${compliancePct}%</strong> is dominant — appropriate for regulated industries, but watch for agent burnout on compliance-heavy scripts.`
+            ? `Compliance at <strong>${compliancePct}%</strong> is dominant, appropriate for regulated industries, but watch for agent burnout on compliance-heavy scripts.`
             : `The weight distribution looks well-balanced for this industry and channel.`;
           return `Analysing weights for <strong>${tpl}</strong>:
 
@@ -10516,13 +10678,13 @@ ${conflicts.length ? `<br><strong>Clients with an existing template</strong> (ac
           const metric = METRICS.find(m => m.name === mName || prompt.includes(m.name));
           return `To propose a change to <strong>${mName}</strong>:
 
-<br><br>1. <strong>Describe what&#39;s changing</strong> — the formula, data source, calculation method, or owner
-2. <strong>Explain the reason</strong> — what problem does this fix or what improvement does it deliver?
-3. <strong>Review the impact</strong> — I&#39;ll automatically flag which templates and clients are affected
+<br><br>1. <strong>Describe what&#39;s changing</strong>, the formula, data source, calculation method, or owner
+2. <strong>Explain the reason</strong>. What problem does this fix or what improvement does it deliver?
+3. <strong>Review the impact</strong>, I&#39;ll automatically flag which templates and clients are affected
 
 <br><br>${metric ? `Currently, <em>${mName}</em> is used in <strong>${metric.templates} template${metric.templates!==1?'s':''}</strong> and has scored <strong>${metric.usageCount.toLocaleString()} evaluations</strong> to date.` : ''}
 
-<br><br>Changes go through the governance approval workflow — reviewers are notified automatically. Approved changes apply to future evaluations only. Historical scores stay intact.
+<br><br>Changes go through the governance approval workflow. Reviewers are notified automatically. Approved changes apply to future evaluations only. Historical scores stay intact.
 
 <br><br>What specifically needs to change in <strong>${mName}</strong>?`;
         }
@@ -10553,7 +10715,7 @@ ${conflicts.length ? `<br><strong>Clients with an existing template</strong> (ac
             : [];
           return `<strong>${mName}</strong> is referenced in <strong>${metric?.templates || 0} template${(metric?.templates||0)!==1?'s':''}</strong>:
 
-<br><br>${usingTemplates.length ? usingTemplates.map(t=>`• <em>${t}</em>`).join('<br>') : '• No template breakdown available — check the Metric Registry for the full list.'}
+<br><br>${usingTemplates.length ? usingTemplates.map(t=>`• <em>${t}</em>`).join('<br>') : '• No template breakdown available, check the Metric Registry for the full list.'}
 
 <br><br>Total evaluations scored using this metric: <strong>${metric?.usageCount?.toLocaleString() || '0'}</strong>.
 
@@ -10565,7 +10727,7 @@ ${conflicts.length ? `<br><strong>Clients with an existing template</strong> (ac
           const mName = ctx.metricName || extractQuoted(prompt) || 'this metric';
           const metric = METRICS.find(m => m.name === mName || prompt.toLowerCase().includes(m.name.toLowerCase()));
           if (metric) {
-            return `<strong>${metric.name}</strong> — ${metric.type} metric
+            return `<strong>${metric.name}</strong> · ${metric.type} metric
 
 <br><br><strong>What it measures:</strong> ${metric.desc}
 
@@ -10587,17 +10749,17 @@ ${conflicts.length ? `<br><strong>Clients with an existing template</strong> (ac
           if (healthItem) {
             const critClients = healthItem.alerts.filter(a=>a.level==='crit');
             const warnClients = healthItem.alerts.filter(a=>a.level==='warn');
-            return `<strong>${healthItem.name}</strong> coverage is at <strong>${healthItem.coverage}%</strong> — ${healthItem.severity==='crit'?'critically below the 80% threshold':'below the recommended 90% level'}.
+            return `<strong>${healthItem.name}</strong> coverage is at <strong>${healthItem.coverage}%</strong>, ${healthItem.severity==='crit'?'critically below the 80% threshold':'below the recommended 90% level'}.
 
 <br><br>${critClients.length ? `<strong>Critical gaps:</strong> ${critClients.map(a=>`${a.client} missing ${a.pct}`).join(', ')}` : ''}
 ${warnClients.length ? `<br><strong>Warnings:</strong> ${warnClients.map(a=>`${a.client} missing ${a.pct}`).join(', ')}` : ''}
 
 <br><br><strong>Most likely causes:</strong>
-1. Data connector for <em>${healthItem.source}</em> is dropping records — check the Data Ingestion monitor
+1. Data connector for <em>${healthItem.source}</em> is dropping records, check the Data Ingestion monitor
 2. Date filter on the source system is excluding recent interactions
 3. Field mapping mismatch after a recent ${healthItem.source} update
 
-<br><br><strong>Immediate action:</strong> ${healthItem.severity==='crit' ? `Pause ${healthItem.name} scoring for affected clients to avoid skewed quality scores until the pipeline is fixed.` : `Monitor for 48h — if coverage stays below 85%, escalate to the data team.`}
+<br><br><strong>Immediate action:</strong> ${healthItem.severity==='crit' ? `Pause ${healthItem.name} scoring for affected clients to avoid skewed quality scores until the pipeline is fixed.` : `Monitor for 48h. If coverage stays below 85%, escalate to the data team.`}
 
 <br><br>Want me to open the Data Ingestion monitor, or draft a flag to the data team?`;
           }
@@ -10608,7 +10770,7 @@ ${warnClients.length ? `<br><strong>Warnings:</strong> ${warnClients.map(a=>`${a
           const crMatch = prompt.match(/CR-(\d+)/i);
           const cr = crMatch ? CHANGE_REQUESTS.find(c=>c.id==='CR-'+crMatch[1]) : CHANGE_REQUESTS.find(c=>c.status==='Pending Review');
           if (cr) {
-            return `Reviewing <strong>${cr.id}</strong> — ${cr.metric}:
+            return `Reviewing <strong>${cr.id}</strong> · ${cr.metric}:
 
 <br><br><strong>Proposed change:</strong> <code style="font-family:monospace;background:rgba(240,68,56,0.1);padding:2px 6px;border-radius:4px;color:#fda29b">${cr.before}</code> → <code style="font-family:monospace;background:rgba(23,178,106,0.1);padding:2px 6px;border-radius:4px;color:#75e0a7">${cr.after}</code>
 
@@ -10616,9 +10778,9 @@ ${warnClients.length ? `<br><strong>Warnings:</strong> ${warnClients.map(a=>`${a
 
 <br><br><strong>Impact:</strong> Affects ${cr.affectedTemplates} template${cr.affectedTemplates!==1?'s':''}${cr.affectedClients.length ? ` and clients: ${cr.affectedClients.join(', ')}` : ''}. Applies to <em>future evaluations only</em>.
 
-<br><br><strong>Risk assessment:</strong> ${cr.affectedTemplates > 3 ? 'High blast radius — recommend reviewing with template owners before approving.' : cr.affectedTemplates > 1 ? 'Medium impact. Verify the change doesn&#39;t break dependent templates.' : 'Low impact. Straightforward to approve.'}
+<br><br><strong>Risk assessment:</strong> ${cr.affectedTemplates > 3 ? 'High blast radius, recommend reviewing with template owners before approving.' : cr.affectedTemplates > 1 ? 'Medium impact. Verify the change doesn&#39;t break dependent templates.' : 'Low impact. Straightforward to approve.'}
 
-<br><br>To <strong>approve</strong>, type "Approve CR-${cr.id.split('-')[1]} — [your reason]". To <strong>reject</strong>, type "Reject CR-${cr.id.split('-')[1]} — [your reason]". Your decision will be logged in the audit trail.`;
+<br><br>To <strong>approve</strong>, type "Approve CR-${cr.id.split('-')[1]}, [your reason]". To <strong>reject</strong>, type "Reject CR-${cr.id.split('-')[1]}, [your reason]". Your decision will be logged in the audit trail.`;
           }
         }
 
@@ -10633,23 +10795,23 @@ ${warnClients.length ? `<br><strong>Warnings:</strong> ${warnClients.map(a=>`${a
 
 <br><br>• <strong>Decision recorded:</strong> ${new Date().toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'})}
 • <strong>Logged in audit trail</strong> under your name
-${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Governance tab — this applies it to future evaluations.` : `• <strong>Proposer notified</strong> — they can revise and resubmit as a new request.`}
+${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Governance tab. This applies it to future evaluations.` : `• <strong>Proposer notified</strong>. They can revise and resubmit as a new request.`}
 
-<br><br>${isApprove ? `The change to <em>${cr.metric}</em> is now ready to deploy. Reminder: <strong>historical evaluations are not re-scored</strong> — only new evaluations use the updated definition.` : `The <em>${cr.metric}</em> definition remains unchanged. The current version continues to score all active evaluations.`}`;
+<br><br>${isApprove ? `The change to <em>${cr.metric}</em> is now ready to deploy. Reminder: <strong>historical evaluations are not re-scored</strong>, only new evaluations use the updated definition.` : `The <em>${cr.metric}</em> definition remains unchanged. The current version continues to score all active evaluations.`}`;
           }
         }
 
         // ── CREATE NEW METRIC ───────────────────────────────────
         if (p.includes('new metric') || p.includes('define a new') || p.includes('create') && p.includes('metric')) {
-          return `Creating a new metric — here&#39;s what you&#39;ll need:
+          return `Creating a new metric, here&#39;s what you&#39;ll need:
 
-<br><br>1. <strong>Name</strong> — must be unique across the registry
-2. <strong>Type</strong> — Compliance, Performance, Sentiment, or Efficiency
-3. <strong>Data source</strong> — AiMY Connect, Zendesk, S3 Transcripts, or AiMY QA Engine
-4. <strong>Calculation method</strong> — plain language description + formula notation
-5. <strong>Owner</strong> — an admin who's accountable for this metric&#39;s accuracy
+<br><br>1. <strong>Name</strong>. Must be unique across the registry
+2. <strong>Type</strong>, Compliance, Performance, Sentiment, or Efficiency
+3. <strong>Data source</strong>, AiMY Connect, Zendesk, S3 Transcripts, or AiMY QA Engine
+4. <strong>Calculation method</strong>, plain language description + formula notation
+5. <strong>Owner</strong>, an admin who's accountable for this metric&#39;s accuracy
 
-<br><br>New metrics start as <strong>Draft</strong> — they don&#39;t affect any live evaluations. Once you submit for approval and it&#39;s deployed, templates can start referencing it.
+<br><br>New metrics start as <strong>Draft</strong>, they don&#39;t affect any live evaluations. Once you submit for approval and it&#39;s deployed, templates can start referencing it.
 
 <br><br>Fill in the form that just opened. I&#39;ll validate the name uniqueness and flag any field issues before you submit.
 
@@ -10660,16 +10822,16 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         if (p.includes('filter') || p.includes('show me') || p.includes('which')) {
           if (p.includes('telecom')) {
             return `Filtering by <strong>Telecom</strong>. Found <strong>2 templates</strong> in the Telecom industry:
-<br>• <em>Telecom — Chat</em> (System Default) — active for Meridian Telecom with 3,110 evaluations
-<br>• <em>Telecom — Email</em> (Forked from Chat) — not yet assigned to a client
+<br>• <em>Telecom, Chat</em> (System Default), active for Meridian Telecom with 3,110 evaluations
+<br>• <em>Telecom, Email</em> (Forked from Chat), not yet assigned to a client
 
-<br><br>The active template (Telecom — Chat) was last updated 1 week ago. No pending changes in governance.`;
+<br><br>The active template (Telecom. Chat) was last updated 1 week ago. No pending changes in governance.`;
           }
           if (p.includes('coverage') || p.includes('80%') || p.includes('below')) {
             const low = HEALTH_DATA.filter(d=>d.coverage<80);
             return `Found <strong>${low.length} metric${low.length!==1?'s':''}</strong> with coverage below 80%:
 
-<br><br>${low.map(d=>`• <strong>${d.name}</strong> — ${d.coverage}% coverage (${d.severity==='crit'?'⚠️ Critical':'⚡ Warning'})`).join('<br>')}
+<br><br>${low.map(d=>`• <strong>${d.name}</strong>, ${d.coverage}% coverage (${d.severity==='crit'?'⚠️ Critical':'⚡ Warning'})`).join('<br>')}
 
 <br><br>The most urgent is <strong>${low.sort((a,b)=>a.coverage-b.coverage)[0]?.name}</strong> at ${low.sort((a,b)=>a.coverage-b.coverage)[0]?.coverage}%. Click on any metric card in the <strong>Metric Health</strong> tab for the full breakdown and fix steps.`;
           }
@@ -10677,7 +10839,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
             const pending = CHANGE_REQUESTS.filter(c=>c.status==='Pending Review');
             return `There ${pending.length===1?'is':'are'} <strong>${pending.length} change request${pending.length!==1?'s':''} pending review</strong>:
 
-<br><br>${pending.map(cr=>`• <strong>${cr.id}</strong> — ${cr.metric}: ${cr.desc}`).join('<br>')}
+<br><br>${pending.map(cr=>`• <strong>${cr.id}</strong>, ${cr.metric}: ${cr.desc}`).join('<br>')}
 
 <br><br>Switch to the <strong>Governance</strong> tab to review and approve or reject these. Each request shows a before/after diff and impact analysis.`;
           }
@@ -10692,32 +10854,32 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
 
         // ── GOVERNANCE branches ────────────────────────────────
         if (p.includes('approv') && (p.includes('cr-') || p.includes('change request') || p.includes('request'))) {
-          return `Approving a change request promotes it to <strong>Approved</strong> status — it won’t affect live evaluations until deployed.<br><br><strong>Before approving, check:</strong><br>1. Blast radius — how many templates and clients are affected?<br>2. Is the change an improvement or a regression risk?<br>3. Has the submitter provided sufficient rationale?<br><br>Once approved, a <strong>Deploy</strong> button appears on the CR card.`;
+          return `Approving a change request promotes it to <strong>Approved</strong> status. It won’t affect live evaluations until deployed.<br><br><strong>Before approving, check:</strong><br>1. Blast radius, how many templates and clients are affected?<br>2. Is the change an improvement or a regression risk?<br>3. Has the submitter provided sufficient rationale?<br><br>Once approved, a <strong>Deploy</strong> button appears on the CR card.`;
         }
         if (p.includes('reject') && (p.includes('cr-') || p.includes('change request') || p.includes('reason') || p.includes('rejection'))) {
           return `A rejection reason is required and is logged permanently in the audit trail.<br><br><strong>Good rejection reasons address:</strong><br>1. What specifically was wrong with the proposed change<br>2. What evidence would be needed to reconsider<br>3. Whether the submitter should try a different approach<br><br>The submitter will see your rationale in the CR detail view.`;
         }
         if (p.includes('deploy') && (p.includes('cr-') || p.includes('change') || p.includes('approved'))) {
           const readyToDeploy = CHANGE_REQUESTS.filter(c=>c.status==='Approved');
-          return 'Deploying applies the change to <strong>future evaluations only</strong> — no historical re-scoring occurs.' + (readyToDeploy.length > 1 ? ' You currently have <strong>' + readyToDeploy.length + ' approved CRs</strong> ready to deploy.' : '') + '<br><br>Post-deploy: check Metric Health within the next evaluation cycle. If coverage drops, verify the Data Ingestion pipeline for the affected source.';
+          return 'Deploying applies the change to <strong>future evaluations only</strong>, no historical re-scoring occurs.' + (readyToDeploy.length > 1 ? ' You currently have <strong>' + readyToDeploy.length + ' approved CRs</strong> ready to deploy.' : '') + '<br><br>Post-deploy: check Metric Health within the next evaluation cycle. If coverage drops, verify the Data Ingestion pipeline for the affected source.';
         }
         if (p.includes('permission') || (p.includes('role') && p.includes('access'))) {
-          return `The permission matrix controls what each role can do across Goal Hub. Changes take effect immediately and are audit-logged.<br><br><strong>Current model:</strong><br>• <em>QA Analyst</em> — view metrics only<br>• <em>QA Manager</em> — view and edit; cannot approve or deprecate<br>• <em>Admin</em> — full access, always on<br><br>Permission escalation (granting approve to Analyst) should be reviewed quarterly.`;
+          return `The permission matrix controls what each role can do across Goal Hub. Changes take effect immediately and are audit-logged.<br><br><strong>Current model:</strong><br>• <em>QA Analyst</em>, view metrics only<br>• <em>QA Manager</em>, view and edit; cannot approve or deprecate<br>• <em>Admin</em>, full access, always on<br><br>Permission escalation (granting approve to Analyst) should be reviewed quarterly.`;
         }
 
         // ── METRIC HEALTH branches ──────────────────────────────
         if (p.includes('coverage') || p.includes('missing data') || p.includes('data gap')) {
           const crits = HEALTH_DATA.filter(d=>d.severity==='crit');
-          return 'Coverage gaps mean the metric isn’t receiving data from all expected sources.<br><br><strong>Most common causes:</strong><br>1. <strong>Data ingestion failure</strong> — pipeline from source (Zendesk, Freshdesk, S3) isn’t delivering. Check the Data page.<br>2. <strong>Metric not mapped</strong> — template uses this metric but source field isn’t configured for that client.<br>3. <strong>Client onboarding gap</strong> — new client hasn’t completed integration setup.<br><br>' + (crits.length ? 'Currently critical: <strong>' + crits.map(function(d){return d.name;}).join(', ') + '</strong>. Start there.' : 'No critical gaps right now.');
+          return 'Coverage gaps mean the metric isn’t receiving data from all expected sources.<br><br><strong>Most common causes:</strong><br>1. <strong>Data ingestion failure</strong>, pipeline from source (Zendesk, Freshdesk, S3) isn’t delivering. Check the Data page.<br>2. <strong>Metric not mapped</strong>, template uses this metric but source field isn’t configured for that client.<br>3. <strong>Client onboarding gap</strong>, new client hasn’t completed integration setup.<br><br>' + (crits.length ? 'Currently critical: <strong>' + crits.map(function(d){return d.name;}).join(', ') + '</strong>. Start there.' : 'No critical gaps right now.');
         }
         if (p.includes('variance') || p.includes('score dist') || p.includes('inconsistent')) {
-          return `High variance usually signals one of three things:<br><br>1. <strong>Ambiguous criteria</strong> — reviewers are interpreting the goal differently. Tighten the scoring criteria in the template editor.<br>2. <strong>Genuine performance spread</strong> — coaching signal, not a data problem. Surface in the Reviews tab.<br>3. <strong>Source mismatch</strong> — metric is pulling from different channels for different clients.<br><br>Compare the template’s scoring criteria with the evaluation results in the Reviews tab for the affected agents.`;
+          return `High variance usually signals one of three things:<br><br>1. <strong>Ambiguous criteria</strong>. Reviewers are interpreting the goal differently. Tighten the scoring criteria in the template editor.<br>2. <strong>Genuine performance spread</strong>, coaching signal, not a data problem. Surface in the Reviews tab.<br>3. <strong>Source mismatch</strong>. Metric is pulling from different channels for different clients.<br><br>Compare the template’s scoring criteria with the evaluation results in the Reviews tab for the affected agents.`;
         }
 
         // ── FALLBACK ────────────────────────────────────────────
         return `I&#39;m scanning the Goal Hub for you… Here's a quick summary of current state:
 
-<br><br>• <strong>${Object.keys(TEMPLATES).length} templates</strong> configured — ${Object.values(TEMPLATES).filter(t=>t.activeClients?.length>0).length} active across ${Object.keys(ACTIVE_CLIENT_TEMPLATES).length} clients
+<br><br>• <strong>${Object.keys(TEMPLATES).length} templates</strong> configured, ${Object.values(TEMPLATES).filter(t=>t.activeClients?.length>0).length} active across ${Object.keys(ACTIVE_CLIENT_TEMPLATES).length} clients
 • <strong>${METRICS.filter(m=>m.status==='Active').length} active metrics</strong>, ${METRICS.filter(m=>m.status==='Draft').length} in draft, ${METRICS.filter(m=>m.status==='Deprecated').length} deprecated
 • <strong>${CHANGE_REQUESTS.filter(c=>c.status==='Pending Review').length} change requests</strong> awaiting review
 • <strong>${HEALTH_DATA.filter(d=>d.severity==='crit').length} critical</strong> and <strong>${HEALTH_DATA.filter(d=>d.severity==='warn').length} warning</strong> coverage issues
@@ -10732,7 +10894,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       }
 
             // ──────────────────────────────────────────────────────────
-      // METRIC REGISTRY — CARD GRID
+      // METRIC REGISTRY · CARD GRID
       // ──────────────────────────────────────────────────────────
       const MAX_USAGE = Math.max(...METRICS.map(m=>m.usageCount), 1);
 
@@ -10788,7 +10950,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         renderMetricCards();
       }
 
-      // Metric detail — opens centered overlay (no right panel)
+      // Metric detail, opens centered overlay (no right panel)
       function openMetricDetail(id) {
         const m = METRICS.find(x=>x.id===id);
         if (!m) return;
@@ -10852,7 +11014,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         el.innerHTML = `
           <div class="mdo-header">
             <div class="mdo-header-info">
-              <div class="mdo-name" id="mdo-name">—</div>
+              <div class="mdo-name" id="mdo-name">-</div>
               <div class="mdo-meta" id="mdo-status-wrap"></div>
             </div>
             <button class="editor-back-btn" onclick="closeMetricDetail()" style="margin-left:auto">
@@ -10901,10 +11063,10 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         const pending = CHANGE_REQUESTS.filter(c=>c.status==='Pending Review');
         const approved = CHANGE_REQUESTS.filter(c=>c.status==='Approved');
         ctx.textContent = pending.length
-          ? pending.length + ' pending review' + (approved.length ? ', ' + approved.length + ' approved and awaiting deployment' : '') + ' — review oldest first'
+          ? pending.length + ' pending review' + (approved.length ? ', ' + approved.length + ' approved and awaiting deployment' : '') + ', review oldest first'
           : approved.length
           ? approved.length + ' approved CR' + (approved.length>1?'s':'') + ' ready to deploy'
-          : 'No pending changes — governance queue clear';
+          : 'No pending changes, governance queue clear';
         chips.innerHTML = (pending.length
           ? `<button class="aib-chip" onclick="filterChangeRequests(document.querySelector('.gov-filter-chip[data-status=\'Pending Review\']'));document.getElementById('aimyGovBar').style.display='none'">
                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -11031,8 +11193,8 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           return `<tr>
             <td style="font-weight:600;color:var(--d100)">${client}</td>
             <td style="font-size:11px">${tpl.replace(/ \(Custom\)| \(Forked\)/,'')}</td>
-            <td style="font-size:10px;color:var(--d500)">${cd?.date||'—'}</td>
-            <td><span class="metric-templates-count">${cd?.evals||'—'}</span></td>
+            <td style="font-size:10px;color:var(--d500)">${cd?.date||'-'}</td>
+            <td><span class="metric-templates-count">${cd?.evals||'-'}</span></td>
           </tr>`;
         }).join('');
       }
@@ -11107,7 +11269,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
             ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><polyline points="5 12 12 5 19 12"/><line x1="12" y1="19" x2="12" y2="5"/></svg>'
             : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><polyline points="20 6 9 17 4 12"/></svg>';
         }
-        if (title) title.textContent = cr.id + ' — ' + cr.status;
+        if (title) title.textContent = cr.id + ' - ' + cr.status;
         if (subtitle) subtitle.textContent = cr.metric;
         if (body) body.innerHTML = `
           <div class="goal-modal-field">
@@ -11160,7 +11322,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         const icon = document.getElementById('crDetailIcon');
         if (icon) { icon.style.background='var(--ok-bg)'; icon.style.color='var(--ok)'; icon.style.border='1px solid rgba(23,178,106,0.25)'; icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><polyline points="20 6 9 17 4 12"/></svg>'; }
         if (title) title.textContent = 'Approve change request';
-        if (subtitle) subtitle.textContent = cr.id + ' — ' + cr.metric;
+        if (subtitle) subtitle.textContent = cr.id + ' - ' + cr.metric;
         if (body) body.innerHTML = `
           <div class="goal-modal-field">
             <label class="goal-modal-label">Proposed change</label>
@@ -11177,7 +11339,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           <div class="goal-modal-impact">
             <div class="goal-impact-row">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              <span>Approved changes move to <strong>Approved</strong> status and await deployment. ${cr.affectedTemplates} template${cr.affectedTemplates!==1?'s':''} affected${cr.affectedClients.length?' — '+cr.affectedClients.join(', '):''}</span>
+              <span>Approved changes move to <strong>Approved</strong> status and await deployment. ${cr.affectedTemplates} template${cr.affectedTemplates!==1?'s':''} affected${cr.affectedClients.length?' - '+cr.affectedClients.join(', '):''}</span>
             </div>
           </div>`;
         if (footer) footer.innerHTML = `
@@ -11202,7 +11364,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         const icon = document.getElementById('crDetailIcon');
         if (icon) { icon.style.background='var(--err-bg)'; icon.style.color='var(--err)'; icon.style.border='1px solid rgba(240,68,56,0.25)'; icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'; }
         if (title) title.textContent = 'Reject change request';
-        if (subtitle) subtitle.textContent = cr.id + ' — ' + cr.metric;
+        if (subtitle) subtitle.textContent = cr.id + ' - ' + cr.metric;
         if (body) body.innerHTML = `
           <div class="goal-modal-field">
             <label class="goal-modal-label">Proposed change (will be rejected)</label>
@@ -11239,7 +11401,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         const icon = document.getElementById('crDetailIcon');
         if (icon) { icon.style.background='rgba(51,105,255,0.1)'; icon.style.color='#61adf1'; icon.style.border='1px solid rgba(51,105,255,0.25)'; icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><polyline points="5 12 12 5 19 12"/><line x1="12" y1="19" x2="12" y2="5"/></svg>'; }
         if (title) title.textContent = 'Deploy approved change';
-        if (subtitle) subtitle.textContent = cr.id + ' — ' + cr.metric;
+        if (subtitle) subtitle.textContent = cr.id + ' - ' + cr.metric;
         if (body) body.innerHTML = `
           <div class="goal-modal-field">
             <label class="goal-modal-label">Change</label>
@@ -11256,7 +11418,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
             </div>
             <div class="goal-impact-row">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              <span>${cr.affectedTemplates} template${cr.affectedTemplates!==1?'s':''} affected${cr.affectedClients.length?' — '+cr.affectedClients.join(', '):''}</span>
+              <span>${cr.affectedTemplates} template${cr.affectedTemplates!==1?'s':''} affected${cr.affectedClients.length?' - '+cr.affectedClients.join(', '):''}</span>
             </div>
           </div>`;
         if (footer) footer.innerHTML = `
@@ -11314,12 +11476,12 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         const warns = HEALTH_DATA.filter(d=>d.severity==='warn');
         const worst = crits[0] || warns[0];
         ctx.textContent = crits.length
-          ? crits.length + ' critical metric' + (crits.length>1?'s':'') + ', ' + warns.length + ' warning' + (warns.length>1?'s':'') + ' — investigate ' + (worst?worst.name:'') + ' first'
+          ? crits.length + ' critical metric' + (crits.length>1?'s':'') + ', ' + warns.length + ' warning' + (warns.length>1?'s':'') + ', investigate ' + (worst?worst.name:'') + ' first'
           : warns.length
-          ? warns.length + ' warning metric' + (warns.length>1?'s':'') + ' — review coverage gaps before next evaluation run'
-          : 'All metrics healthy — no coverage gaps detected';
+          ? warns.length + ' warning metric' + (warns.length>1?'s':'') + ', review coverage gaps before next evaluation run'
+          : 'All metrics healthy, no coverage gaps detected';
         const worstBtn = worst
-          ? ('<button class="aib-chip secondary" data-worst-name="' + worst.name.replace(/"/g,'&quot;') + '" data-worst-client="' + ((worst.alerts[0]?.client||'multiple clients').replace(/"/g,'&quot;')) + '" onclick="(function(b){var n=b.dataset.worstName,c=b.dataset.worstClient;injectCanvasAction(\'Investigate \'+n+\' \u2014 it has critical coverage gaps on \'+c+\'. Walk me through likely causes and give me a remediation checklist.\');document.getElementById(\'aimyHealthBar\').style.display=\'none\';})(this)">Investigate ' + worst.name + '</button>')
+          ? ('<button class="aib-chip secondary" data-worst-name="' + worst.name.replace(/"/g,'&quot;') + '" data-worst-client="' + ((worst.alerts[0]?.client||'multiple clients').replace(/"/g,'&quot;')) + '" onclick="(function(b){var n=b.dataset.worstName,c=b.dataset.worstClient;injectCanvasAction(\'Investigate \'+n+\'. It has critical coverage gaps on \'+c+\'. Walk me through likely causes and give me a remediation checklist.\');document.getElementById(\'aimyHealthBar\').style.display=\'none\';})(this)">Investigate ' + worst.name + '</button>')
           : '';
         chips.innerHTML = crits.length
           ? ('<button class="aib-chip" onclick="filterHealthBySeverity(\'crit\');document.getElementById(\'aimyHealthBar\').style.display=\'none\'">'
@@ -11359,7 +11521,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
             ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`
             : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
 
-          // Action chip — AI Native: every issue has an action
+          // Action chip. AI Native: every issue has an action
           const worstClient = d.alerts[0]?.client || 'multiple clients';
           const missingPct = d.alerts[0]?.pct || 'significant gaps';
           const actionLabel = sev==='crit'
@@ -11380,7 +11542,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
               </div>
               <div class="health-bar-track"><div class="health-bar-fill ${pctCls}" style="transform:scaleX(${d.coverage/100})"></div></div>
             </div>
-            ${d.variance!=='—' ? `<div class="health-variance-row">Variance: <span class="health-variance-chip ${varCls}">${d.variance}</span></div>` : ''}
+            ${d.variance!=='-' ? `<div class="health-variance-row">Variance: <span class="health-variance-chip ${varCls}">${d.variance}</span></div>` : ''}
             ${d.alerts.length ? `<div class="health-alerts">${d.alerts.map(a=>`<div class="health-alert-row"><span class="health-alert-client">${a.client}</span><span class="health-alert-pct ${a.level}">${a.pct} missing</span></div>`).join('')}</div>` : `<div style="font-size:10px;color:var(--ok);font-weight:600">No missing data alerts</div>`}
             <div class="kdo-action-chips" style="margin-top:4px">
               <button class="kdo-action-chip ${sev==='crit'?'primary':sev==='warn'?'secondary':'ghost'}" data-action="${actionLabel.replace(/"/g,'&quot;').replace(/'/g,'&#39;')}" onclick="event.stopPropagation();(function(b){injectCanvasAction(b.closest('[data-action]').dataset.action);})(this)" style="font-size:11px;padding:6px 12px">
@@ -11494,7 +11656,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           renderMetricCards();
         }
         closeMetricForm();
-        if (typeof showToast==='function') showToast('Saved as draft', name + ' is in Draft — not yet submitted for approval');
+        if (typeof showToast==='function') showToast('Saved as draft', name + ' is in Draft, not yet submitted for approval');
       }
       function submitMetricForApproval() {
         const name = document.getElementById('mfName')?.value?.trim();
@@ -11521,7 +11683,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         CHANGE_REQUESTS.unshift({
           id: crId, metric: name, status: 'Pending Review',
           desc: desc || 'New/updated metric definition submitted for approval.',
-          before: '—', after: 'Promote “' + name + '” to Active',
+          before: '-', after: 'Promote “' + name + '” to Active',
           affectedTemplates: 0, affectedClients: [],
           proposer: 'Nour Wael', proposerInitials: 'NW',
           date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),
@@ -11537,7 +11699,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       // ──────────────────────────────────────────────────────────
       // EDITOR (fork flow)
       // ──────────────────────────────────────────────────────────
-      // "New template" from toolbar — blank-slate fork
+      // "New template" from toolbar, blank-slate fork
       function openNewTemplateModal() {
         currentPreviewTemplate = null;
         // Switch the fork modal to "New template" mode
@@ -11563,7 +11725,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         }
         document.getElementById('forkNameError').style.display = 'none';
         document.getElementById('forkNewName').value = '';
-        document.getElementById('forkNewName').placeholder = 'e.g. Healthcare — Email (Custom)';
+        document.getElementById('forkNewName').placeholder = 'e.g. Healthcare, Email (Custom)';
         document.getElementById('forkBackdrop').classList.add('open');
         document.getElementById('forkModal').classList.add('open');
         setTimeout(() => document.getElementById('forkNewName').focus(), 100);
@@ -11592,10 +11754,10 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           confirmBtn.className = 'tpl-cta-fork';
           confirmBtn.style.flex = '1';
         }
-        document.getElementById('forkSourceName').textContent = sourceName || '—';
+        document.getElementById('forkSourceName').textContent = sourceName || '-';
         document.getElementById('forkNameError').style.display = 'none';
         document.getElementById('forkNewName').value = sourceName ? sourceName + ' (Copy)' : '';
-        document.getElementById('forkNewName').placeholder = 'e.g. Financial Services — Voice (MENA)';
+        document.getElementById('forkNewName').placeholder = 'e.g. Financial Services, Voice (MENA)';
         document.getElementById('forkBackdrop').classList.add('open');
         document.getElementById('forkModal').classList.add('open');
         setTimeout(()=>document.getElementById('forkNewName').focus(),100);
@@ -11613,7 +11775,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       function openEditor(name, sourceKey) {
         const tpl = TEMPLATES[sourceKey] || {};
         document.getElementById('editorBreadcrumb').textContent = name;
-        document.getElementById('editorForkSource').textContent = (sourceKey||'—').replace(/ \(Custom\)| \(Forked\)/,'');
+        document.getElementById('editorForkSource').textContent = (sourceKey||'-').replace(/ \(Custom\)| \(Forked\)/,'');
         document.getElementById('editorName').value  = name;
         document.getElementById('editorDesc').value  = tpl.desc || '';
         document.getElementById('editorIndustry').value = tpl.industry || 'Financial Services';
@@ -11623,7 +11785,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         document.getElementById('editorOverlay').classList.add('open');
       }
       function closeEditor() { document.getElementById('editorOverlay').classList.remove('open'); }
-      // G2: gate publish based on role — admin = direct publish, manager = submit CR
+      // G2: gate publish based on role, admin = direct publish, manager = submit CR
       function editorPublish() {
         const name = document.getElementById('editorName')?.value?.trim();
         if (!name) { if(typeof showToast==='function') showToast('Template name required',''); return; }
@@ -11635,9 +11797,9 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           const sourceKey = document.getElementById('editorForkSource')?.textContent;
           TEMPLATES[name] = {
             industry, channel, desc,
-            type: sourceKey && sourceKey !== '—' ? 'Custom' : 'Custom',
+            type: sourceKey && sourceKey !== '-' ? 'Custom' : 'Custom',
             goalCount: '0 goals', updated: 'Just now',
-            categories: [], activeClients: [], versions: [{id:'v1',label:'v1 — Current',current:true,author:'Nour Wael',date:'Just now',diff:'Initial version.'}]
+            categories: [], activeClients: [], versions: [{id:'v1',label:'v1, Current',current:true,author:'Nour Wael',date:'Just now',diff:'Initial version.'}]
           };
           // Inject new card HTML before the empty state
           const gallery = document.getElementById('templateGallery');
@@ -11669,7 +11831,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           CHANGE_REQUESTS.unshift({
             id: crId, metric: name, status: 'Pending Review',
             desc: 'New custom template submitted for admin approval.',
-            before: '—', after: 'Publish “' + name + '”',
+            before: '-', after: 'Publish “' + name + '”',
             affectedTemplates: 0, affectedClients: [],
             proposer: 'Nour Wael', proposerInitials: 'NW',
             date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),
@@ -11738,7 +11900,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       function publishEditor()    { closeEditor(); closePreview(); if(typeof showToast==='function') showToast('Template published','Now visible in the gallery'); }
 
       // ──────────────────────────────────────────────────────────
-      // CANVAS — patch handleFloatSubmit to route Goal Hub filters
+      // CANVAS, patch handleFloatSubmit to route Goal Hub filters
       // ──────────────────────────────────────────────────────────
       const _origHandleFloat = typeof handleFloatSubmit !== 'undefined' ? handleFloatSubmit : null;
       window.addEventListener('load', function() {
@@ -11875,7 +12037,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       })();
 
       // ──────────────────────────────────────────────────────────
-      // TOAST — handles showToast('title'), showToast('title','sub'),
+      // TOAST, handles showToast('title'), showToast('title','sub'),
       //         and showToast({title, sub}) call signatures
       // ──────────────────────────────────────────────────────────
       let _toastTimer = null;
@@ -12017,12 +12179,12 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           div.className = 'goal-dropdown-option' + (!opt.value ? ' placeholder-opt' : '');
           if (opt.value === selectedValue) div.classList.add('selected');
 
-          // Check if the option text has a replacement note (contains ' — replaces ')
+          // Check if the option text has a replacement note (contains '. Replaces ')
           const text = opt.textContent;
-          const replaceIdx = text.indexOf(' — replaces ');
+          const replaceIdx = text.indexOf('. Replaces ');
           if (replaceIdx !== -1 && opt.value) {
             const clientName = text.slice(0, replaceIdx);
-            const replacesText = text.slice(replaceIdx + 3); // ' — replaces X'
+            const replacesText = text.slice(replaceIdx + 3); // '. Replaces X'
             div.innerHTML = '<div><div style="font-size:13px;font-weight:500;color:var(--d100)">' + clientName + '</div><div class="opt-replace">↺ replaces ' + replacesText.replace('replaces ','') + '</div></div>';
             div.addEventListener('click', function() { pickDropdownDirect(dropdownId, opt.value, clientName); });
           } else {
@@ -12035,7 +12197,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         // Set trigger label
         if (selectedValue) {
           const matchOpt = Array.from(selectEl.options).find(o => o.value === selectedValue);
-          const label = matchOpt ? matchOpt.textContent.split(' — ')[0] : selectedValue;
+          const label = matchOpt ? matchOpt.textContent.split(' - ')[0] : selectedValue;
           labelEl.textContent = label;
           trigger.classList.remove('placeholder');
         } else {
@@ -12057,7 +12219,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         menu.querySelectorAll('.goal-dropdown-option').forEach(opt => {
           opt.classList.remove('selected');
         });
-        // Can't reliably match by text when labels differ from values — just clear all
+        // Can't reliably match by text when labels differ from values, just clear all
         // The hidden select is the source of truth
 
         // Sync native select
@@ -12185,11 +12347,11 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           <div class="goal-modal-body">
             <div class="goal-modal-field">
               <label class="goal-modal-label">Forking from</label>
-              <div class="goal-modal-value" id="forkSourceName">—</div>
+              <div class="goal-modal-value" id="forkSourceName">-</div>
             </div>
             <div class="goal-modal-field">
               <label class="goal-modal-label">New template name</label>
-              <input class="editor-input" id="forkNewName" type="text" placeholder="e.g. Financial Services — Voice (MENA)" autocomplete="off"/>
+              <input class="editor-input" id="forkNewName" type="text" placeholder="e.g. Financial Services, Voice (MENA)" autocomplete="off"/>
               <p class="goal-field-error" id="forkNameError" style="display:none">Name is required</p>
             </div>
           </div>
@@ -12220,7 +12382,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           <div class="goal-modal-body">
             <div class="goal-modal-field">
               <label class="goal-modal-label">Template</label>
-              <div class="goal-modal-value" id="activationTemplateName">—</div>
+              <div class="goal-modal-value" id="activationTemplateName">-</div>
             </div>
             <div class="goal-modal-field">
               <label class="goal-modal-label">Assign to client</label>
@@ -12272,7 +12434,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
               <div class="editor-topbar-center">
                 <div class="editor-fork-badge">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v3a3 3 0 0 0 3 3h3"/><line x1="18" y1="9" x2="18" y2="15"/></svg>
-                  Forked from <span id="editorForkSource">—</span>
+                  Forked from <span id="editorForkSource">-</span>
                 </div>
               </div>
               <div class="editor-topbar-right">
@@ -12299,7 +12461,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
                     <div class="editor-weight-bar-track"><div class="editor-weight-bar-fill" id="editorWeightFill"></div></div>
                     <div class="editor-weight-labels">
                       <span class="editor-weight-pct" id="editorWeightPct">0%</span>
-                      <span class="editor-weight-status" id="editorWeightStatus">—</span>
+                      <span class="editor-weight-status" id="editorWeightStatus">-</span>
                     </div>
                   </div>
                   <p class="editor-weight-hint" id="editorWeightHint" style="display:none"></p>
@@ -12333,7 +12495,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         </div>
 
       <script>
-      /* Theme toggle — token-level swap, no markup forked per theme. */
+      /* Theme toggle, token-level swap, no markup forked per theme. */
       (function () {
         var btn = document.getElementById('themeToggle');
         if (!btn) return;
@@ -12352,5 +12514,220 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         sync();
       })();
     </script>
-</body>
+    <script>
+      /* ══ NOTIFICATIONS = THE TASK QUEUE ═════════════════════════════
+         Every row is work assigned to you, and its action opens the AiMY canvas
+         seeded with the question worth asking about it. The notification is
+         the start of the conversation, not a dead end.
+
+         This block is identical on all six pages. The only per-page difference
+         is window.aimyOpenCanvas, the adapter each file defines over its own
+         canvas opener (six different signatures, none of them on window by
+         default).
+
+         Deliberately NOT sourced from ALERT_DATA: that array holds four ids on
+         index/settings, four different ones on agent-scorecards, and does not
+         exist at all on the other three. The bell has to say the same thing
+         everywhere, so it owns its own list.
+      ══════════════════════════════════════════════════════════════ */
+      var AIMY_TASKS = [
+        { id: 'ack-pending', sev: 'p1', type: 'Acknowledgement', when: '3 days left',
+          body: '21 feedbacks are still waiting on employee acknowledgement. 9 have already escalated to HR.',
+          cta: 'Chase these with AiMY',
+          ask: '21 feedbacks are awaiting acknowledgement and 9 have escalated to HR. Show me who is outstanding, grouped by manager, and draft the chase-ups.' },
+        { id: 'response-fix', sev: 'p1', type: 'Approval', when: 'staged',
+          body: 'The response-time fix for 8 agents is staged and waiting on your approval.',
+          cta: 'Review the fix',
+          ask: 'Show me the staged response-time fix for the 8 agents, what it changes, and what approving it does to SLA compliance.' },
+        { id: 'coaching-plans', sev: 'p2', type: 'Approval', when: '6 drafted',
+          body: '6 coaching plans are drafted for the agents behind the three off-track goals.',
+          cta: 'Read the plans',
+          ask: 'Walk me through the 6 drafted coaching plans. Who each one covers and which goal it targets.' },
+        { id: 'dispute-replies', sev: 'p2', type: 'To send', when: '2 waiting',
+          body: '2 dispute replies are drafted and waiting to send.',
+          cta: 'Read the replies',
+          ask: 'Show me the 2 drafted dispute replies and the tickets behind them.' },
+        { id: 'quality-sequence', sev: 'p2', type: 'Approval', when: '2.7 under goal',
+          body: 'The quality fix sequence is queued. Quality is 2.7 points under the 90% goal.',
+          cta: 'Review the sequence',
+          ask: 'Show me the queued quality fix sequence, highest-leverage first, and how much each step recovers.' },
+        { id: 'coaching-checkin', sev: 'p3', type: 'Follow-up', when: 'in 4 days',
+          body: 'Your Follow-up Confirmation coaching check-in is due.',
+          cta: 'Plan it with AiMY',
+          ask: 'How do I finish my Follow-up Confirmation coaching plan faster?' }
+      ];
+
+      (function () {
+        var bell   = document.getElementById('ntfBell');
+        var panel  = document.getElementById('ntfPanel');
+        var list   = document.getElementById('ntfList');
+        var dot    = document.getElementById('ntfDot');
+        var count  = document.getElementById('ntfCount');
+        var clear  = document.getElementById('ntfClear');
+        var askAll = document.getElementById('ntfAskAll');
+        if (!bell || !panel || !list) return;
+
+        var read = {};
+
+        function unread() {
+          var n = 0;
+          for (var i = 0; i < AIMY_TASKS.length; i++) if (!read[AIMY_TASKS[i].id]) n++;
+          return n;
+        }
+
+        /* The dot and the count are derived, never hardcoded. The bell this
+           replaced had a permanently-visible red dot nothing could clear. */
+        function syncCount() {
+          var n = unread();
+          if (count) { count.textContent = n; count.hidden = n === 0; }
+          if (dot) dot.hidden = n === 0;
+          bell.setAttribute('aria-label', n === 0
+            ? 'Notifications, nothing waiting on you'
+            : 'Notifications, ' + n + ' waiting on you');
+        }
+
+        function render() {
+          while (list.firstChild) list.removeChild(list.firstChild);
+          if (!AIMY_TASKS.length) {
+            var empty = document.createElement('li');
+            empty.className = 'ntf-empty';
+            empty.textContent = 'Nothing waiting on you.';
+            list.appendChild(empty);
+            syncCount();
+            return;
+          }
+          AIMY_TASKS.forEach(function (t) {
+            var li = document.createElement('li');
+            li.className = 'ntf-row' + (read[t.id] ? ' is-read' : '');
+            li.setAttribute('data-ntf-id', t.id);
+
+            var sev = document.createElement('span');
+            sev.className = 'ntf-sev ' + t.sev;
+            sev.setAttribute('aria-hidden', 'true');
+
+            var main = document.createElement('div');
+            main.className = 'ntf-row-main';
+
+            var head = document.createElement('div');
+            head.className = 'ntf-row-head';
+            var type = document.createElement('span');
+            type.className = 'ntf-row-type';
+            type.textContent = t.type;
+            var when = document.createElement('span');
+            when.className = 'ntf-row-when';
+            when.textContent = t.when;
+            head.appendChild(type);
+            head.appendChild(when);
+
+            var body = document.createElement('p');
+            body.className = 'ntf-row-body';
+            body.textContent = t.body;
+
+            var cta = document.createElement('button');
+            cta.className = 'ntf-row-cta';
+            cta.type = 'button';
+            cta.textContent = t.cta;
+            cta.addEventListener('click', function () { start(t); });
+
+            main.appendChild(head);
+            main.appendChild(body);
+            main.appendChild(cta);
+            li.appendChild(sev);
+            li.appendChild(main);
+            list.appendChild(li);
+          });
+          syncCount();
+        }
+
+        function ctas() {
+          return Array.prototype.slice.call(list.querySelectorAll('.ntf-row-cta'));
+        }
+
+        function isOpen() { return !panel.hidden; }
+
+        function openPanel() {
+          render();
+          panel.hidden = false;
+          bell.setAttribute('aria-expanded', 'true');
+          var first = ctas()[0];
+          if (first) first.focus();
+        }
+
+        function closePanel(returnFocus) {
+          panel.hidden = true;
+          bell.setAttribute('aria-expanded', 'false');
+          if (returnFocus) bell.focus();
+        }
+
+        /* Graceful when the adapter is missing rather than throwing, the six
+           files define it in six different places. */
+        function toCanvas(q) {
+          if (typeof window.aimyOpenCanvas === 'function') window.aimyOpenCanvas(q);
+        }
+
+        /* Opening the task is what marks it read. The panel closes first so it
+           cannot float above the canvas overlay. */
+        function start(t) {
+          read[t.id] = true;
+          closePanel(false);
+          toCanvas(t.ask);
+        }
+
+        bell.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (isOpen()) closePanel(false); else openPanel();
+        });
+
+        if (clear) clear.addEventListener('click', function () {
+          AIMY_TASKS.forEach(function (t) { read[t.id] = true; });
+          render();
+        });
+
+        if (askAll) askAll.addEventListener('click', function () {
+          closePanel(false);
+          toCanvas('Across everything waiting on me right now, what should I do first and why?');
+        });
+
+        document.addEventListener('click', function (e) {
+          if (isOpen() && !panel.contains(e.target) && !bell.contains(e.target)) closePanel(false);
+        });
+
+        document.addEventListener('keydown', function (e) {
+          if (!isOpen()) return;
+          if (e.key === 'Escape') { e.preventDefault(); closePanel(true); return; }
+          if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+          var items = ctas();
+          if (!items.length) return;
+          e.preventDefault();
+          var i = items.indexOf(document.activeElement);
+          if (i === -1) { items[0].focus(); return; }
+          items[e.key === 'ArrowDown' ? (i + 1) % items.length
+                                      : (i - 1 + items.length) % items.length].focus();
+        });
+
+        render();
+      })();
+    </script>
+      <script>
+      /* The AiMY logo on the float bar opens the canvas. Unconditionally, on
+         every page. It is the way in to AiMY, so gating it on anything is a
+         dead end waiting to happen. Keyboard-operable because it is a control,
+         not an ornament.
+
+         Note each page has a SECOND .aimy-float-icon inside the canvas's own
+         input bar; the id is on the float-bar one only. */
+      (function () {
+        var icon = document.getElementById('aimyFloatIcon');
+        if (!icon) return;
+        function open(e) {
+          e.stopPropagation();
+          if (typeof window.aimyOpenCanvas === 'function') window.aimyOpenCanvas();
+        }
+        icon.addEventListener('click', open);
+        icon.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(e); }
+        });
+      })();
+    </script>
+  </body>
 </html>

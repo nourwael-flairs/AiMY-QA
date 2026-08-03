@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <script>
-      /* Theme applied PRE-PAINT — before the stylesheet renders — so the page
+      /* Theme applied PRE-PAINT, before the stylesheet renders, so the page
          never flashes dark before switching to light (design-system.md §4). */
       (function () {
         try {
@@ -13,7 +13,7 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AiMY QA — Settings</title>
+    <title>AiMY QA · Settings</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -29,7 +29,7 @@
 
       :root {
         /* Needed by the theme toggle and the light overrides below. Same
-           values as index.html — these pages never had the wash scale. */
+           values as index.html. These pages never had the wash scale. */
         --wash-3: rgba(255,255,255,0.04);
         --wash-6: rgba(255,255,255,0.07);
         --ai: linear-gradient(104deg, #0066ff 0%, #61adf1 47%, #6fdfe2 100%);
@@ -48,7 +48,7 @@
         --d50: #eef2f6;
         --brand: #3369ff;
         --brand-dim: rgba(51, 105, 255, 0.15);
-        /* QA product accent — TEMPORARY PLACEHOLDER (#8b4ff4 is Talent's purple).
+        /* QA product accent. TEMPORARY PLACEHOLDER (#8b4ff4 is Talent's purple).
        Must be swapped to QA-specific magenta from Figma logo before v2 ships. */
         --qa-accent: #8b4ff4;
         --qa-accent-rgb: 139, 79, 244;
@@ -62,7 +62,7 @@
         --warn-bg: rgba(247, 144, 9, 0.12);
         --err-bg: rgba(240, 68, 56, 0.12);
 
-        /* Motion tokens — only two durations allowed. Longer motion
+        /* Motion tokens, only two durations allowed. Longer motion
        (chart animation, skeleton shimmer) defines its own keyframe. */
         --transition-fast: 150ms;
         --transition-base: 200ms;
@@ -112,7 +112,7 @@
       /* ── Accessibility: global focus-visible.
      Uses brand blue (not QA accent) because focus rings are a permanent
      part of the system, not a product-theme element. QA accent is also
-     currently a placeholder hex — using it here would ripple when it changes. */
+     currently a placeholder hex, using it here would ripple when it changes. */
       *:focus {
         outline: none;
       }
@@ -191,11 +191,11 @@
         height: 650px;
         background: var(--grad-ellipse-2);
       }
-      /* Ellipse rendered as a real DOM element — see #appEllipse in HTML */
+      /* Ellipse rendered as a real DOM element, see #appEllipse in HTML */
 
       /* ══ APP SHELL (TOPNAV + SIDEBAR + MAIN) ══════════════════════════════ */
 
-      /* Global top navbar — full width, transparent, sits above the bg ellipse */
+      /* Global top navbar, full width, transparent, sits above the bg ellipse */
       .app-topnav {
         height: var(--topbar-height);
         background: transparent;
@@ -209,7 +209,7 @@
         z-index: 100;
       }
 
-      /* Remove old gradient pseudo — transparent now */
+      /* Remove old gradient pseudo, transparent now */
       .app-topnav::before {
         display: none;
       }
@@ -231,7 +231,7 @@
 
       /* Calls button */
 
-      /* Product tabs — pill container matching the SVG reference */
+      /* Product tabs, pill container matching the SVG reference */
       .topnav-tabs {
         position: absolute;
         left: 50%;
@@ -329,6 +329,105 @@
         border: 1.5px solid var(--body-bg);
       }
 
+      /* ── Notifications panel ───────────────────────────────────
+         Prefix is ntf-, not notif- : .notif-* is an unrelated in-canvas alert
+         card family that already exists in three of these files.
+
+         Tokens are restricted to the set declared in ALL six files' dark :root.
+         --body-bg, --wash-5, --r-md, --r-lg, --font-sans and --elev-2 are each
+         missing from at least two of them, so the radii, the shadow and the
+         font stack are literals rather than silently-unset var() calls. */
+      .ntf-anchor { position: relative; display: flex; align-items: center; flex-shrink: 0; }
+      .topnav-bell:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 2px; }
+      .bell-dot[hidden] { display: none; }
+
+      .ntf-panel {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        z-index: 300;
+        width: 360px;
+        max-width: calc(100vw - 32px);
+        max-height: min(70vh, 520px);
+        overflow-y: auto;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 14px;
+        padding: 6px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.2);
+        font-family: "Urbanist", sans-serif;
+        text-align: left;
+      }
+      .ntf-panel[hidden] { display: none; }
+
+      /* Scrollbar, matching .dashboard-scroll / .overlay-thread rather than
+         leaving the browser default sitting inside a 14px-radius card.
+         --wash-6 and --card-border are the only wash/border tokens declared in
+         all six files' dark roots; --wash-8/--wash-11 used elsewhere are not. */
+      .ntf-panel { scrollbar-width: thin; scrollbar-color: var(--wash-6) transparent; }
+      .ntf-panel::-webkit-scrollbar { width: 6px; }
+      .ntf-panel::-webkit-scrollbar-track { background: transparent; }
+      .ntf-panel::-webkit-scrollbar-thumb { background: var(--wash-6); border-radius: 4px; }
+      .ntf-panel::-webkit-scrollbar-thumb:hover { background: var(--card-border); }
+
+      .ntf-head { display: flex; align-items: center; gap: 8px; padding: 8px 10px 10px; }
+      .ntf-head b { font-size: 12px; font-weight: 800; color: var(--d50); letter-spacing: 0.01em; }
+      .ntf-count {
+        font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 9999px;
+        background: rgba(var(--qa-accent-rgb), 0.16); color: var(--qa-accent);
+        font-variant-numeric: tabular-nums;
+      }
+      .ntf-count[hidden] { display: none; }
+      .ntf-clear {
+        margin-left: auto; background: none; border: 0; cursor: pointer;
+        font-family: inherit; font-size: 10.5px; font-weight: 600; color: var(--d500);
+        padding: 2px 4px; border-radius: 6px;
+        transition: color var(--transition-fast);
+      }
+      .ntf-clear:hover { color: var(--d100); }
+      .ntf-clear:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 1px; }
+
+      .ntf-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+      .ntf-row {
+        display: flex; gap: 9px; padding: 10px; border-radius: 10px;
+        transition: background var(--transition-fast), opacity var(--transition-fast);
+      }
+      .ntf-row:hover { background: var(--wash-3); }
+      .ntf-row.is-read { opacity: 0.45; }
+      .ntf-sev { width: 6px; height: 6px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; background: var(--d500); }
+      .ntf-sev.p1 { background: var(--err); }
+      .ntf-sev.p2 { background: var(--warn); }
+      .ntf-sev.p3 { background: var(--qa-accent); }
+      .ntf-row-main { flex: 1; min-width: 0; }
+      .ntf-row-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 3px; }
+      .ntf-row-type { font-size: 11px; font-weight: 800; color: var(--d50); }
+      .ntf-row-when { margin-left: auto; font-size: 10px; color: var(--d500); flex-shrink: 0; }
+      .ntf-row-body { margin: 0 0 7px; font-size: 11.5px; line-height: 1.5; color: var(--d400); }
+      .ntf-row-cta {
+        font-family: inherit; font-size: 10.5px; font-weight: 700; cursor: pointer;
+        padding: 4px 10px; border-radius: 9999px;
+        background: rgba(var(--qa-accent-rgb), 0.12); color: var(--qa-accent);
+        border: 1px solid rgba(var(--qa-accent-rgb), 0.26);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
+      }
+      .ntf-row-cta:hover { background: rgba(var(--qa-accent-rgb), 0.2); border-color: rgba(var(--qa-accent-rgb), 0.4); }
+      .ntf-row-cta:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 2px; }
+
+      .ntf-foot { padding: 8px 4px 4px; border-top: 1px solid var(--wash-6); margin-top: 6px; }
+      .ntf-foot-btn {
+        width: 100%; font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer;
+        padding: 8px; border-radius: 9px; background: var(--wash-3);
+        border: 1px solid var(--wash-6); color: var(--d300);
+        transition: background var(--transition-fast), color var(--transition-fast);
+      }
+      .ntf-foot-btn:hover { background: var(--wash-6); color: var(--d50); }
+      .ntf-foot-btn:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 2px; }
+      .ntf-empty { padding: 22px 12px; text-align: center; font-size: 11.5px; color: var(--d500); }
+
+      @media (prefers-reduced-motion: reduce) {
+        .ntf-row, .ntf-row-cta, .ntf-foot-btn, .ntf-clear { transition: none; }
+      }
+
       /* User pill */
       .topnav-user {
         display: flex;
@@ -380,6 +479,31 @@
         color: var(--d400);
       }
 
+      /* Version link, a destination, not a state you toggle. Quieter than a
+         product tab so it reads as chrome. Tokens limited to ones declared in
+         every file's dark :root; the radius is a literal because --r-pill is
+         undeclared in goal-browser.html and data-ingestion.html. */
+      .ver-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        flex-shrink: 0;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        font-family: "Urbanist", sans-serif;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        line-height: 1.4;
+        color: var(--d500);
+        text-decoration: none;
+        border: 1px solid var(--wash-6);
+        transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+      }
+      .ver-link:hover { background: var(--wash-6); color: var(--d100); border-color: var(--card-border); }
+      .ver-link:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 2px; }
+      .ver-link-ico { width: 10px; height: 10px; opacity: 0.75; }
+
       /* Below topnav: sidebar + main content side by side */
       .app-body {
         display: flex;
@@ -397,7 +521,7 @@
         flex-direction: column;
         flex-shrink: 0;
       }
-      /* No logo in sidebar anymore — it lives in topnav */
+      /* No logo in sidebar anymore. It lives in topnav */
       .sidebar-nav {
         padding: 24px 16px;
         display: flex;
@@ -454,7 +578,7 @@
         border-color: rgba(var(--qa-accent-rgb), 0.22);
         box-shadow: 0 0 20px rgba(var(--qa-accent-rgb), 0.08);
       }
-      /* AI Chat & Canvas — subtle full border to mark it as the primary surface */
+      /* AI Chat & Canvas, subtle full border to mark it as the primary surface */
       .nav-item.primary-surface {
         position: relative;
         background: rgba(0, 102, 255, 0.04);
@@ -500,7 +624,7 @@
         background: transparent;
       }
 
-      /* ── Filter glass keyframes — shimmer only, no pulse ─────────────── */
+      /* ── Filter glass keyframes, shimmer only, no pulse ─────────────── */
       @keyframes glassShimmer {
         0%   { background-position: -200% center; }
         100% { background-position:  200% center; }
@@ -727,7 +851,7 @@
         background: rgba(255,255,255,0.05);
         transform: none;
       }
-      /* Suggestion pills — product/agent/time names */
+      /* Suggestion pills, product/agent/time names */
       .filter-chip-sugg {
         color: var(--d200);
         border-color: rgba(255,255,255,0.10);
@@ -833,7 +957,7 @@
         width: 100%;
       }
 
-      /* AiMY narrative line — sits between scoreboard and signal tiles.
+      /* AiMY narrative line. Sits between scoreboard and signal tiles.
          Reuses .ai-insight-text typography token; adds AiMY logo + divider rhythm. */
       .summary-ai-line {
         display: flex;
@@ -879,7 +1003,7 @@
         flex-shrink: 0;
       }
 
-      /* The big number — stands alone on the left */
+      /* The big number, stands alone on the left */
       .summary-headline-score {
         font-size: 48px;
         font-weight: 800;
@@ -900,7 +1024,7 @@
         line-height: 1;
       }
 
-      /* Stack: eyebrow → label → delta — sits right of the number */
+      /* Stack: eyebrow → label → delta. Sits right of the number */
       .summary-score-meta {
         display: flex;
         flex-direction: column;
@@ -1216,7 +1340,7 @@
       .bcard.p3 {
         border-color: rgba(23, 178, 106, 0.15);
       }
-      /* Tier-primary elevation — applied to the single most-urgent briefing
+      /* Tier-primary elevation, applied to the single most-urgent briefing
      card so the eye lands there first. Only one card per dashboard. */
       .bcard.tier-primary {
         box-shadow:
@@ -1338,7 +1462,7 @@
         height: 1px;
         background: rgba(255, 255, 255, 0.07);
         margin: 0 0 16px;
-        /* Parent .bcard has overflow:hidden — no negative margin needed */
+        /* Parent .bcard has overflow:hidden, no negative margin needed */
       }
       .bcard-action {
         display: flex;
@@ -1646,9 +1770,9 @@
       }
       .goal-brief {
         display: flex;
-        gap: 10px;
+        gap: 16px;
         align-items: flex-start;
-        padding: 10px 14px;
+        padding: 13px 16px;
         background: var(--card-bg);
         border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.06);
@@ -1695,8 +1819,11 @@
         font-size: 11px;
         font-weight: 800;
         letter-spacing: -0.01em;
-        margin-bottom: 2px;
-        line-height: 1.2;
+        margin-bottom: 6px;
+        line-height: 1.45;
+      }
+      .kf-name .work-state {
+        margin-left: 7px;
       }
       .kf-err .kf-name  { color: var(--err); }
       .kf-warn .kf-name { color: var(--warn); }
@@ -1705,14 +1832,14 @@
         font-size: 11px;
         font-weight: 700;
         color: #ffffff;
-        margin-bottom: 2px;
+        margin-bottom: 8px;
         line-height: 1.4;
       }
       .kf-evidence {
         font-size: 10px;
         color: var(--d300);
         display: flex;
-        gap: 8px;
+        gap: 14px;
         flex-wrap: wrap;
       }
       .kf-ev-item {
@@ -1902,7 +2029,7 @@
         border: none;
         border-top: 1px solid rgba(255, 255, 255, 0.05);
         padding: 10px 20px;
-        /* Removed negative margin — .signal-card has overflow:hidden so
+        /* Removed negative margin. .signal-card has overflow:hidden so
            full-bleed is achieved without layout-fragile negative margins */
         font-family: "Urbanist", sans-serif;
         font-size: 11px;
@@ -2122,7 +2249,7 @@
           transform: scaleX(0);
         }
       }
-      /* scaleX grows from left anchor — origin must be set on fill elements */
+      /* scaleX grows from left anchor. Origin must be set on fill elements */
       .driver-bar-fill,
       .scorecard-goal-bar {
         transform-origin: left center;
@@ -2350,7 +2477,7 @@
         fill: url(#sg);
       }
 
-      /* Severity dot — replaces ornamental icon badge.
+      /* Severity dot. Replaces ornamental icon badge.
      Sits inline at the left anchor of the meta row. Color matches priority. */
       .severity-dot {
         width: 8px;
@@ -2371,7 +2498,7 @@
 
       /* ── Knowledge-First Quality Score Chart (from dashboardqa2) ─ */
 
-      /* SVG chart accent token bridge — SVG presentation attributes can't use
+      /* SVG chart accent token bridge. SVG presentation attributes can't use
          CSS custom properties directly. These CSS rules override them.
          When --qa-accent is updated, the chart updates automatically. */
       .chart-accent-stroke {
@@ -2384,7 +2511,7 @@
       .v2fill-stop-top {
         stop-color: var(--qa-accent);
       }
-      /* AiMY signal bar — knowledge-first lead */
+      /* AiMY signal bar, knowledge-first lead */
       .kf-signal-action {
         font-size: 11px;
         font-weight: 700;
@@ -2412,7 +2539,7 @@
         padding: 24px;
         box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
       }
-      /* Quality Score header — 2-row layout for breathing room */
+      /* Quality Score header, 2-row layout for breathing room */
       .v2-header {
         display: flex;
         flex-direction: column;
@@ -2442,7 +2569,7 @@
         color: var(--d400);
         white-space: nowrap;
       }
-      /* Row 2: controls toolbar — range tabs left, secondary actions right */
+      /* Row 2: controls toolbar. Range tabs left, secondary actions right */
       .v2-controls {
         display: flex;
         align-items: center;
@@ -2719,7 +2846,7 @@
         color: var(--d50);
       }
       .tooltip-value.prev {
-        color: var(--d400); /* raised from --d600 (#5b6771) — WCAG AA on --d800 bg */
+        color: var(--d400); /* raised from --d600 (#5b6771), WCAG AA on --d800 bg */
       }
       .ai-insight-panel {
         background: rgba(0, 102, 255, 0.07);
@@ -2745,7 +2872,7 @@
         text-transform: uppercase;
         color: #61adf1;
       }
-      /* Memory cue — signals continuity across sessions. Surfaces when AiMY
+      /* Memory cue, signals continuity across sessions. Surfaces when AiMY
      is picking up a thread the user was already working on. */
       .memory-cue {
         display: inline-flex;
@@ -2955,7 +3082,7 @@
 
       /* ── Page load card entry animation ─────────────────────────────────
          One-shot staggered reveal. CSS-only, no JS required.
-         Emil principle: nothing appears statically — even 8px translateY
+         Emil principle: nothing appears statically, even 8px translateY
          with a good ease is enough to signal "this arrived." */
       @keyframes cardEnter {
         from {
@@ -3041,7 +3168,7 @@
       /* ══ FLOATING AIMY INPUT ════════════════════════════════════════
      Fixed to the bottom of .app-main, pill shape matching screenshot. */
 
-      /* position:fixed, not absolute — the wrap used to be positioned inside
+      /* position:fixed, not absolute, the wrap used to be positioned inside
          .app-main, which starts after the sidebar, so the bar centred on the
          app area rather than the page. Fixed resolves the symmetric
          left/right against the viewport, which is the actual page centre. */
@@ -3093,7 +3220,7 @@
         transform: translateY(8px);
       }
 
-      /* AI bubble icon on the left — the small AiMY logo in a circle */
+      /* AI bubble icon on the left, the small AiMY logo in a circle */
       .aimy-float-icon {
         position: relative;
         width: 36px;
@@ -3176,7 +3303,7 @@
         transform: translateY(0);
       }
 
-      /* ── Universal press feedback — all interactive elements ─────────────
+      /* ── Universal press feedback, all interactive elements ─────────────
          Emil principle: buttons must feel responsive to press.
          80ms ease-out = immediate, then snaps back quickly. */
       .bcard:active,
@@ -3202,7 +3329,7 @@
         transform: scale(0.97);
         transition: transform 80ms ease-out;
       }
-      /* Range tabs are smaller — subtler press */
+      /* Range tabs are smaller, subtler press */
       .range-tab:active {
         transform: scale(0.96);
         transition: transform 80ms ease-out;
@@ -3213,7 +3340,7 @@
         stroke: #fff;
       }
 
-      /* "Thinking" state — spinner replaces send arrow */
+      /* "Thinking" state. Spinner replaces send arrow */
       .aimy-float-send.thinking {
         background: rgba(var(--qa-accent-rgb), 0.25);
         cursor: default;
@@ -3241,7 +3368,7 @@
         }
       }
 
-      /* Filter-applied flash — brief glow on the bar */
+      /* Filter-applied flash, brief glow on the bar */
       @keyframes filterFlash {
         0% {
           border-color: rgba(var(--qa-accent-rgb), 0.7);
@@ -3286,7 +3413,7 @@
         pointer-events: all;
       }
 
-      /* Close button — top right corner */
+      /* Close button, top right corner */
       .overlay-close {
         position: absolute;
         top: 24px;
@@ -3319,7 +3446,7 @@
         opacity: 1;
       }
 
-      /* Overlay header badge — "AiMY Chat" label */
+      /* Overlay header badge · "AiMY Chat" label */
       .overlay-badge {
         position: absolute;
         top: 28px;
@@ -3348,7 +3475,7 @@
         height: 11px;
       }
 
-      /* Context continuity bar — sits below the badge, shows what AiMY is basing on */
+      /* Context continuity bar. Sits below the badge, shows what AiMY is basing on */
       .overlay-context-bar {
         position: absolute;
         top: 68px;
@@ -3399,7 +3526,14 @@
         max-width: 720px;
         flex: 1;
         overflow-y: auto;
-        padding: 80px 0 24px;
+        /* 94px, not 80px. The original value cleared the AiMY badge alone
+           (28–52px). The "Based on …" context bar was added later at
+           top:68px and runs to 86px, so 80px left the suggestion chips
+           10px under it, tighter than the 16px above it, which read as a
+           collision. The thread paints 16px down from the overlay top, so
+           chips land at 16+94=110px: a clean 24px below the context bar.
+           Pages without a context bar keep 80px. */
+        padding: 94px 0 24px;
         display: flex;
         flex-direction: column;
         gap: 20px;
@@ -3516,7 +3650,7 @@
         }
       }
 
-      /* Overlay input bar — mirrors the floating bar but full-width */
+      /* Overlay input bar, mirrors the floating bar but full-width */
       .overlay-input-wrap {
         width: 100%;
         max-width: 720px;
@@ -3603,7 +3737,7 @@
         stroke: #fff;
       }
 
-      /* Overlay suggested prompts — shown when thread is empty */
+      /* Overlay suggested prompts, shown when thread is empty */
       .overlay-suggestions {
         display: flex;
         gap: 8px;
@@ -3674,12 +3808,12 @@
           animation: none !important;
           opacity: 1;
         }
-        /* Typing indicator dots — replace bounce with static dots */
+        /* Typing indicator dots, replace bounce with static dots */
         .typing-dots span {
           animation: none !important;
           opacity: 0.5;
         }
-        /* Toast countdown bar — collapse duration so toast still auto-dismisses */
+        /* Toast countdown bar, collapse duration so toast still auto-dismisses */
         .aimy-toast-progress {
           animation-duration: 0.001ms !important;
         }
@@ -3937,7 +4071,7 @@
         color: var(--d400);
       }
 
-      /* ── AiMY Toast — trust-recovery pattern for destructive actions ─────────
+      /* ── AiMY Toast, trust-recovery pattern for destructive actions ─────────
      Surfaces after a chip is dismissed, offering a 5-second undo window
      and a light signal that the dismissal updates AiMY's suggestions. */
       .aimy-toast {
@@ -4048,7 +4182,7 @@
         background: rgba(97, 173, 241, 0.1);
         color: #93caff;
       }
-      /* Progress bar — runs along the very bottom edge */
+      /* Progress bar. Runs along the very bottom edge */
       .aimy-toast-progress {
         position: absolute;
         bottom: 0;
@@ -4072,7 +4206,7 @@
 
       /* ── AiMY Context Panel ────────────────────────────────────
      Two-zone card: state detection (top) + AI suggestions (bottom).
-     Linked by the AiMY detection — the detected state drives the chips.
+     Linked by the AiMY detection, the detected state drives the chips.
      Alt states always visible so the user sees what AiMY is choosing between. */
       .aimy-context-panel {
         background: var(--card-bg);
@@ -4124,7 +4258,7 @@
         color: #61adf1;
       }
 
-      /* Detected state pill — marks the currently-selected AiMY detection */
+      /* Detected state pill, marks the currently-selected AiMY detection */
       .state-detected-pill {
         display: flex;
         align-items: center;
@@ -4368,7 +4502,7 @@
         font-size: 11px;
         color: var(--d400);
       }
-      /* Default calm state — shows "Updated N min ago" style info.
+      /* Default calm state. Shows "Updated N min ago" style info.
      Red-pulse state only activates when an actual live anomaly is detected
      (apply .spike modifier class via backend state). */
       .eval-live-badge {
@@ -4393,7 +4527,7 @@
         border-radius: 50%;
         background: #61adf1;
       }
-      /* Spike state — only when a real anomaly is detected */
+      /* Spike state, only when a real anomaly is detected */
       .eval-live-badge.spike {
         background: var(--err-bg);
         color: var(--err);
@@ -4459,7 +4593,7 @@
         fill: none;
         stroke-width: 10;
         stroke-linecap: butt;
-        pointer-events: none; /* hit rings handle interaction — no gap flicker */
+        pointer-events: none; /* hit rings handle interaction, no gap flicker */
         transition:
           stroke-width var(--transition-base),
           filter var(--transition-base),
@@ -4481,7 +4615,7 @@
       .donut-arc.dimmed {
         opacity: 0.25;
       }
-      /* Invisible fat hit rings — no gaps, full donut band coverage */
+      /* Invisible fat hit rings, no gaps, full donut band coverage */
       .donut-hit {
         fill: none;
         stroke: transparent;
@@ -4562,7 +4696,7 @@
         transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
       }
 
-      /* Floating causes tooltip — absolutely positioned, no layout shift */
+      /* Floating causes tooltip, absolutely positioned, no layout shift */
       .eval-causes-float {
         position: absolute;
         right: 0;
@@ -4786,7 +4920,7 @@
         color: var(--d500);
         padding: 4px 0 6px;
       }
-            /* goal rows — pointer cursor + canvas-fire indicator */
+            /* goal rows, pointer cursor + canvas-fire indicator */
       .eval-goal-row {
         cursor: pointer;
       }
@@ -4948,7 +5082,7 @@
         color: var(--ok); border-color: rgba(23,178,106,0.22); background: var(--ok-bg);
         cursor: default; pointer-events: none;
       }
-      /* Acknowledged bcard — dimmed, pushed to end of grid */
+      /* Acknowledged bcard, dimmed, pushed to end of grid */
       .bcard.is-acknowledged {
         order: 99;
         opacity: 0.45;
@@ -5067,7 +5201,7 @@
         border-radius: 12px;
         overflow: hidden;
         max-width: 540px;
-        /* backdrop-filter removed — element is inside a scrolling container.
+        /* backdrop-filter removed. Element is inside a scrolling container.
            Continuous blur repaints on scroll tank mobile performance.
            The overlay itself (blur 28px) already provides the glass context. */
       }
@@ -5226,7 +5360,7 @@
       .dismiss-reason-confirm:hover{background:rgba(240,68,56,.18);}
       .dismiss-reason-cancel{font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;background:none;color:var(--d500);border:1px solid rgba(255,255,255,.07);cursor:pointer;font-family:"Urbanist",sans-serif;}
       .bcard-dismiss-picker{display:none;}
-      /* New dismiss injection hint — shown briefly on the card before input gets focus */
+      /* New dismiss injection hint, shown briefly on the card before input gets focus */
       .bcard-dismiss-hint {
         display: none;
         font-size: 10px;
@@ -5337,7 +5471,7 @@
       }
 
       /* ── Alert detail canvas cards ─────────────────────────────────── */
-      /* ── Alert Detail Card — panel style ──────────────────────────────
+      /* ── Alert Detail Card, panel style ──────────────────────────────
          Breaks out of bubble wrapper. Full-width panel feel,
          structured like the reference screenshot.
       ── */
@@ -5540,7 +5674,7 @@
       .ada-secondary:hover { background: rgba(255,255,255,.07); color: var(--d200); }
 
       /* ════════════════════════════════════════════════════════════════════
-         SETTINGS — component layer (design-doc primitives) + page layout
+         SETTINGS, component layer (design-doc primitives) + page layout
       ════════════════════════════════════════════════════════════════════ */
 
       /* ── Buttons ── */
@@ -5650,7 +5784,7 @@
       .tag-teal { background: var(--teal-dim); color: var(--teal); border: 1px solid rgba(111,223,226,0.22); }
       .tag-neutral { background: rgba(255,255,255,0.05); color: var(--d300); border: 1px solid rgba(255,255,255,0.1); }
 
-      /* ── Dropdown (v2-dropdown — replaces native select) ── */
+      /* ── Dropdown (v2-dropdown. Replaces native select) ── */
       .v2-dropdown { position: relative; display: inline-flex; }
       .v2-dropdown.full { display: flex; width: 100%; }
       .v2-dropdown-btn {
@@ -5729,7 +5863,7 @@
       .settings-title { font-size: 22px; font-weight: 800; color: var(--d50); letter-spacing: -0.02em; }
       .settings-subtitle { font-size: 13px; color: var(--d400); margin-top: 3px; }
 
-      /* AI config-health strip — Knowledge → Action */
+      /* AI config-health strip · Knowledge → Action */
       .ai-config-strip {
         display: flex; align-items: center; gap: 14px;
         background: linear-gradient(135deg, rgba(0,102,255,0.07), rgba(111,223,226,0.04));
@@ -5885,7 +6019,7 @@
          LIGHT THEME
          ──────────────────────────────────────────────────────────────────
          Ported from the design system (design-strategy/index.html:177).
-         design-system.md §4: overrides are TOKEN-LEVEL only — never fork
+         design-system.md §4: overrides are TOKEN-LEVEL only, never fork
          component markup per theme. Dark stays the default; light is opt-in
          via <html data-theme="light">, persisted to localStorage under
          `aimy-ds-theme` and applied pre-paint so there is no flash.
@@ -5902,7 +6036,7 @@
         --d800: #d8e0e8;
         --d750: #c8d2dc;
         --d700: #b0bcca;
-        --d600: #6e7d8d;  /* muted labels — #8b9aaa fails 3:1 on white */
+        --d600: #6e7d8d;  /* muted labels, #8b9aaa fails 3:1 on white */
         --d500: #637280;
         --d400: #566472;
         --d300: #3a4653;
@@ -5917,7 +6051,7 @@
         /* --teal is a light cyan; darken for legible text on white */
         --teal: #0d8f95;
 
-        /* Semantic hues darkened one step — dark-mode mid-tones fail contrast
+        /* Semantic hues darkened one step, dark-mode mid-tones fail contrast
            as text on white. Tint backgrounds stay pale. */
         --ok:   #0e9257;
         --warn: #b26205;
@@ -5940,7 +6074,7 @@
         --hairline: rgba(16,24,40,0.09);
         --text-strong: #10151b;
 
-        /* Elevation — cooler, softer on light */
+        /* Elevation, cooler, softer on light */
         --elev-1: 0 1px 2px rgba(16,24,40,0.08);
         --elev-2: 0 1px 2px rgba(16,24,40,0.06), 0 8px 22px rgba(16,24,40,0.10);
         --elev-3: 0 2px 6px rgba(16,24,40,0.08), 0 18px 48px rgba(16,24,40,0.12);
@@ -5951,7 +6085,7 @@
         --tint-warn: rgba(247,144,9,0.07);
         --tint-accent: rgba(139,79,244,0.06);
 
-        /* Surface washes — ink instead of white (see --wash-* above) */
+        /* Surface washes, ink instead of white (see --wash-* above) */
         --wash-1: rgba(16,24,40,0.03);
         --wash-2: rgba(16,24,40,0.04);
         --wash-3: rgba(16,24,40,0.05);
@@ -5983,7 +6117,7 @@
          structurally dark rather than tokenised. */
       :root[data-theme="light"] body { background: var(--body-bg); }
       /* The AiMY float bar and canvas are dark glass in dark; light glass in light. */
-      /* The float bar keeps its full treatment in light — surface, visible
+      /* The float bar keeps its full treatment in light, surface, visible
          border, elevation and the accent focus ring. The first pass flattened
          it to plain white, which read as borderless. */
       :root[data-theme="light"] .aimy-float-bar {
@@ -6007,7 +6141,7 @@
          These chips use DARK text on a bright fill, which reads well against
          dark-theme --ok (#17b26a, 6.6:1). Light darkens --ok to #0e9257 for
          text legibility, and dark-on-dark-green drops to 3.5:1. White on the
-         same fill is 4.1:1, so the text inverts rather than the fill — the
+         same fill is 4.1:1, so the text inverts rather than the fill, the
          chip keeps its meaning and its colour. */
       :root[data-theme="light"] .ag-act.yes,
       :root[data-theme="light"] .fbt-act.yes,
@@ -6024,8 +6158,8 @@
 
       /* ── Filter strip: original dark identity restored ────────────────
          The light-contrast pass replaced two muted values with full-strength
-         tokens — the chip text went from 55% white to solid --d300 and the
-         label from a 45% blue to --ai-text — which brightened the strip and
+         tokens. The chip text went from 55% white to solid --d300 and the
+         label from a 45% blue to --ai-text, which brightened the strip and
          changed its look. The dark values below are the originals; light gets
          its own muted equivalents rather than the dark ones being altered. */
       :root[data-theme="light"] .filter-chip { color: rgba(16,24,40,0.62); }
@@ -6037,7 +6171,7 @@
       :root[data-theme="light"] .fbt-fb.yes,
       :root[data-theme="light"] .fbt-fb.yes:hover { color: #fff; }
 
-      /* ── Sidebar nav items — design-system .ds-nav-link (index.html:483)
+      /* ── Sidebar nav items, design-system .ds-nav-link (index.html:483)
          Item-level only. The topnav and sidebar keep their original
          transparent backgrounds; the design system's translucent+blurred
          chrome is a different shell treatment and is not applied here. */
@@ -6069,8 +6203,8 @@
          CANVAS RENDER BLOCKS
          ──────────────────────────────────────────────────────────────────
          Ported from agent-scorecards.html (4415 / 4499 / 4507). These were
-         never defined here, so every render the Dashboard added — the
-         decision zones, the charts cut from the briefing — drew its type
+         never defined here, so every render the Dashboard added, the
+         decision zones, the charts cut from the briefing, drew its type
          label as full-size body text instead of a 9px uppercase badge.
 
          The label carries no AiMY mark on purpose: the message avatar
@@ -6131,12 +6265,12 @@
       :root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
 
       /* ══════════════════════════════════════════════════════════════════
-         GENERATED — light-mode text colours
+         GENERATED, light-mode text colours
          ──────────────────────────────────────────────────────────────────
          This page's own components hardcode white text for a dark card.
          Under light those cards turn white and the text vanishes (measured
          as low as 1.05:1). Each rule below restates the SAME weight from
-         the neutral ramp, which inverts with the theme — so nothing moves
+         the neutral ramp, which inverts with the theme, so nothing moves
          in dark and light gets readable text at the intended emphasis.
 
          Rules painting their own saturated or gradient background are not
@@ -6154,10 +6288,10 @@
       :root[data-theme="light"] .integration-icon { color: var(--d50); }
 
       /* ══════════════════════════════════════════════════════════════════
-         GENERATED — light-mode surfaces
+         GENERATED, light-mode surfaces
          ──────────────────────────────────────────────────────────────────
          These components hardcode a dark panel colour, so under light they
-         stayed dark while their text correctly darkened — text and surface
+         stayed dark while their text correctly darkened, text and surface
          collapsing onto each other at ~1.05:1.
 
          Each dark surface maps to a light one by luminance rank, so the
@@ -6295,13 +6429,13 @@
       :root[data-theme="light"] .add-int-option:hover { background: rgba(16,24,40,0.05); }
 
       /* ══════════════════════════════════════════════════════════════════
-         GENERATED — light-mode brand hues
+         GENERATED, light-mode brand hues
          ──────────────────────────────────────────────────────────────────
          Each of these hardcodes a token's DARK value as text (mostly
          #61adf1, the dark --ai-text), so the light block's darkened value
          never reached them and they sat at ~2.1:1 on white.
 
-         Matched by value identity, then restated as the token — so light
+         Matched by value identity, then restated as the token, so light
          inherits whatever the design system already decided that token
          becomes, rather than a second opinion invented here.
       ══════════════════════════════════════════════════════════════════ */
@@ -6323,13 +6457,13 @@
          The rule preview highlights its variable parts in a pale blue built
          for a dark card (#c5dcff), and the dropdown options in another
          (#a8ccff). Neither matches a token exactly, so neither was caught by
-         value identity. Both are "this is the AI-chosen part" — which is
+         value identity. Both are "this is the AI-chosen part". Which is
          what --ai-text means, and it darkens under light. */
       :root[data-theme="light"] .rule-preview b { color: var(--ai-text); }
       :root[data-theme="light"] .v2-dropdown-option { color: var(--d200); }
 
       /* ══════════════════════════════════════════════════════════════════
-         GENERATED — light depth: shadows and black overlays
+         GENERATED, light depth: shadows and black overlays
          ──────────────────────────────────────────────────────────────────
          Both of these say "depth" on a dark page and say something else
          on a white one.
@@ -6339,7 +6473,7 @@
          cue. Softened toward the values the toast and float bar already
          use in light (0.10–0.16), which are the reference.
 
-         rgba(0,0,0,a) BACKGROUNDS are recesses — a segmented-control track
+         rgba(0,0,0,a) BACKGROUNDS are recesses, a segmented-control track
          sunk into a dark panel. Inverting them to a white overlay turned
          them into milky grey slabs; a recess on white is a faint dark
          tint, so the alpha is carried across rather than the colour.
@@ -6393,7 +6527,7 @@
       :root[data-theme="light"] .alert-detail-footer { background: rgba(16,24,40,0.042); }
 
       /* ══════════════════════════════════════════════════════════════════
-         GENERATED — light hairlines
+         GENERATED, light hairlines
          ──────────────────────────────────────────────────────────────────
          rgba(255,255,255,a) is the lit edge of a panel raised off a dark
          page. On white it is invisible, so panels lose their edge and
@@ -6533,7 +6667,7 @@
           <stop offset="50%" stop-color="#61ADF1" />
           <stop offset="100%" stop-color="#6FDFE2" />
         </linearGradient>
-        <!-- Main_AiMY_Logo_small symbol — reused in float bar, overlay badge, chat avatars -->
+        <!-- Main_AiMY_Logo_small symbol, reused in float bar, overlay badge, chat avatars -->
         <symbol id="aimy-logo-small" viewBox="0 0 151.43 147.66">
           <defs>
             <radialGradient id="aimy-logo-grad" cx="75.72" cy="73.83" fx="75.72" fy="73.83" r="70.54" gradientUnits="userSpaceOnUse">
@@ -6547,7 +6681,7 @@
           </defs>
           <path fill="url(#aimy-logo-grad)" d="m84.2,6.76c1.09-2.9,3.26-3.67,6.2-3.46,3.04.21,6.12-.04,9.17.09,3.09.13,4.19,1.99,2.72,4.73-2.8,5.23-5.69,10.4-8.64,15.54-.91,1.59-1.31,2.9-.3,4.69,1.09,1.94,1.68,4.16,2.47,6.27.56,1.48,1.14,2.9,3.1,2.84,2.03-.06,2.38-1.54,2.71-3.11,1.1-5.1,2.22-10.19,3.39-15.28.66-2.88,1.64-3.2,3.7-1.18,3.15,3.08,6.22,6.25,9.37,9.33,1.29,1.26,1.36,2.4.1,3.7-1.25,1.29-2.47,2.62-3.66,3.97-.61.69-1.13,1.49-.46,2.42.68.94,1.55.61,2.42.27,4.51-1.8,9.04-3.53,13.53-5.39,1.83-.76,3.32-.47,4.67.87,2.49,2.47,5.04,4.9,7.42,7.47,2.54,2.73,1.91,4.74-1.77,5.82-5.69,1.67-11.39,3.26-17.1,4.85-1.37.38-2.26.89-2.75,2.47-.76,2.47-2.02,4.8-3.1,7.17-.61,1.35-.72,2.59.51,3.68,1.25,1.11,2.44.75,3.68-.05,4.53-2.92,9.07-5.83,13.64-8.69,2.5-1.57,3.33-1.08,3.36,1.91.04,4.22-.08,8.45.05,12.67.07,2.39-.98,3.24-3.21,3.2-1.53-.03-3.06.06-4.59.14-1.02.06-2.06.26-2.2,1.52-.13,1.15.81,1.46,1.65,1.82,4.29,1.85,8.54,3.8,12.88,5.53,2.16.86,3.1,2.23,3.06,4.5-.06,3.33.02,6.65-.04,9.98-.08,3.82-1.88,4.89-5.2,3.07-5.2-2.84-10.38-5.72-15.53-8.66-1.34-.76-2.38-1.03-3.92-.2-2.28,1.22-4.82,1.95-7.26,2.86-1.4.53-2.29,1.38-2.17,3,.13,1.67,1.24,2.19,2.69,2.5,5.27,1.12,10.53,2.27,15.78,3.49,2.92.67,3.16,1.56,1.07,3.69-3.09,3.14-6.26,6.21-9.33,9.38-1.27,1.3-2.36,1.38-3.66.09-1.27-1.27-2.63-2.45-3.98-3.65-.69-.62-1.48-1.14-2.42-.5-.97.66-.64,1.53-.29,2.4,1.76,4.42,3.43,8.88,5.28,13.26.95,2.24.47,3.9-1.24,5.51-2.23,2.09-4.32,4.33-6.51,6.47-3.13,3.06-5.22,2.5-6.45-1.76-1.58-5.52-3.13-11.05-4.64-16.59-.4-1.48-1.02-2.39-2.66-2.9-2.39-.74-4.62-1.97-6.92-3.01-1.43-.65-2.78-.8-3.9.57-1.05,1.29-.54,2.46.25,3.69,2.88,4.45,5.73,8.92,8.55,13.41,1.65,2.62,1.17,3.48-1.98,3.52-4.14.05-8.28-.06-12.41.06-2.47.07-3.33-1.01-3.38-3.37-.04-1.94.39-3.96-.55-5.82-1.74-2.18-2.36-.35-2.92.91-1.76,3.94-3.56,7.87-5.08,11.9-1.11,2.96-2.92,4.25-6.1,4.03-2.77-.2-5.57-.01-8.36-.06-4.27-.07-5.4-1.95-3.37-5.63,2.74-4.95,5.49-9.9,8.31-14.8.9-1.56,1.33-2.86.29-4.67-1.15-2-1.75-4.32-2.56-6.51-.53-1.44-1.25-2.6-3.04-2.53-1.83.08-2.32,1.31-2.64,2.85-1.1,5.18-2.24,10.36-3.44,15.52-.67,2.88-1.65,3.17-3.72,1.13-3.08-3.02-6.08-6.14-9.19-9.14-1.49-1.44-1.54-2.68-.06-4.1,1.1-1.06,2.11-2.22,3.13-3.36.73-.81,1.57-1.72.72-2.83-.76-1-1.8-.44-2.72-.08-4.27,1.69-8.56,3.31-12.78,5.1-2.23.95-3.93.54-5.56-1.18-2.29-2.42-4.75-4.67-7.02-7.1-2.34-2.51-1.78-4.64,1.49-5.62,5.6-1.67,11.22-3.27,16.86-4.79,1.77-.48,2.96-1.11,3.53-3.1.67-2.31,1.91-4.45,2.9-6.66.65-1.44.72-2.79-.65-3.89-1.32-1.05-2.45-.47-3.67.32-4.36,2.84-8.76,5.65-13.17,8.41-2.76,1.73-3.71,1.23-3.74-1.95-.04-4.14.09-8.28-.03-12.41-.06-2.34.89-3.26,3.18-3.21,1.7.04,3.41-.17,5.12-.3.87-.06,1.62-.4,1.76-1.36.15-1-.58-1.41-1.36-1.75-4.37-1.89-8.7-3.87-13.12-5.63-2.25-.9-3.23-2.35-3.19-4.71.06-3.33-.07-6.66.04-9.98.12-3.56,2.07-4.64,5.2-2.93,5.13,2.79,10.23,5.62,15.3,8.52,1.5.86,2.72,1.22,4.44.29,2.12-1.15,4.5-1.81,6.77-2.67,1.47-.55,2.53-1.38,2.37-3.15-.15-1.68-1.35-2.16-2.76-2.46-5.19-1.13-10.37-2.25-15.55-3.44-2.86-.66-3.17-1.67-1.16-3.73,3.02-3.09,6.14-6.07,9.13-9.19,1.44-1.51,2.67-1.53,4.1-.06,1.07,1.09,2.21,2.12,3.36,3.12.8.7,1.66,1.64,2.81.74,1-.78.45-1.8.08-2.71-1.69-4.27-3.3-8.56-5.1-12.78-.97-2.26-.48-3.92,1.19-5.56,2.24-2.2,4.29-4.6,6.51-6.82,2.52-2.52,5.28-1.85,6.29,1.53,1.68,5.69,3.31,11.4,4.86,17.13.42,1.53,1.09,2.38,2.7,2.9,2.47.8,4.79,2.05,7.17,3.11,1.38.61,2.62.55,3.64-.69.98-1.19.61-2.32-.13-3.46-2.82-4.38-5.65-8.75-8.42-13.17-.58-.93-1.69-1.87-.93-3.15.68-1.15,1.94-.76,2.97-.77,4.13-.04,8.27.06,12.4-.03,2.07-.04,2.97.78,2.95,2.84-.01,1.71.14,3.41.26,5.12.07.94.34,1.85,1.47,1.96.98.1,1.41-.63,1.73-1.42,1.76-4.23,3.52-8.46,5.28-12.68Zm-22.36,61.41c-3.34,1.86-6.31,1.33-9.12-1.21-2.13-1.92-4.4-3.7-6.68-5.44-1.37-1.05-5.46-.12-5.88,1.48-.4,1.51,1.45,1.62,2.35,2.26,2.26,1.62,2.42,2.82.44,4.99-1.2,1.31-1.86,2.77-.81,4.36,1.07,1.61,2.68,2.01,4.5,1.25,1.66-.69,3.35-1.31,4.95-2.11,3.35-1.67,6.39-1.47,9.13,1.21,2.48,5.78.4,9.43-5.84,10.19-2.94.36-5.9.59-8.84.99-1.71.24-3.72,3.37-3.04,4.99.74,1.75,2.14.27,3.18.13,2.82-.39,3.74.25,3.89,3.17.09,1.76.6,3.29,2.48,3.69,2.06.43,3.44-.64,4.21-2.52.82-1.99,1.6-4,2.44-5.99,1.06-2.53,2.86-4.12,5.72-4.2,2.6-.07,4.55,1.12,5.68,3.4,1.22,2.48.87,4.87-.94,7.03-1.56,1.86-3.06,3.77-4.61,5.63-2.97,3.57-2.9,4.91.52,8.4.47-.79.92-1.56,1.38-2.32,1.77-2.93,2.86-3.11,5.4-.87,1.35,1.19,2.84,1.7,4.39.59,1.5-1.08,1.78-2.66,1.12-4.34-.89-2.26-1.96-4.45-2.77-6.73-1.32-3.73.56-7.35,4.17-8.3,3.57-.94,7.08,1.37,7.7,5.21.4,2.48.6,5,.8,7.5.41,4.94.97,5.53,5.99,5.97.04.05.08.11.13.14.01,0,.07-.05.11-.08-.09,0-.19,0-.28,0,.48-1.21-.26-2.26-.46-3.37-.48-2.69.29-3.75,2.95-3.8,1.88-.03,3.52-.5,3.93-2.51.45-2.19-.81-3.54-2.79-4.32-2.01-.78-4.01-1.57-5.99-2.42-2.45-1.05-3.89-2.93-3.98-5.6-.08-2.55,1.12-4.54,3.41-5.68,2.38-1.18,4.72-.92,6.82.76,1.9,1.51,3.77,3.05,5.64,4.6,3.87,3.21,4.66,3.2,8.75-.27-1.04-.61-2.07-1.14-3.02-1.79-2.24-1.53-2.4-2.82-.54-4.79,1.28-1.36,2.12-2.83.94-4.56-1.2-1.75-2.96-1.85-4.82-1.09-2.08.86-4.11,1.83-6.22,2.59-3.73,1.35-7.49-.5-8.38-4.02-.96-3.81,1.3-7.23,5.33-7.83,2.48-.37,5-.59,7.51-.78,4.75-.36,5.44-1.05,5.77-6.3-1.15.29-2.24.62-3.35.82-2.62.49-3.71-.35-3.78-3.03-.05-1.89-.52-3.49-2.57-3.85-2.07-.36-3.39.78-4.14,2.67-.83,2.09-1.62,4.2-2.57,6.23-1.68,3.6-5.57,4.91-8.76,3.05-3.36-1.96-4.18-6.1-1.75-9.32,1.57-2.08,3.27-4.06,4.93-6.07,2.94-3.56,2.89-4.57-.43-8.15-.08.02-.2.01-.23.06-.3.44-.6.89-.88,1.35-2.3,3.81-2.75,3.89-6.21,1.3-1.24-.93-2.61-1.34-3.97-.31-1.33,1.02-1.89,2.42-1.26,4.06.84,2.18,1.74,4.33,2.67,6.47,1.16,2.67.88,5.12-1.13,7.24-1.79,1.89-4.12,2.26-6.47,1.44-2.61-.91-3.96-2.91-4.18-5.72-.25-3.13-.61-6.26-1.01-9.38-.24-1.92-3.07-4.03-5.03-3.37-2.01.68-.22,2.24-.11,3.34.27,2.74-.36,3.64-3.35,3.81-1.79.1-3.25.69-3.58,2.6-.31,1.81.57,3.15,2.24,3.88,1.73.76,3.5,1.42,5.24,2.15,5.82,2.41,6.87,6.44,2.99,11.41Z"/>
         </symbol>
-        <!-- v2fill: chart area fill gradient — stop-color uses currentColor
+        <!-- v2fill: chart area fill gradient, stop-color uses currentColor
              so the parent SVG's color property (set via CSS --qa-accent) controls it -->
         <linearGradient id="v2fill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="#8B4FF4" stop-opacity="0.22" class="v2fill-stop-top" />
@@ -6624,17 +6758,47 @@
       <!-- Right side -->
       <div class="topnav-spacer"></div>
       <div class="topnav-right">
+        <!-- V1 opens in a new tab so the two builds can be compared side by
+             side. One link, not a segmented pair: you are on V2, so the only
+             thing worth offering is the way out. The href is the placeholder,
+             one value to change, once per file. -->
+        <a class="ver-link" href="#" target="_blank" rel="noopener noreferrer"
+           title="Open V1 in a new tab">
+          V1
+          <svg class="ver-link-ico" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+               stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4.5 2.5H2.5v7h7v-2M7 2.5h2.5V5M9.5 2.5L5.5 6.5"/>
+          </svg>
+        </a>
         <button class="theme-toggle" id="themeToggle" type="button"
                 aria-label="Switch to light theme" title="Switch theme">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
         </button>
-        <div class="topnav-bell">
-          <svg viewBox="0 0 24 24">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
-          <div class="bell-dot"></div>
+        <!-- Notifications. The bell was an inert <div> with a red dot that
+             never cleared; it is a real button now. What it opens is the task
+             queue, see the AIMY_TASKS block at the end of the page. -->
+        <div class="ntf-anchor">
+          <button class="topnav-bell" id="ntfBell" type="button"
+                  aria-haspopup="dialog" aria-expanded="false" aria-controls="ntfPanel"
+                  aria-label="Notifications">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+            <span class="bell-dot" id="ntfDot"></span>
+          </button>
+          <div class="ntf-panel" id="ntfPanel" hidden role="dialog" aria-label="Notifications">
+            <div class="ntf-head">
+              <b>Needs you</b>
+              <span class="ntf-count" id="ntfCount">6</span>
+              <button class="ntf-clear" id="ntfClear" type="button">Mark all read</button>
+            </div>
+            <ul class="ntf-list" id="ntfList"></ul>
+            <div class="ntf-foot">
+              <button class="ntf-foot-btn" id="ntfAskAll" type="button">Ask AiMY what to do first</button>
+            </div>
+          </div>
         </div>
         <div class="topnav-user">
           <div class="topnav-avatar">NW</div>
@@ -6712,7 +6876,7 @@
 
       <div class="app-main">
         <div class="dashboard-scroll">
-          <!-- Active filter strip — only visible when filters are applied -->
+          <!-- Active filter strip, only visible when filters are applied -->
           <div class="active-filter-strip" id="activeFilterStrip">
             <span class="afs-label">Filtered by</span>
             <!-- Active filter chips injected here by JS -->
@@ -6813,7 +6977,7 @@
             <div class="integration-key">
               <div class="set-callout" style="margin-bottom:12px">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                <span>Keys are stored masked. <b>Edit credentials</b> clears the field &mdash; the full key must be re-entered, never pre-filled.</span>
+                <span>Keys are stored masked. <b>Edit credentials</b> clears the field. The full key must be re-entered, never pre-filled.</span>
               </div>
               <div class="field">
                 <label class="field-label">API key</label>
@@ -7025,7 +7189,7 @@
             <div class="modal-header">
               <div>
                 <div class="modal-title" id="pwTitle">Change password</div>
-                <div class="modal-sub">We&#39;ll email a secure reset link &mdash; no need to enter your current password here.</div>
+                <div class="modal-sub">We&#39;ll email a secure reset link, no need to enter your current password here.</div>
               </div>
               <button class="modal-close" type="button" data-action="close-pw" aria-label="Close">&times;</button>
             </div>
@@ -7046,7 +7210,7 @@
         <!-- ════ FLOATING AIMY INPUT BAR (scoped to app-main) ══════════ -->
         <div class="aimy-float-wrap" id="aimyFloatWrap">
 
-          <!-- Filter tray — appears above the bar on input focus -->
+          <!-- Filter tray, appears above the bar on input focus -->
           <div class="filter-tray" id="filterTray" role="toolbar" aria-label="Filter by dimension">
             <div class="filter-tray-inner">
               <span class="filter-tray-label">Filter via AiMY</span>
@@ -7059,7 +7223,8 @@
           </div>
 
           <div class="aimy-float-bar" id="aimyFloatBar">
-            <div class="aimy-float-icon">
+            <div class="aimy-float-icon" id="aimyFloatIcon" role="button" tabindex="0"
+                 aria-label="Open the AiMY canvas" style="cursor:pointer;">
               <span class="float-badge" id="floatBadge" aria-label="3 unread alerts">3</span>
               <svg width="23" height="25" viewBox="0 0 18 20">
                 <use href="#aimy-logo-small" />
@@ -7102,7 +7267,7 @@
         </div>
 
         <!-- ════ AIMY CHAT OVERLAY (scoped to app-main) ══════════════════
-       Absolute-positioned so it covers only the main content area —
+       Absolute-positioned so it covers only the main content area,
        sidebar and topbar remain fully visible and interactive.
        Closes on Escape or close button. -->
         <div
@@ -7137,7 +7302,7 @@
             </svg>
           </button>
 
-          <!-- Context continuity bar — driven by active scenario / open context -->
+          <!-- Context continuity bar, driven by active scenario / open context -->
           <div class="overlay-context-bar" id="overlayContextBar" aria-hidden="true">
             <span class="overlay-context-label">Based on</span>
             <div class="overlay-context-tags" id="overlayContextTags">
@@ -7147,7 +7312,7 @@
 
           <!-- Conversation thread -->
           <div class="overlay-thread" id="overlayThread" aria-live="polite">
-            <!-- Suggested prompts — visible when thread is empty -->
+            <!-- Suggested prompts, visible when thread is empty -->
             <div class="overlay-suggestions" id="overlaySuggestions">
               <!-- Populated dynamically by openOverlay() based on active scenario -->
             </div>
@@ -7199,7 +7364,7 @@
       (function () {
         "use strict";
 
-        /* ── Action confirmations — drives the design-system .aimy-toast
+        /* ── Action confirmations, drives the design-system .aimy-toast
                component already in the shell (#aimyToast): icon, title, sub,
                divider, Undo, progress bar. Each call supplies its own undo. ── */
         var aimyToastTimer = null;
@@ -7382,14 +7547,14 @@
             k.type = k.type === "password" ? "text" : "password";
           }
           else if (a === "edit-key") {
-            // Security constraint: never pre-fill — clear and require full re-entry.
+            // Security constraint: never pre-fill, clear and require full re-entry.
             var key = document.getElementById("zdKey");
             key.value = "";
             key.type = "text";
             key.readOnly = false;
             key.placeholder = "Enter new API key…";
             key.focus();
-            document.getElementById("zdKeyHint").textContent = "Enter the full key — partial edits are not supported.";
+            document.getElementById("zdKeyHint").textContent = "Enter the full key. Partial edits are not supported.";
             act.textContent = "Save key";
             act.setAttribute("data-action", "save-key");
           }
@@ -7422,7 +7587,7 @@
           else if (a === "close-add-int") closeOverlayId("addIntegrationModal");
           else if (a === "change-password") openOverlayId("pwModal");
           else if (a === "close-pw") closeOverlayId("pwModal");
-          else if (a === "send-reset") { closeOverlayId("pwModal"); toast("Reset link sent", "Check nour@aimy.io \u2014 the link expires in 30 minutes."); }
+          else if (a === "send-reset") { closeOverlayId("pwModal"); toast("Reset link sent", "Check nour@aimy.io, the link expires in 30 minutes."); }
         });
 
         // Close modal on overlay click / Escape
@@ -7552,7 +7717,7 @@
       })();
     </script>
 
-    <!-- AiMY Toast — mounted globally; content populated by showToast() on demand -->
+    <!-- AiMY Toast, mounted globally; content populated by showToast() on demand -->
     <div class="aimy-toast" id="aimyToast" role="status" aria-live="polite">
       <div class="aimy-toast-icon">
         <svg width="23" height="25" viewBox="0 0 18 20">
@@ -7677,8 +7842,8 @@
 
         /* ── Execute dismiss with user-typed reason ──────────────────── */
         function _executeDismissWithReason(alertId, fullText) {
-          // Extract reason (everything after "— ")
-          const reasonPart = fullText.replace(/^Dismiss\s+"[^"]*"\s+alert\s+[—-]\s*/i, '').trim();
+          // Extract reason (everything after "- ")
+          const reasonPart = fullText.replace(/^Dismiss\s+"[^"]*"\s+alert\s+[-]\s*/i, '').trim();
           const reason = reasonPart || 'No reason given';
 
           // Find and hide the card
@@ -7710,7 +7875,7 @@
           setTimeout(() => {
             const alertMeta = (typeof ALERT_DATA !== 'undefined' ? ALERT_DATA : []).find(a => a.id === alertId);
             const alertLabel = alertMeta ? alertMeta.type : alertId.replace(/-/g,' ');
-            appendAiMsg('Got it — the <strong>' + alertLabel + '</strong> alert has been dismissed. I\u2019ve logged your reason: \u201C' + reason + '\u201D. I won\u2019t resurface this alert unless the situation worsens significantly.');
+            appendAiMsg('Got it. The <strong>' + alertLabel + '</strong> alert has been dismissed. I\u2019ve logged your reason: \u201C' + reason + '\u201D. I won\u2019t resurface this alert unless the situation worsens significantly.');
           }, 900);
         }
 
@@ -7778,7 +7943,7 @@
           ],
           improving: [
             'What drove the quality improvement this period?',
-            'Which agents are setting the standard \u2014 and what are they doing?',
+            'Which agents are setting the standard, and what are they doing?',
             'Export a board-ready quality summary for this period',
             'Is the first response time slip a risk to watch?'
           ],
@@ -7792,9 +7957,16 @@
             'Compare Q3 vs Q4 quality drivers',
             'Which agents are at risk of drift before next period?',
             'Are any goal thresholds due for recalibration before Q1?',
-            'Schedule a cycle review \u2014 what should it cover?'
+            'Schedule a cycle review. What should it cover?'
           ]
         };
+
+        /* The one way in from outside this IIFE. Every page has a canvas but
+           opens it differently and none of the openers are on window, so the
+           shared notifications panel and the float-bar logo both go through
+           this adapter. Same name and contract in all six files. Note this is
+           the canvas. OpenOverlayId() above is an unrelated modal helper. */
+        window.aimyOpenCanvas = function (q) { openOverlay(q || null); };
 
         function openOverlay(initialText) {
           overlayOpen = true;
@@ -7930,7 +8102,7 @@
           {
             keys: ["sla", "first response", "response time", "compliance", "61%"],
             response:
-              "First response SLA compliance is at <strong>61%</strong> today against a 65% target — a <strong>4-point gap</strong> affecting 8 agents. " +
+              "First response SLA compliance is at <strong>61%</strong> today against a 65% target, a <strong>4-point gap</strong> affecting 8 agents. " +
               "The main driver is a ticket volume spike in the billing queue this morning, where average first response climbed to <strong>52 minutes</strong> (target: 30 min). " +
               "I’d recommend reassigning 2 agents from the general queue to billing for the rest of the shift. " +
               "Do you want me to identify which agents have capacity to absorb the load right now?",
@@ -7939,14 +8111,14 @@
             keys: ["agent", "below threshold", "threshold", "coaching", "5 agents"],
             response:
               "Five agents are currently below the 80% quality threshold: <strong>Omar A. (74%)</strong>, <strong>Sara M. (71%)</strong>, <strong>Khaled R. (69%)</strong>, Layla T. (76%), and Ahmed S. (78%). " +
-              "All five show the same failure pattern — low scores on <em>empathy during escalations</em> (avg 48%) and <em>follow-up confirmation</em> (avg 52%). " +
+              "All five show the same failure pattern, low scores on <em>empathy during escalations</em> (avg 48%) and <em>follow-up confirmation</em> (avg 52%). " +
               "This suggests a shared training gap rather than individual performance issues. " +
-              "I can generate a targeted coaching plan for this checklist cluster — want me to do that now?",
+              "I can generate a targeted coaching plan for this checklist cluster, want me to do that now?",
           },
           {
             keys: ["justify", "overdue", "disp-0441", "disp-0438", "past sla", "sla window"],
             response:
-              "<strong>DISP-0441</strong> and <strong>DISP-0438</strong> are both past the 48-hour SLA window — DISP-0441 by 31 hours, DISP-0438 by 19 hours. " +
+              "<strong>DISP-0441</strong> and <strong>DISP-0438</strong> are both past the 48-hour SLA window, DISP-0441 by 31 hours, DISP-0438 by 19 hours. " +
               "Both justifys were filed by agents contesting checklist scoring on empathy items, and both are awaiting auditor response. " +
               "If unresolved today there is an escalation risk to the agents’ team leads. " +
               "I’d suggest assigning them to an available senior auditor immediately. Do you want me to surface who is available?",
@@ -8063,7 +8235,7 @@
           autoResizeTextarea();
           handleOverlaySend();
         };
-        /* ── Filter tray — show/hide on float bar focus ─────────────────
+        /* ── Filter tray, show/hide on float bar focus ─────────────────
        The tray lives above the float bar and is only revealed when
        the user focuses the input. It hides on blur (with a short
        delay so clicks on chips register before the tray disappears). */
@@ -8092,7 +8264,7 @@
         filterTray.addEventListener("focusin", showTray);
         filterTray.addEventListener("focusout", hideTray);
 
-        /* ── Filter chip click — contextual suggestions ──────────────
+        /* ── Filter chip click, contextual suggestions ──────────────
        Clicking a dimension chip:
          1. Pre-fills the input with the dimension prefix
          2. Swaps the chip row to suggestion pills for that dimension
@@ -8235,7 +8407,7 @@
 
         afsClearAll.addEventListener("click", clearAllFilters);
 
-        /* ── Filter tray — show on injectChartPrompt too ───────────────
+        /* ── Filter tray, show on injectChartPrompt too ───────────────
        Chart prompt focuses the input, which fires the focus handler,
        so no extra wiring needed. Active strip update hooks into
        applyFilter (below) which is the final send path.             */
@@ -8256,7 +8428,7 @@
        main float bar input and highlights it so the user can review
        and send (or edit) before dispatching to the canvas.          */
         window.injectChartPrompt = function () {
-          const prompt = "Explain what's driving the Quality Score trend — why did we dip in November and are we on track to hit the 90% SLA target?";
+          const prompt = "Explain what's driving the Quality Score trend. Why did we dip in November and are we on track to hit the 90% SLA target?";
           const input = document.getElementById("aimyFloatInput");
           const btn = document.getElementById("askAimyChartBtn");
           if (!input) return;
@@ -8266,7 +8438,7 @@
           // Brief visual feedback on the button
           btn.classList.add("injected");
           btn.textContent = "";
-          btn.insertAdjacentHTML("beforeend", '<svg width="15" height="18" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg> Prompt ready — press Enter to send');
+          btn.insertAdjacentHTML("beforeend", '<svg width="15" height="18" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg> Prompt ready, press Enter to send');
           setTimeout(() => {
             btn.classList.remove("injected");
             btn.innerHTML = '<svg width="18" height="20" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg> Ask AiMY about this chart';
@@ -8289,8 +8461,14 @@
         }
         updateFloatBadge(unreadAlertCount);
         document.getElementById('aimyFloatBar')?.addEventListener('click', () => updateFloatBadge(0));
-        const floatIconEl = document.querySelector('.aimy-float-icon');
-        if (floatIconEl) { floatIconEl.style.cursor = 'pointer'; floatIconEl.addEventListener('click', e => { e.stopPropagation(); if (unreadAlertCount > 0) openAlertsInCanvas(); }); }
+        /* The float-bar logo used to live here, gated on
+           `if (unreadAlertCount > 0) openAlertsInCanvas()`. Two problems: the
+           sibling listener above zeroes the count on ANY click on the bar, so
+           the logo went permanently dead after the first interaction; and
+           openAlertsInCanvas filters on #ack-row-* elements that exist in no
+           file, so it only ever rendered "No active alerts". Alerts are the
+           bell's job now. The logo opens the canvas, unconditionally, from the
+           shared block at the end of the page. */
 
         /* ── Undo stashes ─────────────────────────────────────────────── */
         let lastAcknowledgedCard = null;
@@ -8337,7 +8515,7 @@
           'sla-breach':   'summarySignal1',
           'goal-failures': 'summarySignal2',
           'sentiment':    'summarySignal2',  // both agent-related signals map to signal 2
-          'quality':      null               // no direct signal tile — quality is ambient
+          'quality':      null               // no direct signal tile. Quality is ambient
         };
 
         window.acknowledgeAlert = function(btn, alertId) {
@@ -8365,14 +8543,14 @@
           }
         };
 
-        /* ── Bcard dismiss — injects prefilled text into float bar ─────── */
+        /* ── Bcard dismiss, injects prefilled text into float bar ─────── */
         window.showBcardDismissPicker = function(btn, alertId) {
           // Find the alert label from ALERT_DATA
           const alertMeta = (typeof ALERT_DATA !== 'undefined' ? ALERT_DATA : []).find(a => a.id === alertId);
           const alertLabel = alertMeta ? alertMeta.type : alertId.replace(/-/g,' ');
 
           // Build the pre-filled dismissal text
-          const injectedText = 'Dismiss "' + alertLabel + '" alert — ';
+          const injectedText = 'Dismiss "' + alertLabel + '" alert, ';
 
           // Get the float bar input
           const floatInput = document.getElementById('aimyFloatInput');
@@ -8410,7 +8588,7 @@
         };
 
         window.confirmBcardDismiss = function(alertId) {
-          // Legacy: no-op — dismiss now handled via float bar text injection
+          // Legacy: no-op, dismiss now handled via float bar text injection
         };
 
         /* ── dismissAlert legacy shim (unused by bcards, kept for canvas sync) */
@@ -8418,10 +8596,10 @@
 
         /* ── Alert data ───────────────────────────────────────────────── */
         const ALERT_DATA = [
-          { id:'sla-breach', priority:'p1', type:'SLA Breach', badge:'P1 \u00b7 Critical', summary:'First response SLA compliance at 61% \u2014 29pts below the 90% threshold. 23 breaches this week, up from 14.', evidence:[{label:'SLA compliance',val:'61%',delta:'\u219329pts'},{label:'Breaches this week',val:'23',delta:'\u21919 vs last week'},{label:'Avg first response',val:'45 min',delta:''}], cta:'View breached tickets', ctaClass:'primary-p1' },
-          { id:'goal-failures', priority:'p1', type:'goal Failures', badge:'P1 \u00b7 Urgent', summary:'3 goals actively failing \u2014 empathy is the biggest gap, down 8% this period.', evidence:[{label:'Empathy score',val:'32%',delta:'\u2193\u22128%'},{label:'Failed interactions',val:'184',delta:''}], cta:'Start coaching plan', ctaClass:'primary-p1', coachingAction:true },
-          { id:'sentiment', priority:'p1', type:'Sentiment', badge:'P1 \u00b7 Urgent', summary:'Negative sentiment rising week over week \u2014 3 agents driving most of it.', evidence:[{label:'Negative interactions',val:'39',delta:'\u2191 rising'},{label:'Agents flagged',val:'3',delta:''}], cta:'Review escalation handling', ctaClass:'primary-p1' },
-          { id:'quality', priority:'p2', type:'Quality Score', badge:'P2 \u00b7 Watch', summary:'Quality at 87.3% \u2014 2.7% below the 90% SLA target. 3 failing goals are the primary drag.', evidence:[{label:'Current avg',val:'87.3%',delta:'\u2191+5.2%'},{label:'Gap to SLA',val:'\u22122.7%',delta:''}], cta:"See what's blocking target", ctaClass:'primary-p2' }
+          { id:'sla-breach', priority:'p1', type:'SLA Breach', badge:'P1 \u00b7 Critical', summary:'First response SLA compliance at 61%, 29pts below the 90% threshold. 23 breaches this week, up from 14.', evidence:[{label:'SLA compliance',val:'61%',delta:'\u219329pts'},{label:'Breaches this week',val:'23',delta:'\u21919 vs last week'},{label:'Avg first response',val:'45 min',delta:''}], cta:'View breached tickets', ctaClass:'primary-p1' },
+          { id:'goal-failures', priority:'p1', type:'goal Failures', badge:'P1 \u00b7 Urgent', summary:'3 goals actively failing. Empathy is the biggest gap, down 8% this period.', evidence:[{label:'Empathy score',val:'32%',delta:'\u2193\u22128%'},{label:'Failed interactions',val:'184',delta:''}], cta:'Start coaching plan', ctaClass:'primary-p1', coachingAction:true },
+          { id:'sentiment', priority:'p1', type:'Sentiment', badge:'P1 \u00b7 Urgent', summary:'Negative sentiment rising week over week, 3 agents driving most of it.', evidence:[{label:'Negative interactions',val:'39',delta:'\u2191 rising'},{label:'Agents flagged',val:'3',delta:''}], cta:'Review escalation handling', ctaClass:'primary-p1' },
+          { id:'quality', priority:'p2', type:'Quality Score', badge:'P2 \u00b7 Watch', summary:'Quality at 87.3%, 2.7% below the 90% SLA target. 3 failing goals are the primary drag.', evidence:[{label:'Current avg',val:'87.3%',delta:'\u2191+5.2%'},{label:'Gap to SLA',val:'\u22122.7%',delta:''}], cta:"See what's blocking target", ctaClass:'primary-p2' }
         ];
 
         /* ── Open canvas with alerts ─────────────────────────────────── */
@@ -8432,7 +8610,7 @@
           appendSystemMsg('Showing active alerts\u2026');
           setTimeout(function() {
             const active = ALERT_DATA.filter(a => { const row = document.getElementById('ack-row-' + a.id); const btn = row?.querySelector('.bcard-ack-btn:not(.dismiss)'); return btn && !btn.classList.contains('acknowledged'); });
-            if (active.length === 0) { const w = document.createElement('div'); w.className = 'chat-msg aimy'; w.innerHTML = '<div class="msg-avatar aimy-av"><svg width="23" height="25" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg></div><div class="msg-bubble">No active alerts \u2014 all caught up.</div>'; thread.appendChild(w); }
+            if (active.length === 0) { const w = document.createElement('div'); w.className = 'chat-msg aimy'; w.innerHTML = '<div class="msg-avatar aimy-av"><svg width="23" height="25" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg></div><div class="msg-bubble">No active alerts, all caught up.</div>'; thread.appendChild(w); }
             else active.forEach((a, i) => setTimeout(() => appendNotifAlertCard(a), i * 180));
             thread.scrollTop = thread.scrollHeight;
             setTimeout(() => overlayInput.focus(), 300);
@@ -8520,7 +8698,7 @@
           document.getElementById('ndp-' + cardId)?.classList.remove('open');
         }
 
-        /* ── Coaching card — DOM-based, no innerHTML for buttons ───────── */
+        /* ── Coaching card, DOM-based, no innerHTML for buttons ───────── */
         function buildActionButtons(actionsBar) {
           actionsBar.innerHTML = '';
           const a = document.createElement('button'); a.className = 'coach-btn accept'; a.textContent = 'Accept';
@@ -8612,7 +8790,7 @@
           if (sp) {
             sp.innerHTML =
               '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>' +
-              ' Workflow triggered \u2014 ref #' + ref +
+              ' Workflow triggered, ref #' + ref +
               '<span class="coaching-next-links">' +
                 '<a class="coaching-next-link" href="agent-scorecards.html" title="Open coaching task">' +
                   '<svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>' +
@@ -8695,7 +8873,7 @@
           if (!card) return;
           const parent = card.parentNode;
           const nextSibling = card.nextSibling;
-          /* Stash for undo — hide, don't remove */
+          /* Stash for undo. Hide, don't remove */
           lastCoachingAction = {
             type: 'dismiss', card,
             restore: function() {
@@ -8727,8 +8905,8 @@
           appendSystemMsg('Loading coaching history for ' + agentName + '\u2026');
           setTimeout(function() {
             const entries = [
-              { status:'accepted',  desc:'Empathy coaching session \u2014 billing calls', date:'2 days ago', meta:'\u00b7 ref WF-48821' },
-              { status:'deferred',  desc:'Follow-up clarity \u2014 end-of-call summary',  date:'5 days ago', meta:'\u00b7 resurfaces next week' },
+              { status:'accepted',  desc:'Empathy coaching session, billing calls', date:'2 days ago', meta:'\u00b7 ref WF-48821' },
+              { status:'deferred',  desc:'Follow-up clarity, end-of-call summary',  date:'5 days ago', meta:'\u00b7 resurfaces next week' },
               { status:'dismissed', desc:'Survey promotion script refresher',              date:'1 week ago', meta:'\u00b7 Already in coaching plan' },
             ];
             const statusMap = { accepted:{cls:'hs-accepted',label:'Accepted'}, deferred:{cls:'hs-deferred',label:'Deferred'}, dismissed:{cls:'hs-dismissed',label:'Dismissed'} };
@@ -8792,19 +8970,19 @@
           },
           {
             badge: 'Watch', badgeCls: 'adr-badge-warn',
-            title: 'Survey promotion slipping — monitor before it becomes a failure',
+            title: 'Survey promotion slipping, monitor before it becomes a failure',
             body: 'Survey promo sits at 49%, just below the 50% threshold. Trending up 3% but not yet stable.',
             meta: '49% current · 50% threshold',
             action: 'Track goal trend →',
-            prompt: 'Survey promotion is at 49% — 1pt below threshold. Show week-by-week trend for 6 weeks, agents dragging the rate down, and the single most effective prompt change to stabilise it.'
+            prompt: 'Survey promotion is at 49%, 1pt below threshold. Show week-by-week trend for 6 weeks, agents dragging the rate down, and the single most effective prompt change to stabilise it.'
           },
           {
             badge: 'Watch', badgeCls: 'adr-badge-warn',
-            title: 'Response SLA drifting — 4pts below target',
-            body: 'SLA compliance at 71% — down 2pts from last period. Objectif Lune and Adestra are the primary drivers.',
+            title: 'Response SLA drifting · 4pts below target',
+            body: 'SLA compliance at 71%, down 2pts from last period. Objectif Lune and Adestra are the primary drivers.',
             meta: '71% compliance · 75% target',
             action: 'Monitor trend →',
-            prompt: 'Response SLA is at 71% — 4pts below target and declining. Show trend over 4 weeks, which products contribute most, and project when we breach the critical threshold.'
+            prompt: 'Response SLA is at 71%, 4pts below target and declining. Show trend over 4 weeks, which products contribute most, and project when we breach the critical threshold.'
           },
           {
             badge: 'AiMY', badgeCls: 'adr-badge-ai',
@@ -8812,7 +8990,7 @@
             body: 'Customer Support trailing Technical Support by 9pts on average quality score. Gap widened 3pts since last period.',
             meta: 'CS: 82% · TS: 91% · −9pts gap',
             action: 'Open AiMY canvas →',
-            prompt: 'Customer Support trails Technical Support by 9pts — 82% vs 91%. Side-by-side breakdown: top failing goals per team, agents dragging each team, and coaching actions to close the gap.'
+            prompt: 'Customer Support trails Technical Support by 9pts, 82% vs 91%. Side-by-side breakdown: top failing goals per team, agents dragging each team, and coaching actions to close the gap.'
           }
         ];
 
@@ -8823,7 +9001,7 @@
             body: '8 interactions flagged in Account Management. 2 agents responsible for most repeat contacts. Customers cycling back after unresolved upgrade queries.',
             meta: 'Account Management · 8 interactions · 2 agents',
             action: 'Review interactions →',
-            prompt: 'Repeat contacts up +22% on plan upgrade failures — 8 flagged, 2 agents. Show the tickets, what resolution was attempted, and recommend a process fix.'
+            prompt: 'Repeat contacts up +22% on plan upgrade failures, 8 flagged, 2 agents. Show the tickets, what resolution was attempted, and recommend a process fix.'
           },
           {
             badge: '+9%', badgeCls: 'adr-badge-warn',
@@ -8836,7 +9014,7 @@
           {
             badge: 'Rising', badgeCls: 'adr-badge-warn',
             title: 'Negative sentiment cluster in Objectif Lune billing tickets',
-            body: 'Negative sentiment at 19% in Objectif Lune — up from 14% last week. Billing escalations are the driver. 3 agents flagged.',
+            body: 'Negative sentiment at 19% in Objectif Lune, up from 14% last week. Billing escalations are the driver. 3 agents flagged.',
             meta: 'Objectif Lune · 19% neg rate · ↑14% last week',
             action: 'View sentiment analysis →',
             prompt: 'Negative sentiment in Objectif Lune billing risen from 14% to 19%. Show 3 flagged agents, escalation types driving negative responses, fastest intervention to reverse the trend.'
@@ -8924,7 +9102,7 @@
         /* ── Error state ─────────────────────────────────────────────── */
         window.showAiError = function() {
           const w = document.createElement('div'); w.className = 'chat-msg aimy';
-          w.innerHTML = '<div class="msg-avatar aimy-av"><svg width="23" height="25" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg></div><div class="msg-bubble" style="padding:0;background:none;border:none;"><div class="msg-error-bubble"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>I couldn\u2019t retrieve that data right now \u2014 try again in a moment or rephrase your question.</div></div>';
+          w.innerHTML = '<div class="msg-avatar aimy-av"><svg width="23" height="25" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg></div><div class="msg-bubble" style="padding:0;background:none;border:none;"><div class="msg-error-bubble"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>I couldn\u2019t retrieve that data right now, try again in a moment or rephrase your question.</div></div>';
           thread.appendChild(w); thread.scrollTop = thread.scrollHeight;
         };
 
@@ -8939,7 +9117,7 @@
           appendSystemMsg('Loading scorecard for ' + agentName + '…');
 
           setTimeout(function() {
-            /* Scorecard data — stub matching Omar Adel's known goal state */
+            /* Scorecard data, stub matching Omar Adel's known goal state */
             const goals = [
               { name: 'Empathy during escalations', pct: 32,  color: 'var(--err)' },
               { name: 'Follow-up clarity',           pct: 48,  color: 'var(--warn)' },
@@ -9028,7 +9206,7 @@
             fullLink.textContent = 'Open full scorecard in Reviews →';
             fullLink.title = 'Opens in Reviews (coming in v2)';
             fullLink.addEventListener('click', function() {
-              appendSystemMsg('Reviews surface coming in v2 — full scorecard drill-down will open here.');
+              appendSystemMsg('Reviews surface coming in v2, full scorecard drill-down will open here.');
             });
             footer.appendChild(note); footer.appendChild(fullLink);
 
@@ -9066,8 +9244,8 @@
               { label: 'InterFax', val: '84% compliance', badge: 'adr-badge-warn', badgeText: '→6pts vs target' },
               { label: 'Adestra', val: '91% compliance', badge: 'adr-badge-ok', badgeText: '+1pt above target' },
               { label: 'Avg first response time', val: '45 min', badge: 'adr-badge-err', badgeText: 'target: 15 min' },
-              { label: 'Top agent — Omar Adel', val: '11 breaches', badge: 'adr-badge-err', badgeText: '48% personal compliance' },
-              { label: 'Top agent — Sara Hassan', val: '7 breaches', badge: 'adr-badge-warn', badgeText: '61% personal compliance' },
+              { label: 'Top agent, Omar Adel', val: '11 breaches', badge: 'adr-badge-err', badgeText: '48% personal compliance' },
+              { label: 'Top agent, Sara Hassan', val: '7 breaches', badge: 'adr-badge-warn', badgeText: '61% personal compliance' },
               { label: 'Peak breach window', val: 'Wed 2–5 PM', badge: null, badgeText: null },
             ],
             metrics: [
@@ -9076,7 +9254,7 @@
               { label: 'AVG HANDLE TIME',value: '6.4 hrs',state: 'warn', target: 'Target: 8 hrs' }
             ],
             chart: {
-              title: 'SLA TREND — CURRENT VS TARGET',
+              title: 'SLA TREND · CURRENT VS TARGET',
               bars: [
                 { label: 'SLA Compliance', current: 61,  target: 90 },
                 { label: 'Pass Rate',       current: 90,  target: 90 },
@@ -9090,13 +9268,13 @@
           'goal-failures': {
             priority: 'p1', title: 'goal Failure Breakdown',
             badge: 'P1 · Urgent',
-            summary: '3 goals are actively failing across the portfolio. Incorrect status alone accounts for 150 incidents — 103 in Objectif Lune. Coaching plan grouped by agent impact below.',
+            summary: '3 goals are actively failing across the portfolio. Incorrect status alone accounts for 150 incidents, 103 in Objectif Lune. Coaching plan grouped by agent impact below.',
             rows: [
-              { label: 'Incorrect status — Objectif Lune', val: '103 failures', badge: 'adr-badge-err', badgeText: '#1 driver' },
-              { label: 'Incorrect status — Qvidian', val: '47 failures', badge: 'adr-badge-err', badgeText: 'combined: 150' },
-              { label: 'Grammar mistake — InterFax', val: '38 failures', badge: 'adr-badge-err', badgeText: 'of 55 total' },
-              { label: 'Grammar mistake — Second Street', val: '17 failures', badge: 'adr-badge-warn', badgeText: 'of 55 total' },
-              { label: 'Time between updates — Qvidian', val: '29 failures', badge: 'adr-badge-warn', badgeText: 'of 47 total' },
+              { label: 'Incorrect status, Objectif Lune', val: '103 failures', badge: 'adr-badge-err', badgeText: '#1 driver' },
+              { label: 'Incorrect status, Qvidian', val: '47 failures', badge: 'adr-badge-err', badgeText: 'combined: 150' },
+              { label: 'Grammar mistake, InterFax', val: '38 failures', badge: 'adr-badge-err', badgeText: 'of 55 total' },
+              { label: 'Grammar mistake, Second Street', val: '17 failures', badge: 'adr-badge-warn', badgeText: 'of 55 total' },
+              { label: 'Time between updates, Qvidian', val: '29 failures', badge: 'adr-badge-warn', badgeText: 'of 47 total' },
               { label: 'Highest-impact agent', val: 'Omar Adel', badge: 'adr-badge-err', badgeText: '34 combined failures' },
               { label: 'Fastest fix', val: 'Status accuracy coaching', badge: 'adr-badge-warn', badgeText: 'est. −48 failures removed' },
             ],
@@ -9106,7 +9284,7 @@
               { label: 'AGENTS AT RISK', value: '7',     state: 'warn', target: 'Below threshold' }
             ],
             chart: {
-              title: 'FAILURE COUNT — CURRENT VS TARGET',
+              title: 'FAILURE COUNT · CURRENT VS TARGET',
               bars: [
                 { label: 'Incorrect status', current: 100, target: 0  },
                 { label: 'Grammar mistake',  current: 37,  target: 0  },
@@ -9120,15 +9298,15 @@
           'sentiment': {
             priority: 'p1', title: 'Negative Sentiment Breakdown',
             badge: 'P1 · Urgent',
-            summary: '39 negative interactions this week — 3 agents driving 71% of them. Objectif Lune and Qvidian show the highest product-level negative rates, both up week-over-week.',
+            summary: '39 negative interactions this week, 3 agents driving 71% of them. Objectif Lune and Qvidian show the highest product-level negative rates, both up week-over-week.',
             rows: [
               { label: 'Objectif Lune neg rate', val: '19%', badge: 'adr-badge-err', badgeText: '↑ vs 14% last week' },
               { label: 'Qvidian neg rate', val: '17%', badge: 'adr-badge-err', badgeText: '↑ vs 12% last week' },
               { label: 'InterFax neg rate', val: '9%', badge: 'adr-badge-warn', badgeText: 'stable' },
               { label: 'Adestra neg rate', val: '6%', badge: 'adr-badge-ok', badgeText: '↓ improving' },
-              { label: 'Agent 1 — Omar Adel', val: '14 neg interactions', badge: 'adr-badge-err', badgeText: '36% of total' },
-              { label: 'Agent 2 — Sara Hassan', val: '9 neg interactions', badge: 'adr-badge-warn', badgeText: '23% of total' },
-              { label: 'Agent 3 — Karim Nour', val: '5 neg interactions', badge: 'adr-badge-warn', badgeText: '13% of total' },
+              { label: 'Agent 1, Omar Adel', val: '14 neg interactions', badge: 'adr-badge-err', badgeText: '36% of total' },
+              { label: 'Agent 2, Sara Hassan', val: '9 neg interactions', badge: 'adr-badge-warn', badgeText: '23% of total' },
+              { label: 'Agent 3, Karim Nour', val: '5 neg interactions', badge: 'adr-badge-warn', badgeText: '13% of total' },
               { label: 'Common pattern', val: 'Billing escalations', badge: 'adr-badge-warn', badgeText: '62% of neg cases' },
             ],
             metrics: [
@@ -9137,7 +9315,7 @@
               { label: 'RESPONSE RATE',          value: '27%',   state: 'warn', target: 'Below 40% target' }
             ],
             chart: {
-              title: 'SENTIMENT BY PRODUCT — CURRENT VS PRIOR WEEK',
+              title: 'SENTIMENT BY PRODUCT, CURRENT VS PRIOR WEEK',
               bars: [
                 { label: 'Objectif Lune', current: 79, target: 60 },
                 { label: 'Qvidian',       current: 68, target: 55 },
@@ -9151,7 +9329,7 @@
           'quality': {
             priority: 'p2', title: 'Quality Score Breakdown by Product',
             badge: 'P2 · Watch',
-            summary: 'Overall quality at 87.3% — 2.7% below the 90% target. Objectif Lune (20.8% fail rate) and Qvidian (19–21% fail rate) are the primary drag. Fixing Incorrect status alone would close ~1.8% of the gap.',
+            summary: 'Overall quality at 87.3%, 2.7% below the 90% target. Objectif Lune (20.8% fail rate) and Qvidian (19–21% fail rate) are the primary drag. Fixing Incorrect status alone would close ~1.8% of the gap.',
             rows: [
               { label: 'Objectif Lune', val: '79.2% quality', badge: 'adr-badge-err', badgeText: '20.8% fail rate' },
               { label: 'Qvidian', val: '80.1% quality', badge: 'adr-badge-err', badgeText: '19.9% fail rate' },
@@ -9168,7 +9346,7 @@
               { label: 'GAP TO CLOSE', value: '−2.7%', state: 'warn', target: '≈77 more passes' }
             ],
             chart: {
-              title: 'QUALITY SCORE BY PRODUCT — VS 90% TARGET',
+              title: 'QUALITY SCORE BY PRODUCT · VS 90% TARGET',
               bars: [
                 { label: 'Objectif Lune', current: 79, target: 90 },
                 { label: 'Qvidian',       current: 80, target: 90 },
@@ -9288,7 +9466,7 @@
     
 </script>
       <script>
-      /* Theme toggle — token-level swap, no markup forked per theme. */
+      /* Theme toggle, token-level swap, no markup forked per theme. */
       (function () {
         var btn = document.getElementById('themeToggle');
         if (!btn) return;
@@ -9307,5 +9485,220 @@
         sync();
       })();
     </script>
-</body>
+    <script>
+      /* ══ NOTIFICATIONS = THE TASK QUEUE ═════════════════════════════
+         Every row is work assigned to you, and its action opens the AiMY canvas
+         seeded with the question worth asking about it. The notification is
+         the start of the conversation, not a dead end.
+
+         This block is identical on all six pages. The only per-page difference
+         is window.aimyOpenCanvas, the adapter each file defines over its own
+         canvas opener (six different signatures, none of them on window by
+         default).
+
+         Deliberately NOT sourced from ALERT_DATA: that array holds four ids on
+         index/settings, four different ones on agent-scorecards, and does not
+         exist at all on the other three. The bell has to say the same thing
+         everywhere, so it owns its own list.
+      ══════════════════════════════════════════════════════════════ */
+      var AIMY_TASKS = [
+        { id: 'ack-pending', sev: 'p1', type: 'Acknowledgement', when: '3 days left',
+          body: '21 feedbacks are still waiting on employee acknowledgement. 9 have already escalated to HR.',
+          cta: 'Chase these with AiMY',
+          ask: '21 feedbacks are awaiting acknowledgement and 9 have escalated to HR. Show me who is outstanding, grouped by manager, and draft the chase-ups.' },
+        { id: 'response-fix', sev: 'p1', type: 'Approval', when: 'staged',
+          body: 'The response-time fix for 8 agents is staged and waiting on your approval.',
+          cta: 'Review the fix',
+          ask: 'Show me the staged response-time fix for the 8 agents, what it changes, and what approving it does to SLA compliance.' },
+        { id: 'coaching-plans', sev: 'p2', type: 'Approval', when: '6 drafted',
+          body: '6 coaching plans are drafted for the agents behind the three off-track goals.',
+          cta: 'Read the plans',
+          ask: 'Walk me through the 6 drafted coaching plans. Who each one covers and which goal it targets.' },
+        { id: 'dispute-replies', sev: 'p2', type: 'To send', when: '2 waiting',
+          body: '2 dispute replies are drafted and waiting to send.',
+          cta: 'Read the replies',
+          ask: 'Show me the 2 drafted dispute replies and the tickets behind them.' },
+        { id: 'quality-sequence', sev: 'p2', type: 'Approval', when: '2.7 under goal',
+          body: 'The quality fix sequence is queued. Quality is 2.7 points under the 90% goal.',
+          cta: 'Review the sequence',
+          ask: 'Show me the queued quality fix sequence, highest-leverage first, and how much each step recovers.' },
+        { id: 'coaching-checkin', sev: 'p3', type: 'Follow-up', when: 'in 4 days',
+          body: 'Your Follow-up Confirmation coaching check-in is due.',
+          cta: 'Plan it with AiMY',
+          ask: 'How do I finish my Follow-up Confirmation coaching plan faster?' }
+      ];
+
+      (function () {
+        var bell   = document.getElementById('ntfBell');
+        var panel  = document.getElementById('ntfPanel');
+        var list   = document.getElementById('ntfList');
+        var dot    = document.getElementById('ntfDot');
+        var count  = document.getElementById('ntfCount');
+        var clear  = document.getElementById('ntfClear');
+        var askAll = document.getElementById('ntfAskAll');
+        if (!bell || !panel || !list) return;
+
+        var read = {};
+
+        function unread() {
+          var n = 0;
+          for (var i = 0; i < AIMY_TASKS.length; i++) if (!read[AIMY_TASKS[i].id]) n++;
+          return n;
+        }
+
+        /* The dot and the count are derived, never hardcoded. The bell this
+           replaced had a permanently-visible red dot nothing could clear. */
+        function syncCount() {
+          var n = unread();
+          if (count) { count.textContent = n; count.hidden = n === 0; }
+          if (dot) dot.hidden = n === 0;
+          bell.setAttribute('aria-label', n === 0
+            ? 'Notifications, nothing waiting on you'
+            : 'Notifications, ' + n + ' waiting on you');
+        }
+
+        function render() {
+          while (list.firstChild) list.removeChild(list.firstChild);
+          if (!AIMY_TASKS.length) {
+            var empty = document.createElement('li');
+            empty.className = 'ntf-empty';
+            empty.textContent = 'Nothing waiting on you.';
+            list.appendChild(empty);
+            syncCount();
+            return;
+          }
+          AIMY_TASKS.forEach(function (t) {
+            var li = document.createElement('li');
+            li.className = 'ntf-row' + (read[t.id] ? ' is-read' : '');
+            li.setAttribute('data-ntf-id', t.id);
+
+            var sev = document.createElement('span');
+            sev.className = 'ntf-sev ' + t.sev;
+            sev.setAttribute('aria-hidden', 'true');
+
+            var main = document.createElement('div');
+            main.className = 'ntf-row-main';
+
+            var head = document.createElement('div');
+            head.className = 'ntf-row-head';
+            var type = document.createElement('span');
+            type.className = 'ntf-row-type';
+            type.textContent = t.type;
+            var when = document.createElement('span');
+            when.className = 'ntf-row-when';
+            when.textContent = t.when;
+            head.appendChild(type);
+            head.appendChild(when);
+
+            var body = document.createElement('p');
+            body.className = 'ntf-row-body';
+            body.textContent = t.body;
+
+            var cta = document.createElement('button');
+            cta.className = 'ntf-row-cta';
+            cta.type = 'button';
+            cta.textContent = t.cta;
+            cta.addEventListener('click', function () { start(t); });
+
+            main.appendChild(head);
+            main.appendChild(body);
+            main.appendChild(cta);
+            li.appendChild(sev);
+            li.appendChild(main);
+            list.appendChild(li);
+          });
+          syncCount();
+        }
+
+        function ctas() {
+          return Array.prototype.slice.call(list.querySelectorAll('.ntf-row-cta'));
+        }
+
+        function isOpen() { return !panel.hidden; }
+
+        function openPanel() {
+          render();
+          panel.hidden = false;
+          bell.setAttribute('aria-expanded', 'true');
+          var first = ctas()[0];
+          if (first) first.focus();
+        }
+
+        function closePanel(returnFocus) {
+          panel.hidden = true;
+          bell.setAttribute('aria-expanded', 'false');
+          if (returnFocus) bell.focus();
+        }
+
+        /* Graceful when the adapter is missing rather than throwing, the six
+           files define it in six different places. */
+        function toCanvas(q) {
+          if (typeof window.aimyOpenCanvas === 'function') window.aimyOpenCanvas(q);
+        }
+
+        /* Opening the task is what marks it read. The panel closes first so it
+           cannot float above the canvas overlay. */
+        function start(t) {
+          read[t.id] = true;
+          closePanel(false);
+          toCanvas(t.ask);
+        }
+
+        bell.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (isOpen()) closePanel(false); else openPanel();
+        });
+
+        if (clear) clear.addEventListener('click', function () {
+          AIMY_TASKS.forEach(function (t) { read[t.id] = true; });
+          render();
+        });
+
+        if (askAll) askAll.addEventListener('click', function () {
+          closePanel(false);
+          toCanvas('Across everything waiting on me right now, what should I do first and why?');
+        });
+
+        document.addEventListener('click', function (e) {
+          if (isOpen() && !panel.contains(e.target) && !bell.contains(e.target)) closePanel(false);
+        });
+
+        document.addEventListener('keydown', function (e) {
+          if (!isOpen()) return;
+          if (e.key === 'Escape') { e.preventDefault(); closePanel(true); return; }
+          if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+          var items = ctas();
+          if (!items.length) return;
+          e.preventDefault();
+          var i = items.indexOf(document.activeElement);
+          if (i === -1) { items[0].focus(); return; }
+          items[e.key === 'ArrowDown' ? (i + 1) % items.length
+                                      : (i - 1 + items.length) % items.length].focus();
+        });
+
+        render();
+      })();
+    </script>
+      <script>
+      /* The AiMY logo on the float bar opens the canvas. Unconditionally, on
+         every page. It is the way in to AiMY, so gating it on anything is a
+         dead end waiting to happen. Keyboard-operable because it is a control,
+         not an ornament.
+
+         Note each page has a SECOND .aimy-float-icon inside the canvas's own
+         input bar; the id is on the float-bar one only. */
+      (function () {
+        var icon = document.getElementById('aimyFloatIcon');
+        if (!icon) return;
+        function open(e) {
+          e.stopPropagation();
+          if (typeof window.aimyOpenCanvas === 'function') window.aimyOpenCanvas();
+        }
+        icon.addEventListener('click', open);
+        icon.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(e); }
+        });
+      })();
+    </script>
+  </body>
 </html>

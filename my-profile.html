@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <script>
-      /* Theme applied PRE-PAINT — before the stylesheet renders — so the page
+      /* Theme applied PRE-PAINT, before the stylesheet renders, so the page
          never flashes dark before switching to light (design-system.md §4). */
       (function () {
         try {
@@ -14,7 +14,7 @@
 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AiMY QA — My Profile</title>
+    <title>AiMY QA · My Profile</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -44,7 +44,7 @@
         --d50: #eef2f6;
         --brand: #3369ff;
         --brand-dim: rgba(51, 105, 255, 0.15);
-        /* QA product accent — TEMPORARY PLACEHOLDER (#8b4ff4 is Talent's purple).
+        /* QA product accent. TEMPORARY PLACEHOLDER (#8b4ff4 is Talent's purple).
            Must be swapped to QA-specific magenta from Figma logo before v2 ships. */
         --qa-accent: #8b4ff4;
         --qa-accent-rgb: 139, 79, 244;
@@ -67,11 +67,11 @@
         --card-border-hover: var(--wash-10);
         --sidebar-width: 220px;
         --topbar-height: 60px;
-        /* Elevation scale — dark mode adds light via a top hairline, not dark blur */
+        /* Elevation scale. Dark mode adds light via a top hairline, not dark blur */
         --elev-1: 0 1px 2px rgba(0,0,0,0.4);
         --elev-2: 0 1px 2px rgba(0,0,0,0.35), 0 8px 22px rgba(0,0,0,0.24);
         --elev-3: 0 2px 6px rgba(0,0,0,0.4), 0 18px 48px rgba(0,0,0,0.34);
-        /* Motion curves — physical deceleration, never ease-in-out */
+        /* Motion curves, physical deceleration, never ease-in-out */
         --ease-enter: cubic-bezier(0.32, 0.72, 0, 1);
         --ease-hover: cubic-bezier(0.4, 0, 0.2, 1);
         /* Status surface tints (replace left-border stripes) */
@@ -101,7 +101,7 @@
         --card-bg-raised: #1c2630;
         --t-fast: var(--transition-fast, 150ms);
         --t-base: var(--transition-base, 200ms);
-        /* Surface washes — every rgba(255,255,255,a) in this file was a
+        /* Surface washes, every rgba(255,255,255,a) in this file was a
        dark-theme assumption; bucketed here so the theme can flip them. */
         --wash-1: rgba(255,255,255,0.02);
         --wash-2: rgba(255,255,255,0.03);
@@ -131,7 +131,7 @@
 
         --font-sans: "Urbanist", system-ui, sans-serif;
         --font-mono: "JetBrains Mono", ui-monospace, monospace;
-        /* Strongest text. White on dark, near-black on light — the
+        /* Strongest text. White on dark, near-black on light, the
        hardcoded #fff values that assumed a dark surface now use this. */
         --text-strong: #ffffff;
       }
@@ -140,7 +140,7 @@
          LIGHT THEME
          ──────────────────────────────────────────────────────────────────
          Ported from the design system (design-strategy/index.html:177).
-         design-system.md §4: overrides are TOKEN-LEVEL only — never fork
+         design-system.md §4: overrides are TOKEN-LEVEL only, never fork
          component markup per theme. Dark stays the default; light is opt-in
          via <html data-theme="light">, persisted to localStorage under
          `aimy-ds-theme` and applied pre-paint so there is no flash.
@@ -157,7 +157,7 @@
         --d800: #d8e0e8;
         --d750: #c8d2dc;
         --d700: #b0bcca;
-        --d600: #6e7d8d;  /* muted labels — #8b9aaa fails 3:1 on white */
+        --d600: #6e7d8d;  /* muted labels, #8b9aaa fails 3:1 on white */
         --d500: #637280;
         --d400: #566472;
         --d300: #3a4653;
@@ -172,7 +172,7 @@
         /* --teal is a light cyan; darken for legible text on white */
         --teal: #0d8f95;
 
-        /* Semantic hues darkened one step — dark-mode mid-tones fail contrast
+        /* Semantic hues darkened one step, dark-mode mid-tones fail contrast
            as text on white. Tint backgrounds stay pale. */
         --ok:   #0e9257;
         --warn: #b26205;
@@ -195,7 +195,7 @@
         --hairline: rgba(16,24,40,0.09);
         --text-strong: #10151b;
 
-        /* Elevation — cooler, softer on light */
+        /* Elevation, cooler, softer on light */
         --elev-1: 0 1px 2px rgba(16,24,40,0.08);
         --elev-2: 0 1px 2px rgba(16,24,40,0.06), 0 8px 22px rgba(16,24,40,0.10);
         --elev-3: 0 2px 6px rgba(16,24,40,0.08), 0 18px 48px rgba(16,24,40,0.12);
@@ -206,7 +206,7 @@
         --tint-warn: rgba(247,144,9,0.07);
         --tint-accent: rgba(139,79,244,0.06);
 
-        /* Surface washes — ink instead of white (see --wash-* above) */
+        /* Surface washes, ink instead of white (see --wash-* above) */
         --wash-1: rgba(16,24,40,0.03);
         --wash-2: rgba(16,24,40,0.04);
         --wash-3: rgba(16,24,40,0.05);
@@ -238,7 +238,7 @@
          structurally dark rather than tokenised. */
       :root[data-theme="light"] body { background: var(--body-bg); }
       /* The AiMY float bar and canvas are dark glass in dark; light glass in light. */
-      /* The float bar keeps its full treatment in light — surface, visible
+      /* The float bar keeps its full treatment in light, surface, visible
          border, elevation and the accent focus ring. The first pass flattened
          it to plain white, which read as borderless. */
       :root[data-theme="light"] .aimy-float-bar {
@@ -262,7 +262,7 @@
          These chips use DARK text on a bright fill, which reads well against
          dark-theme --ok (#17b26a, 6.6:1). Light darkens --ok to #0e9257 for
          text legibility, and dark-on-dark-green drops to 3.5:1. White on the
-         same fill is 4.1:1, so the text inverts rather than the fill — the
+         same fill is 4.1:1, so the text inverts rather than the fill, the
          chip keeps its meaning and its colour. */
       :root[data-theme="light"] .ag-act.yes,
       :root[data-theme="light"] .fbt-act.yes,
@@ -279,8 +279,8 @@
 
       /* ── Filter strip: original dark identity restored ────────────────
          The light-contrast pass replaced two muted values with full-strength
-         tokens — the chip text went from 55% white to solid --d300 and the
-         label from a 45% blue to --ai-text — which brightened the strip and
+         tokens. The chip text went from 55% white to solid --d300 and the
+         label from a 45% blue to --ai-text, which brightened the strip and
          changed its look. The dark values below are the originals; light gets
          its own muted equivalents rather than the dark ones being altered. */
       :root[data-theme="light"] .filter-chip { color: rgba(16,24,40,0.62); }
@@ -292,7 +292,7 @@
       :root[data-theme="light"] .fbt-fb.yes,
       :root[data-theme="light"] .fbt-fb.yes:hover { color: #fff; }
 
-      /* ── Sidebar nav items — design-system .ds-nav-link (index.html:483)
+      /* ── Sidebar nav items, design-system .ds-nav-link (index.html:483)
          Item-level only. The topnav and sidebar keep their original
          transparent backgrounds; the design system's translucent+blurred
          chrome is a different shell treatment and is not applied here. */
@@ -440,6 +440,105 @@
       }
       .topnav-bell svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
       .bell-dot { position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--err); border: 1.5px solid var(--body-bg); }
+
+      /* ── Notifications panel ───────────────────────────────────
+         Prefix is ntf-, not notif- : .notif-* is an unrelated in-canvas alert
+         card family that already exists in three of these files.
+
+         Tokens are restricted to the set declared in ALL six files' dark :root.
+         --body-bg, --wash-5, --r-md, --r-lg, --font-sans and --elev-2 are each
+         missing from at least two of them, so the radii, the shadow and the
+         font stack are literals rather than silently-unset var() calls. */
+      .ntf-anchor { position: relative; display: flex; align-items: center; flex-shrink: 0; }
+      .topnav-bell:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 2px; }
+      .bell-dot[hidden] { display: none; }
+
+      .ntf-panel {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        z-index: 300;
+        width: 360px;
+        max-width: calc(100vw - 32px);
+        max-height: min(70vh, 520px);
+        overflow-y: auto;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 14px;
+        padding: 6px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.2);
+        font-family: "Urbanist", sans-serif;
+        text-align: left;
+      }
+      .ntf-panel[hidden] { display: none; }
+
+      /* Scrollbar, matching .dashboard-scroll / .overlay-thread rather than
+         leaving the browser default sitting inside a 14px-radius card.
+         --wash-6 and --card-border are the only wash/border tokens declared in
+         all six files' dark roots; --wash-8/--wash-11 used elsewhere are not. */
+      .ntf-panel { scrollbar-width: thin; scrollbar-color: var(--wash-6) transparent; }
+      .ntf-panel::-webkit-scrollbar { width: 6px; }
+      .ntf-panel::-webkit-scrollbar-track { background: transparent; }
+      .ntf-panel::-webkit-scrollbar-thumb { background: var(--wash-6); border-radius: 4px; }
+      .ntf-panel::-webkit-scrollbar-thumb:hover { background: var(--card-border); }
+
+      .ntf-head { display: flex; align-items: center; gap: 8px; padding: 8px 10px 10px; }
+      .ntf-head b { font-size: 12px; font-weight: 800; color: var(--d50); letter-spacing: 0.01em; }
+      .ntf-count {
+        font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 9999px;
+        background: rgba(var(--qa-accent-rgb), 0.16); color: var(--qa-accent);
+        font-variant-numeric: tabular-nums;
+      }
+      .ntf-count[hidden] { display: none; }
+      .ntf-clear {
+        margin-left: auto; background: none; border: 0; cursor: pointer;
+        font-family: inherit; font-size: 10.5px; font-weight: 600; color: var(--d500);
+        padding: 2px 4px; border-radius: 6px;
+        transition: color var(--transition-fast);
+      }
+      .ntf-clear:hover { color: var(--d100); }
+      .ntf-clear:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 1px; }
+
+      .ntf-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+      .ntf-row {
+        display: flex; gap: 9px; padding: 10px; border-radius: 10px;
+        transition: background var(--transition-fast), opacity var(--transition-fast);
+      }
+      .ntf-row:hover { background: var(--wash-3); }
+      .ntf-row.is-read { opacity: 0.45; }
+      .ntf-sev { width: 6px; height: 6px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; background: var(--d500); }
+      .ntf-sev.p1 { background: var(--err); }
+      .ntf-sev.p2 { background: var(--warn); }
+      .ntf-sev.p3 { background: var(--qa-accent); }
+      .ntf-row-main { flex: 1; min-width: 0; }
+      .ntf-row-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 3px; }
+      .ntf-row-type { font-size: 11px; font-weight: 800; color: var(--d50); }
+      .ntf-row-when { margin-left: auto; font-size: 10px; color: var(--d500); flex-shrink: 0; }
+      .ntf-row-body { margin: 0 0 7px; font-size: 11.5px; line-height: 1.5; color: var(--d400); }
+      .ntf-row-cta {
+        font-family: inherit; font-size: 10.5px; font-weight: 700; cursor: pointer;
+        padding: 4px 10px; border-radius: 9999px;
+        background: rgba(var(--qa-accent-rgb), 0.12); color: var(--qa-accent);
+        border: 1px solid rgba(var(--qa-accent-rgb), 0.26);
+        transition: background var(--transition-fast), border-color var(--transition-fast);
+      }
+      .ntf-row-cta:hover { background: rgba(var(--qa-accent-rgb), 0.2); border-color: rgba(var(--qa-accent-rgb), 0.4); }
+      .ntf-row-cta:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 2px; }
+
+      .ntf-foot { padding: 8px 4px 4px; border-top: 1px solid var(--wash-6); margin-top: 6px; }
+      .ntf-foot-btn {
+        width: 100%; font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer;
+        padding: 8px; border-radius: 9px; background: var(--wash-3);
+        border: 1px solid var(--wash-6); color: var(--d300);
+        transition: background var(--transition-fast), color var(--transition-fast);
+      }
+      .ntf-foot-btn:hover { background: var(--wash-6); color: var(--d50); }
+      .ntf-foot-btn:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 2px; }
+      .ntf-empty { padding: 22px 12px; text-align: center; font-size: 11.5px; color: var(--d500); }
+
+      @media (prefers-reduced-motion: reduce) {
+        .ntf-row, .ntf-row-cta, .ntf-foot-btn, .ntf-clear { transition: none; }
+      }
       .topnav-user {
         display: flex; align-items: center; gap: 8px; padding: 4px 12px 4px 4px; border-radius: 20px;
         background: var(--wash-3); border: 1px solid var(--wash-7); cursor: pointer;
@@ -449,6 +548,31 @@
       .topnav-user-name { font-size: 12px; font-weight: 700; color: var(--d50); line-height: 1; }
       .topnav-user-role { font-size: 10px; color: var(--d400); line-height: 1; }
       .topnav-user svg { width: 12px; height: 12px; color: var(--d400); }
+
+      /* Version link, a destination, not a state you toggle. Quieter than a
+         product tab so it reads as chrome. Tokens limited to ones declared in
+         every file's dark :root; the radius is a literal because --r-pill is
+         undeclared in goal-browser.html and data-ingestion.html. */
+      .ver-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        flex-shrink: 0;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        font-family: "Urbanist", sans-serif;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        line-height: 1.4;
+        color: var(--d500);
+        text-decoration: none;
+        border: 1px solid var(--wash-6);
+        transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+      }
+      .ver-link:hover { background: var(--wash-6); color: var(--d100); border-color: var(--card-border); }
+      .ver-link:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 2px; }
+      .ver-link-ico { width: 10px; height: 10px; opacity: 0.75; }
 
       .app-body { display: flex; flex: 1; min-height: 0; position: relative; z-index: 1; background: transparent; }
       .app-sidebar { width: var(--sidebar-width); background: transparent; display: flex; flex-direction: column; flex-shrink: 0; }
@@ -600,7 +724,7 @@
       .fb-btn.ghost:hover { color: var(--d200); }
       .fb-btn.review { background: rgba(111,223,226,0.10); color: var(--teal); border-color: rgba(111,223,226,0.28); }
       .fb-btn.review:hover { background: rgba(111,223,226,0.18); }
-      /* loop-state — reused concept from Reviews for ack/justify status */
+      /* loop-state, reused concept from Reviews for ack/justify status */
       .loop-state { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700; padding: 7px 12px; border-radius: 8px; }
       .loop-state svg { width: 13px; height: 13px; }
       .loop-state.acknowledged { background: var(--ok-bg); color: var(--ok); }
@@ -610,7 +734,7 @@
       .loop-state.escalated { background: var(--err-bg); color: var(--err); }
       .fb-reminder { font-size: 12px; color: var(--warn); border-top: 1px dashed rgba(247,144,9,0.22); padding-top: 10px; display: flex; align-items: flex-start; gap: 8px; }
       .fb-reminder svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
-      /* AiMY canvas reminder cards — notifications live in the canvas, mirroring the dashboard */
+      /* AiMY canvas reminder cards, notifications live in the canvas, mirroring the dashboard */
       .rem-card { max-width: 520px; background: rgba(20,27,36,.6); border: 1px solid var(--wash-8); border-radius: 12px; overflow: hidden; }
       .rem-card.warn { border-color: rgba(247,144,9,.22); } .rem-card.err { border-color: rgba(240,68,56,.22); } .rem-card.ok { border-color: rgba(23,178,106,.22); }
       .rem-head { display: flex; align-items: center; gap: 8px; padding: 10px 14px 8px; border-bottom: 1px solid var(--wash-5); }
@@ -662,7 +786,7 @@
       .filter-chip { font-family: "Urbanist", sans-serif; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.55); padding: 5px 11px; background: var(--wash-3); border: 1px solid var(--wash-7); border-radius: 8px; cursor: pointer; transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast); white-space: nowrap; }
       .filter-chip:hover { background: var(--wash-7); color: var(--d50); border-color: var(--wash-10); }
 
-      /* position:fixed, not absolute — the wrap used to be positioned inside
+      /* position:fixed, not absolute, the wrap used to be positioned inside
          .app-main, which starts after the sidebar, so the bar centred on the
          app area rather than the page. Fixed resolves the symmetric
          left/right against the viewport, which is the actual page centre. */
@@ -698,7 +822,10 @@
       .overlay-context-label { font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--d600); flex-shrink: 0; }
       .overlay-context-tags { display: flex; align-items: center; gap: 4px; overflow: hidden; }
       .overlay-context-tag { font-size: 10px; font-weight: 600; color: var(--d400); background: var(--wash-4); border: 1px solid var(--wash-7); border-radius: 20px; padding: 2px 8px; white-space: nowrap; flex-shrink: 0; }
-      .overlay-thread { width: 100%; max-width: 720px; flex: 1; overflow-y: auto; padding: 80px 0 24px; display: flex; flex-direction: column; gap: 20px; transform: translateY(16px); transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+      /* 94px top, not 80px: 80 cleared the badge alone, leaving the chips
+         10px under the "Based on" context bar (68-86px). 16+94=110 puts
+         them a clean 24px below it. */
+      .overlay-thread { width: 100%; max-width: 720px; flex: 1; overflow-y: auto; padding: 94px 0 24px; display: flex; flex-direction: column; gap: 20px; transform: translateY(16px); transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
       .aimy-overlay.open .overlay-thread { transform: translateY(0); }
       .overlay-thread::-webkit-scrollbar { width: 4px; }
       .overlay-thread::-webkit-scrollbar-thumb { background: var(--wash-7); border-radius: 2px; }
@@ -758,7 +885,7 @@
       :root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
 
       /* ══════════════════════════════════════════════════════════════════
-         AiMY DS primitives — PORTED, DO NOT EDIT
+         AiMY DS primitives. PORTED, DO NOT EDIT
          Copied verbatim from design-strategy/index.html (the component
          library). Doctrine §11: "Never invent a component that should
          exist in the design system." If one of these needs to change,
@@ -773,13 +900,13 @@
            .ctx-chips       library 2661–2669   doctrine §4 / §6.3
            .empty-state     library 1272–1292
 
-         NOT ported: .skeleton — this file already ships an equivalent
+         NOT ported: .skeleton, this file already ships an equivalent
          (.skeleton / -card / -row / -chart / -text) with its own
          reduced-motion guard. A second one would be a Level 3
          parallel-component fail. Reuse the existing family.
 
-         NOT ported: the library's :root[data-theme="light"] overrides —
-         this file has no light root, so they would be inert. Logged in
+         NOT ported: the library's :root[data-theme="light"] overrides.
+         This file has no light root, so they would be inert. Logged in
          the gap register instead (Level 7: light mode unverified).
       ══════════════════════════════════════════════════════════════════ */
 
@@ -809,7 +936,7 @@
       .btn-sm { font-size: 10.5px; padding: 5px 11px; }
       .btn-lg { font-size: 13px; padding: 10px 20px; }
 
-      /* ── Work state (§2.3) — six values, required on every surfaced item ── */
+      /* ── Work state (§2.3), six values, required on every surfaced item ── */
       .work-state {
         display: inline-flex; align-items: center; gap: 6px;
         font-size: 9px; font-weight: 700; padding: 3px 9px 3px 7px;
@@ -821,22 +948,22 @@
         width: 6px; height: 6px; border-radius: 50%;
         background: currentColor; flex-shrink: 0;
       }
-      /* detected — AiMY noticed it, nothing proposed yet */
+      /* detected, AiMY noticed it, nothing proposed yet */
       .ws-detected    { background: var(--info-bg); color: var(--info); border-color: rgba(14,165,233,0.22); }
       .ws-detected .ws-dot { background: none; box-shadow: inset 0 0 0 1.5px currentColor; }
-      /* recommended — AiMY has an opinion */
+      /* recommended. AiMY has an opinion */
       .ws-recommended { background: var(--accent-dim); color: var(--accent); border-color: rgba(var(--accent-rgb),0.24); }
-      /* drafted — AiMY produced content, not yet queued */
+      /* drafted, AiMY produced content, not yet queued */
       .ws-drafted     { background: rgba(0,102,255,0.1); color: var(--ai-text); border-color: rgba(0,102,255,0.24); }
       .ws-drafted .ws-dot { background: none; box-shadow: inset 0 0 0 1.5px currentColor; }
-      /* staged — waiting on a human decision */
+      /* staged, waiting on a human decision */
       .ws-staged      { background: var(--warn-bg); color: var(--warn); border-color: rgba(247,144,9,0.24); }
       /* completed (display label may be "handled") */
       .ws-completed   { background: var(--ok-bg); color: var(--ok); border-color: rgba(23,178,106,0.24); }
       /* failed (display label may be "blocked") */
       .ws-failed      { background: var(--err-bg); color: var(--err); border-color: rgba(240,68,56,0.24); }
 
-      /* Work-state pipeline — shows position in detected → … → completed */
+      /* Work-state pipeline. Shows position in detected → … → completed */
       .ws-track { display: inline-flex; align-items: center; gap: 0; flex-wrap: wrap; }
       .ws-track .ws-step {
         display: inline-flex; align-items: center; gap: 5px;
@@ -852,7 +979,7 @@
       .ws-track .ws-step.is-current .ws-dot { background: var(--warn); }
       .ws-track .ws-sep { width: 14px; height: 1px; background: var(--hairline); flex-shrink: 0; }
 
-      /* ── Entry-mode affordances (§3) — the same click must not always
+      /* ── Entry-mode affordances (§3). The same click must not always
            produce the same behaviour, so it must not always look the same ── */
       .entry-action {
         display: inline-flex; align-items: center; gap: 7px;
@@ -863,19 +990,19 @@
       }
       .entry-action .em-ico { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.9; }
       .entry-action:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
-      /* direct — completes in place, offers undo. Solid, committal. */
+      /* direct, completes in place, offers undo. Solid, committal. */
       .em-direct    { background: var(--brand); color: #fff; border-color: var(--brand); }
       .em-direct:hover { background: #4d7fff; border-color: #4d7fff; }
-      /* automatic investigation — canvas opens and starts reading immediately */
+      /* automatic investigation, canvas opens and starts reading immediately */
       .em-investigate { background: rgba(0,102,255,0.1); color: var(--ai-text); border-color: rgba(0,102,255,0.28); }
       .em-investigate:hover { background: rgba(0,102,255,0.18); }
-      /* prepared prompt — canvas opens with a question staged, user sends */
+      /* prepared prompt, canvas opens with a question staged, user sends */
       .em-prompt    { background: var(--accent-dim); color: var(--accent); border-color: rgba(var(--accent-rgb),0.28); }
       .em-prompt:hover { background: rgba(var(--accent-rgb),0.2); }
-      /* reviewed action — proposes a change, never applies it */
+      /* reviewed action, proposes a change, never applies it */
       .em-review    { background: var(--warn-bg); color: var(--warn); border-color: rgba(247,144,9,0.3); }
       .em-review:hover { background: rgba(247,144,9,0.2); }
-      /* Design-time classification tag — for specs and review, NEVER production UI */
+      /* Design-time classification tag, for specs and review, NEVER production UI */
       .entry-mode-tag {
         display: inline-flex; align-items: center; gap: 4px;
         font-size: 8.5px; font-weight: 700; letter-spacing: 0.08em;
@@ -883,7 +1010,7 @@
         padding: 2px 7px; border-radius: var(--r-xs);
         background: var(--wash-3); border: 1px dashed var(--card-border);
       }
-      /* A smaller entry action for dense rows — sizing only, no new semantics */
+      /* A smaller entry action for dense rows, sizing only, no new semantics */
       .entry-action.ea-sm { font-size: 10.5px; padding: 5px 10px; gap: 5px; }
       .entry-action.ea-sm .em-ico { width: 12px; height: 12px; }
 
@@ -962,7 +1089,7 @@
       .ai-unavailable.is-degraded { border-style: solid; border-color: rgba(247,144,9,0.3); }
       .ai-unavailable.is-degraded .aiu-mark { background: var(--warn-bg); border-color: rgba(247,144,9,0.24); color: var(--warn); }
 
-      /* ── Context chips — "the canvas shows its basis" (§6.3) ── */
+      /* ── Context chips. "the canvas shows its basis" (§6.3) ── */
       .ctx-chips { display: flex; gap: 6px; flex-wrap: wrap; }
       .ctx-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 7px 4px 5px;
         border-radius: var(--r-md); background: var(--card-bg-raised); border: 1px solid var(--card-border);
@@ -1005,9 +1132,9 @@
     <!-- Shared AiMY logo symbol -->
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
       <defs>
-        <!-- Entry-mode icons (doctrine §3) — ported from the design system
+        <!-- Entry-mode icons (doctrine §3), ported from the design system
              component library (#entry-modes). NOTE: prompt uses the AiMY
-             mark rather than the library's speech bubble — see the gap
+             mark rather than the library's speech bubble, see the gap
              register, this needs folding back into #entry-modes. -->
         <symbol id="em-ico-direct" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></symbol>
         <symbol id="em-ico-investigate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
@@ -1060,14 +1187,47 @@
       </div>
       <div class="topnav-spacer"></div>
       <div class="topnav-right">
+        <!-- V1 opens in a new tab so the two builds can be compared side by
+             side. One link, not a segmented pair: you are on V2, so the only
+             thing worth offering is the way out. The href is the placeholder,
+             one value to change, once per file. -->
+        <a class="ver-link" href="#" target="_blank" rel="noopener noreferrer"
+           title="Open V1 in a new tab">
+          V1
+          <svg class="ver-link-ico" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+               stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4.5 2.5H2.5v7h7v-2M7 2.5h2.5V5M9.5 2.5L5.5 6.5"/>
+          </svg>
+        </a>
         <button class="theme-toggle" id="themeToggle" type="button"
                 aria-label="Switch to light theme" title="Switch theme">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
         </button>
-        <div class="topnav-bell" id="topnavBell" role="button" tabindex="0" aria-label="3 reminders from AiMY">
-          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <div class="bell-dot"></div>
+        <!-- Notifications. The bell was an inert <div> with a red dot that
+             never cleared; it is a real button now. What it opens is the task
+             queue, see the AIMY_TASKS block at the end of the page. -->
+        <div class="ntf-anchor">
+          <button class="topnav-bell" id="ntfBell" type="button"
+                  aria-haspopup="dialog" aria-expanded="false" aria-controls="ntfPanel"
+                  aria-label="Notifications">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+            <span class="bell-dot" id="ntfDot"></span>
+          </button>
+          <div class="ntf-panel" id="ntfPanel" hidden role="dialog" aria-label="Notifications">
+            <div class="ntf-head">
+              <b>Needs you</b>
+              <span class="ntf-count" id="ntfCount">6</span>
+              <button class="ntf-clear" id="ntfClear" type="button">Mark all read</button>
+            </div>
+            <ul class="ntf-list" id="ntfList"></ul>
+            <div class="ntf-foot">
+              <button class="ntf-foot-btn" id="ntfAskAll" type="button">Ask AiMY what to do first</button>
+            </div>
+          </div>
         </div>
         <div class="topnav-user">
           <div class="topnav-avatar">OA</div>
@@ -1137,17 +1297,17 @@
             <span class="prof-pill"><span class="dot err"></span> 1 escalated to Feedback Manager</span>
           </div>
 
-          <!-- ═══ SECTION 1 — goals & how to exceed ═══ -->
+          <!-- ═══ SECTION 1, goals & how to exceed ═══ -->
           <div class="prof-section">
             <div class="prof-section-head">
-              <h2>My goals — where I stand &amp; how to exceed</h2>
+              <h2>My goals, where I stand &amp; how to exceed</h2>
               <span class="sub">· live from evaluations · target lines shown</span>
               <span class="spacer"></span>
             </div>
             <div class="goal-grid" id="goalGrid"><!-- injected --></div>
           </div>
 
-          <!-- ═══ SECTION 2 — Goals timeline ═══ -->
+          <!-- ═══ SECTION 2 · Goals timeline ═══ -->
           <div class="prof-section">
             <div class="prof-section-head">
               <h2>My goals timeline</h2>
@@ -1168,7 +1328,7 @@
                   <div class="tl-body">
                     <div class="tl-when">Apr 2026 · Goal</div>
                     <div class="tl-title">Empathy &amp; Tone to target <span class="badge done">Achieved</span></div>
-                    <div class="tl-desc">Reached 84% on Empathy &amp; Active Listening — moved from Below to Meets after coaching plan #1.</div>
+                    <div class="tl-desc">Reached 84% on Empathy &amp; Active Listening, moved from Below to Meets after coaching plan #1.</div>
                   </div>
                 </div>
                 <div class="tl-row">
@@ -1176,7 +1336,7 @@
                   <div class="tl-body">
                     <div class="tl-when">Now · In progress</div>
                     <div class="tl-title">Follow-up Confirmation to Meets <span class="badge active">In progress</span></div>
-                    <div class="tl-desc">Currently 64% vs 80% target. AiMY coaching plan active — 60% complete, on pace to close by mid-Aug.</div>
+                    <div class="tl-desc">Currently 64% vs 80% target. AiMY coaching plan active, 60% complete, on pace to close by mid-Aug.</div>
                   </div>
                 </div>
                 <div class="tl-row">
@@ -1191,7 +1351,7 @@
             </div>
           </div>
 
-          <!-- ═══ SECTION 3 — Feedback inbox ═══ -->
+          <!-- ═══ SECTION 3 · Feedback inbox ═══ -->
           <div class="prof-section">
             <div class="prof-section-head">
               <h2>My feedback</h2>
@@ -1200,7 +1360,7 @@
             <div class="fb-list" id="fbList"><!-- injected --></div>
           </div>
 
-          <!-- ═══ SECTION 4 — Coaching plans ═══ -->
+          <!-- ═══ SECTION 4 · Coaching plans ═══ -->
           <div class="prof-section">
             <div class="prof-section-head">
               <h2>AiMY coaching plans</h2>
@@ -1213,7 +1373,7 @@
 
         <!-- ════ FLOATING AIMY INPUT BAR (scoped to app-main · ported from dashboard) ══════ -->
         <div class="aimy-float-wrap" id="aimyFloatWrap">
-          <!-- Filter tray — appears above the bar on input focus -->
+          <!-- Filter tray, appears above the bar on input focus -->
           <div class="filter-tray" id="filterTray" role="toolbar" aria-label="Filter your profile">
             <div class="filter-tray-inner">
               <span class="filter-tray-label">Filter via AiMY</span>
@@ -1225,8 +1385,15 @@
           </div>
 
           <div class="aimy-float-bar" id="aimyFloatBar">
-            <div class="aimy-float-icon" id="floatIcon" role="button" tabindex="0" aria-label="Open reminders from AiMY" style="cursor:pointer;">
-              <span class="float-badge" id="floatBadge" aria-label="3 reminders">3</span>
+            <div class="aimy-float-icon" id="aimyFloatIcon" role="button" tabindex="0"
+                 aria-label="Open the AiMY canvas" style="cursor:pointer;">
+              <!-- The static "3" badge that sat here is gone. Its only clearer
+                   was clearReminderBadges(), reachable only from
+                   openRemindersInCanvas(), which lost its callers when the bell
+                   became the shared notifications panel and this logo became a
+                   plain canvas opener. A count nothing can clear is the exact
+                   bug the new bell was built to remove. The count lives on the
+                   bell now. -->
               <svg width="23" height="25" viewBox="0 0 18 20"><use href="#aimy-logo-small" /></svg>
             </div>
             <input class="aimy-float-input" id="aimyFloatInput" type="text" aria-label="Ask AiMY" placeholder="Ask AiMY for coaching, or how to exceed a goal&hellip;" autocomplete="off" spellcheck="false" />
@@ -1279,7 +1446,7 @@
 
     <div class="toast" id="toast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span id="toastMsg"></span></div>
 
-    <!-- justify reason modal — the agent must state why before submitting -->
+    <!-- justify reason modal. The agent must state why before submitting -->
     <style>
       .fb-justify-reason { width:100%; font-size:12px; color:var(--d400); margin-top:6px; padding:8px 11px; background:var(--wash-2); border:1px solid var(--card-border); border-radius:9px; line-height:1.45; }
       .fb-justify-reason b { color:var(--d200); }
@@ -1309,7 +1476,7 @@
       .dr-btn.primary:hover { filter:brightness(1.08); }
       .dr-btn.primary:disabled { opacity:0.4; cursor:not-allowed; }
           /* ══════════════════════════════════════════════════════════════════
-         GENERATED — light depth: shadows and black overlays
+         GENERATED, light depth: shadows and black overlays
          ──────────────────────────────────────────────────────────────────
          Both of these say "depth" on a dark page and say something else
          on a white one.
@@ -1319,7 +1486,7 @@
          cue. Softened toward the values the toast and float bar already
          use in light (0.10–0.16), which are the reference.
 
-         rgba(0,0,0,a) BACKGROUNDS are recesses — a segmented-control track
+         rgba(0,0,0,a) BACKGROUNDS are recesses, a segmented-control track
          sunk into a dark panel. Inverting them to a white overlay turned
          them into milky grey slabs; a recess on white is a faint dark
          tint, so the alpha is carried across rather than the colour.
@@ -1336,7 +1503,7 @@
          .work-state and .entry-action are hue-tinted pills: a 10–15% fill of
          the same hue the text uses. That works on a dark card, where the
          fill darkens the background away from the text. On white the fill
-         LIGHTENS toward the text instead, so the pair converged — 3.23 to
+         LIGHTENS toward the text instead, so the pair converged, 3.23 to
          3.74, technically passing the UI bar and visibly weak.
 
          The semantic hues are darkened a further step for these pills only,
@@ -1363,7 +1530,7 @@
           <div class="dr-goals" id="drgoals"></div>
           <label class="dr-label" for="drReason">Reason for justify <span class="dr-req">required</span></label>
           <textarea class="dr-textarea" id="drReason" rows="4" oninput="drValidate()" placeholder="e.g. The call dropped before I could confirm the next step, so the Follow-up Confirmation score doesn’t reflect what actually happened on the interaction."></textarea>
-          <div class="dr-hint">Be specific — cite the interaction and the goal. A reviewer will uphold, overturn, or adjust the evaluation.</div>
+          <div class="dr-hint">Be specific, cite the interaction and the goal. A reviewer will uphold, overturn, or adjust the evaluation.</div>
         </div>
         <div class="dr-foot">
           <button class="dr-btn ghost" onclick="closejustifyReason()">Cancel</button>
@@ -1376,39 +1543,39 @@
       /* ── Mock employee data (mirrors the FEEDBACK model used on Reviews) ── */
       const MY_goalS = [
         { name: 'Empathy & Active Listening', current: 91, target: 80, status: 'exceed',
-          hint: 'I’ve tracked you at 91% against the 80% target and flagged you as exemplary to Lina. To excel further: keep mirroring the caller’s language in your opening line — that one habit drives most of your lift.' },
+          hint: 'I’ve tracked you at 91% against the 80% target and flagged you as exemplary to Lina. To excel further: keep mirroring the caller’s language in your opening line, that one habit drives most of your lift.' },
         { name: 'Tone & Professionalism', current: 88, target: 80, status: 'exceed',
-          hint: 'I logged Tone at 88%, consistently above the 80% bar. To excel more: close every interaction with a personalised sign-off — reviewers score that as a delight signal.' },
+          hint: 'I logged Tone at 88%, consistently above the 80% bar. To excel more: close every interaction with a personalised sign-off, reviewers score that as a delight signal.' },
         { name: 'Issue Resolution', current: 82, target: 80, status: 'meets',
-          hint: 'You’re at target (82% vs 80%). I’ll keep watching — to move into Exceeds, confirm the root cause back to the customer before you propose a fix.' },
+          hint: 'You’re at target (82% vs 80%). I’ll keep watching, to move into Exceeds, confirm the root cause back to the customer before you propose a fix.' },
         { name: 'Script Adherence', current: 80, target: 80, status: 'meets',
-          hint: 'Right on the 80% line. I’ve queued the updated Filebound snippets for you — using them should earn the last few points.' },
+          hint: 'Right on the 80% line. I’ve queued the updated Filebound snippets for you, using them should earn the last few points.' },
         { name: 'Follow-up Confirmation', current: 64, target: 80, status: 'below',
-          hint: 'I flagged this at 64% against the 80% target and built you a coaching plan — it’s already running. To improve: always restate the agreed next step and timeline before you end the contact.' },
+          hint: 'I flagged this at 64% against the 80% target and built you a coaching plan, it’s already running. To improve: always restate the agreed next step and timeline before you end the contact.' },
         { name: 'Survey Promotion', current: 71, target: 80, status: 'below',
-          hint: 'I detected Survey Promotion at 71%, under the 80% bar. To improve: invite the CSAT survey on every positive close — I can add this drill to your active plan in one tap.' },
+          hint: 'I detected Survey Promotion at 71%, under the 80% bar. To improve: invite the CSAT survey on every positive close. I can add this drill to your active plan in one tap.' },
       ];
 
       const MY_FEEDBACK = [
         { id: 'fb-201', type: 'negative', from: 'Lina Haddad (Supervisor)', date: '2 days ago', ack: 'pending',
           goals: [{ name: 'Follow-up Confirmation', prior: 68, current: 64 }, { name: 'Survey Promotion', prior: 74, current: 71 }],
-          insight: 'I detected two goals slipping and flagged them to Lina, who sent you this feedback. Criteria: Follow-up Confirmation at 64% and Survey Promotion at 71%, both under the 80% target. To improve: restate the next step and timeline on every close — I’ve built a coaching plan that should recover both within 3 weeks.',
-          reminder: 'I reminded you 2× — acknowledge within 3 days or this escalates to your Feedback Manager.',
+          insight: 'I detected two goals slipping and flagged them to Lina, who sent you this feedback. Criteria: Follow-up Confirmation at 64% and Survey Promotion at 71%, both under the 80% target. To improve: restate the next step and timeline on every close, I’ve built a coaching plan that should recover both within 3 weeks.',
+          reminder: 'I reminded you 2×, acknowledge within 3 days or this escalates to your Feedback Manager.',
           followUp: 'Supervisor follow-up scheduled in 21 days: "Did Omar improve?"' },
         { id: 'fb-202', type: 'positive', from: 'Lina Haddad (Supervisor)', date: '1 week ago', ack: null,
           goals: [{ name: 'Empathy & Active Listening', prior: 84, current: 91 }],
-          insight: 'I spotted your Empathy climb from 84% to 91% — 15 pts clear of target — and shared the win with Lina. To excel even more: keep leading with acknowledgement before troubleshooting; here’s how top performers push past 92%.' },
+          insight: 'I spotted your Empathy climb from 84% to 91%, 15 pts clear of target, and shared the win with Lina. To excel even more: keep leading with acknowledgement before troubleshooting; here’s how top performers push past 92%.' },
         { id: 'fb-205', type: 'negative', from: 'Lina Haddad (Supervisor)', date: '2 weeks ago', ack: 'justifyd', resolution: 'upheld', adjustFrom: 64, adjustTo: 71,
           goals: [{ name: 'Follow-up Confirmation', prior: 71, current: 71 }],
           justifyReason: 'The call dropped before I could confirm the next step, so the Follow-up Confirmation score didn’t reflect what actually happened on the interaction.',
-          insight: 'I took your justify to a reviewer with the call recording. They agreed the drop wasn’t on you — I re-scored Follow-up Confirmation from 64% to 71% and notified Lina. The loop is closed on my side.' },
+          insight: 'I took your justify to a reviewer with the call recording. They agreed the drop wasn’t on you, I re-scored Follow-up Confirmation from 64% to 71% and notified Lina. The loop is closed on my side.' },
         { id: 'fb-206', type: 'negative', from: 'AiMY (auto-detected)', date: '3 weeks ago', ack: 'justifyd', resolution: 'declined',
           goals: [{ name: 'Survey Promotion', prior: 71, current: 71 }],
           justifyReason: 'I felt the survey prompt isn’t always appropriate on billing calls.',
           insight: 'A reviewer looked at your justify and the 12 flagged closes. The survey prompt was expected on all of them, so the original 71% stands. To recover it, I added the CSAT-invite drill to your active plan.' },
         { id: 'fb-204', type: 'negative', from: 'AiMY (auto-detected)', date: '4 weeks ago', ack: 'escalated',
           goals: [{ name: 'Script Adherence', prior: 80, current: 74 }],
-          insight: 'I opened this when Script Adherence slipped to 74% and asked you to acknowledge it 3×. It went un-acknowledged, so I escalated it to your Feedback Manager — acknowledging now still closes the loop.' },
+          insight: 'I opened this when Script Adherence slipped to 74% and asked you to acknowledge it 3×. It went un-acknowledged, so I escalated it to your Feedback Manager, acknowledging now still closes the loop.' },
         { id: 'fb-203', type: 'negative', from: 'AiMY (auto-detected)', date: '5 weeks ago', ack: 'acknowledged',
           goals: [{ name: 'Script Adherence', prior: 76, current: 80 }],
           insight: 'I opened this when Script Adherence dropped to 76%; you’ve since recovered it to the 80% target, so I’ve closed it with your supervisor. Keep using the updated snippets and it will hold.' },
@@ -1428,7 +1595,7 @@
             { t: 'Establish acknowledgement-first habit', done: true },
             { t: 'Sustain 88%+ across 30 contacts', done: true },
           ],
-          foot: 'Completed — AiMY notified Lina Haddad that you improved 1 goal and should be re-evaluated' },
+          foot: 'Completed, AiMY notified Lina Haddad that you improved 1 goal and should be re-evaluated' },
       ];
 
       const AI = '<svg class="ai-ico" viewBox="0 0 18 20"><use href="#aimy-logo-small" /></svg>';
@@ -1552,7 +1719,7 @@
         });
         renderCoaching();
         document.getElementById('coachGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        showToast('AiMY created a coaching plan for ' + name + ' — it will follow up until you achieve it');
+        showToast('AiMY created a coaching plan for ' + name + '. It will follow up until you achieve it');
       }
 
       /* ── Tick a step → recompute progress; completion notifies supervisor ── */
@@ -1563,8 +1730,8 @@
         c.pct = Math.round((done / total) * 100);
         if (done === total) {
           c.done = true;
-          c.foot = 'Completed — AiMY notified Lina Haddad that you improved this goal and should be re-evaluated';
-          showToast(c.title + ' complete — your supervisor was notified for re-evaluation');
+          c.foot = 'Completed, AiMY notified Lina Haddad that you improved this goal and should be re-evaluated';
+          showToast(c.title + ' complete. Your supervisor was notified for re-evaluation');
         } else if (c.done) {
           c.done = false;
           c.foot = 'AiMY is following up · in progress · it will keep checking until you achieve it';
@@ -1575,7 +1742,7 @@
       /* ── Feedback actions ── */
       function acknowledgeFeedback(id) {
         const f = MY_FEEDBACK.find(x => x.id === id);
-        if (f) { f.ack = 'acknowledged'; renderFeedback(); showToast('Feedback acknowledged — your supervisor was notified'); }
+        if (f) { f.ack = 'acknowledged'; renderFeedback(); showToast('Feedback acknowledged. Your supervisor was notified'); }
       }
       /* ── justify requires a written reason ── */
       function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -1597,7 +1764,7 @@
         const v = document.getElementById('drReason').value.trim();
         if (v.length < 10) return;
         const f = MY_FEEDBACK.find(x => x.id === drCurrentId);
-        if (f) { f.ack = 'justifyd'; f.justifyReason = v; renderFeedback(); showToast('justify submitted with your reason — a reviewer will assess it'); }
+        if (f) { f.ack = 'justifyd'; f.justifyReason = v; renderFeedback(); showToast('justify submitted with your reason. A reviewer will assess it'); }
         closejustifyReason();
       }
       document.addEventListener('keydown', e => { if (e.key === 'Escape') closejustifyReason(); });
@@ -1655,6 +1822,13 @@
         thread.scrollTop = thread.scrollHeight;
         return d;
       }
+      /* The one way in from outside. Same name and contract as the other five
+         pages, but this file has no openOverlay and no overlayOpen flag, the
+         canvas is opened ad-hoc, so the adapter wraps openCanvasQuery. */
+      window.aimyOpenCanvas = function (q) {
+        openCanvasQuery(q || 'What needs me right now?');
+      };
+
       function openCanvasQuery(q, topic) {
         seedContext();
         overlay.classList.add('open');
@@ -1674,7 +1848,7 @@
       window.openCanvasQuery = openCanvasQuery;
 
       /* ══════════════════════════════════════════════════════════════════
-         ENTRY MODES — one delegated listener, four behaviours (§3)
+         ENTRY MODES, one delegated listener, four behaviours (§3)
          Controls that already carry their own handler keep it; the mode
          attribute on those is documentary, so the classification can be
          checked mechanically without firing a second action.
@@ -1710,14 +1884,14 @@
       const MY_REMINDERS = [
         { sev: 'warn', type: 'Acknowledgement due', when: '3 days left',
           body: 'Your feedback on <b>Follow-up Confirmation</b> and <b>Survey Promotion</b> is still un-acknowledged. Acknowledge or justify it before it escalates to your Feedback Manager.',
-          acts: [ { label: 'Acknowledge now', kind: 'primary', do: () => { acknowledgeFeedback('fb-201'); showToast('Feedback acknowledged — your supervisor was notified'); scrollToFeedback('fb-201'); } },
+          acts: [ { label: 'Acknowledge now', kind: 'primary', do: () => { acknowledgeFeedback('fb-201'); showToast('Feedback acknowledged. Your supervisor was notified'); scrollToFeedback('fb-201'); } },
                   { label: 'justify', kind: 'ghost', do: () => openjustifyReason('fb-201') } ] },
         { sev: 'accent', type: 'Coaching check-in', when: 'in 4 days',
           body: 'I’ll review 5 of your closes on <b>Follow-up Confirmation → Meets</b> (plan at 60%). Keep restating the next step + timeline and you’re on pace to close by mid-Aug.',
           acts: [ { label: 'Open my plan', kind: 'primary', do: () => scrollToCoaching() },
                   { label: 'Ask AiMY', kind: 'ghost', do: () => openCanvasQuery('How do I finish my Follow-up Confirmation coaching plan faster?') } ] },
         { sev: 'ok', type: 'justify resolved', when: 'today',
-          body: 'A reviewer <b>upheld your justify</b> on Follow-up Confirmation — I re-scored it <span style="color:var(--ok);font-weight:700">64% → 71%</span> and notified Lina. The loop is closed.',
+          body: 'A reviewer <b>upheld your justify</b> on Follow-up Confirmation, I re-scored it <span style="color:var(--ok);font-weight:700">64% → 71%</span> and notified Lina. The loop is closed.',
           acts: [ { label: 'Review', kind: 'primary', do: () => openCanvasQuery('Show me how my justifyd Follow-up Confirmation score was re-evaluated and adjusted.') } ] },
       ];
       const SEV_DOT = { warn: 'var(--warn)', err: 'var(--err)', ok: 'var(--ok)', accent: 'var(--qa-accent)' };
@@ -1742,7 +1916,7 @@
         seedContext();
         overlay.classList.add('open');
         if (suggestions) suggestions.classList.add('hidden');
-        appendMsg('aimy', 'Here’s what I’m tracking for you right now — reminders and things I’ve handled.');
+        appendMsg('aimy', 'Here’s what I’m tracking for you right now, reminders and things I’ve handled.');
         MY_REMINDERS.forEach((r, i) => setTimeout(() => appendReminderCard(r), 140 * (i + 1)));
         clearReminderBadges();
       }
@@ -1752,17 +1926,19 @@
       }
       function scrollToFeedback(id) { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
       function scrollToCoaching() { document.getElementById('coachGrid').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-      document.getElementById('topnavBell').addEventListener('click', openRemindersInCanvas);
-      document.getElementById('topnavBell').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openRemindersInCanvas(); } });
-      document.getElementById('floatIcon').addEventListener('click', openRemindersInCanvas);
-      document.getElementById('floatIcon').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openRemindersInCanvas(); } });
+      /* #topnavBell and #floatIcon are both gone: the bell is the shared
+         notifications panel now, and the logo opens the canvas from the
+         shared block at the end of the page. openRemindersInCanvas and
+         MY_REMINDERS are left in place. MY_REMINDERS is where the shared
+         task copy came from, and this is the only page that had a working
+         bell to model it on. */
       /* ══════════════════════════════════════════════════════════════════
-         TOPIC DISPATCH — replaces the old four-branch keyword cascade
+         TOPIC DISPATCH. Replaces the old four-branch keyword cascade
          ──────────────────────────────────────────────────────────────────
          Doctrine §4: a response must be bound to the request that produced
          it. The previous aiReply matched the bare word `improve` and then
          answered about Follow-up Confirmation regardless of which goal was
-         asked about — so three of the four "how do I improve" buttons on this
+         asked about, so three of the four "how do I improve" buttons on this
          page returned an answer about a goal the agent had not asked about,
          naming a score that was not theirs to act on.
 
@@ -1774,7 +1950,7 @@
       /* The agent's six goals: the narrative AiMY can give on each, plus the
          work state it is actually in.
 
-         Scores and targets are NOT restated here — they are read from
+         Scores and targets are NOT restated here. They are read from
          MY_goalS, the array the cards render from, so the canvas can never
          quote a different number than the card the user is looking at. That
          divergence is its own kind of unbound answer. */
@@ -1790,13 +1966,13 @@
           name: 'Survey Promotion', state: 'drafted',
           stateLabel: 'Plan drafted',
           why: 'the CSAT survey was offered on 12 of 42 eligible closes, and never on chat',
-          plan: '1) offer the survey on every resolved contact, not just voice, 2) invite before the goodbye, not after it, 3) use the one-line script — the long version is where people drop off',
-          note: 'I have a plan drafted for this one but have not started it — say the word and I will queue it behind Follow-up Confirmation.'
+          plan: '1) offer the survey on every resolved contact, not just voice, 2) invite before the goodbye, not after it, 3) use the one-line script. The long version is where people drop off',
+          note: 'I have a plan drafted for this one but have not started it, say the word and I will queue it behind Follow-up Confirmation.'
         },
         'issue-resolution': {
           name: 'Issue Resolution', state: 'detected',
           stateLabel: 'Watching',
-          why: 'you are 2 points above target, but four contacts reopened within 48 hours last cycle — all billing escalations',
+          why: 'you are 2 points above target, but four contacts reopened within 48 hours last cycle, all billing escalations',
           plan: '1) confirm the root cause is fixed, not just the symptom, before closing, 2) on billing escalations, check the account state after the change lands, 3) if it needs a second team, say so on the first contact rather than closing and reopening',
           note: 'You are clearing target, so there is no coaching plan here. I am watching the reopen rate because that is what would pull it under.'
         },
@@ -1804,13 +1980,13 @@
           name: 'Script Adherence', state: 'completed',
           stateLabel: 'Recovered',
           why: 'it dipped to 74% mid-cycle, which is what triggered the feedback you acknowledged',
-          plan: '1) keep the opening and verification steps in order — that is where the dip came from, 2) the closing script is optional once you are above target',
+          plan: '1) keep the opening and verification steps in order. That is where the dip came from, 2) the closing script is optional once you are above target',
           note: 'You have already recovered this to target. The feedback I opened is closed.'
         },
         'empathy': {
           name: 'Empathy & Active Listening', state: 'completed',
           stateLabel: 'Flagged to your supervisor',
-          why: 'you are 11 points above target — the strongest goal on your card',
+          why: 'you are 11 points above target, the strongest goal on your card',
           plan: 'lead with acknowledgement before troubleshooting, and keep the personalised sign-off',
           note: 'I have flagged this to your supervisor as exemplar material. I will alert you the moment the rolling average dips.'
         },
@@ -1818,7 +1994,7 @@
           name: 'Tone & Professionalism', state: 'completed',
           stateLabel: 'Flagged to your supervisor',
           why: 'you are 8 points above target and steady across all channels',
-          plan: 'keep matching register to the customer rather than the channel — that is what is carrying the score',
+          plan: 'keep matching register to the customer rather than the channel. That is what is carrying the score',
           note: 'Nothing needed here. I am tracking it so you know if it slips.'
         }
       };
@@ -1898,7 +2074,7 @@
           return '<div style="font-size:13.5px;line-height:1.65;color:var(--d100)">'
             + 'Two goals are under target and both have open feedback: '
             + '<strong>Follow-up Confirmation (64%)</strong> and <strong>Survey Promotion (71%)</strong>. '
-            + 'I detected both drops and Lina sent the feedback — I did not send it myself.'
+            + 'I detected both drops and Lina sent the feedback. I did not send it myself.'
             + '<br><br>You can <strong>acknowledge</strong> it if you agree, or <strong>dispute</strong> it if you think my read was wrong, '
             + 'and a reviewer will assess it. Either way the coaching plan I built should recover both inside 3 weeks.</div>'
             + '<div class="canvas-action-row" style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">'
@@ -1922,7 +2098,7 @@
             + '<div class="canvas-type-label"><svg width="14" height="15" viewBox="0 0 18 20"><use href="#aimy-logo-small"/></svg>Your six goals · this cycle</div>'
             + rows
             + '<div style="font-size:13px;color:var(--d100);line-height:1.6;margin-top:12px">'
-            + 'Four of six are at or above target. The two below are both <em>closing</em> behaviours — what gets dropped when the clock runs, '
+            + 'Four of six are at or above target. The two below are both <em>closing</em> behaviours. What gets dropped when the clock runs, '
             + 'not something you do not know. That is why the plan targets the close, not the whole contact.</div></div>';
         },
 
@@ -1931,12 +2107,12 @@
             + '<div style="font-size:13.5px;line-height:1.65;color:var(--d100)">'
             + 'Your active plan runs to <strong>day 21</strong>. I review 5 closes a week and check in every 4 days. '
             + 'You are 3 sessions in with <strong>2 of 5</strong> review windows cleared.'
-            + '<br><br>Nothing is required from you between check-ins — I will tell you if the trajectory falls behind.</div>';
+            + '<br><br>Nothing is required from you between check-ins. I will tell you if the trajectory falls behind.</div>';
         }
       };
 
       /* Scored matcher. `must` gates the topic, `boost` accumulates, `veto`
-         disqualifies — so naming a goal beats the generic verb around it. */
+         disqualifies, so naming a goal beats the generic verb around it. */
       const REPLY_RULES = [
         { topic: 'goal-follow-up',        must: [/follow.?up|confirmation/],          boost: [/improve|move|below|64/] },
         { topic: 'goal-survey',           must: [/survey|csat|promotion/],            boost: [/improve|below|71/] },
@@ -1976,7 +2152,7 @@
         'my-feedback': 'Your open feedback', 'my-standing': 'All six goals', 'coaching-plan': 'Your coaching plan'
       };
 
-      /* The basis row — what the answer is standing on (§6.3). */
+      /* The basis row, what the answer is standing on (§6.3). */
       function replyBasis(topic) {
         const g = {
           'goal-follow-up': MY_GOALS['follow-up'], 'goal-survey': MY_GOALS['survey'],
@@ -1995,7 +2171,7 @@
           + '</div>';
       }
 
-      /* Nothing matched. A designed state, not a shrug — and it says what
+      /* Nothing matched. A designed state, not a shrug, and it says what
          still works and offers a real way forward (§6.7). */
       function replyUnbound(q) {
         return '<div class="ai-unavailable">'
@@ -2009,7 +2185,7 @@
           +   '<button class="entry-action em-investigate ea-sm" data-entry-mode="investigate" data-aimy-topic="my-feedback">'
           +     '<svg class="em-ico"><use href="#em-ico-investigate"/></svg>Show my open feedback</button>'
           + '</div>'
-          + '<div class="aiu-note">Naming a goal — follow-up, survey, script, empathy, tone, resolution — usually resolves it.</div>'
+          + '<div class="aiu-note">Naming a goal, follow-up, survey, script, empathy, tone, resolution, usually resolves it.</div>'
           + '</div>';
       }
 
@@ -2062,7 +2238,7 @@
       renderCoaching();
     </script>
     <script>
-      /* Theme toggle — token-level swap, no markup forked per theme. */
+      /* Theme toggle, token-level swap, no markup forked per theme. */
       (function () {
         var btn = document.getElementById('themeToggle');
         if (!btn) return;
@@ -2079,6 +2255,221 @@
           sync();
         });
         sync();
+      })();
+    </script>
+      <script>
+      /* ══ NOTIFICATIONS = THE TASK QUEUE ═════════════════════════════
+         Every row is work assigned to you, and its action opens the AiMY canvas
+         seeded with the question worth asking about it. The notification is
+         the start of the conversation, not a dead end.
+
+         This block is identical on all six pages. The only per-page difference
+         is window.aimyOpenCanvas, the adapter each file defines over its own
+         canvas opener (six different signatures, none of them on window by
+         default).
+
+         Deliberately NOT sourced from ALERT_DATA: that array holds four ids on
+         index/settings, four different ones on agent-scorecards, and does not
+         exist at all on the other three. The bell has to say the same thing
+         everywhere, so it owns its own list.
+      ══════════════════════════════════════════════════════════════ */
+      var AIMY_TASKS = [
+        { id: 'ack-pending', sev: 'p1', type: 'Acknowledgement', when: '3 days left',
+          body: '21 feedbacks are still waiting on employee acknowledgement. 9 have already escalated to HR.',
+          cta: 'Chase these with AiMY',
+          ask: '21 feedbacks are awaiting acknowledgement and 9 have escalated to HR. Show me who is outstanding, grouped by manager, and draft the chase-ups.' },
+        { id: 'response-fix', sev: 'p1', type: 'Approval', when: 'staged',
+          body: 'The response-time fix for 8 agents is staged and waiting on your approval.',
+          cta: 'Review the fix',
+          ask: 'Show me the staged response-time fix for the 8 agents, what it changes, and what approving it does to SLA compliance.' },
+        { id: 'coaching-plans', sev: 'p2', type: 'Approval', when: '6 drafted',
+          body: '6 coaching plans are drafted for the agents behind the three off-track goals.',
+          cta: 'Read the plans',
+          ask: 'Walk me through the 6 drafted coaching plans. Who each one covers and which goal it targets.' },
+        { id: 'dispute-replies', sev: 'p2', type: 'To send', when: '2 waiting',
+          body: '2 dispute replies are drafted and waiting to send.',
+          cta: 'Read the replies',
+          ask: 'Show me the 2 drafted dispute replies and the tickets behind them.' },
+        { id: 'quality-sequence', sev: 'p2', type: 'Approval', when: '2.7 under goal',
+          body: 'The quality fix sequence is queued. Quality is 2.7 points under the 90% goal.',
+          cta: 'Review the sequence',
+          ask: 'Show me the queued quality fix sequence, highest-leverage first, and how much each step recovers.' },
+        { id: 'coaching-checkin', sev: 'p3', type: 'Follow-up', when: 'in 4 days',
+          body: 'Your Follow-up Confirmation coaching check-in is due.',
+          cta: 'Plan it with AiMY',
+          ask: 'How do I finish my Follow-up Confirmation coaching plan faster?' }
+      ];
+
+      (function () {
+        var bell   = document.getElementById('ntfBell');
+        var panel  = document.getElementById('ntfPanel');
+        var list   = document.getElementById('ntfList');
+        var dot    = document.getElementById('ntfDot');
+        var count  = document.getElementById('ntfCount');
+        var clear  = document.getElementById('ntfClear');
+        var askAll = document.getElementById('ntfAskAll');
+        if (!bell || !panel || !list) return;
+
+        var read = {};
+
+        function unread() {
+          var n = 0;
+          for (var i = 0; i < AIMY_TASKS.length; i++) if (!read[AIMY_TASKS[i].id]) n++;
+          return n;
+        }
+
+        /* The dot and the count are derived, never hardcoded. The bell this
+           replaced had a permanently-visible red dot nothing could clear. */
+        function syncCount() {
+          var n = unread();
+          if (count) { count.textContent = n; count.hidden = n === 0; }
+          if (dot) dot.hidden = n === 0;
+          bell.setAttribute('aria-label', n === 0
+            ? 'Notifications, nothing waiting on you'
+            : 'Notifications, ' + n + ' waiting on you');
+        }
+
+        function render() {
+          while (list.firstChild) list.removeChild(list.firstChild);
+          if (!AIMY_TASKS.length) {
+            var empty = document.createElement('li');
+            empty.className = 'ntf-empty';
+            empty.textContent = 'Nothing waiting on you.';
+            list.appendChild(empty);
+            syncCount();
+            return;
+          }
+          AIMY_TASKS.forEach(function (t) {
+            var li = document.createElement('li');
+            li.className = 'ntf-row' + (read[t.id] ? ' is-read' : '');
+            li.setAttribute('data-ntf-id', t.id);
+
+            var sev = document.createElement('span');
+            sev.className = 'ntf-sev ' + t.sev;
+            sev.setAttribute('aria-hidden', 'true');
+
+            var main = document.createElement('div');
+            main.className = 'ntf-row-main';
+
+            var head = document.createElement('div');
+            head.className = 'ntf-row-head';
+            var type = document.createElement('span');
+            type.className = 'ntf-row-type';
+            type.textContent = t.type;
+            var when = document.createElement('span');
+            when.className = 'ntf-row-when';
+            when.textContent = t.when;
+            head.appendChild(type);
+            head.appendChild(when);
+
+            var body = document.createElement('p');
+            body.className = 'ntf-row-body';
+            body.textContent = t.body;
+
+            var cta = document.createElement('button');
+            cta.className = 'ntf-row-cta';
+            cta.type = 'button';
+            cta.textContent = t.cta;
+            cta.addEventListener('click', function () { start(t); });
+
+            main.appendChild(head);
+            main.appendChild(body);
+            main.appendChild(cta);
+            li.appendChild(sev);
+            li.appendChild(main);
+            list.appendChild(li);
+          });
+          syncCount();
+        }
+
+        function ctas() {
+          return Array.prototype.slice.call(list.querySelectorAll('.ntf-row-cta'));
+        }
+
+        function isOpen() { return !panel.hidden; }
+
+        function openPanel() {
+          render();
+          panel.hidden = false;
+          bell.setAttribute('aria-expanded', 'true');
+          var first = ctas()[0];
+          if (first) first.focus();
+        }
+
+        function closePanel(returnFocus) {
+          panel.hidden = true;
+          bell.setAttribute('aria-expanded', 'false');
+          if (returnFocus) bell.focus();
+        }
+
+        /* Graceful when the adapter is missing rather than throwing, the six
+           files define it in six different places. */
+        function toCanvas(q) {
+          if (typeof window.aimyOpenCanvas === 'function') window.aimyOpenCanvas(q);
+        }
+
+        /* Opening the task is what marks it read. The panel closes first so it
+           cannot float above the canvas overlay. */
+        function start(t) {
+          read[t.id] = true;
+          closePanel(false);
+          toCanvas(t.ask);
+        }
+
+        bell.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (isOpen()) closePanel(false); else openPanel();
+        });
+
+        if (clear) clear.addEventListener('click', function () {
+          AIMY_TASKS.forEach(function (t) { read[t.id] = true; });
+          render();
+        });
+
+        if (askAll) askAll.addEventListener('click', function () {
+          closePanel(false);
+          toCanvas('Across everything waiting on me right now, what should I do first and why?');
+        });
+
+        document.addEventListener('click', function (e) {
+          if (isOpen() && !panel.contains(e.target) && !bell.contains(e.target)) closePanel(false);
+        });
+
+        document.addEventListener('keydown', function (e) {
+          if (!isOpen()) return;
+          if (e.key === 'Escape') { e.preventDefault(); closePanel(true); return; }
+          if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+          var items = ctas();
+          if (!items.length) return;
+          e.preventDefault();
+          var i = items.indexOf(document.activeElement);
+          if (i === -1) { items[0].focus(); return; }
+          items[e.key === 'ArrowDown' ? (i + 1) % items.length
+                                      : (i - 1 + items.length) % items.length].focus();
+        });
+
+        render();
+      })();
+    </script>
+      <script>
+      /* The AiMY logo on the float bar opens the canvas. Unconditionally, on
+         every page. It is the way in to AiMY, so gating it on anything is a
+         dead end waiting to happen. Keyboard-operable because it is a control,
+         not an ornament.
+
+         Note each page has a SECOND .aimy-float-icon inside the canvas's own
+         input bar; the id is on the float-bar one only. */
+      (function () {
+        var icon = document.getElementById('aimyFloatIcon');
+        if (!icon) return;
+        function open(e) {
+          e.stopPropagation();
+          if (typeof window.aimyOpenCanvas === 'function') window.aimyOpenCanvas();
+        }
+        icon.addEventListener('click', open);
+        icon.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(e); }
+        });
       })();
     </script>
   </body>
