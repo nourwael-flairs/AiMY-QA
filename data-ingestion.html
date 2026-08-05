@@ -8,6 +8,16 @@
         try {
           var t = localStorage.getItem('aimy-ds-theme');
           if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+
+          /* Product scope, pre-paint for the same reason. The scope bar's
+             trigger label is rendered by CSS off this attribute, so a
+             persisted scope never flashes "All products" first. Whitelisted:
+             a stale value leaves the attribute off and the
+             :root:not([data-scope]) rule falls back to All products. */
+          var s = localStorage.getItem('aimy-qa-scope');
+          if (s === 'all' || s === 'upland' || s === 'asteris' || s === 'secondstreet') {
+            document.documentElement.setAttribute('data-scope', s);
+          }
         } catch (e) {}
       })();
     </script>
@@ -4136,7 +4146,214 @@
       :root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
       :root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
 
-    </style>
+          /* ══ GLOBAL PRODUCT SCOPE (.gps-*) ═══════════════════════════════
+         A pinned scope selector, first child of the main content area.
+         Carried by index, agent-scorecards, goal-browser and data-ingestion;
+         deliberately absent from my-profile.html and settings.html. Sets a
+         global scope, persists it, announces it. It filters nothing here.
+
+         DELIBERATELY NOT .v2-dropdown. That class has four divergent engines
+         across these files, and agent-scorecards.html:15785 closes every
+         .v2-dropdown on any document click with no contains() guard, which
+         would dismiss this panel the moment the search field is clicked. The
+         canonical engine (design-strategy/index.html:11803) also swallows
+         every printable keypress into a letter-typeahead. Neither can host a
+         text input. The visual language is copied on purpose.
+
+         Tokens are restricted to the set declared in ALL FIVE dark :root
+         blocks. goal-browser.html:30 and data-ingestion.html:30 carry a stub
+         root with only --wash-3 and --wash-6 ("these pages never had the wash
+         scale"), and --d200, --ai-text, --body-bg, --font-sans, --r-*,
+         --elev-* and --brand-glow are each missing from at least two of them.
+         Radii, fonts, shadows and the bar fill are therefore literals, the
+         same rule the notifications panel follows (index.html:619). */
+
+      .gps-bar {
+        --gps-pad-x: 32px;                 /* matches .dashboard-scroll padding */
+        flex-shrink: 0;
+        position: relative;
+        /* Explicit, not decorative. The bar is transparent and paints nothing,
+           but the scroller below it comes later in the DOM and would cover the
+           open panel at z-index:auto. 20 sits above .app-body (1) and below
+           .app-topnav (100). */
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;         /* control sits at the right edge */
+        padding: 10px var(--gps-pad-x);
+        /* No fill and no hairline: the bar is a positioning shell only, so the
+           page background and the #appEllipse glow read straight through it,
+           the same way .app-topnav does. */
+        background: transparent;
+        font-family: "Urbanist", sans-serif;
+      }
+      /* Visually hidden, but part of the trigger's accessible name, so the
+         control still announces as "Product scope: Upland" now that the
+         printed label is gone. */
+      .gps-sr {
+        position: absolute; width: 1px; height: 1px;
+        margin: -1px; padding: 0; border: 0;
+        overflow: hidden; white-space: nowrap;
+        clip-path: inset(50%);
+      }
+
+      .gps { position: relative; display: inline-flex; flex-shrink: 0; }
+
+      .gps-btn {
+        display: flex; align-items: center; gap: 6px;
+        min-width: 170px;
+        padding: 5px 9px 5px 11px;
+        background: var(--wash-3);
+        border: 1px solid var(--wash-6);
+        /* 8px, NOT 10px: the global focus rule (index.html:424) sets
+           border-radius:8px on :focus-visible, so any other value makes the
+           control visibly reshape when tabbed to. */
+        border-radius: 8px;
+        font-family: "Urbanist", sans-serif;
+        font-size: 12px; font-weight: 600; line-height: 1.4;
+        color: var(--d300);
+        cursor: pointer; white-space: nowrap; text-align: left;
+        transition: background var(--transition-fast),
+                    border-color var(--transition-fast),
+                    color var(--transition-fast);
+      }
+      .gps-btn:hover { background: var(--wash-6); color: var(--d50); }
+      .gps-btn[aria-expanded="true"] {
+        background: rgba(51,105,255,0.10);
+        border-color: rgba(99,169,255,0.30);
+        color: #c5dcff;
+      }
+      /* "not the default scope", driven off the pre-paint attribute so it
+         cannot flash the wrong state. */
+      :root[data-scope]:not([data-scope="all"]) .gps-btn {
+        background: rgba(51,105,255,0.10);
+        border-color: rgba(99,169,255,0.32);
+        color: #c5dcff;
+      }
+      .gps-chev {
+        width: 10px; height: 10px; margin-left: auto; flex-shrink: 0;
+        color: var(--d400);
+        transition: transform var(--transition-fast);
+      }
+      .gps-btn[aria-expanded="true"] .gps-chev { transform: rotate(180deg); color: currentColor; }
+
+      /* Trigger label rendered by CSS from <html data-scope>, set pre-paint.
+         display:none excludes the other three from the accessible name, so
+         aria-labelledby stays correct with no JS. */
+      .gps-btn-label > [data-scope-label] { display: none; }
+      :root:not([data-scope])          .gps-btn-label > [data-scope-label="all"],
+      :root[data-scope="all"]          .gps-btn-label > [data-scope-label="all"],
+      :root[data-scope="upland"]       .gps-btn-label > [data-scope-label="upland"],
+      :root[data-scope="asteris"]      .gps-btn-label > [data-scope-label="asteris"],
+      :root[data-scope="secondstreet"] .gps-btn-label > [data-scope-label="secondstreet"] {
+        display: inline;
+      }
+
+      .gps-panel {
+        /* Anchored right, not left: the trigger sits at the page edge, so a
+           244px panel opening rightward would run off the viewport. */
+        position: absolute; top: calc(100% + 6px); right: 0;
+        z-index: 220;
+        width: 244px;
+        background: var(--card-bg);        /* #141b24 dark, #ffffff light */
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        padding: 6px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(0,0,0,0.2);
+        font-family: "Urbanist", sans-serif;
+        text-align: left;
+        transform-origin: top right;
+        animation: gpsPanelIn 140ms cubic-bezier(0.22,1,0.36,1);
+      }
+      .gps-panel[hidden] { display: none; }
+      @keyframes gpsPanelIn {
+        from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+        to   { opacity: 1; transform: none; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .gps-panel { animation: none; }
+        .gps-chev  { transition: none; }
+      }
+
+      .gps-search {
+        display: flex; align-items: center; gap: 8px;
+        padding: 7px 9px; margin-bottom: 4px;
+        background: var(--wash-3);
+        border: 1px solid var(--wash-6);
+        border-radius: 8px;
+        transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+      }
+      /* --brand-glow is declared in none of these five files, hence the literal. */
+      .gps-search:focus-within {
+        border-color: var(--brand);
+        box-shadow: 0 0 0 3px rgba(51,105,255,0.18);
+      }
+      .gps-search > svg { width: 13px; height: 13px; color: var(--d500); flex-shrink: 0; }
+      .gps-search input {
+        flex: 1; min-width: 0;
+        background: none; border: 0;
+        font-family: "Urbanist", sans-serif;
+        font-size: 12px; font-weight: 600; color: var(--d50);
+      }
+      .gps-search input::placeholder { color: var(--d500); font-weight: 500; }
+      /* The row owns the focus ring. Without this the global rule
+         (index.html:409) draws a second one on the bare input. */
+      .gps-search input:focus,
+      .gps-search input:focus-visible { outline: none; }
+
+      .gps-list {
+        list-style: none; margin: 0; padding: 0;
+        max-height: 220px; overflow-y: auto;
+        scrollbar-width: thin; scrollbar-color: var(--wash-6) transparent;
+      }
+      .gps-list::-webkit-scrollbar { width: 6px; }
+      .gps-list::-webkit-scrollbar-track { background: transparent; }
+      .gps-list::-webkit-scrollbar-thumb { background: var(--wash-6); border-radius: 4px; }
+      .gps-list::-webkit-scrollbar-thumb:hover { background: var(--card-border); }
+
+      .gps-opt {
+        display: flex; align-items: center; gap: 8px;
+        padding: 7px 9px; border-radius: 7px;
+        font-size: 12px; font-weight: 600; color: var(--d300);
+        cursor: pointer; white-space: nowrap;
+        transition: background var(--transition-fast), color var(--transition-fast);
+      }
+      /* Dot reserved on every row so selection never shifts the text. */
+      .gps-opt::before {
+        content: ""; width: 5px; height: 5px; border-radius: 50%;
+        background: transparent; flex-shrink: 0;
+      }
+      .gps-opt[hidden] { display: none; }
+      .gps-opt.is-active { background: var(--wash-3); color: var(--d50); }
+      .gps-opt[aria-selected="true"] { background: rgba(51,105,255,0.10); color: #61adf1; }
+      .gps-opt[aria-selected="true"]::before { background: #61adf1; }
+      .gps-opt[aria-selected="true"].is-active { background: rgba(51,105,255,0.18); }
+
+      .gps-empty {
+        padding: 14px 9px; text-align: center;
+        font-size: 11.5px; font-weight: 500; color: var(--d500);
+      }
+      .gps-empty[hidden] { display: none; }
+
+      /* ── Light theme, scoped chrome corrections ──────────────────────
+         Only the literals above need flipping. --wash-3/--wash-6/--d50/
+         --d300/--d400/--d500/--card-bg/--card-border/--brand invert at the
+         token layer already (design-system.md §4). */
+      :root[data-theme="light"] .gps-btn[aria-expanded="true"],
+      :root[data-theme="light"]:root[data-scope]:not([data-scope="all"]) .gps-btn {
+        background: rgba(51,105,255,0.10);
+        border-color: rgba(51,105,255,0.32);
+        color: #1f5fd0;
+      }
+      :root[data-theme="light"] .gps-panel {
+        box-shadow: 0 12px 40px rgba(16,24,40,0.16), 0 0 0 1px rgba(16,24,40,0.04);
+      }
+      :root[data-theme="light"] .gps-opt[aria-selected="true"] { color: #1f5fd0; }
+      :root[data-theme="light"] .gps-opt[aria-selected="true"]::before { background: #1f5fd0; }
+      /* ══ end global product scope ════════════════════════════════════ */
+      /* .di-page-header is 28px, not 32px (data-ingestion.html:4850). */
+      .gps-bar { --gps-pad-x: 28px; }
+</style>
   </head>
   <body>
     <!-- ── Ellipse glow layer: #171A1C bg → ellipse → components on top ── -->
@@ -4360,6 +4577,64 @@
 
         <!-- ════ DATA INGESTION ════════════════════════════════════════════ -->
         <div class="di-surface" id="diSurface">
+          <!-- ══ GLOBAL PRODUCT SCOPE ═══════════════════════════════════════
+               Pinned first child of the main content area. Persists to
+               localStorage['aimy-qa-scope'] and announces the change on window
+               as 'aimy:scope-changed'. It filters nothing on this page;
+               consumers opt in by listening. Engine at the end of <body>,
+               pre-paint hydration in the <head> script.
+
+               Pattern: menu button opens a popup whose first control is a
+               role="combobox" text field owning the role="listbox" below it,
+               tracked with aria-activedescendant. Focus lands in the input,
+               never on an option, so the options are not tabbable. -->
+          <div class="gps-bar" id="gpsBar">
+            <div class="gps" id="gpsRoot">
+              <button class="gps-btn" id="gpsBtn" type="button"
+                      aria-haspopup="listbox" aria-expanded="false"
+                      aria-controls="gpsPanel">
+                <span class="gps-btn-label" id="gpsBtnLabel">
+                  <span class="gps-sr">Product scope:</span>
+                  <span data-scope-label="all">All products</span>
+                  <span data-scope-label="upland">Upland</span>
+                  <span data-scope-label="asteris">Asteris</span>
+                  <span data-scope-label="secondstreet">SecondStreet</span>
+                </span>
+                <svg class="gps-chev" viewBox="0 0 10 6" fill="none" stroke="currentColor"
+                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true">
+                  <polyline points="1 1 5 5 9 1"></polyline>
+                </svg>
+              </button>
+
+              <div class="gps-panel" id="gpsPanel" hidden>
+                <div class="gps-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                       stroke-linecap="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="M20 20l-3.6-3.6"></path>
+                  </svg>
+                  <input id="gpsSearch" type="text"
+                         role="combobox" aria-expanded="true"
+                         aria-controls="gpsList" aria-autocomplete="list"
+                         aria-label="Search products" placeholder="Search products"
+                         autocomplete="off" autocorrect="off" spellcheck="false" />
+                </div>
+
+                <ul class="gps-list" id="gpsList" role="listbox" aria-label="Product scope">
+                  <li class="gps-opt" id="gps-opt-all"          role="option" data-value="all"          aria-selected="true">All products</li>
+                  <li class="gps-opt" id="gps-opt-upland"       role="option" data-value="upland"       aria-selected="false">Upland</li>
+                  <li class="gps-opt" id="gps-opt-asteris"      role="option" data-value="asteris"      aria-selected="false">Asteris</li>
+                  <li class="gps-opt" id="gps-opt-secondstreet" role="option" data-value="secondstreet" aria-selected="false">SecondStreet</li>
+                </ul>
+
+                <!-- Outside the <ul>: a non-option <li> inside role="listbox" is
+                     invalid. role="status" announces the zero-match case. -->
+                <div class="gps-empty" id="gpsEmpty" role="status" hidden>No products match.</div>
+              </div>
+            </div>
+          </div>
+
 
           <!-- ── PAGE HEADER ─────────────────────────────────────────── -->
           <div class="di-page-header">
@@ -8152,6 +8427,232 @@
         icon.addEventListener('keydown', function (e) {
           if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(e); }
         });
+      })();
+    </script>
+    <script>
+      /* ══ GLOBAL PRODUCT SCOPE ENGINE ═══════════════════════════════════
+         Searchable scope selector pinned at the top of the main area.
+         Persists to localStorage['aimy-qa-scope'] (the second key in the app,
+         after 'aimy-ds-theme') and announces the change on window as
+         'aimy:scope-changed', matching the 'aimy:filter-applied' convention
+         at index.html:10052 / settings.html:7917.
+
+         It does NOT filter this page. Consumers opt in:
+           window.addEventListener('aimy:scope-changed', function (e) {
+             e.detail.scope;  // 'all' | 'upland' | 'asteris' | 'secondstreet'
+           });
+         Current value at any time: window.AIMY_SCOPE.get().
+
+         Not wired to any .v2-dropdown engine, see the CSS comment. */
+      (function () {
+        var KEY = 'aimy-qa-scope';
+        var OPTIONS = [
+          { value: 'all',          label: 'All products' },
+          { value: 'upland',       label: 'Upland'       },
+          { value: 'asteris',      label: 'Asteris'      },
+          { value: 'secondstreet', label: 'SecondStreet' }
+        ];
+
+        var btn   = document.getElementById('gpsBtn');
+        var panel = document.getElementById('gpsPanel');
+        var input = document.getElementById('gpsSearch');
+        var list  = document.getElementById('gpsList');
+        var empty = document.getElementById('gpsEmpty');
+        if (!btn || !panel || !input || !list) return;
+
+        var opts = Array.prototype.slice.call(list.querySelectorAll('.gps-opt'));
+        var activeIdx = -1;
+
+        function isValid(v) {
+          for (var i = 0; i < OPTIONS.length; i++) if (OPTIONS[i].value === v) return true;
+          return false;
+        }
+        function read() {
+          var v = null;
+          try { v = localStorage.getItem(KEY); } catch (e) {}
+          return isValid(v) ? v : 'all';
+        }
+        function labelFor(v) {
+          for (var i = 0; i < OPTIONS.length; i++) if (OPTIONS[i].value === v) return OPTIONS[i].label;
+          return OPTIONS[0].label;
+        }
+        function isOpen()  { return !panel.hidden; }
+        function visible() { return opts.filter(function (o) { return !o.hidden; }); }
+
+        /* aria-selected only. The visible label and the active tint are CSS
+           off <html data-scope>, already correct at first paint. */
+        function syncSelected() {
+          var cur = read();
+          opts.forEach(function (o) {
+            o.setAttribute('aria-selected', o.getAttribute('data-value') === cur ? 'true' : 'false');
+          });
+        }
+
+        function setActive(i) {
+          var vis = visible();
+          opts.forEach(function (o) { o.classList.remove('is-active'); });
+          if (!vis.length || i < 0) {
+            activeIdx = -1;
+            input.removeAttribute('aria-activedescendant');
+            return;
+          }
+          if (i > vis.length - 1) i = vis.length - 1;
+          activeIdx = i;
+          var el = vis[i];
+          el.classList.add('is-active');
+          input.setAttribute('aria-activedescendant', el.id);
+          /* keep the active row in view without scrolling the page */
+          var lr = list.getBoundingClientRect(), er = el.getBoundingClientRect();
+          if (er.bottom > lr.bottom)  list.scrollTop += er.bottom - lr.bottom;
+          else if (er.top < lr.top)   list.scrollTop -= lr.top - er.top;
+        }
+
+        function filter(q) {
+          q = (q || '').trim().toLowerCase();
+          var n = 0;
+          opts.forEach(function (o) {
+            var hit = !q || o.textContent.trim().toLowerCase().indexOf(q) !== -1;
+            o.hidden = !hit;
+            if (hit) n++;
+          });
+          if (empty) empty.hidden = n !== 0;
+          if (!n) { setActive(-1); return; }   /* zero matches: nothing active,
+                                                  Enter is a no-op */
+          var vis = visible(), start = 0;
+          if (!q) {                            /* empty box: land on the current
+                                                  selection, not always row 0 */
+            for (var i = 0; i < vis.length; i++) {
+              if (vis[i].getAttribute('aria-selected') === 'true') { start = i; break; }
+            }
+          }
+          setActive(start);
+        }
+
+        function open() {
+          if (isOpen()) return;
+          panel.hidden = false;
+          btn.setAttribute('aria-expanded', 'true');
+          input.value = '';
+          filter('');
+          input.focus();
+        }
+
+        function close(refocus) {
+          if (!isOpen()) return;
+          panel.hidden = true;
+          btn.setAttribute('aria-expanded', 'false');
+          input.removeAttribute('aria-activedescendant');
+          activeIdx = -1;
+          opts.forEach(function (o) { o.classList.remove('is-active'); o.hidden = false; });
+          if (empty) empty.hidden = true;
+          if (refocus) btn.focus();
+        }
+
+        function choose(el) {
+          var next = el.getAttribute('data-value');
+          var prev = read();
+          if (next !== prev) {
+            try { localStorage.setItem(KEY, next); } catch (e) {}
+            document.documentElement.setAttribute('data-scope', next);
+            syncSelected();
+            window.dispatchEvent(new CustomEvent('aimy:scope-changed', {
+              detail: { scope: next, label: labelFor(next), previous: prev, timestamp: Date.now() }
+            }));
+          }
+          close(true);
+        }
+
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (isOpen()) close(true); else open();
+        });
+
+        /* preventDefault also suppresses the click a <button> synthesises from
+           Enter/Space, so open() is not called twice. */
+        btn.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            open();
+          }
+        });
+
+        input.addEventListener('input', function () { filter(input.value); });
+
+        input.addEventListener('keydown', function (e) {
+          var vis = visible();
+          switch (e.key) {
+            case 'Escape':    e.preventDefault(); close(true); break;
+            case 'Tab':       close(false); break;
+            case 'ArrowDown':
+              e.preventDefault();
+              if (vis.length) setActive(activeIdx < 0 ? 0 : (activeIdx + 1) % vis.length);
+              break;
+            case 'ArrowUp':
+              e.preventDefault();
+              if (vis.length) setActive(activeIdx < 0 ? vis.length - 1 : (activeIdx - 1 + vis.length) % vis.length);
+              break;
+            /* Home/End move the caret when there is text to move it through,
+               per the editable-combobox convention; they jump the list only
+               when the field is empty. */
+            case 'Home': if (input.value) break; e.preventDefault(); setActive(0); break;
+            case 'End':  if (input.value) break; e.preventDefault(); setActive(vis.length - 1); break;
+            case 'Enter':
+              e.preventDefault();
+              if (activeIdx >= 0 && vis[activeIdx]) choose(vis[activeIdx]);
+              break;
+          }
+        });
+
+        list.addEventListener('click', function (e) {
+          var el = e.target.closest && e.target.closest('.gps-opt');
+          if (!el) return;
+          e.stopPropagation();
+          choose(el);
+        });
+        list.addEventListener('mousemove', function (e) {
+          var el = e.target.closest && e.target.closest('.gps-opt');
+          if (!el) return;
+          var i = visible().indexOf(el);
+          if (i !== -1 && i !== activeIdx) setActive(i);
+        });
+
+        /* Outside click and Escape, same shape as the notifications panel.
+           The contains() guards are what let the search field be clicked
+           without dismissing the panel, which is exactly what the
+           .v2-dropdown fork does not do. */
+        document.addEventListener('click', function (e) {
+          if (isOpen() && !panel.contains(e.target) && !btn.contains(e.target)) close(false);
+        });
+        document.addEventListener('keydown', function (e) {
+          if (isOpen() && e.key === 'Escape') { e.preventDefault(); close(true); }
+        });
+
+        /* Another tab changed the scope. Navigation is full page loads, so this
+           only matters for two tabs open side by side. */
+        window.addEventListener('storage', function (e) {
+          if (e.key !== KEY) return;
+          document.documentElement.setAttribute('data-scope', read());
+          syncSelected();
+        });
+
+        window.AIMY_SCOPE = {
+          key: KEY,
+          options: OPTIONS.slice(),
+          get:   function ()  { return read(); },
+          label: function (v) { return labelFor(v == null ? read() : v); },
+          set:   function (v) {
+            if (!isValid(v)) return false;
+            for (var i = 0; i < opts.length; i++) {
+              if (opts[i].getAttribute('data-value') === v) { choose(opts[i]); return true; }
+            }
+            return false;
+          }
+        };
+
+        /* Normalise: the attribute is already set pre-paint on a return visit,
+           this covers first visit and a rejected stored value. */
+        document.documentElement.setAttribute('data-scope', read());
+        syncSelected();
       })();
     </script>
   </body>
