@@ -3244,6 +3244,16 @@
         width: 18px;
         height: 20px;
       }
+      /* Hover state on the canvas opener, lifted from AiMY Knowledge's
+         `#canvasOpen:hover` (assets/knowledge.css): the purple ring doubles in
+         alpha, 0.3 to 0.6. Scoped to the id, not the class, because each page
+         carries a second, inert .aimy-float-icon inside the canvas's own input
+         bar and that one opens nothing. The badge is a child of the opener, so
+         hovering the badge lights the ring too, which is exactly the affordance
+         Knowledge gives it. No transition, matching Knowledge. */
+      #aimyFloatIcon:hover {
+        border-color: rgba(139, 79, 244, 0.6);
+      }
 
       .aimy-float-input {
         flex: 1;
@@ -5052,6 +5062,13 @@
       .float-badge.visible {
         opacity: 1;
         transform: scale(1);
+        /* The badge overhangs the icon circle by 3px, so its outer corner used
+           to fall through to the bar: no pointer cursor, no click. Once it is
+           actually on screen it becomes a real target and the click bubbles to
+           #aimyFloatIcon, which opens the canvas. Stays pointer-events: none
+           while hidden so an invisible badge never eats a click. */
+        pointer-events: auto;
+        cursor: pointer;
       }
 
       /* ── Alert acknowledgment row on bcard ────────────────────────── */

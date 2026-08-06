@@ -796,7 +796,19 @@
       .aimy-float-bar:focus-within { border-color: rgba(var(--qa-accent-rgb), 0.55); box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 0 3px rgba(var(--qa-accent-rgb), 0.18), 0 0 24px rgba(var(--qa-accent-rgb), 0.12), inset 0 1px 0 var(--wash-6); outline: none; }
       .aimy-float-icon { position: relative; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #3d1f6b 0%, #1a3a6e 50%, #163b5e 100%); border: 1px solid rgba(139, 79, 244, 0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 12px rgba(100, 60, 200, 0.25); }
       .aimy-float-icon svg { width: 18px; height: 20px; }
-      .float-badge { position: absolute; top: -3px; right: -3px; min-width: 16px; height: 16px; border-radius: var(--r-pill); background: var(--err); border: 1.5px solid var(--body-bg); font-size: 9px; font-weight: 800; letter-spacing: 0.02em; color: #fff; display: flex; align-items: center; justify-content: center; padding: 0 3px; pointer-events: none; }
+      /* Hover state on the canvas opener, lifted from AiMY Knowledge's
+         `#canvasOpen:hover` (assets/knowledge.css): the purple ring doubles in
+         alpha, 0.3 to 0.6. Scoped to the id because this page carries a second,
+         inert .aimy-float-icon inside the canvas's own input bar. The badge is a
+         child of the opener, so hovering the badge lights the ring too. */
+      #aimyFloatIcon:hover { border-color: rgba(139, 79, 244, 0.6); }
+      .float-badge { position: absolute; top: -3px; right: -3px; min-width: 16px; height: 16px; border-radius: var(--r-pill); background: var(--err); border: 1.5px solid var(--body-bg); font-size: 9px; font-weight: 800; letter-spacing: 0.02em; color: #fff; display: flex; align-items: center; justify-content: center; padding: 0 3px; pointer-events: none; opacity: 0; transform: scale(0.7); transition: opacity 200ms ease, transform 200ms cubic-bezier(0.34,1.56,0.64,1); }
+      /* pointer-events/cursor live on .visible only: the badge overhangs the
+         icon circle by 3px, so its outer corner would otherwise fall through
+         to the bar with no pointer cursor and no click. Visible, it is a real
+         target and the click bubbles to #aimyFloatIcon, which opens the
+         canvas. Hidden, it never eats a click. */
+      .float-badge.visible { opacity: 1; transform: scale(1); pointer-events: auto; cursor: pointer; }
       .aimy-float-input { flex: 1; background: none; border: none; outline: none !important; box-shadow: none !important; -webkit-appearance: none; font-family: "Urbanist", sans-serif; font-size: 13.5px; font-weight: 500; color: var(--d50); caret-color: var(--qa-accent); line-height: 1.4; padding: 0 4px; }
       .aimy-float-input::placeholder { color: var(--d500); font-weight: 400; }
       .aimy-float-hint { font-size: 11px; font-weight: 500; color: var(--d500); letter-spacing: 0.01em; white-space: nowrap; flex-shrink: 0; padding-right: 6px; pointer-events: none; }
@@ -1388,13 +1400,14 @@
           <div class="aimy-float-bar" id="aimyFloatBar">
             <div class="aimy-float-icon" id="aimyFloatIcon" role="button" tabindex="0"
                  aria-label="Open the AiMY canvas" style="cursor:pointer;">
-              <!-- The static "3" badge that sat here is gone. Its only clearer
-                   was clearReminderBadges(), reachable only from
-                   openRemindersInCanvas(), which lost its callers when the bell
-                   became the shared notifications panel and this logo became a
-                   plain canvas opener. A count nothing can clear is the exact
-                   bug the new bell was built to remove. The count lives on the
-                   bell now. -->
+              <!-- The badge is back, on the same terms as every other page.
+                   It was pulled once because its only clearer was
+                   clearReminderBadges(), unreachable after the bell became the
+                   shared notifications panel, leaving a count nothing could
+                   clear. The shared block at the end of the page now clears it
+                   on any click on the float bar, so that failure mode is
+                   closed. The bell keeps its own dot. -->
+              <span class="float-badge" id="floatBadge" aria-label="3 unread alerts">3</span>
               <svg width="23" height="25" viewBox="0 0 18 20"><use href="#aimy-logo-small" /></svg>
             </div>
             <input class="aimy-float-input" id="aimyFloatInput" type="text" aria-label="Ask AiMY" placeholder="Ask AiMY for coaching, or how to exceed a goal&hellip;" autocomplete="off" spellcheck="false" />
@@ -2471,6 +2484,24 @@
         icon.addEventListener('keydown', function (e) {
           if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(e); }
         });
+      })();
+
+      /* Unread badge on that icon, same contract as index.html: seeded with
+         the unread count, opens the canvas when clicked (the click bubbles to
+         #aimyFloatIcon, whose handler stops propagation before the clearer
+         below sees it), and cleared by any other click on the bar. That
+         clearer is what the old page-local badge lacked. */
+      (function () {
+        var badge = document.getElementById('floatBadge');
+        if (!badge) return;
+        var unreadAlertCount = 3;
+        function updateFloatBadge(n) {
+          if (n > 0) { badge.textContent = n > 9 ? '9+' : n; badge.classList.add('visible'); }
+          else badge.classList.remove('visible');
+        }
+        updateFloatBadge(unreadAlertCount);
+        var bar = document.getElementById('aimyFloatBar');
+        if (bar) bar.addEventListener('click', function () { updateFloatBadge(0); });
       })();
     </script>
   </body>
