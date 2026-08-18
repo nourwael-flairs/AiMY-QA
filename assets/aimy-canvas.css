@@ -1,0 +1,231 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   AIMY CANVAS — THE FULL-WIDTH SHELL AND THE CONVERSATION COLUMN
+
+   Ported from AiMY Sales (assets/sales.css:1069-1272, 2739-2740), which is the
+   only place this was implemented. The relationship is the same one Sales has
+   with the design system: each QA page's inline <style> ships the DS canvas —
+   the badge, the close, the thread, the input — and this file is the override
+   layer over it. So it must load AFTER every inline block, which is why the
+   <link> sits immediately before </head> rather than at the top of it.
+
+   Nothing in here restyles a message, a bubble or an input. It changes the BOX
+   the canvas occupies, and adds the column that lists conversations.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── The half of the scale QA never needed until now ──
+   The rules below are copied from Sales unchanged, and they reference the type
+   tokens the design system declares (aimy-ds.css:41-184). QA's pages declare
+   the colour ramp, the radii and the two durations but not these — so rather
+   than rewrite eight rule bodies into literals and lose the correspondence,
+   the missing tokens are declared once here. Sizes and weights only.
+
+   THE SECOND GROUP IS THERE BECAUSE THE SIX PAGES DISAGREE ABOUT WHAT THEY
+   DECLARE. Measured, in dark, per page:
+
+     goal-browser, data-ingestion  --r-sm --r-md --accent-dim --ease-out --font-sans
+     settings                      --accent-dim
+     my-profile                    --ease-out
+     index, agent-scorecards       nothing missing
+
+   `--glass-border` and `--accent-dim` are the sharp ones: those pages declare
+   them ONLY inside their light-theme block, so in dark they resolved to
+   nothing — the column's right edge fell back to `currentColor` (a bright
+   --d50 hairline instead of an 8%-white one) and the row you have open lost
+   its tint entirely. Nothing had caught either, because the column is the
+   first thing on those pages to use them.
+
+   Defaulting here rather than editing five pages: each page's
+   `:root[data-theme="light"]` is more specific than this `:root`, so light
+   stays the page's own everywhere, and the pages that already declare a dark
+   value declare the same one. Values are index.html's, which is the page that
+   has the full set. */
+:root {
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --accent-dim: rgba(139, 79, 244, 0.15);
+  --r-sm: 6px;
+  --r-md: 8px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --font-sans: "Urbanist", system-ui, sans-serif;
+  --fs-2xs: 10px;
+  --fs-xs: 11px;
+  --fs-base: 13px;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --ls-wide: 0.04em;
+  --lh-snug: 1.4;
+  --lh-relaxed: 1.75;
+}
+
+/* The search box is labelled for a screen reader and captioned by its own
+   placeholder for everyone else. QA has no visually-hidden utility yet. */
+.s-sr {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* ═══════════════════════════════════════════════
+   THE CANVAS IS ANCHORED TO THE VIEWPORT, NOT TO THE PAGE
+
+   The page ships `.aimy-overlay { position: absolute; inset: 0 }`, which makes
+   it a child of the very surface it is supposed to sit above: anything that
+   scrolls or grows `.app-main` carries the canvas with it — and takes its
+   badge, close button, thread and input along.
+
+   `fixed` at exactly the box it already occupied, under the top bar, so
+   whatever the surface underneath does, the canvas cannot be carried anywhere.
+   The offsets are the layout's own tokens rather than numbers, so they cannot
+   drift from the shell they clear.
+═══════════════════════════════════════════════ */
+.aimy-overlay {
+  position: fixed;
+  top: var(--topbar-height); right: 0; bottom: 0;
+  /* FULL WIDTH. A canvas that cannot use the whole window cannot hold a
+     conversation ABOUT something and show that something at the same time.
+     Give the canvas the window and the column beside the thread becomes
+     possible, rather than a second thing competing for the same 720px. */
+  left: 0;
+  /* ROW, AND THE PAGE'S COLUMN MOVES INSIDE.
+
+     `display: flex` alone is not enough and breaks the canvas outright. The
+     page declares `.aimy-overlay { flex-direction: column; align-items:
+     center; justify-content: flex-end; padding: 0 0 28px }` — a single centred
+     stack pinned to the bottom, which is exactly right for a thread over an
+     input and exactly wrong for a column beside them. Re-declaring only
+     `display` would leave the direction at `column`, so the chat list would
+     stack ON TOP of the canvas, centred, with the thread shoved to the bottom
+     of the window under it.
+
+     The whole inner contract moves to `.overlay-main` unchanged, so the badge,
+     close, context bar, thread and input keep the geometry the page gives them
+     — and they position against `.overlay-main` because that is what is now
+     `position: relative`. */
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 0;
+}
+
+/* ── The chat column and the thread beside it ──
+   Fixed column, flexible thread: the list of conversations does not get wider
+   on a wider screen, because a title is a title. */
+.overlay-chats {
+  width: 240px; flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 20px;
+  padding: 20px 12px;
+  overflow-y: auto;
+  border-right: 1px solid var(--glass-border);
+}
+.overlay-main {
+  flex: 1; min-width: 0; position: relative;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end;
+  /* 24, not the page's 28. Carrying a value across is not a licence to carry
+     an off-scale one — 28 is not on the 4px scale this product audits against,
+     and a four-pixel divergence at the bottom of a full-height overlay is
+     invisible next to a rule that says spacing is chosen once. */
+  padding: 0 0 24px;
+}
+
+/* Starting one, then finding one. The column's only filled control, because
+   starting is the verb and everything under it is the qualifier.
+
+   IT CARRIES ITS OWN APPEARANCE RATHER THAN INHERITING `.btn.btn-brand.btn-sm`.
+   Sales can lean on those three classes because its design system ships them
+   on every surface. QA's does not: goal-browser and data-ingestion have no
+   `.btn` base and no `.btn-sm` at all — only a light-theme colour patch with
+   nothing to colour — so the button rendered as the browser's default grey
+   box with 13px serif-ish text and square corners, which is what it looked
+   like on those two pages and nowhere else.
+
+   The classes stay on the element so it still reads as the system's button
+   wherever that exists; these declarations are the same values `.btn` +
+   `.btn-brand` + `.btn-sm` resolve to on index.html, so the four pages that
+   have the primitive look exactly as they did and the two that do not now
+   match them. */
+.ov-chat-new {
+  width: 100%; margin-bottom: 8px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  font-family: var(--font-sans); font-size: 10.5px; font-weight: 700;
+  padding: 5px 11px; border-radius: var(--r-md);
+  background: var(--brand); color: #fff;
+  border: 1px solid var(--brand); cursor: pointer; white-space: nowrap;
+  transition: background-color var(--t-fast), border-color var(--t-fast);
+}
+.ov-chat-new:hover { background: #4d7fff; border-color: #4d7fff; }
+.ov-chat-new:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.ov-chat-new svg { width: 14px; height: 14px; flex-shrink: 0; }
+/* Find a conversation. Second in the column, because a list you scroll to
+   search is a list you have already failed to search. */
+.ov-chat-find { display: block; margin-bottom: 20px; }
+.ov-chat-input {
+  width: 100%; min-height: 24px; padding: 8px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--glass-border); background: transparent;
+  font-family: inherit; font-size: var(--fs-xs); color: var(--d100);
+}
+.ov-chat-input::placeholder { color: var(--d600); }
+.ov-chat-input:focus-visible { outline: 2px solid var(--brand); outline-offset: -1px; }
+
+.ov-chat-group { display: flex; flex-direction: column; gap: 2px; }
+/* 8 under the label, 20 between groups — the ratio rule, and it is what makes
+   two groups read as two rather than as one list with headings in it. */
+.ov-chat-cap {
+  font-size: var(--fs-2xs); font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-wide); text-transform: uppercase;
+  color: var(--d500); padding: 0 8px; margin-bottom: 8px;
+}
+.ov-chat {
+  /* `flex-start`, so the title can run to two lines: centred would float the
+     turn count against the middle of a wrapped question. */
+  display: flex; align-items: flex-start; gap: 8px;
+  min-height: 24px; padding: 8px; border-radius: var(--r-sm);
+  font-size: var(--fs-xs); color: var(--d300);
+  cursor: pointer; text-align: left; width: 100%;
+  background: transparent; border: 0; font-family: inherit;
+  transition: background-color var(--t-fast), color var(--t-fast);
+}
+.ov-chat:hover { background: var(--accent-dim); color: var(--d50); }
+.ov-chat:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+.ov-chat.is-here { background: var(--accent-dim); color: var(--d50); font-weight: var(--fw-semibold); }
+/* Wraps rather than ellipsises. A session's title IS the question that was
+   asked, and "Why are three goals off tra…" is the half of it that does not
+   say which question. The rows in this column are what you are choosing
+   between; a list you cannot read is a list you cannot choose from. */
+.ov-chat-name { min-width: 0; line-height: var(--lh-snug); }
+.ov-chat-n {
+  margin-left: auto; flex-shrink: 0;
+  font-size: var(--fs-2xs); color: var(--d500); font-variant-numeric: tabular-nums;
+}
+.ov-chat-none { font-size: var(--fs-base); color: var(--d500); line-height: var(--lh-relaxed); padding: 0 8px; }
+
+/* Below this the column and a readable thread cannot both fit, and the thread
+   is what you came for. */
+@media (max-width: 900px) {
+  .overlay-chats { display: none; }
+}
+
+/* The thread's bottom sits flush against the input bar, so a message caught
+   mid-scroll is cut by a hard horizontal edge — which next to the input pill's
+   own top border reads as a stray rule across the canvas rather than as
+   content continuing below. The fade is inset so the final padding stays
+   solid: when you ARE at the end, nothing looks faded.
+
+   DEVIATION FROM SALES: there `is-at-end` is added once and never removed, so
+   the fade never returns after the first message. Here the scroll handler in
+   aimy-canvas.js toggles it both ways. */
+.overlay-thread {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent 100%);
+}
+.overlay-thread.is-at-end {
+  -webkit-mask-image: none;
+          mask-image: none;
+}
+
+/* Opacity only. A `translateX` was tried in Sales and stranded the column at
+   matrix(1,0,0,1,-12,0) when the animation was interrupted mid-flight. */
+@media (prefers-reduced-motion: no-preference) {
+  .aimy-overlay.open .overlay-chats { animation: ovFadeIn 220ms var(--ease-out); }
+}
+@keyframes ovFadeIn { from { opacity: 0; } }

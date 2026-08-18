@@ -3669,6 +3669,9 @@
     }
 
   </style>
+<!-- The canvas conversation column, so the library shows the real
+     component rather than a copy of it. -->
+<link rel="stylesheet" href="../assets/aimy-canvas.css?v=5" />
 </head>
 <body>
 
@@ -10721,16 +10724,51 @@ dd.<span class="ck">addEventListener</span>(<span class="cs">'dd:change'</span>,
     </div>
   </div>
 
+  <div class="ds-h3">Conversation column</div>
+  <p class="ds-desc">The canvas lists every conversation down its left edge, most recently spoken in first, and switching between them <strong>moves the surface underneath as well as the thread</strong>: the filters that were set, the view that was open, the page you were on. A session is not a transcript, it is a place you were — restoring one without the other gives back the half that was already there. State lives in the query string, so a conversation’s surface is also a link somebody can paste. Ported from AiMY Sales, which is where this was built first.</p>
+
+  <div class="ds-callout info">
+    <div class="ds-callout-icon">ℹ</div>
+    <div>Turns are stored as <strong>data, never as rendered HTML</strong>. An answer drawn by a named renderer stores the renderer’s name and is rebuilt by calling it, so a control inside a rehydrated turn is a fresh node with its listeners intact. Snapshotting <code>thread.innerHTML</code> is the approach this replaces, and it is recorded in-tree as the reason.</div>
+  </div>
+
+  <div class="ds-preview">
+    <div style="width:240px;display:flex;flex-direction:column;gap:20px;padding:20px 12px;border-right:1px solid var(--glass-border)">
+      <div>
+        <button class="btn btn-brand btn-sm" style="width:100%;justify-content:center;margin-bottom:8px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          New conversation
+        </button>
+        <input class="ov-chat-input" type="search" placeholder="Find a conversation&hellip;" spellcheck="false" autocomplete="off" />
+      </div>
+      <div class="ov-chat-group">
+        <div class="ov-chat-cap">Recent</div>
+        <button class="ov-chat is-here" type="button" aria-current="true"><span class="ov-chat-name">Why is first response SLA at 61%?</span><span class="ov-chat-n">4</span></button>
+        <button class="ov-chat" type="button"><span class="ov-chat-name">How are the six portfolios tracking?</span><span class="ov-chat-n">4</span></button>
+        <button class="ov-chat" type="button"><span class="ov-chat-name">Is Omar’s coaching plan working?</span><span class="ov-chat-n">2</span></button>
+        <button class="ov-chat" type="button"><span class="ov-chat-name">The QA dashboard</span></button>
+      </div>
+    </div>
+  </div>
+
   <table class="ds-table">
     <thead><tr><th>Element</th><th>Spec</th><th>Notes</th></tr></thead>
     <tbody>
-      <tr><td>.aimy-overlay</td><td>position absolute inset 0, z-index 500, blur(28px) sat(1.4) bright(0.85)</td><td>Add <code>.open</code> to reveal. Remove to close. Transition: opacity 280ms ease-out.</td></tr>
+      <tr><td>.aimy-overlay</td><td>position fixed, top --topbar-height, left/right/bottom 0, z-index 500, blur(28px) sat(1.4) bright(0.85), <strong>flex-direction row</strong></td><td>Add <code>.open</code> to reveal. Remove to close. Transition: opacity 280ms ease-out. <strong>Fixed, not absolute</strong>: anchored to the viewport so a scrolling or growing <code>.app-main</code> cannot carry the canvas away with it. Full width, because a canvas that cannot use the whole window cannot hold a conversation about something and show that something at once.</td></tr>
+      <tr><td>.overlay-chats</td><td>240px fixed column, flex column, gap 20px, padding 20px 12px, 1px --glass-border right</td><td>The conversation column. Hidden below 900px, where it and a readable thread cannot both fit. Filled by <code>assets/aimy-canvas.js</code>.</td></tr>
+      <tr><td>.overlay-main</td><td>flex 1, position relative, flex column, align center, justify flex-end, padding 0 0 24px</td><td>Holds the badge, close, basis bar, thread and input unchanged — the overlay’s old inner contract, moved here when the overlay became a row. Everything absolutely positioned inside the canvas measures against this.</td></tr>
       <tr><td>.overlay-badge</td><td>abs top-28px center-x, pill, 11px/700 uppercase --d400</td><td>AiMY logo + "AiMY Canvas" label. Fades in with 100ms delay after overlay opens.</td></tr>
       <tr><td>.overlay-close</td><td>abs top-24px right-28px, 36×36px, r-10px</td><td>Fades in with overlay. SVG ✕. Keyboard: Escape key also closes.</td></tr>
       <tr><td>.overlay-thread</td><td>max-width 720px, flex column, gap 16px, scroll</td><td>Padded top 80px to clear badge. <code>aria-live="polite"</code> for screen readers.</td></tr>
       <tr><td>.overlay-suggestions</td><td>flex wrap, gap 7px, centered</td><td>Visible only when thread is empty. Hide with JS once first message appears.</td></tr>
       <tr><td>.overlay-sugg-chip</td><td>12px/600, pill, hover accent tint</td><td>Clicking pre-fills the input and triggers a send.</td></tr>
       <tr><td>.overlay-input-bar</td><td>max-width 720px, pill, same bg as float bar</td><td>Gains accent glow ring on :focus-within.</td></tr>
+      <tr><td>.ov-chat-new</td><td>full-width <code>.btn.btn-brand.btn-sm</code>, margin-bottom 8px</td><td>The column’s only filled control, because starting a conversation is the verb and everything under it is the qualifier.</td></tr>
+      <tr><td>.ov-chat-find / .ov-chat-input</td><td>full width, 8px padding, r-sm, transparent, --fs-xs</td><td>Searches titles <strong>and every turn</strong>: the word you remember is usually one from inside the conversation. Second in the column — a list you scroll to search is a list you have already failed to search.</td></tr>
+      <tr><td>.ov-chat-group / .ov-chat-cap</td><td>flex column gap 2px; caption --fs-2xs/700 uppercase --d500, 8px below</td><td>One flat group, captioned <code>Recent</code> or <code>Found</code>. Not split by kind or bucketed by date: a conversation is a conversation, and where it is attached is a property of it rather than a category to file it under. Ordered by when something was last <strong>said</strong> in each — <strong>opening one does not reorder the list</strong>, or the row you just clicked would jump to the top and take the next row you wanted with it.</td></tr>
+      <tr><td>.ov-chat</td><td>flex align-items flex-start, gap 8px, 8px padding, r-sm, --fs-xs --d300</td><td><code>.is-here</code> for the open one (accent-dim, --d50, semibold) and <code>aria-current="true"</code> with it. Titles <strong>wrap rather than ellipsise</strong>: the rows are what you are choosing between, and half a question does not say which question.</td></tr>
+      <tr><td>.ov-chat-n</td><td>margin-left auto, --fs-2xs --d500, tabular-nums</td><td>Turn count. Omitted at zero rather than shown as “0”.</td></tr>
+      <tr><td>.ov-chat-none</td><td>--fs-base --d500, --lh-relaxed, 0 8px</td><td>Two empty states, and they say different things: nothing matches the search, versus nothing asked yet.</td></tr>
     </tbody>
   </table>
 </div>
