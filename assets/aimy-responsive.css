@@ -1,13 +1,19 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    AIMY RESPONSIVE — ONE UI SCALE, ONE TABLET FLOOR
 
-   THE MECHANISM IS `zoom` ON <body>. Above 1920px the whole shell is scaled up
-   proportionally, so a 2560 monitor shows the layout a 1920 monitor shows,
-   physically larger — the same cards per row, the same proportions, no
-   stretching and no browser zoom. Below 1920 --ui-scale is exactly 1 and
-   `zoom: 1` is a no-op, so every viewport from the 1024 floor to the anchor
-   renders byte-identically to before this file existed. That was measured on
-   index.html: 361 elements, zero differences.
+   THE MECHANISM IS `zoom` ON <body>. Above the anchor the whole shell is
+   scaled up proportionally, so a wider viewport shows the SAME layout —
+   the same cards per row, the same proportions — physically larger, with no
+   stretching and no browser zoom. At or below the anchor --ui-scale is exactly
+   1 and `zoom: 1` is a no-op, so every viewport from the 1024 floor up to the
+   anchor renders byte-identically to before this file existed. Measured on
+   index.html at the anchor: 361 elements, zero differences.
+
+   THE ANCHOR IS 1536, NOT 1920, and it lives in assets/aimy-viewport.js. 1536
+   is the CSS viewport a 1920 panel reports at Windows' default 125% display
+   scaling — the width this app is actually looked at. Anchoring above the real
+   viewport is what made zooming out shrink the UI; the reasoning is written
+   out in full next to UI_ANCHOR_W.
 
    WHY NOT px-to-rem: converting the ~14,000 px literals in the six inline
    blocks cannot fix `body { height: 100vh }` or the other 41 vw/vh sites, and
@@ -59,7 +65,7 @@
      and is then multiplied by k on the way to the screen — so `height: 100vh`
      under zoom is k times too tall. Dividing by k cancels it exactly: the token
      is worth one real viewport, while any literal added to it (the -32px below)
-     still scales with the design. Measured at 3440/1.6:
+     still scales with the design. Measured at a scale of 1.6 on a 3440 viewport:
      calc(var(--vp-w) - 32px) === 3388.8 === 3440 - 32*1.6.
 
      THESE MUST NOT BE REGISTERED WITH @property. Unregistered custom properties

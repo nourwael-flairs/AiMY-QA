@@ -13,23 +13,43 @@
 (function () {
   "use strict";
 
-  /* The width the design was drawn at. scale === 1 here, exactly, and the whole
-     curve is anchored to it — change this one number and everything moves. */
-  var UI_ANCHOR_W = 1920;
+  /* THE VIEWPORT THIS APP IS ACTUALLY VIEWED AT, WHICH IS NOT 1920.
+
+     scale === 1 here exactly, and the whole curve hangs off it — change this
+     one number and everything moves.
+
+     It was 1920, and that was wrong. A 1920 panel at Windows' default 125%
+     display scaling reports a CSS viewport of 1536, and the anchor has to be
+     the CSS width, not the panel width. Anchoring above the real viewport put
+     every ordinary session inside the `s < 1` clamp below, and the clamp is
+     what breaks zoom invariance:
+
+         apparent size = ui_scale x browser_zoom
+         innerWidth    = screen_width / browser_zoom
+         => ui_scale   = screen_width / (browser_zoom x ANCHOR)
+         => apparent   = screen_width / ANCHOR      <- browser_zoom cancels
+
+     Browser zoom cancels itself out, but only where ui_scale is free. At
+     ANCHOR 1920 on a 1536 viewport the raw scale was 0.8, clamped up to 1, so
+     100% zoom sat at apparent 1.0 while 50% zoom escaped the clamp at 1.6 and
+     landed on apparent 0.8 — measured, and exactly the 20% shrink that was
+     reported. With the anchor at the real viewport width the raw scale is
+     >= 1 everywhere from 100% zoom outwards, the clamp never engages, and
+     apparent size is genuinely constant across every zoom level. */
+  var UI_ANCHOR_W = 1536;
 
   /* THERE IS NO WIDTH CAP, AND THAT IS THE POINT.
 
      This started at 1.6, which quietly reintroduced the bug it was meant to
-     fix: a 3840-wide screen needs 2.0 to sit at the anchor and a browser
-     zoomed to 25% needs 4.0, so capping at 1.6 left them 1.25x and 2.5x
-     stretched — visibly the old unscaled layout, only slightly larger.
+     fix: a 3840-wide viewport needs 2.5 to sit at the anchor and a browser
+     zoomed to 25% needs 4.0, so capping at 1.6 left them stretched — visibly
+     the old unscaled layout, only slightly larger.
 
      Uncapped, the width term always resolves the effective layout to EXACTLY
-     1920 on any 16:9 or 16:10 screen, which is the whole requirement. The
-     ceiling below is a sanity bound against a pathological viewport, not a
-     design limit: it corresponds to an 11,520px-wide window and never binds
-     on real hardware. The real bound is the height guard underneath it. */
-  var UI_MAX_SCALE = 6;
+     the anchor on any 16:9 or 16:10 screen, which is the whole requirement.
+     The ceiling below is a sanity bound against a pathological viewport, not
+     a design limit; the real bound is the height guard underneath it. */
+  var UI_MAX_SCALE = 8;
 
   /* Scaling on width alone starves height: a 3440x1080 ultrawide would take
      1.79 and be left with 604 layout px of height, less than an iPad. The
@@ -37,9 +57,12 @@
      very short screen the height term wins and a little width stretch is
      accepted — the alternative is a shell too short to hold the app. */
   var MIN_LAYOUT_H = 720;
-  /* Under this, snap to 1. A 1980px window does not need a 1.03 zoom; it needs
-     to be left alone. */
-  var DEADZONE = 1.04;
+  /* Snap to exactly 1 within half a percent of the anchor, so a window that is
+     a few pixels off does not ship `zoom: 1.004`. It was 1.04, which was wide
+     enough to be its own small version of the clamp bug: at 97% browser zoom
+     the raw scale is 1.031, that fell inside the dead zone, and the apparent
+     size dropped 3%. At 1.005 the worst-case error is half a percent. */
+  var DEADZONE = 1.005;
   /* Below this the soft keyboard is indistinguishable from browser-chrome
      jitter during a scroll, and reacting to that would make the composer
      twitch. */
