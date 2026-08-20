@@ -13,7 +13,7 @@
     </script>
 
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
     <title>AiMY QA · My Profile</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link
@@ -1141,6 +1141,13 @@
   <!-- The canvas shell above: full-width geometry and the conversation
        column. Loaded last so it overrides the inline canvas rules. -->
   <link rel="stylesheet" href="assets/aimy-canvas.css?v=5" />
+
+  <!-- The responsive layer above both: one UI scale for large screens,
+       the 1024px tablet floor, and the shell height that keeps the
+       composer on screen. Loaded last so it overrides the canvas rules,
+       the same order aimy-canvas.css has over this page's inline block. -->
+  <link rel="stylesheet" href="assets/aimy-responsive.css?v=5" />
+  <script src="assets/aimy-viewport.js?v=4"></script>
   </head>
   <body>
     <div id="appEllipse"></div>

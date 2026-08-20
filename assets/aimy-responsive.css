@@ -1,0 +1,323 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   AIMY RESPONSIVE — ONE UI SCALE, ONE TABLET FLOOR
+
+   THE MECHANISM IS `zoom` ON <body>. Above 1920px the whole shell is scaled up
+   proportionally, so a 2560 monitor shows the layout a 1920 monitor shows,
+   physically larger — the same cards per row, the same proportions, no
+   stretching and no browser zoom. Below 1920 --ui-scale is exactly 1 and
+   `zoom: 1` is a no-op, so every viewport from the 1024 floor to the anchor
+   renders byte-identically to before this file existed. That was measured on
+   index.html: 361 elements, zero differences.
+
+   WHY NOT px-to-rem: converting the ~14,000 px literals in the six inline
+   blocks cannot fix `body { height: 100vh }` or the other 41 vw/vh sites, and
+   cannot scale a `position: fixed` offset against a viewport that does not
+   shrink — .aimy-float-wrap's `bottom: 20px` and .aimy-overlay's
+   `top: var(--topbar-height)` would drift away from a scaled shell. `zoom`
+   scales every property coherently, including the ~30 px literals the pages
+   inject from JS (`style.maxWidth = '520px'`), which are assigned in layout px
+   and therefore need no change at all.
+
+   ── WHY EVERY SELECTOR IS PREFIXED WITH :root ──────────────────────────────
+   This file is <link>ed in <head>, and the obvious assumption — that a
+   later-loaded sheet beats an inline block at equal specificity — is FALSE
+   here. Five of the six pages carry a SECOND <style> block inside <body>,
+   after the <link>:
+
+       index 7983-8171 · agent-scorecards 6613-13967 (many, incl. every
+       responsive @media it has) · goal-browser 5756-9687 ·
+       data-ingestion 5181-6935 · my-profile 1488-1557
+
+   Those blocks lose to nothing. Measured on agent-scorecards, eight of this
+   file's declarations were being overridden by them, including
+   `.app-sidebar { display: none }` at 768 — meaning navigation still vanished.
+
+   Moving the <link> below the last </style> would fix the cascade but put the
+   shell's `zoom` behind a body-position stylesheet, so a 2560 monitor would
+   paint the unscaled layout first and snap. The prefix keeps the file in
+   <head>, where the scale is applied before first paint, and makes every rule
+   (0,2,0) — enough to beat any single-class rule wherever it is written, now
+   or later.
+
+   It does NOT outrank the pages' theme rules: those are
+   `:root[data-theme="light"] .x` at (0,3,0) and stay in charge of colour,
+   which is all they set.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* :root:root, not :root — the pages declare their tokens on :root (0,1,0), and
+   the token block has to outrank those the same way every other rule here
+   does. */
+:root:root {
+  /* Written by assets/aimy-viewport.js. 1 until proven otherwise, so a browser
+     without `zoom` — or with JS off — gets today's page and nothing worse. */
+  --ui-scale: 1;
+  --kb: 0;                    /* soft-keyboard height, RAW px, unitless */
+
+  /* THE VIEWPORT, EXPRESSED IN THE ZOOMED SUBTREE'S OWN COORDINATE SPACE.
+
+     Inside `zoom: k`, `100vh` resolves to the raw viewport height in LAYOUT px
+     and is then multiplied by k on the way to the screen — so `height: 100vh`
+     under zoom is k times too tall. Dividing by k cancels it exactly: the token
+     is worth one real viewport, while any literal added to it (the -32px below)
+     still scales with the design. Measured at 3440/1.6:
+     calc(var(--vp-w) - 32px) === 3388.8 === 3440 - 32*1.6.
+
+     THESE MUST NOT BE REGISTERED WITH @property. Unregistered custom properties
+     are substituted as tokens and computed at the point of USE (inside the
+     zoom); registering them would compute here on :root, outside the zoom, and
+     the division would cancel the wrong thing. */
+  --vp-w: calc(100vw  / var(--ui-scale));
+  --vp-h: calc(100dvh / var(--ui-scale));
+
+  /* Real-pixel insets, converted into the zoomed space. The design margin they
+     are added to scales; these do not, because a home indicator and a keyboard
+     are physical objects that do not care what the layout is doing. */
+  --safe-inset: calc(env(safe-area-inset-bottom, 0px) / var(--ui-scale));
+  --kb-inset:   calc(var(--kb) * 1px / var(--ui-scale));
+
+  /* The gap under the float bar. A token because the tablet floor tightens it
+     and the two places that read it must not drift. */
+  --float-gap: 20px;
+
+  /* The canvas header stack, whose 94px was a magic number tuned by hand
+     against the two absolutely-positioned rows above it. See the comment at
+     .overlay-thread in each page's inline block. Stated as the arithmetic it
+     always was, so the three cannot drift apart. Resolves to exactly 94px. */
+  --ov-badge-top:   28px;
+  --ov-context-top: 68px;
+  --ov-context-h:   18px;
+  --ov-thread-top:  calc(var(--ov-context-top) + var(--ov-context-h) + 8px);
+}
+
+/* ── 1. THE SHELL ─────────────────────────────────────────────────────────
+   The pages ship `body { height: 100vh }`, which under zoom is k viewports
+   tall — the bottom of the app, the float bar included, falls off the screen.
+   Height has to come from somewhere OUTSIDE the zoom instead: <html> is not
+   zoomed, so its 100dvh is one real viewport, and body's 100% resolves against
+   that and is divided into the zoomed space by the engine. Measured: a
+   `height: 100%` child of a 600px parent at zoom 1.5 occupies 600 visual px and
+   400 layout px, which is exactly right.
+
+   100dvh rather than 100vh is the other half of the reported bug: on iPad
+   Safari 100vh is the LARGE viewport height, so the shell was taller than the
+   visible area even at scale 1. */
+:root { height: 100dvh; overflow: hidden; }
+:root body {
+  zoom: var(--ui-scale);
+  height: 100%;
+  /* `overflow: hidden`, the flex column and the background stay as the pages
+     declare them. */
+}
+
+/* ── 2. THE VIEWPORT-UNIT SITES ───────────────────────────────────────────
+   Grouped by the value they ship rather than by page, because the pages ship
+   the same values. */
+:root .ntf-panel {
+  max-width:  calc(var(--vp-w) - 32px);
+  max-height: min(calc(var(--vp-h) * 0.7), 520px);
+}
+:root .anno-card          { max-width: calc(var(--vp-w) - 80px); }
+:root .aimy-toast         { max-width: calc(var(--vp-w) - 48px); }
+:root .goal-modal         { max-width: calc(var(--vp-w) - 48px); }
+:root .tpl-preview-panel  { max-width: calc(var(--vp-w) - 60px); }
+:root .version-panel      { max-width: calc(var(--vp-w) - 60px); }
+:root .di-modal {
+  max-width:  calc(var(--vp-w) * 0.94);
+  max-height: calc(var(--vp-h) * 0.88);
+}
+:root .fbmodal   { max-height: calc(var(--vp-h) * 0.88); }
+:root .kdo-shell { max-height: calc(var(--vp-h) * 0.90); }
+:root .modal     { max-height: calc(var(--vp-h) - 48px); }
+:root .roster-panel {
+  max-height: calc(var(--vp-h) - var(--topbar-height) - 48px);
+}
+:root .goal-detail-overlay {
+  width: min(900px, calc(var(--vp-w) * 0.94));
+  max-height: calc(var(--vp-h) - var(--topbar-height) - 32px);
+}
+:root .kdo-version-overlay {
+  width: min(520px, calc(var(--vp-w) * 0.94));
+  max-height: calc(var(--vp-h) - var(--topbar-height) - 32px);
+}
+:root .metric-detail-overlay {
+  width: min(680px, calc(var(--vp-w) * 0.94));
+  max-height: calc(var(--vp-h) - var(--topbar-height) - 32px);
+}
+
+/* ── 3. THE COMPOSER IS ALWAYS VISIBLE ────────────────────────────────────
+   Three things were stacked against it. 100vh is the LARGE viewport on iPad
+   Safari, so the shell already overhung the screen (fixed in section 1). The
+   six <meta> tags omitted viewport-fit=cover, so iOS reported every safe-area
+   inset as 0 and nothing could clear the home indicator (fixed in the markup).
+   And nothing listened for the soft keyboard, which shrinks the VISUAL
+   viewport only, leaving a position:fixed composer underneath it.
+
+   `bottom` picks up all three at once. Measured at scale 1.6 with a 200px
+   keyboard it resolves to 145px layout === 20 + 200/1.6: 32 visual px of
+   design margin that scales, plus 200 real px of keyboard that does not. */
+:root .aimy-float-wrap {
+  bottom: calc(var(--float-gap) + var(--safe-inset) + var(--kb-inset));
+}
+:root .aimy-overlay {
+  bottom: calc(var(--safe-inset) + var(--kb-inset));
+}
+
+/* ── 4. THE CANVAS HEADER STACK ───────────────────────────────────────────
+   padding-top, never the shorthand: section 7 ships padding-left/right for
+   .overlay-thread at the floor and that has to survive. */
+:root .overlay-badge       { top: var(--ov-badge-top); }
+:root .overlay-context-bar { top: var(--ov-context-top); }
+:root .overlay-thread      { padding-top: var(--ov-thread-top); }
+
+/* ═══ THE TABLET FLOOR ════════════════════════════════════════════════════
+   1024 is the floor, so the rail engages just above it and there is no
+   breakpoint below it. --ui-scale is 1 across this whole range, so these are
+   plain px against a plain viewport and the media queries see the width you
+   would expect. */
+/* .98, not a whole pixel, on every breakpoint in this file.
+
+   Windows at 125% display scaling gives a FRACTIONAL viewport: measured on
+   this machine, an `innerWidth` of 1099 is really 1099.1844 CSS px, so
+   `max-width: 1099px` did not match and the rail stayed off at exactly the
+   width it was written for. innerWidth rounds; the media query does not.
+   .98 clears the fraction without reaching the next whole pixel. */
+@media (max-width: 1099.98px) {
+  :root:root {
+    --sidebar-width: 64px;
+    --gps-pad-x: 20px;
+    /* 12, not 20. agent-scorecards was the only page to tighten the float
+       bar's gutter at tablet; it is right, so all six get it — and it goes
+       through the token so the safe-area and keyboard insets in section 3
+       still apply on top of it. */
+    --float-gap: 12px;
+  }
+
+  /* THE RAIL. `font-size: 0` is what collapses the label, because the label is
+     a BARE TEXT NODE in all six pages' markup —
+
+         <a class="nav-item" href="index.html"><svg>...</svg>Dashboard</a>
+
+     no span, no title, no data-label. There is nothing to display:none and
+     nothing for attr() to read. Zeroing the font collapses the text node to
+     zero width while leaving it in the accessibility tree, so the link keeps
+     its accessible name and a screen reader is unaffected — verified: the
+     rows still expose "Dashboard", "Reviews", "My Profile", "Goal Hub",
+     "Data", "Settings". */
+  :root .app-sidebar { position: relative; }
+  :root .sidebar-nav { padding: 16px 8px; }
+  :root .nav-item {
+    gap: 0;
+    padding: 11px 0;
+    justify-content: center;
+    font-size: 0;
+    position: relative;
+  }
+  :root .nav-item svg { width: 18px; height: 18px; }
+  :root .nav-item.primary-surface .ai-sparkle { display: none; }
+
+  /* The section labels become the rule they were already implying. */
+  :root .sidebar-section-label {
+    font-size: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 1px;
+    margin: 12px 10px 10px;
+    background: var(--wash-6);
+  }
+  :root .sidebar-section-label:first-child { height: 0; margin: 0; }
+
+  /* THE TOOLTIP HANGS OFF .app-sidebar, NOT OFF .nav-item, because
+     .sidebar-nav is `overflow-y: auto` and CSS cannot clip one axis while
+     leaving the other visible — a ::after at left:100% on the row would be
+     cut off at the rail's edge. .app-sidebar has no overflow of its own, so
+     the tooltip escapes. data-tip and --tip-y come from aimy-viewport.js. */
+  :root .app-sidebar[data-tip]::after {
+    content: attr(data-tip);
+    position: absolute;
+    left: calc(100% + 8px);
+    top: var(--tip-y, 0px);
+    transform: translateY(-50%);
+    z-index: 300;
+    pointer-events: none;
+    padding: 6px 10px;
+    border-radius: var(--r-sm, 6px);
+    /* --card-bg / --card-border and this shadow are what .ntf-panel uses
+       (index.html:642) — the design system's floating surface. Reusing them
+       rather than inventing a tooltip skin is what makes the rail's labels
+       read as the same kind of object as every other panel that floats over
+       the app. --card-border is also one of the two border tokens declared in
+       all six files' dark roots, so it resolves everywhere. */
+    background: var(--card-bg, #22282c);
+    border: 1px solid var(--card-border);
+    color: var(--d100);
+    font-family: var(--font-sans, "Urbanist", sans-serif);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Gutters close up once the rail has taken the sidebar's place. Longhands
+     only: the four scrollers ship different top and bottom padding
+     (24/100, 24/96, 24/120, 28/140) and each is right for its page. */
+  :root .dashboard-scroll,
+  :root .sc-scroll,
+  :root .profile-scroll,
+  :root .di-surface {
+    padding-left: 20px;
+    padding-right: 20px;
+    /* So a keyboard-raised composer never hides what scrollIntoView found. */
+    scroll-padding-bottom: calc(96px + var(--kb-inset));
+  }
+
+  /* The float bar's side gutters close up with everything else. This and the
+     --float-gap above were agent-scorecards' alone; they are right, so all six
+     pages get them and that page's copies come out. */
+  :root .aimy-float-wrap { left: 12px; right: 12px; }
+
+  /* Generalises to all six pages what agent-scorecards was the only page to
+     ship. */
+  :root .overlay-thread,
+  :root .overlay-input-wrap {
+    max-width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+/* ── 6. THE TOP BAR CANNOT COLLIDE ────────────────────────────────────────
+   The tabs strip needs its escape earlier than the rail does: it is absolutely
+   centred on the viewport while the logo and the right-hand cluster are not,
+   so it runs out of room on the right first. `static` puts it back in flow
+   between the two .topnav-spacer elements the markup already has, and those
+   two `flex: 1` spacers then centre it between its neighbours instead — which
+   cannot collide by construction, at any strip width.
+
+   Measured clearance to .topnav-right: at 1024, 67.9px before and 103.9px
+   after; at 900, 5.9px before (one step from touching) and 41.9px after.
+   Inert at >=1280 — every measurement is identical with and without it. */
+@media (max-width: 1279.98px) {
+  :root .topnav-tabs {
+    position: static;
+    left: auto;
+    transform: none;
+    min-width: 0;
+  }
+  :root .topnav-tabs-inner {
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  :root .topnav-tabs-inner::-webkit-scrollbar { display: none; }
+}
+
+/* ── 8. NAVIGATION NEVER DISAPPEARS ───────────────────────────────────────
+   agent-scorecards ships `.app-sidebar { display: none }` at 768 with nothing
+   in its place, which removes every route from the page. That rule sits in a
+   <style> block AFTER this file's <link>, so only the specificity prefix beats
+   it — this is the declaration that proves the prefix is load-bearing rather
+   than defensive. */
+@media (max-width: 768.98px) {
+  :root .app-sidebar { display: flex; }
+}

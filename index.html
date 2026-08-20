@@ -23,7 +23,7 @@
     </script>
 
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
     <title>AiMY QA · Dashboard</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link
@@ -6849,6 +6849,13 @@
          column. Loaded last so it overrides the inline canvas rules, the
          same order sales.css has over aimy-ds.css. -->
     <link rel="stylesheet" href="assets/aimy-canvas.css?v=5" />
+
+    <!-- The responsive layer above both: one UI scale for large screens,
+         the 1024px tablet floor, and the shell height that keeps the
+         composer on screen. Loaded last so it overrides the canvas rules,
+         the same order aimy-canvas.css has over this page's inline block. -->
+    <link rel="stylesheet" href="assets/aimy-responsive.css?v=5" />
+    <script src="assets/aimy-viewport.js?v=4"></script>
   </head>
   <body>
     <!-- ── Ellipse glow layer: #171A1C bg → ellipse → components on top ── -->
@@ -9386,8 +9393,12 @@
           let tipX = e.clientX - areaRect.left + 14;
           let tipY = e.clientY - areaRect.top - 20;
           if (tipX + 140 > areaRect.width) tipX = e.clientX - areaRect.left - 140;
-          tooltip.style.left = Math.max(0, tipX) + "px";
-          tooltip.style.top  = Math.max(0, tipY) + "px";
+          /* tipX/tipY come from getBoundingClientRect and clientX, which are
+             VISUAL px; style.left is read back as LAYOUT px inside body's
+             `zoom`. currentCSSZoom is the conversion, and is 1 below 1920. */
+          const ttK = tooltip.currentCSSZoom || 1;
+          tooltip.style.left = Math.max(0, tipX) / ttK + "px";
+          tooltip.style.top  = Math.max(0, tipY) / ttK + "px";
           tooltip.classList.add("visible");
         });
 
@@ -10109,7 +10120,9 @@
           if (barRow && container) {
             const rowRect = barRow.getBoundingClientRect();
             const containerRect = container.getBoundingClientRect();
-            floatPanel.style.top = (rowRect.top - containerRect.top + rowRect.height / 2) + "px";
+            /* Visual rect delta into a layout-px style; see the tooltip above. */
+            const fpK = floatPanel.currentCSSZoom || 1;
+            floatPanel.style.top = (rowRect.top - containerRect.top + rowRect.height / 2) / fpK + "px";
           }
           floatPanel.classList.add("visible");
         }
@@ -13551,8 +13564,11 @@
           input.setAttribute('aria-activedescendant', el.id);
           /* keep the active row in view without scrolling the page */
           var lr = list.getBoundingClientRect(), er = el.getBoundingClientRect();
-          if (er.bottom > lr.bottom)  list.scrollTop += er.bottom - lr.bottom;
-          else if (er.top < lr.top)   list.scrollTop -= lr.top - er.top;
+          /* scrollTop is LAYOUT px, the rect delta is VISUAL px. They are the
+             same below 1920, where currentCSSZoom is 1, and diverge above it. */
+          var lk = list.currentCSSZoom || 1;
+          if (er.bottom > lr.bottom)  list.scrollTop += (er.bottom - lr.bottom) / lk;
+          else if (er.top < lr.top)   list.scrollTop -= (lr.top - er.top) / lk;
         }
 
         function filter(q) {

@@ -23,7 +23,7 @@
     </script>
 
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
     <title>AiMY QA · Reviews</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link
@@ -6309,6 +6309,13 @@
   <!-- The canvas shell above: full-width geometry and the conversation
        column. Loaded last so it overrides the inline canvas rules. -->
   <link rel="stylesheet" href="assets/aimy-canvas.css?v=5" />
+
+  <!-- The responsive layer above both: one UI scale for large screens,
+       the 1024px tablet floor, and the shell height that keeps the
+       composer on screen. Loaded last so it overrides the canvas rules,
+       the same order aimy-canvas.css has over this page's inline block. -->
+  <link rel="stylesheet" href="assets/aimy-responsive.css?v=5" />
+  <script src="assets/aimy-viewport.js?v=4"></script>
   </head>
   <body>
     <!-- ── Ellipse glow layer: #171A1C bg → ellipse → components on top ── -->
@@ -13428,26 +13435,19 @@
         .tier-2-grid {
           grid-template-columns: 1fr;
         }
-        /* Float bar: full width, shorter */
-        .aimy-float-wrap {
-          left: 12px;
-          right: 12px;
-          bottom: 12px;
-        }
-        /* Canvas overlay: full width */
-        .overlay-thread,
-        .overlay-input-wrap {
-          max-width: 100%;
-          padding-left: 16px;
-          padding-right: 16px;
-        }
+        /* The float bar and the canvas column used to be tightened here, for
+           this page only. They now live in assets/aimy-responsive.css, which
+           ships them to all six pages at the 1099 floor and adds the
+           safe-area and keyboard insets on top. Removed rather than left to
+           argue with it. */
       }
 
       /* ~768px, tablet portrait */
       @media (max-width: 768px) {
-        .app-sidebar {
-          display: none;
-        }
+        /* `.app-sidebar { display: none }` was here. It removed every route
+           from the page with nothing in its place. The 64px icon rail in
+           assets/aimy-responsive.css is the replacement, and it holds all the
+           way down — navigation never disappears. */
         .sc-scroll {
           padding: 16px 16px 90px;
         }
@@ -19718,8 +19718,11 @@
           input.setAttribute('aria-activedescendant', el.id);
           /* keep the active row in view without scrolling the page */
           var lr = list.getBoundingClientRect(), er = el.getBoundingClientRect();
-          if (er.bottom > lr.bottom)  list.scrollTop += er.bottom - lr.bottom;
-          else if (er.top < lr.top)   list.scrollTop -= lr.top - er.top;
+          /* scrollTop is LAYOUT px, the rect delta is VISUAL px. They are the
+             same below 1920, where currentCSSZoom is 1, and diverge above it. */
+          var lk = list.currentCSSZoom || 1;
+          if (er.bottom > lr.bottom)  list.scrollTop += (er.bottom - lr.bottom) / lk;
+          else if (er.top < lr.top)   list.scrollTop -= (lr.top - er.top) / lk;
         }
 
         function filter(q) {
