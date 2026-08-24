@@ -1,0 +1,451 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE RAIL — six observations, each with a door inside it
+
+   assets/aimy-rail.js carries the sentences and the reasoning. This file makes
+   them the loudest thing in the column and takes away everything that used to
+   read as a menu.
+
+   WHAT IS GONE, ABOVE THE BREAKPOINT: the six `.nav-item` rows, their icons,
+   their hover fills, the "Primary" and "Configure" headings, and the pin that
+   held My Profile at the foot of the column. Each of those is a menu tell. What
+   is left is prose with a link in it — the sentence IS the control, so reading
+   the rail and using it are one act rather than two.
+
+   Navigation is intact underneath: real `<a href>`s, source order, tab order,
+   `aria-current="page"`. It is navigation that has stopped announcing itself.
+
+   ── WHY EVERY SELECTOR IS PREFIXED WITH :root ───────────────────────────────
+   Same cascade problem assets/aimy-responsive.css:27-51 documents at length:
+   five of the six pages carry a SECOND <style> block inside <body>, after this
+   <link>, and those blocks lose to nothing at equal specificity. The prefix
+   makes every rule here (0,2,0) — enough to beat any single-class rule wherever
+   it is written.
+
+   ── AND WHY A FEW ARE :root:root ────────────────────────────────────────────
+   Measured, in the open drawer at 1024: a (0,4,0) rule that was also later in
+   the cascade lost to `:root .nav-item { font-size: 0 }` from
+   aimy-responsive.css:214 — and so did an inline `style="font-size: 13px"` set
+   on the element itself, which nothing without `!important` can lose to. There
+   is no `!important` anywhere in these files. The gap register already records
+   this preview returning stale computed values
+   (design-strategy/REMEDIATION_GAP_REGISTER.md:238). The doubled prefix is
+   belt-and-braces on the handful of declarations that must win against that
+   block, rather than a specificity war fought one property at a time.
+
+   ── TOKEN FALLBACKS ON EVERYTHING NOT UNIVERSAL ─────────────────────────────
+   goal-browser and data-ingestion ship the thinnest token roots. Every
+   reference below carries an explicit fallback where the token is not defined
+   in both themes on all six pages, the same way aimy-responsive.css writes
+   `var(--r-sm, 6px)`. `--qa-accent`, `--qa-accent-rgb`, `--wash-3`, `--wash-6`,
+   `--card-bg`, `--card-border`, `--brand` and the `--d*` ramp resolve
+   everywhere and are used bare.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ═══ 0. THE COLUMN ════════════════════════════════════════════════════════
+   220px was sized for an icon and a label. Prose needs a measure, and at 220px
+   it did not have one: the text column came out 152px wide, about 25 characters
+   a line, which is a newspaper column three words wide.
+
+   272px gives roughly 30 characters at the size these are now set. It costs the
+   content column 52px — paid for several times over by the six 40px button rows
+   that are no longer drawn.
+
+   SAFE TO CHANGE, and this is why: `--sidebar-width` has exactly ONE consumer
+   on every page — `.app-sidebar { width: … }` — and `.app-main` is its flex
+   sibling, so the content column re-derives on its own. Nothing is positioned
+   against it. `.aimy-float-wrap` is fixed to the WINDOW (`left: 24px; right:
+   24px; justify-content: center`, index.html:3511), which is the fix the gap
+   register records for the bar being "off by 110px — exactly half the 220px
+   sidebar"; widening the rail cannot reintroduce that. Verified: the float bar
+   still measures dead-centre at 272.
+
+   THE REVERT IN THE GAP REGISTER (A19.1) IS NOT THIS. That entry reverts a pass
+   that gave the chrome the design system's translucent SURFACES — backgrounds,
+   backdrop-filter, a border-right — and carried 220→240 along with them as part
+   of the overreach. The surfaces stay reverted: the topnav and rail remain
+   transparent and borderless. Only the number moves, and it moves because the
+   rail now holds prose.
+
+   GUARDED TO min-width, NOT DECLARED FLAT. aimy-responsive.css:192 sets this
+   token to 64px inside `@media (max-width: 1099.98px)` at (0,2,0), and this
+   file is linked after it — so a flat declaration here would win that tie and
+   break the icon rail at every narrow width. */
+@media (min-width: 1100px) {
+  :root:root {
+    --sidebar-width: 272px;
+  }
+
+  /* ══ EVERY REMAINING MENU TELL, REMOVED ══════════════════════════════════
+     The rows and their icons: the sentence carries the link now, and a row
+     under it would be the same destination offered twice — once as prose and
+     once as a button, which is exactly the two-part "label, then control"
+     reading this is built to stop.
+
+     The section headings: "Primary" and "Configure" are a table of contents
+     for a menu. Six observations do not have sections, and a heading over them
+     re-frames the whole column as an index the moment it appears.
+
+     Both stay in the DOM and come back below the breakpoint, where the rail
+     really is an icon menu and both are right. */
+  :root .rail-entry > .nav-item,
+  :root .sidebar-section-label {
+    display: none;
+  }
+
+  :root .sidebar-nav {
+    padding: 26px 16px;
+    gap: 0;
+  }
+}
+
+/* ═══ 1. WHO IS TALKING ════════════════════════════════════════════════════
+   One attribution over all six, so the mark does not have to be repeated on
+   every card and eat 24px of measure six times over. Ground reproduced from
+   `.aimy-intelligence-bar` (goal-browser.html), which is the shape this product
+   already uses for AiMY announcing itself over a region.
+
+   THE LABEL IS SOLID, NOT GRADIENT-CLIPPED. `.aib-label` paints its text with
+   `-webkit-background-clip: text`; doctrine §11 bans gradient text outright,
+   and clipped text has no computable colour for a contrast check besides. */
+:root .rail-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  border-radius: 9px;
+  background: linear-gradient(
+    104deg,
+    rgba(0, 102, 255, 0.09) 0%,
+    rgba(97, 173, 241, 0.06) 50%,
+    rgba(111, 223, 226, 0.05) 100%
+  );
+  border: 1px solid rgba(97, 173, 241, 0.2);
+}
+:root .rail-head-mark {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+:root .rail-head-label {
+  font-family: var(--font-sans, "Urbanist", sans-serif);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--ai-text, #6fa0ff);
+}
+:root .rail-head-note {
+  font-family: var(--font-sans, "Urbanist", sans-serif);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--d400);
+  margin-left: auto;
+}
+
+/* ═══ 2. THE ENTRY, AND ITS SURFACE ════════════════════════════════════════
+   The first cut set these as bare prose in the column, on the reasoning that a
+   panel behind each one would read as an alert. It read as small print
+   instead — six paragraphs with no edges, nothing for the eye to land on, and
+   nothing that looked worth stopping for.
+
+   `.ai-insight-panel` (index.html:3188) is the answer the product already has:
+   a soft blue ground and a blue hairline, which is what "AiMY is telling you
+   something" looks like here. Tinted down from its 0.07/0.22 because that panel
+   appears once on a page and these appear six times in a 272px column.
+
+   WHAT IS DELIBERATELY NOT BORROWED: the briefing card. No severity tint, no
+   work-state chip, no left-edge stripe, no icon. Those say "act on this now" —
+   the reading a menu must never carry, and the one this rail spent two passes
+   getting rid of. Blue is provenance here, not urgency. */
+:root .rail-entry {
+  display: block;
+  /* Measured at 1280x720, the tightest viewport this ships to: the six cards
+     plus the attribution came to exactly 660px in a 660px column. Zero slack is
+     not a fit — one extra wrapped line from a font that loads late, or a
+     sentence someone lengthens by three words, and the rail scrolls. These two
+     numbers buy ~17px of it. */
+  margin-bottom: 7px;
+}
+:root .rail-entry:last-child {
+  margin-bottom: 0;
+}
+:root .rail-card {
+  padding: 10px 13px;
+  border-radius: 9px;
+  background: rgba(0, 102, 255, 0.05);
+  border: 1px solid rgba(0, 102, 255, 0.14);
+  transition: background-color var(--t-fast, 140ms) ease,
+    border-color var(--t-fast, 140ms) ease;
+}
+/* Warms as the cursor crosses it, so the column answers a hovering reader
+   before they have found the link. NOT a click target: the affordance stays on
+   the phrase, or the card becomes the row this rail exists to not be. */
+:root .rail-entry:not(.is-current):hover .rail-card {
+  background: rgba(0, 102, 255, 0.08);
+  border-color: rgba(0, 102, 255, 0.22);
+}
+/* The one you are standing in reads as settled rather than offered. */
+:root .rail-entry.is-current .rail-card {
+  background: var(--wash-3);
+  border-color: var(--wash-6);
+}
+
+/* ═══ 3. THE SENTENCE — the loudest thing in the column ════════════════════
+   13px against the 13px the buttons used to be, so it inherits their weight in
+   the hierarchy rather than sitting under it as a caption. Generous leading,
+   because this is prose being read, not a label being scanned. */
+:root .rail-say {
+  margin: 0;
+  font-family: var(--font-sans, "Urbanist", sans-serif);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: -0.006em;
+  /* --d300, not --d500 or --d600. This is the content of the rail now, not a
+     caption under something else, and the gap register records --d600 failing
+     contrast at 2.51 on small rail text (REMEDIATION_GAP_REGISTER.md:232).
+     Measured here at 8.89:1 in light. */
+  color: var(--d300);
+  text-wrap: pretty;
+}
+
+/* The figure. What the eye lands on first and what makes the line worth
+   stopping for — a finding whose number is set at the same weight as the words
+   around it is a finding that reads as a sentence about nothing. Full-strength
+   text, no colour of its own: severity is not being claimed here, only that
+   this is the part you are meant to see. */
+:root .rail-say b {
+  font-weight: 800;
+  color: var(--d50);
+}
+
+/* ═══ 4. THE DOOR, INSIDE THE SENTENCE ═════════════════════════════════════
+   An underlined phrase in running text — the one link convention that needs no
+   chrome around it and cannot be mistaken for a button.
+
+   THE COLOUR IS THE TEXT COLOUR, NOT THE ACCENT, AND THE UNDERLINE CARRIES QA.
+   `--qa-accent` on the page ground measures 4.29:1 — under AA for text this
+   size, and the same value the gap register already had to move `.nav-item`
+   .active off (REMEDIATION_GAP_REGISTER.md:232). Putting the accent in the
+   underline instead keeps the product's colour on the link, keeps the letters
+   at full strength, and makes the affordance a shape rather than a hue — which
+   is what 1.4.1 asks for anyway. */
+:root .rail-link {
+  color: var(--d50);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(var(--qa-accent-rgb), 0.55);
+  border-radius: 3px;
+  /* A BIGGER TARGET THAN THE LETTERS, AT NO COST TO THE LINE.
+     Measured on touch: the phrase is a 15px-tall hit area. WCAG 2.2 SC 2.5.8
+     exempts targets inline in a sentence, so this conforms as written — but
+     "conforms" and "hittable with a thumb" are different claims. Padding on an
+     inline box does not grow the line box, and the negative margin cancels the
+     horizontal spread, so the target reaches ~23px and the sentence sets
+     exactly as it did before. */
+  padding: 4px 2px;
+  margin: -4px -2px;
+  transition: text-decoration-color var(--t-fast, 140ms) ease,
+    background-color var(--t-fast, 140ms) ease;
+}
+:root .rail-link:hover {
+  text-decoration-color: var(--qa-accent);
+  background: rgba(var(--qa-accent-rgb), 0.1);
+}
+:root .rail-link:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  text-decoration-color: var(--qa-accent);
+}
+
+/* The card you are standing in states its finding and then says so. No phrase
+   to style any more — the offer comes off entirely rather than being defused,
+   so there is nothing left that could be mistaken for a door. */
+:root .rail-here-note {
+  /* --d400, not --d500. Measured at 3.54:1 on --d500 in dark, under AA — and
+     this note is the ONLY non-colour indicator of which page you are on, so it
+     is the last piece of text in the rail that is allowed to be hard to read.
+     Quiet is carried by the italic and the wording, not by fading it out. */
+  color: var(--d400);
+  font-style: italic;
+}
+
+/* ═══ 5. THE TOGGLE ════════════════════════════════════════════════════════
+   Absent above the breakpoint, where the sentences are simply on screen. */
+:root .rail-toggle {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 0 0 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: var(--wash-3);
+  border: 1px solid var(--wash-6);
+  color: var(--d300);
+  font-family: var(--font-sans, "Urbanist", sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--t-fast, 140ms) ease,
+    color var(--t-fast, 140ms) ease;
+}
+:root .rail-toggle:hover {
+  background: var(--wash-6);
+  color: var(--d100);
+}
+:root .rail-toggle:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+:root .rail-toggle svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+:root .rail-toggle-label {
+  flex: 1;
+  text-align: left;
+}
+
+/* ═══ 6. THE SCRIM ═════════════════════════════════════════════════════════
+   Sibling of the rail so the two share one stacking context and their
+   z-indexes mean something relative to each other. Inert above the
+   breakpoint. */
+:root .rail-scrim {
+  display: none;
+}
+
+/* ═══ 7. NARROW — TWO STATES THAT NEVER BOTH MATCH ═══════════════════
+   aimy-responsive.css:201 collapses the rail to 64px icons with tooltips. Prose
+   has no 64px form, so below this width the rail is exactly what ships today —
+   icons, divider labels, bottom-pinned profile — and the drawer is how the
+   sentences come back.
+
+   ── WHY EVERY RULE HERE IS SCOPED `:not(.is-open)` OR `.is-open` ──────────
+   The first cut reset the card at this width and then un-reset it inside the
+   drawer. Measured: the un-reset applied its `padding` and dropped its
+   `background` — all six cards drew transparent — with the restoring rule at
+   (0,4,0) and LATER in the file than the (0,3,0) reset it was supposed to beat.
+   The same partial application cost the drawer its `.nav-item` labels two
+   passes ago, and the gap register already records this preview returning stale
+   computed values (design-strategy/REMEDIATION_GAP_REGISTER.md:238).
+
+   So no rule below overrides another. The collapsed rail and the drawer are
+   mutually exclusive selectors, and everything the drawer wants is simply what
+   the wide rail already says — inherited, not restored. Nothing to lose a
+   cascade fight over, which is a better answer than winning one.
+
+   .98 on the breakpoint, matching aimy-responsive.css:183: Windows at 125%
+   display scaling gives a fractional viewport and a whole-pixel max-width does
+   not match at the width it was written for. */
+@media (max-width: 1099.98px) {
+
+  /* ── THE COLLAPSED 64px RAIL ── */
+  :root .app-sidebar:not(.is-open) .rail-say,
+  :root .app-sidebar:not(.is-open) .rail-head {
+    display: none;
+  }
+  /* The card holds only a hidden sentence here, so it would collapse to nothing
+     on its own — but a ground on a zero-height box is a surprise waiting for
+     whoever next gives this padding. Nulled explicitly, both variants. */
+  :root .app-sidebar:not(.is-open) .rail-card,
+  :root .app-sidebar:not(.is-open) .rail-entry.is-current .rail-card {
+    padding: 0;
+    background: none;
+    border: 0;
+  }
+  :root .app-sidebar:not(.is-open) .rail-entry {
+    margin-bottom: 0;
+  }
+  /* The pin is right HERE and only here — see the note in aimy-rail.js. Below
+     the breakpoint this is an icon menu, and account-at-the-foot is the icon
+     menu’s own convention. */
+  :root .app-sidebar:not(.is-open) .rail-entry[data-pin="bottom"] {
+    order: 10;
+    margin-top: auto;
+  }
+
+  /* ── THE TOGGLE ── */
+  :root .rail-toggle {
+    display: flex;
+  }
+  :root .app-sidebar:not(.is-open) .rail-toggle {
+    justify-content: center;
+    padding: 9px 0;
+    font-size: 0;
+  }
+  :root .app-sidebar:not(.is-open) .rail-toggle-label {
+    display: none;
+  }
+  :root .app-sidebar.is-open .rail-toggle {
+    margin-bottom: 16px;
+  }
+
+  /* ── THE SCRIM ── */
+  :root .rail-scrim {
+    display: block;
+    position: fixed;
+    inset: var(--topbar-height, 60px) 0 0 0;
+    z-index: 240;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  :root .rail-scrim.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ── THE DRAWER IS THE WIDE RAIL ──
+     It inherits the head, the cards, the sentences and their spacing from the
+     base rules, because nothing above has taken them away. All it adds is the
+     panel, and the two things the wide rail hides in its own media block and
+     therefore has to hide again here: the icon rows and the section headings. */
+  :root .app-sidebar.is-open {
+    position: fixed;
+    top: var(--topbar-height, 60px);
+    left: 0;
+    bottom: 0;
+    width: min(308px, 88vw);
+    z-index: 250;
+    background: var(--card-bg, #22282c);
+    border-right: 1px solid var(--card-border);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+  }
+  :root .app-sidebar.is-open .sidebar-nav {
+    padding: 22px 16px;
+    gap: 0;
+    overflow-y: auto;
+  }
+  :root .app-sidebar.is-open .rail-entry > .nav-item,
+  :root .app-sidebar.is-open .sidebar-section-label {
+    display: none;
+  }
+  /* aimy-viewport.js hangs the 64px tooltip off .app-sidebar itself, and the
+     icons it describes are not drawn in here. */
+  :root .app-sidebar.is-open[data-tip]::after {
+    display: none;
+  }
+}
+
+/* ═══ 8. MOTION ════════════════════════════════════════════════════════════
+   Level 4: transform and opacity only, 300ms ceiling, guard present. The
+   drawer's entrance is the scrim's fade plus a fixed panel — nothing here
+   animates a layout property. */
+@media (prefers-reduced-motion: reduce) {
+  :root .rail-scrim,
+  :root .rail-toggle,
+  :root .rail-link,
+  :root .rail-card {
+    transition: none;
+  }
+}
