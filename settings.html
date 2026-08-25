@@ -29,10 +29,32 @@
       }
 
       :root {
-        /* Needed by the theme toggle and the light overrides below. Same
-           values as index.html. These pages never had the wash scale. */
+        /* ══ THE FULL WASH LADDER, NOT TWO RUNGS OF IT ═══════════════════
+           This used to be `--wash-3` and `--wash-6` alone, with the note
+           "these pages never had the wash scale" — while the light root below
+           carries all twelve. The asymmetry was the bug: in DARK mode every
+           other rung resolved to nothing, so any `var(--wash-5)` on this page
+           was invalid at computed-value time and its whole declaration was
+           thrown away.
+
+           Found via the filter tray. Copying the Dashboard's tray rules here
+           produced a tray with no box-shadow, no top gloss, and chip borders
+           painted in `currentColor` — not because the rules were wrong but
+           because --wash-2/5/7/8 did not exist to resolve. Values are
+           index.html's verbatim, and the ladder now matches the light root
+           rung for rung. */
+        --wash-1: rgba(255,255,255,0.02);
+        --wash-2: rgba(255,255,255,0.03);
         --wash-3: rgba(255,255,255,0.04);
+        --wash-4: rgba(255,255,255,0.05);
+        --wash-5: rgba(255,255,255,0.06);
         --wash-6: rgba(255,255,255,0.07);
+        --wash-7: rgba(255,255,255,0.08);
+        --wash-8: rgba(255,255,255,0.10);
+        --wash-9: rgba(255,255,255,0.12);
+        --wash-10: rgba(255,255,255,0.15);
+        --wash-11: rgba(255,255,255,0.19);
+        --wash-12: rgba(255,255,255,0.25);
         --ai: linear-gradient(104deg, #0066ff 0%, #61adf1 47%, #6fdfe2 100%);
         /* Richer navy-tinted dark palette matching V1 */
         --d950: #080b10;
@@ -733,141 +755,8 @@
       .afs-clear-all:hover { color: rgba(168, 204, 255, 0.6); }
 
       /* ── Filter tray ─────────────────────────────────────────────────── */
-      .filter-tray {
-        position: absolute;
-        bottom: calc(100% + 6px);
-        left: 0;
-        right: 0;
-        display: flex;
-        justify-content: center;
-        pointer-events: none;
-        opacity: 0;
-        transform: translateY(5px);
-        transition:
-          opacity 160ms ease,
-          transform 160ms cubic-bezier(0.22,1,0.36,1);
-      }
-      .filter-tray.visible {
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: all;
-      }
-      .filter-tray-inner {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        background: rgba(14, 20, 30, 0.75);
-        border: 1px solid rgba(99, 169, 255, 0.10);
-        border-radius: 12px;
-        padding: 6px 10px;
-        backdrop-filter: blur(24px) saturate(1.5);
-        -webkit-backdrop-filter: blur(24px) saturate(1.5);
-        box-shadow:
-          inset 0 1px 0 rgba(255,255,255,0.06),
-          0 4px 20px rgba(0,0,0,0.35),
-          0 0 24px rgba(51,105,255,0.06);
-        max-width: 760px;
-        width: 100%;
-        position: relative;
-        overflow: hidden;
-      }
-      .filter-tray-inner::before {
-        content: "";
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 1px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(99,169,255,0.35) 30%,
-          rgba(139,79,244,0.25) 60%,
-          transparent
-        );
-        background-size: 200% 100%;
-        animation: glassShimmer 3.5s linear 2;
-      }
-      .filter-tray-inner::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 55%);
-        pointer-events: none;
-      }
-      .filter-tray-label {
-        font-size: 9px;
-        font-weight: 700;
-        color: rgba(99,169,255,0.45);
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        white-space: nowrap;
-        padding-right: 7px;
-        border-right: 1px solid rgba(255,255,255,0.07);
-        margin-right: 1px;
-        flex-shrink: 0;
-        position: relative;
-        z-index: 1;
-      }
-      .filter-chip {
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 20px;
-        padding: 4px 12px;
-        font-size: 10.5px;
-        font-weight: 600;
-        color: rgba(255,255,255,0.55);
-        cursor: pointer;
-        font-family: "Urbanist", sans-serif;
-        white-space: nowrap;
-        position: relative;
-        z-index: 1;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
-        transition:
-          background   150ms ease,
-          border-color 150ms ease,
-          color        150ms ease,
-          box-shadow   150ms ease,
-          transform    150ms cubic-bezier(0.34,1.56,0.64,1);
-      }
-      .filter-chip:hover {
-        background: rgba(51,105,255,0.10);
-        border-color: rgba(99,169,255,0.28);
-        color: rgba(197,220,255,0.9);
-        transform: translateY(-1px);
-        box-shadow:
-          inset 0 1px 0 rgba(255,255,255,0.10),
-          0 0 10px rgba(51,105,255,0.12);
-      }
-      .filter-chip:active  { transform: translateY(0) scale(0.97); }
       /* Back chip in contextual mode */
-      .filter-chip-back {
-        color: var(--d400);
-        border-color: rgba(255,255,255,0.08);
-        font-size: 10px;
-        padding: 4px 10px;
-        flex-shrink: 0;
-      }
-      .filter-chip-back:hover {
-        color: var(--d200);
-        background: rgba(255,255,255,0.05);
-        transform: none;
-      }
       /* Suggestion pills, product/agent/time names */
-      .filter-chip-sugg {
-        color: var(--d200);
-        border-color: rgba(255,255,255,0.10);
-      }
-      .filter-chip-sugg:hover {
-        color: var(--d50);
-        background: rgba(var(--qa-accent-rgb), 0.12);
-        border-color: rgba(var(--qa-accent-rgb), 0.3);
-        transform: translateY(-1px);
-      }
-      .filter-chip.pressed {
-        background: rgba(139,79,244,0.10);
-        border-color: rgba(139,79,244,0.28);
-        color: rgba(210,185,255,0.9);
-      }
       /* ── GRID OPTION A (Asymmetrical Split) ── */
       .tier-1-grid {
         display: grid;
@@ -6180,9 +6069,6 @@
          label from a 45% blue to --ai-text, which brightened the strip and
          changed its look. The dark values below are the originals; light gets
          its own muted equivalents rather than the dark ones being altered. */
-      :root[data-theme="light"] .filter-chip { color: rgba(16,24,40,0.62); }
-      :root[data-theme="light"] .filter-tray-label { color: rgba(31,95,208,0.72); }
-      :root[data-theme="light"] .filter-chip:hover { color: rgba(16,24,40,0.92); }
 
       /* Solid-green confirm buttons: dark text works on dark-theme --ok
          (#17b26a) but not on light's darker #0e9257. */
@@ -6246,7 +6132,6 @@
 
       /* Scrollbars */
       /* Panels whose fill is a literal dark colour rather than a token. */
-      :root[data-theme="light"] .filter-tray-inner { background: rgba(255,255,255,0.97); border-color: var(--card-border); }
       :root[data-theme="light"] .overlay-input-bar,
       :root[data-theme="light"] .aimy-float-bar { border-color: var(--card-border); }
       :root[data-theme="light"] .v2-dropdown-panel,
@@ -6295,7 +6180,6 @@
          listed: white on a brand fill is right in both themes. 7 such.
       ══════════════════════════════════════════════════════════════════ */
       :root[data-theme="light"] .afs-clear-all { color: var(--d500); }
-      :root[data-theme="light"] .filter-chip { color: var(--d300); }
       :root[data-theme="light"] .evidence-pill .ev-value { color: var(--d50); }
       :root[data-theme="light"] .dc-val { color: var(--d50); }
       :root[data-theme="light"] .finding-title { color: var(--d50); }
@@ -6324,10 +6208,6 @@
       :root[data-theme="light"] .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(16,24,40,0.06); }
       :root[data-theme="light"] .nav-item:hover { background: rgba(16,24,40,0.04); }
       :root[data-theme="light"] .nav-item.primary-surface { background: rgba(255,255,255,0.14); }
-      :root[data-theme="light"] .filter-tray-inner { background: rgba(255,255,255,0.85); }
-      :root[data-theme="light"] .filter-chip { background: rgba(16,24,40,0.04); }
-      :root[data-theme="light"] .filter-chip-back:hover { background: rgba(16,24,40,0.05); }
-      :root[data-theme="light"] .filter-chip.pressed { background: rgba(255,255,255,0.2); }
       :root[data-theme="light"] .summary-score-delta.flat { background: rgba(16,24,40,0.06); }
       :root[data-theme="light"] .summary-signal { background: rgba(16,24,40,0.025); }
       :root[data-theme="light"] .summary-signal:hover { background: rgba(16,24,40,0.045); }
@@ -6496,9 +6376,6 @@
          them into milky grey slabs; a recess on white is a faint dark
          tint, so the alpha is carried across rather than the colour.
       ══════════════════════════════════════════════════════════════════ */
-      :root[data-theme="light"] .filter-tray-inner { box-shadow: inset 0 1px 0 rgba(255,255,255,0.06),
-          0 4px 20px rgba(16,24,40,0.105),
-          0 0 24px rgba(51,105,255,0.06); }
       :root[data-theme="light"] .bcard:hover { box-shadow: 0 8px 32px rgba(16,24,40,0.09),
           0 0 0 1px rgba(255, 255, 255, 0.05); }
       :root[data-theme="light"] .bcard.tier-primary { box-shadow: 0 12px 40px rgba(16,24,40,0.135),
@@ -6558,10 +6435,6 @@
       :root[data-theme="light"] .topnav-user:hover { border-color: rgba(16,24,40,0.16); }
       :root[data-theme="light"] .nav-item:hover { border-color: rgba(16,24,40,0.07); }
       :root[data-theme="light"] .afs-label { border: 1px solid rgba(16,24,40,0.098); }
-      :root[data-theme="light"] .filter-tray-label { border: 1px solid rgba(16,24,40,0.098); }
-      :root[data-theme="light"] .filter-chip { border: 1px solid rgba(16,24,40,0.112); }
-      :root[data-theme="light"] .filter-chip-back { border-color: rgba(16,24,40,0.112); }
-      :root[data-theme="light"] .filter-chip-sugg { border-color: rgba(16,24,40,0.14); }
       :root[data-theme="light"] .summary-signal { border: 1px solid rgba(16,24,40,0.07); }
       :root[data-theme="light"] .summary-signal:hover { border-color: rgba(16,24,40,0.14); }
       :root[data-theme="light"] .sb-stat { border: 1px solid rgba(16,24,40,0.098); }
@@ -6681,7 +6554,7 @@
        composer on screen. Loaded last so it overrides the canvas rules,
        the same order aimy-canvas.css has over this page's inline block. -->
   <link rel="stylesheet" href="assets/aimy-responsive.css?v=6" />
-  <link rel="stylesheet" href="assets/aimy-rail.css?v=1" />
+  <link rel="stylesheet" href="assets/aimy-rail.css?v=2" />
   <script src="assets/aimy-viewport.js?v=5"></script>
   </head>
   <body>
@@ -7239,17 +7112,11 @@
         <!-- ════ FLOATING AIMY INPUT BAR (scoped to app-main) ══════════ -->
         <div class="aimy-float-wrap" id="aimyFloatWrap">
 
-          <!-- Filter tray, appears above the bar on input focus -->
-          <div class="filter-tray" id="filterTray" role="toolbar" aria-label="Filter by dimension">
-            <div class="filter-tray-inner">
-              <span class="filter-tray-label">Filter via AiMY</span>
-              <button class="filter-chip" data-filter="Company">Company</button>
-              <button class="filter-chip" data-filter="Product">Product</button>
-              <button class="filter-chip" data-filter="Agents">Agents</button>
-              <button class="filter-chip" data-filter="Time Period">Time Period</button>
-              <button class="filter-chip" data-filter="All">Reset all</button>
-            </div>
-          </div>
+          <!-- The filter tray was here. Settings is a configuration surface:
+               its content is a fixed set of cards, not a queryable corpus, so
+               "Filter via AiMY · Company · Product · Agents · Time Period" was
+               offering to narrow something that does not narrow. The four other
+               pages that carry a tray each sit over a real collection. -->
 
           <div class="aimy-float-bar" id="aimyFloatBar">
             <div class="aimy-float-icon" id="aimyFloatIcon" role="button" tabindex="0"
@@ -7848,13 +7715,6 @@
         /* ── Floating bar: hint visibility ──────── */
         floatInput.addEventListener("input", () => {
           floatHint.style.opacity = floatInput.value.length ? "0" : "1";
-          // Reset tray if user deleted the dimension prefix
-          if (activeDimension) {
-            const expectedPrefix = FILTER_PREFIXES[activeDimension];
-            if (expectedPrefix && !floatInput.value.startsWith(expectedPrefix)) {
-              resetTrayToDefault();
-            }
-          }
         });
 
         /* ── Floating bar: Enter / Send ──────────── */
@@ -7877,8 +7737,6 @@
           if (intent === "filter") {
             applyFilter(text);
           } else {
-            // Reset filter tray before opening canvas
-            if (typeof resetTrayToDefault === 'function') resetTrayToDefault();
             openOverlay(text);
           }
         }
@@ -7941,9 +7799,6 @@
             floatInput.disabled = false;
             floatInput.value = "";
             floatHint.style.opacity = "1";
-            // Reset filter tray to default chip state after send
-            if (typeof resetTrayToDefault === 'function') resetTrayToDefault();
-
             // Update active filter strip
             const parsed = parseFilterFromText(text);
             if (parsed) {
@@ -8280,132 +8135,13 @@
           autoResizeTextarea();
           handleOverlaySend();
         };
-        /* ── Filter tray, show/hide on float bar focus ─────────────────
-       The tray lives above the float bar and is only revealed when
-       the user focuses the input. It hides on blur (with a short
-       delay so clicks on chips register before the tray disappears). */
-        const filterTray = document.getElementById("filterTray");
+        /* The active-filter strip stays, and is still reachable: it is driven
+           by `parseFilterFromText` on SEND, so typing "Filter by Company:
+           Upland" into the bar still raises a chip. Only the tray that offered
+           those phrases as buttons has gone. */
         const activeFilterStrip = document.getElementById("activeFilterStrip");
         const afsClearAll = document.getElementById("afsClearAll");
-        let trayHideTimer = null;
         let activeFilters = {}; // { Company: "Upland", "Time Period": "This week", … }
-
-        function showTray() {
-          clearTimeout(trayHideTimer);
-          filterTray.classList.add("visible");
-        }
-
-        function hideTray() {
-          trayHideTimer = setTimeout(() => {
-            filterTray.classList.remove("visible");
-          }, 160);
-        }
-
-        floatInput.addEventListener("focus", showTray);
-        floatInput.addEventListener("blur", hideTray);
-
-        // Keep tray open while interacting with it
-        filterTray.addEventListener("mousedown", (e) => e.preventDefault()); // prevent input blur
-        filterTray.addEventListener("focusin", showTray);
-        filterTray.addEventListener("focusout", hideTray);
-
-        /* ── Filter chip click, contextual suggestions ──────────────
-       Clicking a dimension chip:
-         1. Pre-fills the input with the dimension prefix
-         2. Swaps the chip row to suggestion pills for that dimension
-         3. Clicking a suggestion pill appends the value and fires
-         4. Deleting the prefix text resets the tray to default chips */
-
-        const FILTER_PREFIXES = {
-          "Company":     "Filter by Company: ",
-          "Product":     "Filter by Product: ",
-          "Agents":      "Filter by Agents: ",
-          "Time Period":  "Filter by Time Period: ",
-          "All":         "Reset all filters",
-        };
-
-        const FILTER_SUGGESTIONS = {
-          "Company":     ["Upland", "MacPractice"],
-          "Product":     ["Objectif Lune", "Adestra", "InterFax", "Qvidian", "RightAnswers", "Second Street"],
-          "Agents":      ["Salma Ehab", "Omar Adel", "Sara Hassan", "Karim Nour", "Ahmed Mahfouz"],
-          "Time Period":  ["This week", "Last 30 days", "Last 90 days", "Q2 2026", "Custom range"],
-        };
-
-        // Cache the default inner HTML so we can restore it
-        const filterTrayInner = filterTray.querySelector(".filter-tray-inner");
-        const defaultTrayHTML = filterTrayInner.innerHTML;
-        let activeDimension = null; // currently expanded dimension key
-
-        function renderSuggestionChips(key) {
-          const prefix   = FILTER_PREFIXES[key];
-          const suggs    = FILTER_SUGGESTIONS[key] || [];
-          activeDimension = key;
-
-          // Build new inner HTML: label → back chip → suggestion chips
-          let html = `<span class="filter-tray-label">${key}</span>`;
-          html += `<button class="filter-chip filter-chip-back" data-action="reset-tray" aria-label="Back to filters">← Back</button>`;
-          suggs.forEach(s => {
-            html += `<button class="filter-chip filter-chip-sugg" data-suggestion="${s}" data-prefix="${prefix}">${s}</button>`;
-          });
-          filterTrayInner.innerHTML = html;
-
-          // Wire back button
-          filterTrayInner.querySelector("[data-action='reset-tray']").addEventListener("click", () => {
-            resetTrayToDefault();
-            floatInput.value = "";
-            floatInput.dispatchEvent(new Event("input"));
-            floatInput.focus();
-          });
-
-          // Wire suggestion pills
-          filterTrayInner.querySelectorAll(".filter-chip-sugg").forEach(pill => {
-            pill.addEventListener("click", () => {
-              const val = pill.dataset.suggestion;
-              const pfx = pill.dataset.prefix;
-              floatInput.value = pfx + val;
-              floatInput.dispatchEvent(new Event("input"));
-              floatInput.focus();
-              const len = floatInput.value.length;
-              floatInput.setSelectionRange(len, len);
-              // Brief press state
-              pill.classList.add("pressed");
-              setTimeout(() => pill.classList.remove("pressed"), 300);
-            });
-          });
-        }
-
-        function resetTrayToDefault() {
-          activeDimension = null;
-          filterTrayInner.innerHTML = defaultTrayHTML;
-          // Re-wire the default dimension chips
-          wireDimensionChips();
-        }
-
-        function wireDimensionChips() {
-          filterTrayInner.querySelectorAll(".filter-chip[data-filter]").forEach(chip => {
-            chip.addEventListener("click", () => {
-              const key = chip.dataset.filter;
-              if (key === "All") {
-                floatInput.value = "";
-                floatInput.dispatchEvent(new Event("input"));
-                clearAllFilters();
-                floatInput.focus();
-                return;
-              }
-              const prefix = FILTER_PREFIXES[key] || `Filter by ${key}: `;
-              floatInput.value = prefix;
-              floatInput.dispatchEvent(new Event("input"));
-              floatInput.focus();
-              const len = prefix.length;
-              floatInput.setSelectionRange(len, len);
-              // Render contextual suggestion chips
-              renderSuggestionChips(key);
-            });
-          });
-        }
-
-        // Initial wire-up of default chips
-        wireDimensionChips();
 
         /* ── Active filter strip management ────────────────────────────
        When a filter is *sent* (applyFilter called), parse the text
@@ -8452,15 +8188,14 @@
 
         afsClearAll.addEventListener("click", clearAllFilters);
 
-        /* ── Filter tray, show on injectChartPrompt too ───────────────
-       Chart prompt focuses the input, which fires the focus handler,
-       so no extra wiring needed. Active strip update hooks into
-       applyFilter (below) which is the final send path.             */
-
         /* ── Filter trigger buttons → Canvas injection ─────────────────
            (Legacy global kept for any external callers)               */
         window.injectFilter = function (filterKey) {
-          const prefix = FILTER_PREFIXES[filterKey] || `Filter by ${filterKey}: `;
+          /* Was `FILTER_PREFIXES[filterKey]`, which lived with the tray. The
+             map held exactly this string for every dimension, so the fallback
+             was always the same answer — only "All" differed, and "All" was a
+             tray chip, not a dimension anything injects. */
+          const prefix = `Filter by ${filterKey}: `;
           floatInput.value = prefix;
           floatInput.dispatchEvent(new Event("input"));
           floatInput.focus();
@@ -9770,7 +9505,7 @@
       })();
     </script>
 
-    <script src="assets/aimy-canvas.js?v=5"></script>
-    <script src="assets/aimy-rail.js?v=1"></script>
+    <script src="assets/aimy-canvas.js?v=7"></script>
+    <script src="assets/aimy-rail.js?v=2"></script>
   </body>
 </html>

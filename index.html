@@ -6165,6 +6165,99 @@
       .tooltip-action-dot { color:var(--warn); font-size:11px; line-height:1; }
       .tooltip-action-text { font-size:10.5px; font-weight:700; color:var(--teal); white-space:nowrap; }
 
+
+      /* ═══ DEMO ROLE SWITCH, IN THE MASTHEAD ══════════════════════════════
+         DELETE THIS BLOCK WHEN ROLES GO SERVER-SIDE. It is duplicated verbatim
+         in the one other page that has a switcher rather than shared into
+         assets/, and that is deliberate: this control does not survive to
+         production, and a shared file would leave a stylesheet nobody deletes
+         behind after both call sites are gone. Two blocks, two deletions.
+
+         WHY IT MOVED. It used to sit in the page as a primary control, which
+         made a scaffold look like a feature — the reading is "the product asks
+         me which role I am", when the real product will be told by the session.
+         In the masthead beside the product tabs it reads as what it is: a
+         harness switch, next to the other harness switch (`.ver-link`).
+
+         Sized off `.ver-link` on purpose — same 10.5px/700, same pill radius,
+         same `--wash-6` hairline, same muted `--d500` — so the two read as one
+         class of control and neither competes with the tabs between them. */
+      .nav-role-switch {
+        position: absolute;
+        right: calc(100% + 12px);
+        top: 50%;
+        transform: translateY(-50%);
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        /* 1 + 3 rather than 2 + 4: measured, that lands the control at 25px, the
+           same height as `.ver-link` beside it. A harness control that is taller
+           than the other harness control reads as the more important of the two. */
+        padding: 1px;
+        border-radius: 9999px;
+        border: 1px solid var(--wash-6);
+        white-space: nowrap;
+        /* .topnav-tabs sets pointer-events:none so the centred pill does not
+           swallow clicks either side of it; this has to opt back in. */
+        pointer-events: auto;
+      }
+      .nav-role-switch > button {
+        font-family: "Urbanist", sans-serif;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        line-height: 1.4;
+        /* --d400, where `.ver-link` beside it uses --d500. Measured: --d500 on
+           this ground is 3.54:1, under AA, and the unselected half of a switch
+           is a label somebody has to read to know what they would be switching
+           TO. --d400 clears it at 6:1 and still sits well below the selected
+           half, which carries a fill as its real signal. */
+        color: var(--d400);
+        background: transparent;
+        border: 0;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        cursor: pointer;
+        transition: background var(--transition-fast), color var(--transition-fast);
+      }
+      .nav-role-switch > button:hover { color: var(--d100); }
+      .nav-role-switch > button:focus-visible { outline: 2px solid var(--qa-accent); outline-offset: 2px; }
+      /* The selected one is stated by fill, not by accent colour: this is a
+         harness control and should never look like the page's own primary. */
+      .nav-role-switch > button.active,
+      .nav-role-switch > button.is-active {
+        background: var(--wash-6);
+        color: var(--d100);
+      }
+      .nav-role-switch svg { display: none; }
+
+      /* Below 1280 assets/aimy-responsive.css:307 puts .topnav-tabs back in
+         flow, so it stops being a containing block and an absolute child would
+         hang off .app-topnav instead. Static here, and flex order puts it left
+         of the pill on its own. */
+      @media (max-width: 1279.98px) {
+        .nav-role-switch {
+          position: static;
+          transform: none;
+          margin-right: 10px;
+        }
+      }
+      /* AND GONE BELOW 1100. Measured: this control takes ~110px out of a row
+         that aimy-responsive.css:303 already records as having 5.9px of clearance
+         without it. At 1024 and at 900 alike the tab strip ends up flush against
+         the right cluster and 4px off the logo; at 1100 it has 10px and 14px.
+         Nothing breaks below that — the strip scrolls, which is its designed
+         escape — but demo scaffolding is the last thing that should spend room
+         the product's own navigation is short of.
+
+         1099.98 is the shell's own compact line: assets/aimy-responsive.css:190
+         collapses the rail to 64px at exactly this width, so the harness control
+         leaves at the moment the shell starts conserving space rather than at a
+         number picked for itself. */
+      @media (max-width: 1099.98px) {
+        .nav-role-switch { display: none; }
+      }
+
       /* ═══ Director view (role toggle), reuses manager components ═══ */
       .view-toggle { display:inline-flex; gap:2px; padding:3px; margin:0 0 16px; background:var(--card-bg); border:1px solid var(--card-border); border-radius:22px; }
       .view-toggle-btn { font-family:"Urbanist",sans-serif; font-size:12px; font-weight:700; color:var(--d400); padding:6px 18px; border-radius:20px; background:transparent; border:none; cursor:pointer; transition:background var(--transition-fast), color var(--transition-fast); }
@@ -6855,7 +6948,7 @@
          composer on screen. Loaded last so it overrides the canvas rules,
          the same order aimy-canvas.css has over this page's inline block. -->
     <link rel="stylesheet" href="assets/aimy-responsive.css?v=6" />
-    <link rel="stylesheet" href="assets/aimy-rail.css?v=1" />
+    <link rel="stylesheet" href="assets/aimy-rail.css?v=2" />
     <script src="assets/aimy-viewport.js?v=5"></script>
   </head>
   <body>
@@ -6951,6 +7044,11 @@
       <!-- Product tabs -->
       <div class="topnav-spacer"></div>
       <div class="topnav-tabs">
+        <!-- Demo only, deleted when roles come from the session. See .nav-role-switch. -->
+        <div class="nav-role-switch" role="tablist" aria-label="Dashboard view (demo)">
+          <button class="view-toggle-btn active" id="viewTabManager" data-view="manager" role="tab" aria-selected="true" type="button">Manager</button>
+          <button class="view-toggle-btn" id="viewTabDirector" data-view="director" role="tab" aria-selected="false" type="button">Director</button>
+        </div>
         <div class="topnav-tabs-inner">
           <div class="topnav-tab">Connect</div>
           <a class="topnav-tab" href="https://aimy-knowledge.nour-ali.workers.dev/" title="Switch to AiMY Knowledge">Knowledge</a>
@@ -7145,11 +7243,9 @@
         </div>
 
         <div class="dashboard-scroll">
-          <!-- View toggle: Manager (agent ops) / Director (portfolio) -->
-          <div class="view-toggle" role="tablist" aria-label="Dashboard view">
-            <button class="view-toggle-btn active" id="viewTabManager" data-view="manager" role="tab" aria-selected="true" type="button">Manager</button>
-            <button class="view-toggle-btn" id="viewTabDirector" data-view="director" role="tab" aria-selected="false" type="button">Director</button>
-          </div>
+          <!-- The Manager/Director toggle moved into the masthead: it is demo
+               scaffolding, and standing at the head of the page it read as a
+               feature the product offers. See .nav-role-switch. -->
           <div class="dash-view" id="viewManager">
           <!-- Active filter strip, only visible when filters are applied -->
           <div class="active-filter-strip" id="activeFilterStrip">
@@ -13720,7 +13816,7 @@
         syncSelected();
       })();
     </script>
-    <script src="assets/aimy-canvas.js?v=5"></script>
-    <script src="assets/aimy-rail.js?v=1"></script>
+    <script src="assets/aimy-canvas.js?v=7"></script>
+    <script src="assets/aimy-rail.js?v=2"></script>
   </body>
 </html>

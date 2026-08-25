@@ -4413,7 +4413,7 @@
        composer on screen. Loaded last so it overrides the canvas rules,
        the same order aimy-canvas.css has over this page's inline block. -->
   <link rel="stylesheet" href="assets/aimy-responsive.css?v=6" />
-  <link rel="stylesheet" href="assets/aimy-rail.css?v=1" />
+  <link rel="stylesheet" href="assets/aimy-rail.css?v=2" />
   <script src="assets/aimy-viewport.js?v=5"></script>
   </head>
   <body>
@@ -4702,16 +4702,15 @@
               <h1 class="goal-hub-title">Goal Hub</h1>
               <p class="goal-hub-subtitle">Manage scoring templates and govern platform metric definitions</p>
             </div>
-            <!-- Role badge, visual signal of current access level -->
-            <div class="goal-role-badge" id="goalRoleBadge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <span id="goalRoleLabel">QA Manager</span>
-            </div>
-            <!-- Dev-only role toggle, remove before shipping -->
-            <button class="role-toggle-dev" id="roleToggleBtn" onclick="toggleRole()" title="Toggle role (dev only)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              Toggle Role
-            </button>
+            <!-- The "Toggle Role" button and the "Admin" badge beside it were both
+                 here and are both gone. The button said "remove before shipping"
+                 in its own comment; the badge was the other half of the same
+                 scaffold — it existed to show the toggle working, and with the
+                 toggle gone it only ever read "Admin" to everyone who could open
+                 this page. A label that cannot vary is not telling anyone
+                 anything. `currentRole` still initialises to 'admin', so nothing
+                 about what this surface shows has changed; the real product will
+                 be told the role by the session. -->
           </div>
 
           <!-- A7: AiMY Hub Summary Bar, entry-point K→A for the full Hub -->
@@ -5826,7 +5825,19 @@
         display: flex;
         align-items: center;
         gap: 16px;
-        padding: 20px 0 16px;
+        /* NO TOP PADDING. `.goal-hub-page` also carries `.dashboard-scroll`,
+           which already supplies the 24px every page starts its content with —
+           this rule was adding 20px on top of it and nothing else in the
+           product does.
+
+           Measured at 1440x900, distance from the viewport top to the first
+           line of page content: Dashboard 133, Reviews 139, Goal Hub 153. The
+           rail's first card sits at 134, so every other page lines up with it
+           and this one sat 19px below, which is what the arrow in the report
+           was pointing at. 0 puts it at 133, level with the Dashboard and with
+           the rail. The 16px below the header stays: that is the gap to the
+           tab strip, not page inset. */
+        padding: 0 0 16px;
         flex-shrink: 0;
       }
       .goal-hub-header-left {
@@ -5848,61 +5859,9 @@
       }
 
       /* Role badge */
-      .goal-role-badge {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        color: var(--d400);
-        padding: 5px 11px 5px 9px;
-        border: 1px solid rgba(255,255,255,0.08);
-        background: rgba(255,255,255,0.03);
-        border-radius: 20px;
-        flex-shrink: 0;
-      }
-      .goal-role-badge svg {
-        width: 11px;
-        height: 11px;
-        stroke: currentColor;
-        fill: none;
-      }
       /* Admin role gets accent treatment */
-      .goal-role-badge.admin {
-        color: var(--qa-accent);
-        border-color: rgba(var(--qa-accent-rgb),0.28);
-        background: rgba(var(--qa-accent-rgb),0.07);
-      }
 
       /* Dev-only toggle */
-      .role-toggle-dev {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-family: "Urbanist", sans-serif;
-        font-size: 10px;
-        font-weight: 600;
-        color: var(--d600);
-        padding: 5px 10px;
-        border: 1px dashed rgba(255,255,255,0.1);
-        border-radius: 8px;
-        background: none;
-        cursor: pointer;
-        transition: all var(--transition-fast);
-        flex-shrink: 0;
-      }
-      .role-toggle-dev:hover {
-        color: var(--d400);
-        border-color: rgba(255,255,255,0.18);
-      }
-      .role-toggle-dev svg {
-        width: 12px;
-        height: 12px;
-        stroke: currentColor;
-        fill: none;
-      }
 
       /* Tab bar */
       .goal-tab-bar {
@@ -9306,7 +9265,6 @@
       :root[data-theme="light"] .eval-sec-btn:hover { background: rgba(16,24,40,0.05); }
       :root[data-theme="light"] .eval-feed-header { background: rgba(255,255,255,0.2); }
       :root[data-theme="light"] .coming-soon-jira { background: rgba(16,24,40,0.04); }
-      :root[data-theme="light"] .goal-role-badge { background: rgba(16,24,40,0.03); }
       :root[data-theme="light"] .goal-tab:hover { background: rgba(16,24,40,0.03); }
       :root[data-theme="light"] .goal-view-toggle { background: rgba(255,255,255,0.3); }
       :root[data-theme="light"] .goal-view-btn:hover { background: rgba(16,24,40,0.05); }
@@ -9577,9 +9535,6 @@
       :root[data-theme="light"] .eval-feed { border: 1px solid rgba(16,24,40,0.084); }
       :root[data-theme="light"] .eval-feed-header { border: 1px solid rgba(16,24,40,0.056); }
       :root[data-theme="light"] .coming-soon-jira { border: 1px solid rgba(16,24,40,0.112); }
-      :root[data-theme="light"] .goal-role-badge { border: 1px solid rgba(16,24,40,0.112); }
-      :root[data-theme="light"] .role-toggle-dev { border: 1px dashed rgba(16,24,40,0.14); }
-      :root[data-theme="light"] .role-toggle-dev:hover { border-color: rgba(16,24,40,0.16); }
       :root[data-theme="light"] .goal-tab-bar { border: 1px solid rgba(16,24,40,0.098); }
       :root[data-theme="light"] .goal-filter-bar { border: 1px solid rgba(16,24,40,0.084); }
       :root[data-theme="light"] .goal-search-wrap { border: 1px solid rgba(16,24,40,0.14); }
@@ -10213,10 +10168,10 @@
       function applyRole() {
         const isAdmin = currentRole === 'admin';
         document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdmin ? '' : 'none');
-        const badge = document.getElementById('goalRoleBadge');
-        const label = document.getElementById('goalRoleLabel');
-        badge.className = 'goal-role-badge' + (isAdmin ? ' admin' : '');
-        label.textContent = isAdmin ? 'Admin' : 'QA Manager';
+        /* The badge write lived here and would now throw on a null element,
+           taking the rest of this function with it — including the .admin-only
+           pass above's counterpart work below. Removed rather than guarded:
+           there is no element to write to any more, on purpose. */
         if (!isAdmin && activeTab !== 'templates') switchgoalTab('templates');
         updateFilterTray();
         syncActiveCardBadges();
@@ -10274,10 +10229,6 @@
             deployBtn.onclick = function(e) { e.stopPropagation(); currentPreviewTemplate = name; openPreview(card); };
           }
         });
-      }
-      function toggleRole() {
-        currentRole = currentRole === 'manager' ? 'admin' : 'manager';
-        applyRole();
       }
       function switchgoalTab(tab) {
         activeTab = tab;
@@ -13370,7 +13321,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
       })();
     </script>
 
-    <script src="assets/aimy-canvas.js?v=5"></script>
-    <script src="assets/aimy-rail.js?v=1"></script>
+    <script src="assets/aimy-canvas.js?v=7"></script>
+    <script src="assets/aimy-rail.js?v=2"></script>
   </body>
 </html>

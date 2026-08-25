@@ -627,6 +627,88 @@
   window.addEventListener("popstate", refresh);
 
   /* ═══ BOOT ═══ */
+  /* ═══════════════════════════════════════════════
+     THE FILTER TRAY, OPEN ON ARRIVAL
+
+     The tray above the float bar — "Filter via AiMY" and its chips — is the
+     one part of the input nobody finds, because it is gated on focusing the
+     input and the reason to focus the input is not obvious until you have seen
+     the tray. A control that only appears once you have already guessed it is
+     there teaches nobody.
+
+     So it is open when the page arrives, and it stops being open the moment
+     the input is genuinely used. From then on the page's own focus/blur
+     handlers govern and this file does nothing — the tray is not being
+     reimplemented here, only held open once. Every page that has one gates it
+     on the same `.filter-tray.visible` class, which is the only hook this
+     needs.
+
+     NOT PINNED FOR SOMEBODY MID-CONVERSATION. `.overlay-resume` — the
+     "Continue · <topic>" pill — is a sibling of the tray, and
+     `.filter-tray.visible ~ .overlay-resume { display: none }` means an open
+     tray suppresses it. That pill is the more specific cue of the two: it is
+     about this reader's own unfinished work, where the tray hint is generic
+     discoverability, and a reader with a thread to resume is the one who least
+     needs to be taught the input. When the pill is up, the hint stands down.
+
+     The check is deferred a frame plus a tick because the pill is appended by
+     the page's own session pass, which runs after this file's boot.
+  ═══════════════════════════════════════════════ */
+  function initTrayHint() {
+    var tray = $("#filterTray");
+    if (!tray) return;                       /* two of the six have no tray */
+
+    var input = $("#aimyFloatInput");
+    /* The bar the input sits in. Focus anywhere inside it — the field, the send
+       button, a chip reached by Tab — is the reader using this thing, which is
+       the whole condition for standing the hint down. Matching on the input
+       element alone made the release depend on one node resolving at boot and
+       missed every other way in. */
+    var bar = tray.closest ? tray.closest(".aimy-float-wrap") : null;
+
+    function stand(down) {
+      if (!tray.hasAttribute("data-hint")) return;
+      tray.removeAttribute("data-hint");
+      /* Only close it if the input is not focused. If the reader released the
+         hint BY focusing, the page's own handler has already shown the tray
+         and owns it now — pulling the class here would fight that handler and
+         flicker the tray shut under their cursor. */
+      if (down && document.activeElement !== input) tray.classList.remove("visible");
+      document.removeEventListener("focusin", onFocus, true);
+      document.removeEventListener("keydown", onKey, true);
+      tray.removeEventListener("click", onChip, true);
+    }
+
+    function onFocus(e) {
+      var t = e.target;
+      if (!t) return;
+      if (t === input || (bar && bar.contains(t))) stand(false);
+    }
+    function onKey(e) { if (e.key === "Escape") stand(true); }
+    function onChip() { stand(false); }
+
+    /* Deferred so the resume pill has been appended by the time this looks.
+
+       A PLAIN TIMER, NOT requestAnimationFrame. The first cut wrapped this in
+       rAF and the hint never appeared: rAF does not fire while the page is not
+       compositing — a background tab, or in this preview, a hidden browser
+       pane — so the whole branch was dead exactly where it was being tested.
+       Timers fire either way. Nothing here needs to be frame-aligned; it needs
+       to run after the page's own boot, which is what the delay is for. */
+    setTimeout(function () {
+      if (tray.classList.contains("visible")) return;  /* page opened it first */
+      if ($(".overlay-resume.is-visible")) return;     /* they have somewhere to be */
+      if (document.activeElement === input) return;    /* already using it */
+
+      tray.setAttribute("data-hint", "");
+      tray.classList.add("visible");
+
+      document.addEventListener("focusin", onFocus, true);
+      document.addEventListener("keydown", onKey, true);
+      tray.addEventListener("click", onChip, true);
+    }, 300);
+  }
+
   function boot() {
     var th = $("#overlayThread");
     SUGGESTIONS = $("#overlaySuggestions");
@@ -655,6 +737,7 @@
     if (arrived && SESSIONS[arrived]) { openCanvasQuiet(); paintThread(); }
 
     watchCanvas();
+    initTrayHint();
   }
 
   /* ═══ WHAT THE PAGES CALL ═══
