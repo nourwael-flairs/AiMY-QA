@@ -5766,9 +5766,6 @@
 
       /* ═══════════════ PAGE LAYOUT ═══════════════ */
       .settings-wrap { max-width: 1040px; }
-      .settings-head { margin-bottom: 18px; }
-      .settings-title { font-size: 22px; font-weight: 800; color: var(--d50); letter-spacing: -0.02em; }
-      .settings-subtitle { font-size: 13px; color: var(--d400); margin-top: 3px; }
 
       /* AI config-health strip · Knowledge → Action */
       .ai-config-strip {
@@ -6786,10 +6783,6 @@
           </div>
 
         <div class="settings-wrap">
-          <div class="settings-head">
-            <div class="settings-title">Settings</div>
-          </div>
-
           <div class="ai-config-strip" role="region" aria-label="Configuration health">
             <div class="ai-config-mark"><svg viewBox="0 0 18 20"><use href="#aimy-logo-small"></use></svg></div>
             <div class="ai-config-body">
@@ -8254,6 +8247,66 @@
         let lastAcknowledgedCard = null;
         let lastDismissedCard = null;
         let lastCoachingAction = null;
+
+        /* ══ THE TOAST ITSELF, WHICH NOTHING ON THIS PAGE EVER DEFINED ══════
+           Seven call sites reached for `showToast({title, sub})` — filters
+           applied, alert acknowledged, alert dismissed, workflow triggered,
+           coaching deferred, recommendation dismissed, workflow ref — and this
+           page defined it nowhere. Under `"use strict"` every one of them threw
+           `ReferenceError: showToast is not defined` and took the rest of its
+           handler with it, so the action that raised the toast was left
+           half-finished. The markup was here the whole time (#aimyToast at the
+           end of the body); only the function was missing.
+
+           `toastTimer` was in the same state: read three times inside
+           `undoToast` below, declared nowhere, which is a second ReferenceError
+           waiting on the Undo button.
+
+           Modelled on agent-scorecards.html:14178, minus the two things that
+           are specific to that page: it consults `lastDismissed` and calls
+           `commitDismiss()` on expiry, and neither exists here. This one's undo
+           affordance keys off the three stashes declared immediately above,
+           which is what `undoToast` actually reads. */
+        let toastTimer = null;
+
+        window.showToast = function showToast({ title, sub }) {
+          const toast = document.getElementById("aimyToast");
+          if (!toast) return;
+
+          const titleEl = document.getElementById("aimyToastTitle");
+          const subEl = document.getElementById("aimyToastSub");
+          if (titleEl) titleEl.textContent = title || "";
+          if (subEl) subEl.textContent = sub || "";
+
+          /* Undo is offered only when something is actually stashed to undo.
+             Four of the seven callers stash nothing — "Filters updated" has no
+             inverse — and a button that says Undo and does nothing is worse
+             than no button.
+
+             SET `display` RATHER THAN THE `hidden` ATTRIBUTE. `[hidden]`
+             carries a UA `display: none` that any author `display` beats, and
+             this button sits in a flex row that could easily grow one. */
+          const canUndo = !!(lastCoachingAction || lastAcknowledgedCard || lastDismissedCard);
+          const undoBtn = document.getElementById("aimyToastUndo");
+          const divider = toast.querySelector(".aimy-toast-divider");
+          if (undoBtn) undoBtn.style.display = canUndo ? "" : "none";
+          if (divider) divider.style.display = canUndo ? "" : "none";
+
+          /* Restart the countdown by swapping the node: re-running a CSS
+             animation needs a fresh element, not a class toggle. */
+          const oldProgress = document.getElementById("aimyToastProgress");
+          if (oldProgress && oldProgress.parentNode) {
+            oldProgress.parentNode.replaceChild(oldProgress.cloneNode(false), oldProgress);
+          }
+
+          toast.classList.add("visible");
+
+          if (toastTimer) clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () {
+            toast.classList.remove("visible");
+            toastTimer = null;
+          }, 5000);
+        };
 
         /* ── Patch undoToast ─────────────────────────────────────────── */
         const _origUndoToastAck = window.undoToast;

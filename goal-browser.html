@@ -4697,21 +4697,25 @@
         <div class="goal-hub-page dashboard-scroll" id="goalHubPage">
 
           <!-- Page header -->
-          <div class="goal-hub-header">
-            <div class="goal-hub-header-left">
-              <h1 class="goal-hub-title">Goal Hub</h1>
-              <p class="goal-hub-subtitle">Manage scoring templates and govern platform metric definitions</p>
-            </div>
-            <!-- The "Toggle Role" button and the "Admin" badge beside it were both
-                 here and are both gone. The button said "remove before shipping"
-                 in its own comment; the badge was the other half of the same
-                 scaffold — it existed to show the toggle working, and with the
-                 toggle gone it only ever read "Admin" to everyone who could open
-                 this page. A label that cannot vary is not telling anyone
-                 anything. `currentRole` still initialises to 'admin', so nothing
-                 about what this surface shows has changed; the real product will
-                 be told the role by the session. -->
-          </div>
+          <!-- ══ THE PAGE HEADER WAS HERE, AND IT IS GONE ENTIRELY ══════════
+               It came apart in four pieces, in this order:
+
+                 "Toggle Role"   a dev switch whose own comment said "remove
+                                 before shipping".
+                 "Admin" badge   the other half of that scaffold — it existed to
+                                 show the toggle working, and once the toggle
+                                 went it only ever read "Admin" to everyone who
+                                 could open this page. A label that cannot vary
+                                 tells nobody anything.
+                 "Goal Hub"      the title. The tab strip below names this
+                                 surface, and the rail says you are on it.
+                 the subtitle    "Manage scoring templates and govern platform
+                                 metric definitions" — last one out.
+
+               Nothing about what this surface SHOWS changed with any of it:
+               `currentRole` still initialises to 'admin', and the real product
+               will be told the role by the session. The tab strip is the first
+               thing on the page now. -->
 
           <!-- A7: AiMY Hub Summary Bar, entry-point K→A for the full Hub -->
           <!-- <div class="aimy-intelligence-bar" id="aimyHubSummaryBar" style="margin-bottom:0;margin-top:4px;display:none">
@@ -5820,43 +5824,6 @@
         display: block;
       }
 
-      /* Page header */
-      .goal-hub-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        /* NO TOP PADDING. `.goal-hub-page` also carries `.dashboard-scroll`,
-           which already supplies the 24px every page starts its content with —
-           this rule was adding 20px on top of it and nothing else in the
-           product does.
-
-           Measured at 1440x900, distance from the viewport top to the first
-           line of page content: Dashboard 133, Reviews 139, Goal Hub 153. The
-           rail's first card sits at 134, so every other page lines up with it
-           and this one sat 19px below, which is what the arrow in the report
-           was pointing at. 0 puts it at 133, level with the Dashboard and with
-           the rail. The 16px below the header stays: that is the gap to the
-           tab strip, not page inset. */
-        padding: 0 0 16px;
-        flex-shrink: 0;
-      }
-      .goal-hub-header-left {
-        flex: 1;
-        min-width: 0;
-      }
-      .goal-hub-title {
-        font-size: 22px;
-        font-weight: 800;
-        color: var(--d50);
-        letter-spacing: -0.025em;
-        line-height: 1.15;
-        margin-bottom: 4px;
-      }
-      .goal-hub-subtitle {
-        font-size: 12px;
-        color: var(--d400);
-        font-weight: 400;
-      }
 
       /* Role badge */
       /* Admin role gets accent treatment */
