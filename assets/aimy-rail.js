@@ -89,17 +89,17 @@
      figure. Both are cut out and turned into elements by `sentence()`, which
      builds text nodes rather than assigning innerHTML — see the note there. */
   var PAGES = {
-    "index.html":
+    "index":
       "SLA compliance is running *29 points* under target — {open Dashboard}.",
-    "agent-scorecards.html":
+    "agent-scorecards":
       "*5 agents* are failing Follow-up Confirmation and need coaching — {open Reviews}.",
-    "my-profile.html":
+    "my-profile":
       "Your feedback escalates in *3 days* unless you acknowledge it — {open My Profile}.",
-    "goal-browser.html":
+    "goal-browser":
       "*2 goal change requests* are waiting on your decision — {open Goal Hub}.",
-    "data-ingestion.html":
+    "data-ingestion":
       "S3 Voice has failed *3 times* in 24 hours — {open Data}.",
-    "settings.html":
+    "settings":
       "*3 integrations* are still not connected — {open Settings}."
   };
 
@@ -110,18 +110,34 @@
     return Array.prototype.slice.call((root || document).querySelectorAll(sel));
   }
 
-  /* The page's own filename. `index.html` when the server serves a directory,
-     which is how the dashboard is reached in every preview. */
-  function currentPage() {
-    var last = location.pathname.split("/").pop();
-    return last && last.indexOf(".html") > -1 ? last : "index.html";
-  }
+  /* ══ ONE IDENTITY, DERIVED THE SAME WAY FROM A URL AND FROM AN href ══════
+     This is what the page IS, reduced until the address bar and the markup can
+     be compared. Reported bug: on every page but the Dashboard the rail claimed
+     you were on the Dashboard, which also took the Dashboard's own link away —
+     the one page you then could not get back to.
 
-  /* An anchor's target, normalised the same way, so `href="index.html"` and a
-     directory URL agree about which sentence is the current one. */
-  function pageOf(href) {
-    var last = String(href || "").split("/").pop().split("#")[0].split("?")[0];
-    return last || "index.html";
+     THE CAUSE WAS THE EXTENSION. The old resolver read
+     `location.pathname.split("/").pop()` and returned "index.html" unless it
+     found ".html" in it. Cloudflare Workers serves this site from
+     `wrangler.jsonc`'s `assets` block, whose default html_handling REDIRECTS
+     `/agent-scorecards.html` to `/agent-scorecards` — so on the deployed
+     prototype the pathname never contains ".html", every page fell to the
+     fallback, and every page thought it was the Dashboard.
+
+     `python -m http.server`, which is what the local preview runs, serves the
+     extension verbatim. That is why six passes of local verification never saw
+     it: the bug only exists under the URL scheme the real deployment uses.
+
+     So identity is now the basename with any extension and any trailing slash
+     removed, lowercased. `/`, `/index.html`, `/index` and `/QA/index.html` all
+     resolve to "index"; `/agent-scorecards` and `agent-scorecards.html` both
+     resolve to "agent-scorecards". Trailing slashes are stripped BEFORE the
+     split, or `/agent-scorecards/` would pop an empty segment and fall back to
+     the Dashboard all over again. */
+  function pageKey(urlOrHref) {
+    var s = String(urlOrHref || "").split("#")[0].split("?")[0].replace(/\/+$/, "");
+    var last = s.split("/").pop().replace(/\.[a-z0-9]+$/i, "");
+    return last ? last.toLowerCase() : "index";
   }
 
   /* ═══════════════════════════════════════════════
@@ -213,7 +229,7 @@
   ═══════════════════════════════════════════════ */
   function build(nav, page) {
     return $$(".nav-item", nav).map(function (a) {
-      var key = pageOf(a.getAttribute("href"));
+      var key = pageKey(a.getAttribute("href"));
 
       /* The label is a BARE TEXT NODE — no span, no title, no data-label —
          which is the same fact aimy-responsive.css:201 and aimy-viewport.js:167
@@ -265,7 +281,13 @@
       if (PAGES[key]) {
         var card = document.createElement("div");
         card.className = "rail-card";
-        card.appendChild(sentence(PAGES[key], key, key === page));
+        /* THE ANCHOR'S OWN href, NOT THE DERIVED KEY. The key is an identity —
+           "agent-scorecards" — and pointing a link at it would invent a URL
+           this deployment may not serve. Every page already links its siblings
+           the way its own host expects; the rail borrows that verbatim so it
+           can never disagree with the rest of the page about where a
+           destination lives. */
+        card.appendChild(sentence(PAGES[key], a.getAttribute("href"), key === page));
         entry.appendChild(card);
       }
 
@@ -419,7 +441,7 @@
     sidebar.setAttribute("aria-label", "What is where in QA");
 
     mountHead(nav);
-    build(nav, currentPage());
+    build(nav, pageKey(location.pathname));
     mountDrawer(sidebar, nav);
   }
 
