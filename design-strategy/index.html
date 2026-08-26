@@ -782,26 +782,32 @@
     .btn svg { width: 14px; height: 14px; flex-shrink: 0; }
 
     .btn-brand  { background: var(--brand); color: #fff; border-color: var(--brand); }
-    .btn-brand:hover  { background: #4d7fff; border-color: #4d7fff; }
+    .btn-brand:not(:disabled):hover  { background: #4d7fff; border-color: #4d7fff; }
 
     .btn-ghost  { background: rgba(255,255,255,0.05); color: var(--d300); border-color: rgba(255,255,255,0.1); }
-    .btn-ghost:hover  { background: rgba(255,255,255,0.09); color: var(--d50); border-color: rgba(255,255,255,0.16); }
+    .btn-ghost:not(:disabled):hover  { background: rgba(255,255,255,0.09); color: var(--d50); border-color: rgba(255,255,255,0.16); }
 
     .btn-err    { background: var(--err-bg);  color: var(--err);  border-color: rgba(240,68,56,0.25); }
-    .btn-err:hover    { background: rgba(240,68,56,0.2); }
+    .btn-err:not(:disabled):hover    { background: rgba(240,68,56,0.2); }
 
     .btn-warn   { background: var(--warn-bg); color: var(--warn); border-color: rgba(247,144,9,0.25); }
-    .btn-warn:hover   { background: rgba(247,144,9,0.2); }
+    .btn-warn:not(:disabled):hover   { background: rgba(247,144,9,0.2); }
 
     .btn-ok     { background: var(--ok-bg);   color: var(--ok);   border-color: rgba(23,178,106,0.25); }
-    .btn-ok:hover     { background: rgba(23,178,106,0.22); }
+    .btn-ok:not(:disabled):hover     { background: rgba(23,178,106,0.22); }
 
     .btn-accent     { background: var(--accent-dim); color: var(--accent); border-color: rgba(var(--accent-rgb),0.28); }
-    .btn-accent:hover     { background: rgba(var(--accent-rgb),0.22); }
+    .btn-accent:not(:disabled):hover     { background: rgba(var(--accent-rgb),0.22); }
 
     .btn-sm { font-size: 10.5px; padding: 5px 11px; }
     .btn-lg { font-size: 13px; padding: 10px 20px; }
     .btn-icon { padding: 8px; }
+    /* Disabled. The opacity and the cursor were already here; what was
+       missing is that every variant's :hover is a separate rule and fired
+       regardless, so a disabled button brightened under the cursor while
+       claiming to be unavailable. Each variant hover is now :not(:disabled).
+       Kept as hover-suppression rather than `pointer-events: none`, which
+       would also suppress the not-allowed cursor that says why. */
     .btn:disabled { opacity: 0.38; cursor: not-allowed; }
 
     /* ═══════════════════════════════════════════════
@@ -1822,6 +1828,64 @@
     .seg-btn:hover { color: var(--d100); }
     .seg-btn.active { background: var(--accent-dim); color: var(--accent); }
 
+    /* ── Verdict control ─────────────────────────────────────────
+       A .seg is a view switcher: it changes what you are LOOKING AT, one
+       option is always selected, and the selection claims nothing. A verdict
+       is the opposite on all three counts — it records a judgement, it starts
+       with nothing selected, and what it records gets audited.
+
+       Three things it needs that a switcher must never have:
+
+       1. RADIOGROUP SEMANTICS — role="radiogroup" + role="radio" +
+          aria-checked, one tab stop, arrow keys between options. A switcher
+          can be a row of buttons; an input cannot.
+       2. AN EMPTY STATE — nothing is selected until a person selects it.
+          .seg cannot express "not answered yet", which is the state a review
+          surface exists to show.
+       3. TWO KINDS OF SELECTED — the AI drafts and a person confirms, so
+          "the model put this here" and "I put this here" cannot look alike.
+          .is-draft is that difference, and it is why this is not a .seg
+          variant: a switcher has one selected style because there is only
+          ever one way an option gets selected.
+
+       Meaning comes from data-verdict, so the colour follows the answer
+       rather than a class the caller has to remember to pair up. */
+    .verdict {
+      display: inline-flex; background: var(--card-bg-raised);
+      border: 1px solid var(--card-border); border-radius: var(--r-md);
+      padding: 3px; gap: 2px;
+    }
+    .verdict-btn {
+      appearance: none; border: none; background: transparent; cursor: pointer;
+      font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: var(--d400);
+      padding: 6px 15px; border-radius: var(--r-sm);
+      transition: background var(--t-fast), color var(--t-fast);
+    }
+    .verdict-btn:hover { color: var(--d100); }
+    .verdict-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+    .verdict-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+    .verdict-btn:disabled:hover { color: var(--d400); }
+
+    /* Selected, by meaning. Agreeing and passing are the same act on two
+       scales, so they read the same; so do disagreeing and failing. */
+    .verdict-btn.active { background: var(--accent-dim); color: var(--accent); }
+    .verdict-btn.active[data-verdict="agree"],
+    .verdict-btn.active[data-verdict="pass"] { background: var(--ok-bg); color: var(--ok); }
+    .verdict-btn.active[data-verdict="disagree"],
+    .verdict-btn.active[data-verdict="fail"] { background: var(--err-bg); color: var(--err); }
+    .verdict-btn.active[data-verdict="na"] { background: var(--card-bg); color: var(--d200); }
+
+    /* The AI's draft. Same answer, visibly not yours — outlined rather than
+       filled, so a screen of drafts cannot be read as a screen of
+       confirmations. */
+    .verdict.is-draft .verdict-btn.active {
+      background: transparent; box-shadow: inset 0 0 0 1px currentColor; opacity: 0.62;
+    }
+
+    /* Waiting on a person. On the control, because the control is the thing
+       they have to touch. */
+    .verdict.needs-answer { border-color: rgba(247,144,9,0.4); }
+
     /* ── Toggle switch ── */
     .ds-switch { position: relative; display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
       font-size: 12.5px; font-weight: 600; color: var(--d200); user-select: none; }
@@ -2267,6 +2331,87 @@
     .cal-day.muted { color: var(--d600); }
     .cal-day.today { border: 1px solid var(--card-border-hover); }
     .cal-day.selected { background: var(--accent); color: #fff; font-weight: 700; }
+    /* Range states. The calendar selected ONE date; a range needs to say
+       which two days are the ends and which days are between them, and the
+       ends have to be visibly the ends — a run of identically shaded days
+       does not tell you where the range starts. */
+    .cal-day.in-range { background: rgba(var(--accent-rgb), 0.14); border-radius: 0; color: var(--d100); }
+    .cal-day.range-start,
+    .cal-day.range-end { background: var(--accent); color: #fff; font-weight: 700; }
+    .cal-day.range-start { border-radius: var(--r-sm) 0 0 var(--r-sm); }
+    .cal-day.range-end   { border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+    .cal-day.range-start.range-end { border-radius: var(--r-sm); }
+    .cal-day.is-blank { pointer-events: none; }
+
+    /* ── Date range picker ──────────────────────────────────────
+       ONE control, not two date fields with a dash between them. The system
+       had .cal (selects a single date) and .drange (a dual-value SLIDER, for
+       a numeric range) and neither answers "between these two days", which
+       is what every filter bar in the product actually asks for. Two fields
+       side by side are two controls the reader has to keep in sync
+       themselves, and they cannot express "last 30 days" at all.
+
+       PRESETS ON THE LEFT, CALENDAR ON THE RIGHT. The common answers go
+       where the eye lands; the calendar is for the case they do not cover.
+
+       THE TRIGGER READS THE SELECTION — "Any date", "Last 7 days",
+       "May 10 – May 20" — so the current filter is legible without opening
+       anything, and clearing is on the trigger rather than inside. */
+    .drp { position: relative; display: inline-flex; }
+    .drp-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: var(--font-sans); font-size: 12.5px; font-weight: 600; color: var(--d200);
+      background: var(--card-bg-raised); border: 1px solid var(--card-border);
+      border-radius: var(--r-md); padding: 7px 11px; cursor: pointer; white-space: nowrap;
+      transition: border-color var(--t-fast), color var(--t-fast);
+    }
+    .drp-btn:hover { border-color: var(--card-border-hover); color: var(--d100); }
+    .drp-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+    .drp-btn svg { width: 13px; height: 13px; color: var(--d400); flex-shrink: 0; }
+    /* NO CHEVRON. A chevron is the affordance for a select, and this opens a
+       calendar rather than a list of options — wearing one made it read as
+       one more dropdown in a row of dropdowns. */
+    .drp.is-set .drp-btn { border-color: rgba(var(--accent-rgb), 0.4); color: var(--accent); }
+    .drp.is-set .drp-btn svg { color: var(--accent); }
+    .drp-clear {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 15px; height: 15px; border-radius: 50%; border: none; cursor: pointer;
+      background: rgba(var(--accent-rgb), 0.18); color: var(--accent); padding: 0;
+    }
+    .drp-clear svg { width: 8px; height: 8px; color: currentColor; }
+
+    .drp-panel {
+      position: absolute; top: calc(100% + 6px); left: 0; z-index: 60;
+      display: none; gap: 14px; padding: 12px;
+      background: var(--card-bg); border: 1px solid var(--card-border-hover);
+      border-radius: var(--r-lg); box-shadow: var(--shadow-md);
+    }
+    .drp-panel.open { display: flex; }
+    /* The panel is ~400px and the trigger can sit anywhere in a toolbar.
+       Left-anchored at the right-hand end of a bar it runs off the page and
+       gives the whole surface a horizontal scrollbar, so it flips to the
+       trigger's right edge when there is no room. Decided on open from the
+       measured width — a media query cannot see how far along a bar a
+       control happens to sit. */
+    .drp.align-end .drp-panel { left: auto; right: 0; }
+    .drp-presets {
+      display: flex; flex-direction: column; gap: 2px;
+      padding-right: 12px; border-right: 1px solid var(--hairline); min-width: 122px;
+    }
+    .drp-preset {
+      font-family: var(--font-sans); font-size: 11.5px; font-weight: 600; text-align: left;
+      color: var(--d300); background: none; border: none; cursor: pointer;
+      padding: 7px 9px; border-radius: var(--r-sm);
+      transition: background var(--t-fast), color var(--t-fast);
+    }
+    .drp-preset:hover { background: var(--card-bg-raised); color: var(--d100); }
+    .drp-preset.active { background: var(--accent-dim); color: var(--accent); }
+    .drp-preset:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+    .drp-hint {
+      margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--hairline);
+      font-size: 10.5px; line-height: 1.5; color: var(--d500);
+    }
+    .drp-panel .cal { border: none; box-shadow: none; padding: 0; background: none; }
 
     /* ── Radio cards (selection cards) ── */
     .radio-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; max-width: 520px; }
@@ -3831,6 +3976,7 @@
     <span class="ds-nav-label">Core UI</span>
     <a class="ds-nav-link" href="#tabs"><span class="dot"></span>Tabs</a>
     <a class="ds-nav-link" href="#segmented"><span class="dot"></span>Segmented Control</a>
+    <a class="ds-nav-link" href="#verdict"><span class="dot"></span>Verdict Control</a>
     <a class="ds-nav-link" href="#button-group"><span class="dot"></span>Button Group</a>
     <a class="ds-nav-link" href="#menu"><span class="dot"></span>Menu</a>
     <a class="ds-nav-link" href="#switch"><span class="dot"></span>Toggle Switch</a>
@@ -3895,6 +4041,7 @@
     <a class="ds-nav-link" href="#search-field"><span class="dot"></span>Search Field</a>
     <a class="ds-nav-link" href="#textarea"><span class="dot"></span>Textarea</a>
     <a class="ds-nav-link" href="#date-picker"><span class="dot"></span>Date Picker</a>
+    <a class="ds-nav-link" href="#date-range"><span class="dot"></span>Date Range Picker</a>
     <a class="ds-nav-link" href="#radio-cards"><span class="dot"></span>Radio Cards</a>
     <a class="ds-nav-link" href="#stepper"><span class="dot"></span>Number Stepper</a>
     <a class="ds-nav-link" href="#file-upload"><span class="dot"></span>File Upload</a>
@@ -7945,6 +8092,103 @@ dd.<span class="ck">addEventListener</span>(<span class="cs">'dd:change'</span>,
 </div>
 
 <!-- ══════════════════════════════════════════════
+     CORE UI · VERDICT CONTROL
+══════════════════════════════════════════════ -->
+<div class="ds-section">
+  <span class="ds-section-anchor" id="verdict"></span>
+  <div class="ds-h2">Verdict Control</div>
+  <p class="ds-desc">
+    Records a person's judgement on one AI reading. Looks like a
+    <a href="#segmented">Segmented Control</a> and is not one: a switcher changes
+    what you are looking at, this changes what the record says. It carries
+    radiogroup semantics, starts empty, and distinguishes an AI draft from a
+    human confirmation \u2014 none of which a view switcher should ever do.
+  </p>
+
+  <div class="ds-preview">
+    <div style="display:flex;flex-direction:column;gap:16px">
+
+      <div class="demo-row" style="gap:14px;align-items:center;flex-wrap:wrap">
+        <span class="ds-preview-label" style="position:static;width:132px;flex-shrink:0">Not answered</span>
+        <div class="verdict needs-answer" role="radiogroup" aria-label="Did the agent set clear next steps?">
+          <button class="verdict-btn" role="radio" aria-checked="false" tabindex="0"  data-verdict="agree">Agree</button>
+          <button class="verdict-btn" role="radio" aria-checked="false" tabindex="-1" data-verdict="disagree">Disagree</button>
+          <button class="verdict-btn" role="radio" aria-checked="false" tabindex="-1" data-verdict="na">N/A</button>
+        </div>
+        <span style="font-size:11.5px;color:var(--d400);flex:1;min-width:200px">Nothing is selected. The border says it is waiting on you.</span>
+      </div>
+
+      <div class="demo-row" style="gap:14px;align-items:center;flex-wrap:wrap">
+        <span class="ds-preview-label" style="position:static;width:132px;flex-shrink:0">AI draft</span>
+        <div class="verdict is-draft" role="radiogroup" aria-label="AI draft">
+          <button class="verdict-btn active" role="radio" aria-checked="true" tabindex="0" data-verdict="agree">Agree</button>
+          <button class="verdict-btn" role="radio" aria-checked="false" tabindex="-1" data-verdict="disagree">Disagree</button>
+          <button class="verdict-btn" role="radio" aria-checked="false" tabindex="-1" data-verdict="na">N/A</button>
+        </div>
+        <span style="font-size:11.5px;color:var(--d400);flex:1;min-width:200px">Outlined, not filled. The model put this here.</span>
+      </div>
+
+      <div class="demo-row" style="gap:14px;align-items:center;flex-wrap:wrap">
+        <span class="ds-preview-label" style="position:static;width:132px;flex-shrink:0">Confirmed</span>
+        <div class="verdict" role="radiogroup" aria-label="Confirmed">
+          <button class="verdict-btn" role="radio" aria-checked="false" tabindex="-1" data-verdict="agree">Agree</button>
+          <button class="verdict-btn active" role="radio" aria-checked="true" tabindex="0" data-verdict="disagree">Disagree</button>
+          <button class="verdict-btn" role="radio" aria-checked="false" tabindex="-1" data-verdict="na">N/A</button>
+        </div>
+        <span style="font-size:11.5px;color:var(--d400);flex:1;min-width:200px">Filled. A person put this here.</span>
+      </div>
+
+      <div class="demo-row" style="gap:14px;align-items:center;flex-wrap:wrap">
+        <span class="ds-preview-label" style="position:static;width:132px;flex-shrink:0">Nothing to agree with</span>
+        <div class="verdict" role="radiogroup" aria-label="Score it yourself">
+          <button class="verdict-btn active" role="radio" aria-checked="true" tabindex="0" data-verdict="pass">Pass</button>
+          <button class="verdict-btn" role="radio" aria-checked="false" tabindex="-1" data-verdict="fail">Fail</button>
+        </div>
+        <span style="font-size:11.5px;color:var(--d400);flex:1;min-width:200px">The AI produced no reading, so there is nothing to agree with \u2014 the same control scores it directly.</span>
+      </div>
+
+      <div class="demo-row" style="gap:14px;align-items:center;flex-wrap:wrap">
+        <span class="ds-preview-label" style="position:static;width:132px;flex-shrink:0">Locked</span>
+        <div class="verdict" role="radiogroup" aria-label="Already sent">
+          <button class="verdict-btn active" role="radio" aria-checked="true" tabindex="0" data-verdict="agree" disabled>Agree</button>
+          <button class="verdict-btn" role="radio" aria-checked="false" tabindex="-1" data-verdict="disagree" disabled>Disagree</button>
+          <button class="verdict-btn" role="radio" aria-checked="false" tabindex="-1" data-verdict="na" disabled>N/A</button>
+        </div>
+        <span style="font-size:11.5px;color:var(--d400);flex:1;min-width:200px">Sent and on the record. Changing it needs a new evaluation, not an edit.</span>
+      </div>
+
+    </div>
+  </div>
+
+  <table class="ds-table">
+    <thead><tr><th>Class</th><th>Role</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>.verdict</code></td><td>Container</td><td>Must carry <code>role="radiogroup"</code> and an <code>aria-label</code> naming what is being judged</td></tr>
+      <tr><td><code>.verdict-btn</code></td><td>Option</td><td><code>role="radio"</code>, <code>aria-checked</code>, and <code>data-verdict</code> for the meaning</td></tr>
+      <tr><td><code>.active</code></td><td>Selected</td><td>Colour comes from <code>data-verdict</code>: agree/pass ok, disagree/fail err, na neutral</td></tr>
+      <tr><td><code>.is-draft</code></td><td>On the container</td><td>The selection is the AI's, not the user's. Outlined instead of filled</td></tr>
+      <tr><td><code>.needs-answer</code></td><td>On the container</td><td>Nothing selected and something is expected</td></tr>
+      <tr><td><code>:disabled</code></td><td>Locked</td><td>The verdict is on the record. Hover does not respond</td></tr>
+    </tbody>
+  </table>
+
+  <div class="ds-callout">
+    <b>One tab stop, arrow keys between options.</b> A radiogroup is one control,
+    not three buttons: Tab enters and leaves it, \u2190/\u2192 move the selection, and only
+    the selected option (or the first, when none is) is tabbable. Rendering three
+    plain buttons in a row is the failure this component exists to stop.
+  </div>
+
+  <div class="ds-callout">
+    <b>Never pre-select on the user's behalf without saying so.</b> A draft that
+    looks like a confirmation turns a review into a rubber stamp \u2014 the reader
+    agrees with a screen of green because it was already green.
+    <code>.is-draft</code> is not decoration; it is the thing that keeps
+    "the AI decided" and "I decided" apart in a record that will be audited.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
      CORE UI · BUTTON GROUP
 ══════════════════════════════════════════════ -->
 <div class="ds-section">
@@ -9109,6 +9353,107 @@ dd.<span class="ck">addEventListener</span>(<span class="cs">'dd:change'</span>,
         <div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div><div class="cal-day">20</div><div class="cal-day">21</div><div class="cal-day">22</div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     FORMS · DATE RANGE PICKER
+══════════════════════════════════════════════ -->
+<div class="ds-section">
+  <span class="ds-section-anchor" id="date-range"></span>
+  <div class="ds-h2">Date Range Picker</div>
+  <p class="ds-desc">
+    One control for “between these two days”. Not two
+    <a href="#date-picker">Date Pickers</a> with a dash between them, and not
+    <code>.drange</code>, which is a dual-value <em>slider</em> for numbers.
+    Presets carry the answers people actually want; the calendar is for the
+    rest.
+  </p>
+
+  <div class="ds-preview" style="min-height:330px">
+    <div style="display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start">
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span class="ds-preview-label" style="position:static">Trigger states</span>
+        <div class="drp">
+          <button class="drp-btn" type="button" aria-haspopup="dialog" aria-expanded="false">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1.6" y="2.6" width="10.8" height="9.8" rx="1.6"/><path d="M1.6 5.6h10.8M4.6 1.4v2.4M9.4 1.4v2.4"/></svg>
+            <span>Any date</span>
+          </button>
+        </div>
+        <div class="drp is-set">
+          <button class="drp-btn" type="button" aria-haspopup="dialog" aria-expanded="false">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1.6" y="2.6" width="10.8" height="9.8" rx="1.6"/><path d="M1.6 5.6h10.8M4.6 1.4v2.4M9.4 1.4v2.4"/></svg>
+            <span>Last 7 days</span>
+            <span class="drp-clear" role="button" tabindex="0" aria-label="Clear date range"><svg viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 1l6 6M7 1L1 7"/></svg></span>
+          </button>
+        </div>
+        <div class="drp is-set">
+          <button class="drp-btn" type="button" aria-haspopup="dialog" aria-expanded="false">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1.6" y="2.6" width="10.8" height="9.8" rx="1.6"/><path d="M1.6 5.6h10.8M4.6 1.4v2.4M9.4 1.4v2.4"/></svg>
+            <span>Mar 9 – Mar 18</span>
+            <span class="drp-clear" role="button" tabindex="0" aria-label="Clear date range"><svg viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 1l6 6M7 1L1 7"/></svg></span>
+          </button>
+        </div>
+        <span style="font-size:11.5px;color:var(--d400);max-width:190px">
+          The trigger reads the selection, so the filter is legible without opening anything.
+        </span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span class="ds-preview-label" style="position:static">Open</span>
+        <div class="drp-panel open" style="position:static">
+          <div class="drp-presets">
+            <button class="drp-preset" type="button">Last 7 days</button>
+            <button class="drp-preset active" type="button">Last 30 days</button>
+            <button class="drp-preset" type="button">Last 90 days</button>
+            <button class="drp-preset" type="button">All time</button>
+            <div class="drp-hint">Or click a start and end day.</div>
+          </div>
+          <div class="cal">
+            <div class="cal-head">
+              <button class="cal-nav" aria-label="Previous month"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+              <div class="cal-title">March 2026</div>
+              <button class="cal-nav" aria-label="Next month"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            </div>
+            <div class="cal-grid">
+              <div class="cal-dow">S</div><div class="cal-dow">M</div><div class="cal-dow">T</div><div class="cal-dow">W</div><div class="cal-dow">T</div><div class="cal-dow">F</div><div class="cal-dow">S</div>
+              <div class="cal-day muted">23</div><div class="cal-day muted">24</div><div class="cal-day muted">25</div><div class="cal-day muted">26</div><div class="cal-day muted">27</div><div class="cal-day muted">28</div><div class="cal-day">1</div>
+              <div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div><div class="cal-day">7</div><div class="cal-day">8</div>
+              <div class="cal-day range-start">9</div><div class="cal-day in-range">10</div><div class="cal-day in-range today">11</div><div class="cal-day in-range">12</div><div class="cal-day in-range">13</div><div class="cal-day in-range">14</div><div class="cal-day in-range">15</div>
+              <div class="cal-day in-range">16</div><div class="cal-day in-range">17</div><div class="cal-day range-end">18</div><div class="cal-day">19</div><div class="cal-day">20</div><div class="cal-day">21</div><div class="cal-day">22</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <table class="ds-table">
+    <thead><tr><th>Class</th><th>Role</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>.drp</code></td><td>Wrapper</td><td>Positioning context. <code>.is-set</code> when a range is applied; <code>.align-end</code> flips the panel to the trigger's right edge</td></tr>
+      <tr><td><code>.drp-btn</code></td><td>Trigger</td><td>Reads the current selection. <strong>No chevron</strong> — that is a select's affordance and this opens a calendar</td></tr>
+      <tr><td><code>.drp-clear</code></td><td>Clear</td><td>Inside the trigger, only when something is set</td></tr>
+      <tr><td><code>.drp-panel.open</code></td><td>Panel</td><td><code>role="dialog"</code>. Presets left, calendar right</td></tr>
+      <tr><td><code>.drp-preset.active</code></td><td>Preset</td><td>Active only when the current range equals that preset exactly</td></tr>
+      <tr><td><code>.cal-day.range-start / .in-range / .range-end</code></td><td>Calendar</td><td>Ends filled and rounded outward, the span tinted between them</td></tr>
+    </tbody>
+  </table>
+
+  <div class="ds-callout">
+    <b>Click a start, click an end — and preview the span on hover.</b> After the
+    first click, hovering paints where the range would land, so the second click
+    is not a guess. A click <em>before</em> the start becomes the new start rather
+    than an invalid backwards range.
+  </div>
+
+  <div class="ds-callout warn">
+    <b>Anchor the presets to the data, not the wall clock, wherever the two can
+    differ.</b> “Last 7 days” computed from <code>new Date()</code> over a fixture
+    or a stale export returns nothing, and a control that selects nothing looks
+    broken when it is the data that is old.
   </div>
 </div>
 

@@ -5740,6 +5740,20 @@
       /* The line being spoken, marked by a rail and weight, not colour
          alone. */
       .transcript-msg.is-playing .tm-bubble { box-shadow: inset 0 0 0 1px rgba(var(--accent-rgb), 0.5); }
+      /* The line a goal's reasoning is about. Same language as .is-playing
+         because it is the same claim — "this line, right here" — one step
+         stronger, and stated with a border rather than a flash so there is
+         no motion for prefers-reduced-motion to suppress.
+
+         AFTER .is-playing on purpose. Jumping to evidence also moves the
+         playhead there, so the line carries both classes and, at equal
+         specificity, source order decides. Ordered the other way the
+         evidence mark was invisible on a call and visible on a ticket — the
+         same act looking like two different things. */
+      .transcript-msg.is-evidence .tm-bubble {
+        box-shadow: inset 0 0 0 1.5px var(--accent), 0 0 0 4px rgba(var(--accent-rgb), 0.10);
+      }
+      .transcript-msg.is-evidence .tm-time { color: var(--accent); font-weight: 700; }
       .transcript-msg.is-playing .tm-time { color: var(--accent); font-weight: 700; }
       .eval-transcript-body .transcript-msg { cursor: pointer; }
 
@@ -5936,7 +5950,27 @@
         font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
         text-transform: uppercase; color: var(--d500);
       }
+      /* The evidence chip. Sits inside AiMY's sentence, so it reads as
+         part of the claim rather than as an action bolted under it. */
+      .ekb-ev {
+        display: inline-flex; align-items: center; gap: 4px;
+        margin-left: 7px; padding: 1px 7px 1px 6px;
+        font-family: var(--font-sans); font-size: 11px; font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        color: var(--accent); background: rgba(var(--accent-rgb), 0.10);
+        border: 1px solid rgba(var(--accent-rgb), 0.26); border-radius: 999px;
+        cursor: pointer; vertical-align: baseline;
+      }
+      .ekb-ev svg { width: 10px; height: 10px; }
+      .ekb-ev:hover { background: rgba(var(--accent-rgb), 0.18); border-color: rgba(var(--accent-rgb), 0.45); }
+      .ekb-ev:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
       .ju-req { color: var(--warn); }
+      /* The raise modal's three bands, spaced like the challenge modal's:
+         the primitives carry no outer margin by design. */
+      .jr-q { margin-bottom: 9px; }
+      .jr-goals { margin-bottom: 18px; }
+      .jr-reason { margin-bottom: 16px; display: block; }
       .ju-opt { color: var(--d600); font-weight: 600; }
       .ju-reason .ds-textarea { max-width: none; min-height: 72px; }
       /* The resolve control on a row is a button, not a label. */
@@ -6052,9 +6086,6 @@
       .ekb-limit svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 2px; }
 
       .ekb-verdict { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-      .ekb-verdict .seg-btn { font-size: 12px; padding: 6px 15px; }
-      .ekb-row[data-prefilled="true"] .seg-btn.active { opacity: 0.7; }
-      .ekb-row.is-confirmed .seg-btn.active { opacity: 1; }
       .ekb-ask { font-size: 12px; font-weight: 700; color: var(--warn); }
       .ekb-comment {
         font-family: var(--font-sans); font-size: 11.5px; font-weight: 600;
@@ -6074,9 +6105,9 @@
         background: var(--warn-bg); border: 1px solid rgba(247,144,9,0.24);
       }
       .ekb-disagree-route[hidden] { display: none; }
-      .ekb-disagree-route .seg-btn { font-size: 11.5px; }
-      .ekb-verdict-label { font-size: 12px; font-weight: 700; color: var(--d200); }
+      .ekb-disagree-route .verdict-btn { font-size: 11.5px; }
       .dr-req { font-size: 11px; font-weight: 600; color: var(--warn); }
+      /* Declared twice, with different values — the second silently won. */
       .ekb-verdict-label {
         font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
         text-transform: uppercase; color: var(--d500);
@@ -6160,6 +6191,7 @@
       /* One height, declared once. Padding alone does not get there: a
          button inherits the body's line-height and an input does not, so
          identical padding produced 33.5px and 31px. */
+      .eval-aiu { margin-bottom: 10px; }
       .eval-filter-strip { --flt-h: 31px; }
       .eval-filter-strip .flt-search input,
       .eval-filter-strip .drp-btn,
@@ -6302,6 +6334,13 @@
         background: var(--card-bg); border: 1px solid var(--wash-6);
         border-radius: 14px;
       }
+      /* Carrying the unavailable card, the head is not a strip: the card
+         brings its own surface, so a second one around it is the same
+         double-bezel Round 22 stripped off .eval-panel. */
+      .vp-head.is-aimy-down {
+        display: block; padding: 0; background: none; border: none; border-radius: 0;
+      }
+      .vp-head.is-aimy-down .ai-unavailable { max-width: none; }
       .vp-title { font-size: 13px; font-weight: 800; color: var(--d50); letter-spacing: -0.01em; }
       .vp-counts { display: flex; align-items: center; gap: 11px; font-size: 11px; color: var(--d400); }
       .vp-counts b { font-variant-numeric: tabular-nums; }
@@ -6588,6 +6627,9 @@
            .inline-note     library 1960–1967   what limits AiMY's read
            .ds-textarea     library 1980–1985
            .acc family      library 1876–1887   goal breakdown disclosure
+           .verdict         library 1853–1887   agree / disagree / N-A, radiogroup
+           .drp family      library 2360–2414   date range picker
+           .cal range       library 2338–2344   in-range / range-start / range-end
            .input-group     library 2499–2507   the date range's shell
            .cal family      library 2255–2269   + range states, see note
 
@@ -7044,6 +7086,9 @@
       .cal-day.is-blank { visibility: hidden; cursor: default; }
 
       /* ── The picker ── */
+      /* ── Date range picker (library 2360–2414, calendar range states
+         2338–2344) ── Composed here on .cal for four rounds and filed as a
+         gap; the library has it now, so this is a port. */
       .drp { position: relative; }
       .drp-btn {
         display: inline-flex; align-items: center; gap: 7px;
@@ -7098,18 +7143,51 @@
         margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--hairline);
         font-size: 10.5px; line-height: 1.5; color: var(--d500);
       }
+
+      /* ── Verdict control (library 1853–1887) ──
+         This surface is where the component came from: it was composed here
+         out of .seg for four rounds and filed as a gap. The library has it
+         now, so this is a port and the local composition is gone. */
+      .verdict {
+        display: inline-flex; background: var(--card-bg-raised);
+        border: 1px solid var(--card-border); border-radius: var(--r-md);
+        padding: 3px; gap: 2px;
+      }
+      .verdict-btn {
+        appearance: none; border: none; background: transparent; cursor: pointer;
+        font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: var(--d400);
+        padding: 6px 15px; border-radius: var(--r-sm);
+        transition: background var(--t-fast), color var(--t-fast);
+      }
+      .verdict-btn:hover { color: var(--d100); }
+      .verdict-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+      .verdict-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+      .verdict-btn:disabled:hover { color: var(--d400); }
+      .verdict-btn.active { background: var(--accent-dim); color: var(--accent); }
+      .verdict-btn.active[data-verdict="agree"],
+      .verdict-btn.active[data-verdict="pass"] { background: var(--ok-bg); color: var(--ok); }
+      .verdict-btn.active[data-verdict="disagree"],
+      .verdict-btn.active[data-verdict="fail"] { background: var(--err-bg); color: var(--err); }
+      .verdict-btn.active[data-verdict="na"] { background: var(--card-bg); color: var(--d200); }
+      .verdict.is-draft .verdict-btn.active {
+        background: transparent; box-shadow: inset 0 0 0 1px currentColor; opacity: 0.62;
+      }
+      .verdict.needs-answer { border-color: rgba(247,144,9,0.4); }
+
       /* ══ end AiMY DS primitives ══════════════════════════════════════ */
 
-      /* ── .btn disabled ───────────────────────────────────────────
-         NOT a port. The library's .btn ships no disabled state, so a
-         disabled primary button was full brand blue with a pointer cursor
-         and read as perfectly clickable — which is indistinguishable from
-         broken, and is exactly how it was reported. §8 Level 3 requires
-         every component to specify disabled among its states; the gap goes
-         to the library owner and this covers it here. */
-      .btn:disabled, .btn[disabled] {
-        opacity: 0.45; cursor: not-allowed; filter: grayscale(0.35);
-      }
+      /* ── .btn disabled (library 811) ───────────────────────────
+         CORRECTION. I filed this as a library gap — ".btn ships no disabled
+         state" — and that was wrong: the library has had
+         `.btn:disabled { opacity: 0.38; cursor: not-allowed }` since before
+         this work started, and I simply missed the line when porting the
+         .btn family. The bug was real (a disabled primary button read as
+         perfectly clickable); the diagnosis was not.
+
+         The library's own values now, so this stops being a second opinion
+         about how disabled should look. `[disabled]` stays because .btn is
+         also used on elements where the attribute is not the pseudo-class. */
+      .btn:disabled, .btn[disabled] { opacity: 0.38; cursor: not-allowed; }
       .btn-brand:disabled:hover, .btn-brand[disabled]:hover {
         background: var(--brand); border-color: var(--brand);
       }
@@ -10572,6 +10650,18 @@
                    moment it matters. Hidden until something is selected. -->
               <div class="set-scope-bar" id="evalScopeBar" hidden></div>
 
+              <!-- What AiMY is doing, when it is not doing it (§6.7).
+                   NOT .ai-unavailable, and the distinction is the point: an
+                   outage does not stop you doing what you came here for.
+                   Every row below is a stored evaluation, they are still
+                   readable, filterable and confirmable, and sending feedback
+                   was never an AI step. What stops is new scoring. A card
+                   saying "I can't help with this" over a table that works
+                   would be the overstatement §6.7 exists to prevent — so
+                   this is .inline-note, the primitive for what limits AiMY's
+                   reading. -->
+              <div class="inline-note warn eval-aiu" id="evalAiState" hidden></div>
+
               <!-- Contextual filters. Rendered per tab. -->
               <div class="eval-filter-strip" id="evalFilterStrip"></div>
 
@@ -10918,7 +11008,12 @@
                   <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 3 5.5 11 2 7.5"/></svg>
                   Acknowledge feedback
                 </button>
-                <button class="fb-detail-btn justify" id="fbDetailjustify" type="button" onclick="window.openjustifyFlow && openjustifyFlow('Omar Abdallah','Voice call · May 7','Follow-up Confirmation, Empathy &amp; Active Listening',64)">
+                <!-- Opened the RESOLVER's modal until now: Uphold / Overturn /
+                     Partial adjust, offered to the person being evaluated. It
+                     raises a dispute; deciding one is #justifyModal, and a
+                     manager's screen. Context comes from the open interaction
+                     rather than from these attributes (§4). -->
+                <button class="fb-detail-btn justify" id="fbDetailjustify" type="button" data-jr-open>
                   <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 1.5v5M7 9.5v.5M2 7a5 5 0 1010 0A5 5 0 002 7z"/></svg>
                   justify
                 </button>
@@ -19460,6 +19555,35 @@
       </div>
     </div>
 
+    <!-- ══ RAISING A DISPUTE ══════════════════════════════════
+         The agent's half. Both of this page's agent-facing "justify"
+         buttons opened #dispModal, which offers Uphold / Overturn /
+         Partial adjust — the RESOLVER's three outcomes. The person being
+         evaluated was handed the controls for deciding their own dispute,
+         which is the exact inversion the brief ruled out: acknowledge and
+         justify are agent actions, uphold and overturn are not.
+
+         This is what those buttons should have opened. It states an
+         objection and sends it; it decides nothing. #justifyModal, twenty
+         lines above, is where a manager decides it. -->
+    <div class="fbmodal-overlay" id="justifyRaiseModal">
+      <div class="fbmodal">
+        <div class="fbmodal-head">
+          <div>
+            <h3>Justify this feedback</h3>
+            <div class="sub" id="jrSub"></div>
+          </div>
+          <button class="fbmodal-x" type="button" data-jr-close aria-label="Close">×</button>
+        </div>
+        <div class="fbmodal-body"><div id="jrBody"></div></div>
+        <div class="fbmodal-foot">
+          <span class="spacer"></span>
+          <button class="fbm-btn ghost" type="button" data-jr-close>Cancel</button>
+          <button class="fbm-btn primary" type="button" id="jrSubmit" disabled>Send to your manager</button>
+        </div>
+      </div>
+    </div>
+
     <div class="fbmodal-overlay" id="goalChallengeModal">
       <div class="fbmodal">
         <div class="fbmodal-head">
@@ -19511,7 +19635,11 @@
     </div>
 
     <!-- justify resolution workspace (folded-in from justifys) -->
-    <div class="fbmodal-overlay" id="dispModal">
+    <!-- RETIRED — see the note beside openjustifyFlow. Uphold / Overturn /
+         Partial adjust, reachable from the agent's own page. #justifyModal
+         replaces it; this is hidden rather than deleted because its ids are
+         still read by code above that I have not proved unreachable. -->
+    <div class="fbmodal-overlay" id="dispModal" hidden>
       <div class="fbmodal wide">
         <div class="fbmodal-head">
           <div><h3 id="dispTitle">justify</h3><div class="sub">Acknowledge-or-justify · resolution folded into the feedback loop</div></div>
@@ -19532,9 +19660,9 @@
           </div>
           <div class="nfw-label">Reviewer decision</div>
           <div class="disp-decision-tabs" id="dispTabs">
-            <button class="disp-dtab" data-d="upheld" onclick="selDispTab('upheld')">Uphold</button>
-            <button class="disp-dtab" data-d="overturned" onclick="selDispTab('overturned')">Overturn</button>
-            <button class="disp-dtab" data-d="partial" onclick="selDispTab('partial')">Partial adjust</button>
+            <button class="disp-dtab" data-d="upheld" type="button" disabled>Uphold</button>
+            <button class="disp-dtab" data-d="overturned" type="button" disabled>Overturn</button>
+            <button class="disp-dtab" data-d="partial" type="button" disabled>Partial adjust</button>
           </div>
           <div class="disp-outcome-note" id="dispOutcomeNote">Select an outcome. The employee is notified either way, and the decision is written to the immutable feedback audit trail.</div>
           <div class="nfw-field" style="margin-top:12px;"><label>Reviewer rationale (required, logged)</label><textarea class="nfw-textarea" id="dispDecisionRationale" placeholder="Explain the decision…"></textarea></div>
@@ -19542,7 +19670,7 @@
         <div class="fbmodal-foot">
           <button class="fbm-btn ghost" onclick="closejustify()">Cancel</button>
           <span class="spacer"></span>
-          <button class="fbm-btn primary" id="dispSubmit" onclick="submitjustify()" disabled>Record decision</button>
+          <button class="fbm-btn primary" id="dispSubmit" type="button" disabled>Record decision</button>
         </div>
       </div>
     </div>
@@ -19810,7 +19938,7 @@
           list.innerHTML = EMP_FB.map(function(f){
             var actions='';
             if(f.type==='negative'){
-              if(f.ack==='pending') actions = '<button class="empfb-btn ack" onclick="empAck(\''+f.id+'\')">'+CHECK+' Acknowledge</button><button class="empfb-btn justify" onclick="window.openjustifyFlow && openjustifyFlow(\'You\',\''+f.date+'\',\''+f.goals+'\',64)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> justify</button>';
+              if(f.ack==='pending') actions = '<button class="empfb-btn ack" onclick="empAck(\''+f.id+'\')">'+CHECK+' Acknowledge</button><button class="empfb-btn justify" data-jr-open data-jr-eval="ev-1042"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> justify</button>';
               else if(f.ack==='acknowledged') actions='<span class="empfb-loop acknowledged">'+CHECK+' Acknowledged</span>';
               else if(f.ack==='justifyd') actions='<span class="empfb-loop justifyd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg> justifyd · under review</span>';
             } else {
@@ -19858,6 +19986,14 @@
             if(ch.id==='personaEmployee'){ ch.style.display = role==='employee'?'':'none'; return; }
             ch.style.display = role==='supervisor'?'':'none';
           });
+          /* data-persona-only was honoured once, at load, by the verdict
+             panel's boot — so switching to the employee persona left the
+             agent's own acknowledge and justify controls hidden, and
+             switching away from it left them on a manager's screen until a
+             reload. The attribute is read on every switch now. */
+          document.querySelectorAll('[data-persona-only]').forEach(function(el){
+            el.hidden = el.dataset.personaOnly !== role;
+          });
           var ctx=document.getElementById('personaContext'); if(ctx) ctx.innerHTML = CTX[role];
           var nfb=document.getElementById('newFbBtn'); if(nfb) nfb.style.display = role==='employee'?'none':'';
           if(role==='hr'){ renderHrTable('all'); renderjustifyQueue(); }
@@ -19897,62 +20033,71 @@
           fbToast('Feedback acknowledged, supervisor notified · loop closed');
         };
 
-        /* ── justify resolution (folded in) ── */
-        var dispChoice=null;
-        var dispSource='detail', dispQueueId=null;
-        window.openjustifyFlow = function(agent, interaction, goals, score, source, queueId){
-          dispSource = source || 'detail'; dispQueueId = queueId || null;
-          document.getElementById('dispTitle').textContent = (dispSource==='queue'?'Resolve justify, ':'justify, ')+agent+' · '+interaction;
-          document.getElementById('dispScore').textContent = (score||64)+'%';
-          document.getElementById('dispgoals').innerHTML = String(goals).split(',').map(function(k){ return '<span class="disp-goal-chip">'+k.trim()+'</span>'; }).join('');
-          dispChoice=null; document.getElementById('dispSubmit').disabled=true;
-          document.querySelectorAll('.disp-dtab').forEach(function(t){t.classList.remove('sel');});
-          var rat=document.getElementById('dispRationale');
-          if(dispSource==='queue'){ var d=justify_QUEUE.find(function(x){return x.id===queueId;}); rat.value = d?d.reason:''; rat.readOnly=true; }
-          else { rat.value=''; rat.readOnly=false; }
-          document.getElementById('dispDecisionRationale').value='';
-          document.getElementById('dispOutcomeNote').textContent='Select an outcome. The employee is notified either way, and the decision is written to the immutable feedback audit trail.';
-          document.getElementById('dispModal').classList.add('open');
+        /* ══ RETIRED: #dispModal, the legacy resolver ════════════════
+           openjustifyFlow / selDispTab / submitjustify offered Uphold,
+           Overturn and Partial adjust, kept its decision in a local variable,
+           and ended at a toast: no recalculation, no audit entry, nothing
+           the agent could ever read. #justifyModal does that job properly
+           and both surfaces route at it now.
+
+           Its four callers were worse than duplicated. TWO OF THEM WERE ON
+           THE AGENT'S SIDE — the detail page's "justify" button and the
+           employee inbox card — so the person being evaluated was handed
+           Uphold / Overturn / Partial adjust on their own evaluation. That
+           is the inversion the brief ruled out in as many words: justify and
+           acknowledge are the agent's actions, and deciding one is not.
+
+           The shims stay because they are on `window` and the canvas topic
+           router is a caller I cannot enumerate from here. They route rather
+           than open the dead modal. The markup below is hidden, not deleted
+           — register A6 is what happens when markup something still reaches
+           for gets cut. */
+        window.openjustifyFlow = function (agent) {
+          var open = (window.__evalJustifies ? window.__evalJustifies() : []);
+          var mine = open.filter(function (j) { return j.agent === agent; })[0];
+          if (mine && window.openJustifyDecision) { window.openJustifyDecision(mine.evalId); return; }
+          if (window.showToast) window.showToast({
+            title: "No open dispute", sub: (agent || "That agent") + " has nothing waiting on a decision."
+          });
         };
-        window.openjustifyFromQueue = function(id){ var d=justify_QUEUE.find(function(x){return x.id===id;}); if(d) openjustifyFlow(d.agent, d.interaction, d.goals, d.score, 'queue', id); };
-        window.closejustify = function(){ document.getElementById('dispModal').classList.remove('open'); };
-        window.selDispTab = function(d){
-          dispChoice=d; document.querySelectorAll('.disp-dtab').forEach(function(t){ t.classList.toggle('sel', t.dataset.d===d); });
-          var notes={ upheld:'Uphold, original score stands. Employee is asked to acknowledge and continue their coaching plan.', overturned:'Overturn, score fully corrected. Affected goals are recalculated and the follow-up window resets.', partial:'Partial adjust, selected goals corrected while the rest stand. A revised feedback is re-sent.' };
-          document.getElementById('dispOutcomeNote').textContent=notes[d];
-          document.getElementById('dispSubmit').disabled=false;
+        window.openjustifyFromQueue = function (id) {
+          var open = (window.__evalJustifies ? window.__evalJustifies() : []);
+          var j = open.filter(function (x) { return x.id === id; })[0];
+          if (j && window.openJustifyDecision) window.openJustifyDecision(j.evalId);
         };
-        window.submitjustify = function(){
-          if(!dispChoice) return;
-          var choice=dispChoice, src=dispSource, qid=dispQueueId;
-          closejustify();
-          if(src==='queue' && qid){
-            var d=justify_QUEUE.find(function(x){return x.id===qid;});
-            if(d){ d.state='resolved'; d.outcome=choice; renderjustifyQueue(); }
-          } else {
-            var loop=document.getElementById('fbDetailLoop'), ack=document.getElementById('fbDetailAck'), dis=document.getElementById('fbDetailjustify');
-            if(loop){ loop.className='fb-detail-loop justifyd'; loop.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg> Resolved · '+({upheld:'Upheld',overturned:'Overturned',partial:'Partial adjust'})[choice]; loop.style.display=''; if(ack)ack.style.display='none'; if(dis)dis.style.display='none'; }
-          }
-          fbToast('Decision recorded, employee notified · written to audit trail');
+        window.closejustify = function () {
+          var m = document.getElementById('dispModal');
+          if (m) m.classList.remove('open');
         };
 
-        /* ── HR justify-resolution queue ── */
-        var justify_QUEUE = [
-          { id:'dq1', agent:'Omar Abdallah', in:'OA', grad:'linear-gradient(135deg,#1a2a3a,#2d5c8e)', interaction:'Voice · May 7', goals:'Follow-up Confirmation, Empathy & Active Listening', score:64, reason:'Caller ended the contact abruptly before I could confirm the next steps, the transcript cuts off mid-sentence.', age:'2 days ago', sla:false, state:'open' },
-          { id:'dq2', agent:'Tariq Mansour', in:'TM', grad:'linear-gradient(135deg,#3a1a2a,#7d2c52)', interaction:'Chat · May 3', goals:'Issue Resolution', score:71, reason:'The customer confirmed the issue was resolved in a follow-up message that was not included in the scored window.', age:'3 days ago', sla:true, state:'open' }
-        ];
+        /* ══ THE HR QUEUE ══════════════════════════════════════
+           This held its own hardcoded pair of disputes — dq1 and dq2 — which
+           is how the product came to have two lists of the same thing that
+           could disagree with each other, and why resolving one here left
+           the supervisor's Disputes tab still claiming it was open.
+
+           One store now. This reads it, and "Review & resolve" opens the
+           same modal the Disputes tab does, so a decision made here is the
+           same decision with the same audit entry. */
         function renderjustifyQueue(){
           var body=document.getElementById('dqBody'); if(!body) return;
-          var open=justify_QUEUE.filter(function(d){return d.state==='open';});
+          var open=(window.__evalJustifies ? window.__evalJustifies() : []);
           var cnt=document.getElementById('dqCount'); if(cnt) cnt.textContent=open.length+' open';
-          var OUT={upheld:'Upheld',overturned:'Overturned',partial:'Partial adjust'};
-          body.innerHTML = justify_QUEUE.map(function(d){
-            var head='<div class="dq-top"><div class="hrp-av" style="background:'+d.grad+'">'+d.in+'</div><div><div class="dq-name">'+d.agent+' <span class="dq-meta">· '+d.interaction+' · '+d.score+'%</span></div><div class="dq-goals">'+d.goals+'</div></div>'+(d.sla?'<span class="dq-sla">SLA · '+d.age+'</span>':'<span class="dq-age">'+d.age+'</span>')+'</div>';
-            if(d.state==='resolved'){
-              return '<div class="dq-item resolved">'+head+'<div class="dq-reason">"'+d.reason+'"</div><span class="dq-outcome">'+({upheld:'',overturned:'',partial:''})[d.outcome]+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Resolved · '+OUT[d.outcome]+' · employee notified</span></div>';
-            }
-            return '<div class="dq-item">'+head+'<div class="dq-reason">"'+d.reason+'"</div><div class="dq-actions"><button class="dq-resolve" onclick="window.openjustifyFromQueue && openjustifyFromQueue(\''+d.id+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Review &amp; resolve</button></div></div>';
-          }).join('') || '<div style="text-align:center;color:var(--d500);padding:24px;">No justifyd feedback. Queue is clear.</div>';
+          var INIT=function(n){ return n.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase(); };
+          var GRAD={ 'Omar Abdallah':'linear-gradient(135deg,#1a2a3a,#2d5c8e)', 'Tariq Mansour':'linear-gradient(135deg,#3a1a2a,#7d2c52)',
+                     'Michael Chen':'linear-gradient(135deg,#2a2a1a,#6b6010)', 'Lina Haddad':'linear-gradient(135deg,#3a1a3a,#8e3d8e)',
+                     'Sarah Reyes':'linear-gradient(135deg,#1a2e2a,#1f6b54)' };
+          body.innerHTML = open.map(function(d){
+            var x = window.__evalRecord ? window.__evalRecord(d.evalId) : null;
+            var head='<div class="dq-top"><div class="hrp-av" style="background:'+(GRAD[d.agent]||'#333')+'">'+INIT(d.agent)+'</div>'+
+              '<div><div class="dq-name">'+d.agent+' <span class="dq-meta">· '+d.interaction+(x?' · '+x.score+'%':'')+'</span></div>'+
+              '<div class="dq-goals">'+(d.goals||[]).join(', ')+'</div></div>'+
+              '<span class="dq-age">'+d.raised+'</span></div>';
+            return '<div class="dq-item">'+head+'<div class="dq-reason">“'+d.reason+'”</div>'+
+              '<div class="dq-actions"><button class="dq-resolve" data-ju-open="'+d.evalId+'">'+
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'+
+              ' Review &amp; resolve</button></div></div>';
+          }).join('') || '<div style="text-align:center;color:var(--d500);padding:24px;">No disputes open. Queue is clear.</div>';
         }
         window.renderjustifyQueue = renderjustifyQueue;
 
@@ -20389,7 +20534,18 @@
         }
         window.openSupAgent = function(name){ var b=document.getElementById('supBoard'); if(b) b.style.display='none'; if(window.updateAgentPanel) updateAgentPanel(name); renderAgentEvals(name); renderAgentgoals(name); var va=document.getElementById('viewAgent'); if(va) va.classList.add('is-active'); var sc=document.querySelector('.sc-scroll'); if(sc) sc.scrollTop=0; };
         window.showSupBoard = function(){ var va=document.getElementById('viewAgent'); if(va) va.classList.remove('is-active'); var b=document.getElementById('supBoard'); if(b) b.style.display=''; var sc=document.querySelector('.sc-scroll'); if(sc) sc.scrollTop=0; };
-        window.supAction = function(name, loop){ if(loop==='justifyd' && window.openjustifyFlow){ openjustifyFlow(name, 'Chat · May 3', 'Issue Resolution', 79); } else { openSupAgent(name); } };
+        /* Was: open the resolver on a hardcoded "Chat · May 3 · Issue
+           Resolution" regardless of who was clicked. Now it finds that
+           person's actual open dispute; if they have none, their page is the
+           honest answer rather than a modal about someone else's call. */
+        window.supAction = function(name, loop){
+          if(loop==='justifyd'){
+            var open=(window.__evalJustifies ? window.__evalJustifies() : []);
+            var mine=open.filter(function(j){ return j.agent===name; })[0];
+            if(mine && window.openJustifyDecision){ window.openJustifyDecision(mine.evalId); return; }
+          }
+          openSupAgent(name);
+        };
         renderSupChips('attention'); renderSupBoard(); updateBoardSub();
 
         /* Place the feedback loop directly under the "Since your last visit" block. */
@@ -21059,6 +21215,91 @@
           return d;
         }
 
+        /* ══ THE EVIDENCE LINK ═══════════════════════════════════
+           AiMY says the agent ended the call without answering. The line
+           where that happened is 400px to the left, and until now finding it
+           was the reader's job — which is the work a grounded claim is
+           supposed to save them, not create.
+
+           MATCHED, NOT NUMBERED. The obvious build is a table of goal → line
+           index, and it would be wrong twice over: it would have to be
+           re-authored for all four transcript shapes, and it would keep
+           pointing at line 5 after line 5 changed. Each goal carries the
+           phrases its reasoning is about, and the link resolves to whichever
+           line actually contains one.
+
+           NO MATCH MEANS NO LINK, deliberately. Survey promotion is not in
+           this transcript and identity verification is not in the voice one,
+           so those goals offer nothing rather than pointing somewhere
+           plausible. A jump that lands on the wrong line is worse than no
+           jump: it claims evidence that is not there. */
+        var EVIDENCE = {
+          "g-followup":    ["who do I contact", "how long does that take",
+                            "How long until it shows up", "backdate"],
+          "g-resolution":  ["escalating it now", "didn't answer my question",
+                            "the ticket is closed", "Let me know if anything else"],
+          "g-empathy":     ["I'm sorry to hear that"],
+          "g-identity":    ["ending 4471"],
+          "g-categorise":  ["INV-88213"],
+          "g-survey":      [],
+          "g-disposition": []
+        };
+
+        /* Curly and straight apostrophes are the same word, and the static
+           transcript uses one while the generated one uses the other. */
+        function norm(v) {
+          return String(v).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+        }
+
+        function evidenceLine(page, gid) {
+          var phrases = EVIDENCE[gid] || [];
+          if (!page || !phrases.length) return null;
+          var lines = page.querySelectorAll(".eval-transcript-body .transcript-msg");
+          for (var i = 0; i < lines.length; i++) {
+            var hay = norm(lines[i].textContent);
+            for (var j = 0; j < phrases.length; j++) {
+              if (hay.indexOf(norm(phrases[j])) >= 0) return lines[i];
+            }
+          }
+          return null;
+        }
+
+        /* ══ WHICH CONTROL A GOAL GETS ═════════════════════════════
+           "agree" — AiMY read it, so you agree, disagree, or call it N/A.
+           "score" — nothing was read, so you pass or fail it yourself.
+
+           This lived inside buildRow, which caches, so an outage that began
+           after a row was built left that row still offering "Agree" with
+           nothing to agree with. It is decided on every repaint now.
+
+           A GOAL SOMEONE HAS ALREADY ANSWERED NEVER CHANGES MODE. Their
+           answer is a judgement, not a draft: AiMY going down does not
+           retract it and AiMY coming back does not overrule it. Only rows
+           still waiting on a person follow availability — which is also
+           what keeps the Pass/Fail a manager recorded during an outage from
+           being silently reinterpreted as an opinion about a reading they
+           never saw. */
+        function modeOf(panel, row) {
+          var s = st(panel, row.dataset.goalId);
+          if (s.manual && !s.prefilled) {
+            return (s.manual === "pass" || s.manual === "fail") ? "score" : "agree";
+          }
+          return (row.dataset.aiVerdict === "unprocessed" || aimyDown()) ? "score" : "agree";
+        }
+
+        function segHtml(mode, s) {
+          var opts = mode === "score"
+            ? [["pass", "Pass"], ["fail", "Fail"]]
+            : [["agree", "Agree"], ["disagree", "Disagree"], ["na", "N/A"]];
+          return opts.map(function (o, i) {
+            var on = s.manual === o[0];
+            return '<button class="verdict-btn' + (on ? " active" : "") + '" type="button" role="radio"' +
+              ' aria-checked="' + (on ? "true" : "false") + '"' +
+              ' tabindex="' + (on || (!s.manual && i === 0) ? "0" : "-1") + '"' +
+              ' data-verdict="' + o[0] + '">' + o[1] + "</button>";
+          }).join("");
+        }
+
         function buildRow(panel, row) {
           row = restructure(panel, row);
           if (row.querySelector(".ekb-verdict")) return row;
@@ -21066,7 +21307,9 @@
           var gid = row.dataset.goalId,
               conf = row.dataset.aiConf,
               s = st(panel, gid),
-              unscored = row.dataset.aiVerdict === "unprocessed";
+              /* AiMY down means every goal is in the state the panel already
+                 knows how to handle: nothing was processed, so score it. */
+              unscored = row.dataset.aiVerdict === "unprocessed" || aimyDown();
 
           /* The pre-fill rule. High and medium confidence arrive with AiMY's
              Agree already selected; low confidence and unscored are left
@@ -21077,26 +21320,16 @@
             s.prefilled = true;
           }
 
-          var opts = unscored
-            ? [["pass", "Pass"], ["fail", "Fail"]]
-            : [["agree", "Agree"], ["disagree", "Disagree"], ["na", "N/A"]];
 
           var qEl = row.querySelector(".ekb-question");
           var label = (qEl ? qEl.textContent.trim() : gid).replace(/"/g, "&quot;");
-
-          var seg = opts.map(function (o, i) {
-            var on = s.manual === o[0];
-            return '<button class="seg-btn' + (on ? " active" : "") + '" type="button" role="radio"' +
-              ' aria-checked="' + (on ? "true" : "false") + '"' +
-              ' tabindex="' + (on || (!s.manual && i === 0) ? "0" : "-1") + '"' +
-              ' data-verdict="' + o[0] + '">' + o[1] + "</button>";
-          }).join("");
+          var seg = segHtml(modeOf(panel, row), s);
 
           var wrap = document.createElement("div");
           wrap.className = "ekb-verdict";
           wrap.innerHTML =
             '<span class="ekb-ask" data-ask hidden>Your call:</span>' +
-            '<div class="seg" role="radiogroup" aria-label="Your feedback on: ' + label + '">' + seg + "</div>" +
+            '<div class="verdict" role="radiogroup" aria-label="Your feedback on: ' + label + '">' + seg + "</div>" +
             '<button class="ekb-comment" type="button" data-note-toggle>Note</button>';
 
           var fork = document.createElement("div");
@@ -21104,9 +21337,9 @@
           fork.hidden = true;
           fork.innerHTML =
             '<span class="ekb-verdict-label">What is wrong? <span class="dr-req">required</span></span>' +
-            '<div class="seg" role="radiogroup" aria-label="Why you disagree">' +
-            '<button class="seg-btn" type="button" role="radio" aria-checked="false" data-route="interaction">AiMY misread this</button>' +
-            '<button class="seg-btn" type="button" role="radio" aria-checked="false" data-route="goal">The goal is wrong</button>' +
+            '<div class="verdict" role="radiogroup" aria-label="Why you disagree">' +
+            '<button class="verdict-btn" type="button" role="radio" aria-checked="false" data-route="interaction">AiMY misread this</button>' +
+            '<button class="verdict-btn" type="button" role="radio" aria-checked="false" data-route="goal">The goal is wrong</button>' +
             "</div>";
 
           var noteBox = document.createElement("textarea");
@@ -21128,6 +21361,71 @@
           var s = st(panel, row.dataset.goalId);
           var needs = !answered(panel, row);
 
+          /* restructure() runs once and caches, so AiMY's sentence is built
+             at first mount and would survive an outage that started after
+             it. Hidden rather than rebuilt, which also means it comes back
+             intact when AiMY does — and the confidence line goes with it,
+             because "I'm not confident in this reading" is a claim about a
+             reading that no longer exists. */
+          var down = aimyDown();
+          var says = row.querySelector(".ekb-says");
+          if (says) says.hidden = down;
+
+          /* On the sentence it belongs to, so the claim and the way to check
+             it are one thing. Gone with the sentence when AiMY is down —
+             there is no reading, so there is nothing to show you the basis
+             of. */
+          if (says) {
+            var page = row.closest(".eval-detail-page");
+            var line = down ? null : evidenceLine(page, row.dataset.goalId);
+            var chip = says.querySelector(".ekb-ev");
+            if (line) {
+              var lines = Array.prototype.slice.call(
+                page.querySelectorAll(".eval-transcript-body .transcript-msg"));
+              var stamp = (line.querySelector(".tm-time") || {}).textContent || "";
+              if (!chip) {
+                chip = document.createElement("button");
+                chip.type = "button";
+                chip.className = "ekb-ev";
+                says.appendChild(chip);
+              }
+              chip.innerHTML =
+                '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' +
+                '<circle cx="6" cy="6" r="4.6"/><path d="M6 3.4V6l1.8 1.1"/></svg>' + esc(stamp);
+              chip.setAttribute("aria-label", "Show the transcript at " + stamp);
+              chip.dataset.evIdx = lines.indexOf(line);
+            } else if (chip) {
+              chip.remove();
+            }
+          }
+          var lim = row.querySelector(".ekb-limit");
+          if (lim && row.dataset.aiVerdict !== "unprocessed") lim.hidden = down;
+          var mk = row.querySelector(".ekb-mark");
+          if (mk) mk.innerHTML = down ? MARK.unprocessed : (MARK[row.dataset.aiVerdict] || MARK.unprocessed);
+
+          /* A pre-fill is AiMY agreeing with itself. With the reading gone
+             there is nothing behind it, so it goes too — in the repaint,
+             not the build, or only rows mounted during the outage would
+             lose theirs.
+
+             MARKED, not just cleared. When AiMY comes back its draft should
+             come back with it, but only on the rows the outage emptied. A
+             row the manager cleared on purpose is also blank, and re-filling
+             that one would put AiMY's agreement back under a person who had
+             just taken it away — the rubber stamp this panel is built to
+             avoid. The flag is what tells the two blanks apart. */
+          if (down && s.prefilled) { s.manual = null; s.prefilled = false; s.draftDropped = true; }
+
+          /* Swap the control if availability changed what this goal needs.
+             Rebuilt only on a real change, so it does not fight the reader's
+             focus on every repaint. */
+          var mode = modeOf(panel, row);
+          if (row.dataset.vmode !== mode) {
+            row.dataset.vmode = mode;
+            var grp = row.querySelector(".ekb-verdict .verdict");
+            if (grp) grp.innerHTML = segHtml(mode, s);
+          }
+
           row.classList.toggle("is-confirmed", !!s.manual && !s.prefilled);
           row.classList.toggle("is-disagreed", s.manual === "disagree");
           row.classList.toggle("needs-you", needs);
@@ -21144,13 +21442,23 @@
           var fork = row.querySelector(".ekb-disagree-route");
           if (fork) fork.hidden = s.manual !== "disagree";
 
-          row.querySelectorAll(".ekb-verdict .seg-btn").forEach(function (b) {
+          /* .is-draft and .needs-answer are the component's own states, and
+             they carry what four rounds of local CSS was carrying: an AiMY
+             pre-fill must not look like a person's confirmation, and a
+             control still waiting on someone must say so on itself. */
+          var grpEl = row.querySelector(".ekb-verdict .verdict");
+          if (grpEl) {
+            grpEl.classList.toggle("is-draft", !!s.prefilled);
+            grpEl.classList.toggle("needs-answer", needs && !s.manual);
+          }
+
+          row.querySelectorAll(".ekb-verdict .verdict-btn").forEach(function (b) {
             var on = b.dataset.verdict === s.manual;
             b.classList.toggle("active", on);
             b.setAttribute("aria-checked", on ? "true" : "false");
             b.tabIndex = on ? 0 : -1;
           });
-          row.querySelectorAll(".ekb-disagree-route .seg-btn").forEach(function (b) {
+          row.querySelectorAll(".ekb-disagree-route .verdict-btn").forEach(function (b) {
             var on = b.dataset.route === s.route;
             b.classList.toggle("active", on);
             b.setAttribute("aria-checked", on ? "true" : "false");
@@ -21196,7 +21504,52 @@
         /* ── V1's KPI-Audit strip ─────────────────────────────────────────
            Same counts, same select-all. The line underneath is the part V1
            had no way to say: how much of this is AiMY's, and how much yours. */
+        /* ══ WHEN AiMY IS NOT THERE ══════════════════════════════
+           This panel is the one surface where AiMY's absence actually costs
+           the reader something: the per-goal readings ARE the content, and
+           without them there is nothing to agree with.
+
+           What does NOT change is that the interaction still has to be
+           scored, and a person can still do it — which is the V1 behaviour
+           this panel already implements for goals AiMY could not process.
+           So the down state does not invent a mode: it says what happened,
+           and every goal falls back to the Pass/Fail control that already
+           exists for exactly this case. Commit still works. A manager who
+           scores all seven by hand has produced a complete evaluation, not
+           a degraded one.
+
+           §6.7 is explicit that the fallback must be offered rather than
+           described, and §1.2 that this cannot be where the reader stops. */
+        function aimyDown() {
+          var a = window.aimyAvailability ? window.aimyAvailability() : { state: "ok" };
+          return a.state === "down";
+        }
+
+        function unavailableCard(panel) {
+          var a = window.aimyAvailability ? window.aimyAvailability() : { state: "down", since: "" };
+          var n = rowsIn(panel).length;
+          return '<div class="ai-unavailable">' +
+            '<div class="aiu-mark"><svg width="20" height="22" viewBox="0 0 18 20" style="opacity:0.5"><use href="#aimy-logo-small"/></svg></div>' +
+            '<div class="aiu-title">I could not read this interaction</div>' +
+            '<p class="aiu-body">There is no draft for you to agree with' +
+              (a.since ? ", and there has not been since <strong>" + esc(a.since) + "</strong>" : "") +
+              ". The transcript is here and unaffected, so the " + n +
+              " goals can still be scored — by you, against what you read.</p>" +
+            '<div class="aiu-fallback">' +
+              '<span class="work-state ws-detected" data-work-state="detected"><span class="ws-dot"></span>No AiMY draft</span>' +
+              '<button class="btn btn-ghost btn-sm" type="button" data-aiu-scroll>Score them yourself</button>' +
+            "</div>" +
+            '<div class="aiu-note">Anything already sent stands. This affects the draft, not the record.</div>' +
+          "</div>";
+        }
+
         function paintPanel(panel) {
+          if (aimyDown()) {
+            panel.className = "vp-head is-aimy-down";
+            panel.innerHTML = unavailableCard(panel);
+            return;
+          }
+          panel.className = "vp-head";
           var t = tally(panel), rows = rowsIn(panel);
           var canAll = rows.filter(function (r) { return !skippable(r); }).length;
           var allOn = canAll > 0 && rows.every(function (r) {
@@ -21446,7 +21799,7 @@
         document.addEventListener("click", function (e) {
           var t = e.target;
 
-          var vb = t.closest ? t.closest(".ekb-verdict .seg-btn") : null;
+          var vb = t.closest ? t.closest(".ekb-verdict .verdict-btn") : null;
           if (vb) {
             var row = vb.closest(".ekb-row"), panel = panelFor(vb);
             if (!panel) return;
@@ -21468,7 +21821,7 @@
             return;
           }
 
-          var rb = t.closest ? t.closest(".ekb-disagree-route .seg-btn") : null;
+          var rb = t.closest ? t.closest(".ekb-disagree-route .verdict-btn") : null;
           if (rb) {
             var row2 = rb.closest(".ekb-row"), panel2 = panelFor(rb);
             if (!panel2) return;
@@ -21611,15 +21964,18 @@
           });
         });
 
-        /* Arrow-key roving. .seg is a view switcher in the library and ships
-           no radiogroup keyboard model; used as a form control it has to be
-           given one here. Flagged for the library alongside register A8. */
+        /* Arrow-key roving. This was here because .seg is a view switcher
+           and ships no radiogroup keyboard model — the gap that .verdict was
+           raised to close. The component owns the semantics now; this is the
+           behaviour that goes with them, and it is written against .verdict
+           rather than against every .seg on the page, so a switcher no longer
+           inherits an input's keyboard model by accident. */
         document.addEventListener("keydown", function (e) {
           if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].indexOf(e.key) < 0) return;
-          var btn = e.target.closest ? e.target.closest('.seg[role="radiogroup"] .seg-btn') : null;
+          var btn = e.target.closest ? e.target.closest('.verdict[role="radiogroup"] .verdict-btn') : null;
           if (!btn) return;
           e.preventDefault();
-          var group = Array.prototype.slice.call(btn.parentNode.querySelectorAll(".seg-btn"));
+          var group = Array.prototype.slice.call(btn.parentNode.querySelectorAll(".verdict-btn"));
           var i = group.indexOf(btn);
           var step = (e.key === "ArrowRight" || e.key === "ArrowDown") ? 1 : -1;
           var next = group[(i + step + group.length) % group.length];
@@ -21742,6 +22098,67 @@
           var acts = document.getElementById("agentResponseActions");
           if (acts) acts.hidden = (window.__aimyPersona || "supervisor") !== "employee";
         }
+
+        /* The flag can change while this page is open, and it is set on a
+           different page as often as this one. Every panel re-reads. */
+        function redraft(panel) {
+          rowsIn(panel).forEach(function (row) {
+            var s = st(panel, row.dataset.goalId);
+            if (s.draftDropped && s.manual === null) { s.manual = "agree"; s.prefilled = true; }
+            s.draftDropped = false;
+          });
+        }
+
+        document.addEventListener("aimy:availability", function () {
+          Array.prototype.forEach.call(document.querySelectorAll("[data-verdict-panel]"), function (p) {
+            if (!aimyDown()) redraft(p);
+            repaint(p);
+          });
+        });
+
+        /* A different interaction means a different transcript, so the
+           evidence links have to be resolved again against it. */
+        document.addEventListener("aimy:interaction-hydrated", function () {
+          Array.prototype.forEach.call(document.querySelectorAll("[data-verdict-panel]"), repaint);
+        });
+
+        /* The jump. Three things, in the order they matter: put the line on
+           screen, mark which one it is, and — only if this interaction has a
+           recording — move the playhead there so pressing play starts at the
+           moment rather than at the top.
+
+           The mark is a border and a colour change, not an animation, so
+           there is nothing for prefers-reduced-motion to suppress. It clears
+           when another one is asked for, because two lines marked as "the
+           evidence" is a question rather than an answer. */
+        document.addEventListener("click", function (e) {
+          var chip = e.target.closest && e.target.closest(".ekb-ev");
+          if (!chip) return;
+          var page = chip.closest(".eval-detail-page");
+          var lines = page ? page.querySelectorAll(".eval-transcript-body .transcript-msg") : [];
+          var line = lines[parseInt(chip.dataset.evIdx, 10)];
+          if (!line) return;
+
+          Array.prototype.forEach.call(lines, function (l) { l.classList.remove("is-evidence"); });
+          line.classList.add("is-evidence");
+          line.scrollIntoView({ block: "center", behavior: "smooth" });
+          if (window.AimyCallPlayer && window.AimyCallPlayer.seekToLine) {
+            window.AimyCallPlayer.seekToLine(line);
+          }
+        });
+
+        /* "Score them yourself" is the fallback §6.7 asks to be offered
+           rather than described — it puts the reader on the first goal that
+           needs one, which is the work. */
+        document.addEventListener("click", function (e) {
+          if (!e.target.closest || !e.target.closest("[data-aiu-scroll]")) return;
+          var page = e.target.closest(".eval-detail-page");
+          var first = page && page.querySelector("[data-goal-id] .verdict-btn");
+          if (first) {
+            first.scrollIntoView({ behavior: "smooth", block: "center" });
+            first.focus();
+          }
+        });
 
         if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
         else boot();
@@ -22108,7 +22525,28 @@
           if (bar) bar.remove();
         }
 
+        /* Two states, two different things to say. "degraded" means AiMY
+           is up but not scoring; "down" means it is not there at all. Both
+           leave the table intact, so both say so — the row count is the
+           reassurance, rather than a sentence claiming everything is fine. */
+        function paintAiState() {
+          var el = document.getElementById("evalAiState");
+          if (!el) return;
+          var a = window.aimyAvailability ? window.aimyAvailability() : { state: "ok", since: "" };
+          if (a.state === "ok") { el.hidden = true; return; }
+          el.hidden = false;
+          el.innerHTML = '<span class="dot"></span><span>' +
+            (a.state === "down"
+              ? "<b>AiMY is not scoring.</b> Nothing new is being read"
+              : "<b>AiMY is not scoring new interactions.</b> It is still up for everything else") +
+            (a.since ? ", and has not been since <b>" + esc(a.since) + "</b>" : "") +
+            ". All <b>" + I.length + "</b> evaluations here were scored before that and are unaffected — " +
+            "you can still read, filter and send feedback on any of them." +
+          "</span>";
+        }
+
         function paintRows() {
+          paintAiState();
           var list = document.getElementById("evalListAccountRows");
           if (!list) return;
 
@@ -22776,8 +23214,63 @@
         /* A decided case has to leave the queue now, not on the next reload. */
         window.__evalResolveJustify = function (juId) {
           JUSTIFIES.forEach(function (j) { if (j.id === juId) j.state = "resolved"; });
+          /* The HR pane reads the same store but does not repaint itself. */
+          if (window.renderjustifyQueue) window.renderjustifyQueue();
         };
         window.__evalRepaint = function () { paintFilters(); paintSort(); paintRows(); };
+        document.addEventListener("aimy:availability", paintAiState);
+        /* The open queue, for any surface that needs to show it. The HR
+           pane had its own hardcoded copy, which is how two lists of the
+           same disputes came to disagree. */
+        window.__evalJustifies = function () {
+          return JUSTIFIES.filter(function (j) { return j.state === "open"; });
+        };
+        /* An agent raising one. Same record shape the seeds and the
+           profile page write, so the queue cannot tell them apart. */
+        window.__evalRaiseJustify = function (rec) {
+          JUSTIFIES = JUSTIFIES.filter(function (j) { return j.evalId !== rec.evalId; });
+          JUSTIFIES.unshift(rec);
+          var x = I.filter(function (y) { return y.id === rec.evalId; })[0];
+          if (x) { x.verdict = "justified"; x.justify = rec; }
+          try { localStorage.setItem("aimy-qa-justifies", JSON.stringify(JUSTIFIES)); } catch (e) {}
+          paintFilters(); paintSort(); paintRows();
+          if (window.renderjustifyQueue) window.renderjustifyQueue();
+          return rec;
+        };
+        /* What the agent can contest, read off the interaction they are
+           looking at rather than retyped — §4, context is passed.
+
+           The breakdown leads with the QUESTION, because that is the
+           criterion AiMY scored against. A queue row needs the goal's NAME,
+           which is what Goal Hub calls it, so both travel: the question to
+           choose by, the name to be listed under. */
+        var GOAL_NAME = {
+          "g-followup":    "Follow-up Confirmation",
+          "g-resolution":  "Issue Resolution",
+          "g-empathy":     "Empathy & Active Listening",
+          "g-identity":    "Identity Verification",
+          "g-categorise":  "Ticket categorisation",
+          "g-survey":      "Survey Promotion",
+          "g-disposition": "Disposition Coding"
+        };
+        window.__evalGoalsOf = function (detailId) {
+          var page = document.getElementById(detailId || "eval-detail-human");
+          var out = [];
+          if (!page) return out;
+          Array.prototype.forEach.call(page.querySelectorAll("[data-goal-id]"), function (row) {
+            var gid = row.dataset.goalId;
+            var q = row.querySelector(".ekb-question");
+            /* Only what AiMY marked against them is worth contesting — you
+               cannot dispute a goal you passed. */
+            if (row.dataset.aiVerdict === "pass") return;
+            out.push({
+              id: gid,
+              name: GOAL_NAME[gid] || gid,
+              question: q ? q.textContent.trim() : gid
+            });
+          });
+          return out;
+        };
 
         window.__evalTable = {
           go: function (tab) { var b = document.querySelector('[data-tbl="' + tab + '"]'); if (b) b.click(); },
@@ -23001,7 +23494,18 @@
         /* The transcript is replaced when a different interaction is
            opened, so the player has to re-read it or it keeps seeking
            against lines that are no longer on the page. */
-        window.AimyCallPlayer = { rebind: function () { stop(); refresh(); } };
+        window.AimyCallPlayer = {
+          rebind: function () { stop(); refresh(); },
+          /* The evidence link needs the playhead on a line it did not click.
+             Returns false when this interaction has no recording, so the
+             caller can stay silent rather than pretend it seeked. */
+          seekToLine: function (el) {
+            var i = msgs.indexOf(el);
+            if (!player || player.hidden || i < 0 || offsets[i] === null) return false;
+            seek(offsets[i]);
+            return true;
+          }
+        };
 
         if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
         else boot();
@@ -23702,12 +24206,215 @@
           }
 
           if (window.AimyCallPlayer && x.ch === "voice") window.AimyCallPlayer.rebind();
+
+          /* The transcript under the goal cards has just been replaced, so
+             every evidence link is pointing at lines that no longer exist.
+             Announced rather than called directly: the verdict panel owns
+             those chips and lives in another IIFE. */
+          document.dispatchEvent(new CustomEvent("aimy:interaction-hydrated", { detail: x }));
         }
 
-        window.hydrateEvalDetail = paint;
+        /* Which interaction the detail page is currently showing. The
+           agent's reply controls sit on a static shell, so without this
+           they would have to be told, and they were — by a hardcoded
+           argument that named Omar's May 7 call on every interaction. */
+        window.hydrateEvalDetail = function (id, x) { window.__evalCurrent = x; paint(id, x); };
       })();
     </script>
 
+
+    <script>
+      /* ════════════════════════════════════════════════════════════════
+         RAISING A DISPUTE — the agent's half
+
+         Two buttons on this page said "justify" and opened the resolver's
+         modal: Uphold / Overturn / Partial adjust, the three outcomes only a
+         manager can choose. An agent clicking Overturn on their own
+         evaluation would have "resolved" it in their own favour.
+
+         What an agent actually does is name what they disagree with and say
+         why. That is this. It decides nothing, and it lands in the same
+         queue the seeds and my-profile.html write to, so a manager cannot
+         tell a raise apart by where it came from.
+      ════════════════════════════════════════════════════════════════ */
+      (function () {
+        "use strict";
+
+        var S = null;
+
+        function esc(v) {
+          return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+                          .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        window.openJustifyRaise = function (o) {
+          var goals = (window.__evalGoalsOf || function () { return []; })(o.detail);
+          if (!goals.length) {
+            /* Nothing was marked against them. Say so rather than opening an
+               empty form. */
+            if (window.showToast) window.showToast({
+              title: "Nothing to justify here",
+              sub: "AiMY did not mark any goal against you on this interaction."
+            });
+            return;
+          }
+          S = {
+            evalId: o.evalId, agent: o.agent, interaction: o.interaction,
+            score: o.score, manager: o.manager || "Lina Haddad",
+            goals: goals, picked: {}, reason: ""
+          };
+          document.getElementById("justifyRaiseModal").classList.add("open");
+          render();
+        };
+
+        function close() {
+          var m = document.getElementById("justifyRaiseModal");
+          if (m) m.classList.remove("open");
+          S = null;
+        }
+
+        function picked() {
+          return S.goals.filter(function (g) { return S.picked[g.id]; });
+        }
+
+        function render() {
+          document.getElementById("jrSub").textContent =
+            S.interaction + " \u00b7 scored " + S.score + "% \u00b7 goes to " + S.manager;
+
+          document.getElementById("jrBody").innerHTML =
+            '<span class="ju-reason-k jr-q">Which goals do you disagree with?</span>' +
+            /* .ds-choice is a label around a real input — ported that way,
+               and used that way, so the checkbox semantics are the
+               browser's rather than three ARIA attributes of mine. */
+            '<div class="gc-grounds jr-goals">' + S.goals.map(function (g) {
+              return '<label class="ds-choice gc-ground">' +
+                '<input type="checkbox" data-jr-goal="' + g.id + '"' +
+                  (S.picked[g.id] ? " checked" : "") + " />" +
+                "<span><b>" + esc(g.name) + "</b>" +
+                "<em>" + esc(g.question) + "</em></span>" +
+              "</label>";
+            }).join("") + "</div>" +
+
+            '<label class="ju-reason jr-reason">' +
+              '<span class="ju-reason-k">What happened? <b class="ju-req">required</b></span>' +
+              '<textarea class="ds-textarea" data-jr-reason placeholder="' +
+                "Say what the evaluation missed. " + esc(S.manager) +
+                ' reads this, and it is all they have to go on.">' + esc(S.reason) + "</textarea>" +
+            "</label>" +
+
+            /* The consequence, before the button and not after it. The score
+               standing in the meantime is the part people are surprised by. */
+            '<div class="inline-note ju-effect"><span class="dot"></span><span data-jr-effect>' +
+              effect() + "</span></div>";
+
+          gate();
+        }
+
+        function effect() {
+          var n = picked().length;
+          if (!n) return "Pick at least one goal. Your <b>" + S.score + "%</b> stands until this is decided.";
+          return "<b>" + n + " goal" + (n === 1 ? "" : "s") + "</b> " +
+            (n === 1 ? "goes" : "go") + " to " + esc(S.manager) +
+            " to decide. Your <b>" + S.score + "%</b> stands until they do.";
+        }
+
+        function gate() {
+          var ok = picked().length > 0 && S.reason.trim().length > 9;
+          var b = document.getElementById("jrSubmit");
+          if (b) b.disabled = !ok;
+        }
+
+        function submit() {
+          var gs = picked();
+          var rec = {
+            id: "JU-" + String(Date.now()).slice(-6),
+            feedbackId: "fb-" + S.evalId.replace("ev-", ""),
+            evalId: S.evalId, agent: S.agent, interaction: S.interaction,
+            goals: gs.map(function (g) { return g.name; }),
+            reason: S.reason.trim(), raised: "just now", state: "open"
+          };
+          var manager = S.manager, score = S.score;
+
+          if (window.__evalRaiseJustify) window.__evalRaiseJustify(rec);
+
+          if (window.__evalAudit) {
+            window.__evalAudit({
+              tone: "warn", who: S.agent, kind: "human",
+              action: "Dispute raised \u00b7 " + rec.goals.join(", "),
+              detail: rec.reason.slice(0, 90),
+              time: "\u2014", state: "With " + manager
+            });
+          }
+
+          /* The reply block stops offering the two actions and says where
+             this now sits — the state, not a thank-you. */
+          var loop = document.getElementById("fbDetailLoop"),
+              ack = document.getElementById("fbDetailAck"),
+              dis = document.getElementById("fbDetailjustify");
+          if (loop) {
+            loop.className = "fb-detail-loop justifyd";
+            loop.textContent = "Disputed \u00b7 with " + manager + " \u00b7 " +
+              rec.goals.length + " goal" + (rec.goals.length === 1 ? "" : "s") + " contested";
+            loop.style.display = "";
+          }
+          if (ack) ack.style.display = "none";
+          if (dis) dis.style.display = "none";
+
+          close();
+          if (window.showToast) window.showToast({
+            title: "Sent to " + manager,
+            sub: rec.goals.join(", ") + " \u00b7 your " + score + "% stands until they decide"
+          });
+        }
+
+        document.addEventListener("click", function (e) {
+          if (!e.target.closest) return;
+          if (e.target.closest("[data-jr-close]")) { close(); return; }
+          var sub = e.target.closest("#jrSubmit");
+          if (sub && !sub.disabled && S) { submit(); return; }
+
+          var open = e.target.closest("[data-jr-open]");
+          if (open) {
+            var x = open.dataset.jrEval
+              ? (window.__evalRecord && window.__evalRecord(open.dataset.jrEval))
+              : window.__evalCurrent;
+            if (!x) return;
+            window.openJustifyRaise({
+              evalId: x.id, agent: x.agent, score: x.score, detail: x.detail,
+              interaction: label(x)
+            });
+          }
+        });
+
+        var CHN = { voice: "Voice call", chat: "Chat", email: "Email", ticket: "Ticket" };
+        var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        function label(x) {
+          var d = x.d.split("-");
+          return CHN[x.ch] + " · " + MON[parseInt(d[1], 10) - 1] + " " + parseInt(d[2], 10);
+        }
+
+        document.addEventListener("input", function (e) {
+          if (S && e.target.matches("[data-jr-reason]")) { S.reason = e.target.value; gate(); }
+        });
+
+        /* Update the consequence line in place. A full re-render would
+           replace the checkbox that was just ticked — fine for a mouse,
+           but it drops focus for anyone tabbing through, so the second
+           goal would be unreachable from the keyboard. Same trap as the
+           search field in Round 16. */
+        document.addEventListener("change", function (e) {
+          if (!S || !e.target.matches("[data-jr-goal]")) return;
+          S.picked[e.target.dataset.jrGoal] = e.target.checked;
+          var line = document.querySelector("[data-jr-effect]");
+          if (line) line.innerHTML = effect();
+          gate();
+        });
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && S) close();
+        });
+      })();
+    </script>
 
     <script>
       /* ═══════════════════════════════════════════════════════════════════
@@ -23740,12 +24447,22 @@
         }
 
         /* Approving means the agent's reading replaces AiMY's on the goals
-           they contested. Recomputed from the goals rather than typed, so
-           the number cannot disagree with the rows it came from. */
+           they contested, so the score moves toward full marks by the share
+           of goals that changed hands: two of seven contested closes two
+           sevenths of the gap to 100.
+
+           STILL A STAND-IN, and the honest note is that a real recompute
+           needs each goal's weight, which this fixture does not carry. What
+           it fixes is the previous stand-in — a flat +11 a goal — turning a
+           77% into 99% for two goals, which reads as a bug whatever the
+           arithmetic behind it. Proportional cannot exceed 100 by
+           construction and cannot overtake an interaction that passed
+           everything. */
         function recalc(x, j) {
-          var contested = (j.goals || []).length || 1;
-          var lift = Math.min(30, contested * 11);
-          return Math.min(100, x.score + lift);
+          var page = document.getElementById(x.detail);
+          var total = page ? page.querySelectorAll("[data-goal-id]").length : 7;
+          var contested = Math.min((j.goals || []).length || 1, total);
+          return Math.round(x.score + (100 - x.score) * (contested / total));
         }
 
         window.openJustifyDecision = function (evalId) {
@@ -23777,11 +24494,11 @@
             "</div>" +
 
             '<div class="ju-choice">' +
-              '<div class="seg" role="radiogroup" aria-label="Your decision">' +
-                '<button class="seg-btn' + (S.choice === "approved" ? " active" : "") +
-                  '" type="button" role="radio" aria-checked="' + (S.choice === "approved") + '" data-ju="approved">Approve</button>' +
-                '<button class="seg-btn' + (S.choice === "declined" ? " active" : "") +
-                  '" type="button" role="radio" aria-checked="' + (S.choice === "declined") + '" data-ju="declined">Decline</button>' +
+              '<div class="verdict" role="radiogroup" aria-label="Your decision">' +
+                '<button class="verdict-btn' + (S.choice === "approved" ? " active" : "") +
+                  '" type="button" role="radio" aria-checked="' + (S.choice === "approved") + '" data-verdict="agree" data-ju="approved">Approve</button>' +
+                '<button class="verdict-btn' + (S.choice === "declined" ? " active" : "") +
+                  '" type="button" role="radio" aria-checked="' + (S.choice === "declined") + '" data-verdict="disagree" data-ju="declined">Decline</button>' +
               "</div>" +
             "</div>" +
 
@@ -23906,6 +24623,6 @@
     </script>
 
     <script src="assets/aimy-canvas.js?v=7"></script>
-    <script src="assets/aimy-rail.js?v=2"></script>
+    <script src="assets/aimy-rail.js?v=3"></script>
   </body>
 </html>

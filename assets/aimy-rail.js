@@ -447,4 +447,55 @@
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();
+
+  /* ══ IS AiMY AVAILABLE ══════════════════════════════════════
+     Doctrine §6.7 / Level 7: a surface that renders AI output has to say
+     what it shows when the AI is not there. Several surfaces need the same
+     answer at the same moment, and they are on different pages, so the
+     answer is one fact rather than one flag per page.
+
+     THREE STATES, because they have three different consequences:
+
+       ok        AiMY is scoring. Nothing to say.
+       degraded  AiMY is up but not scoring new interactions. Everything
+                 already scored is unaffected — which is most of what a
+                 manager does here, so this must NOT read as an outage.
+       down      AiMY produced nothing for the thing you are looking at.
+                 The manual path has to be offered, not just described.
+
+     Held in localStorage so it survives a page change, which is how this
+     prototype carries every other cross-page fact. In a real build this is
+     the health of the scoring service and nothing sets it by hand.
+
+     `since` is when scoring stopped: a degraded banner that cannot say
+     since when is asking the reader to guess how much is missing. */
+  var AVAIL_KEY = "aimy-qa-ai-availability";
+
+  function readAvail() {
+    try {
+      var raw = localStorage.getItem(AVAIL_KEY);
+      if (!raw) return { state: "ok", since: "" };
+      var v = JSON.parse(raw);
+      return { state: v.state || "ok", since: v.since || "" };
+    } catch (e) { return { state: "ok", since: "" }; }
+  }
+
+  window.aimyAvailability = readAvail;
+
+  /* Setting it re-paints whatever is listening. Nothing polls. */
+  window.setAimyAvailability = function (state, since) {
+    var v = { state: state || "ok", since: since || "" };
+    try { localStorage.setItem(AVAIL_KEY, JSON.stringify(v)); } catch (e) {}
+    document.dispatchEvent(new CustomEvent("aimy:availability", { detail: v }));
+    return v;
+  };
+
+  /* This file loads at the END of the page, after the surfaces that care.
+     So on a page where AiMY is already down, they have booted believing it
+     was fine — announce it once so they correct themselves. Silence when
+     everything is normal, which is the common case. */
+  var boot_avail = readAvail();
+  if (boot_avail.state !== "ok") {
+    document.dispatchEvent(new CustomEvent("aimy:availability", { detail: boot_avail }));
+  }
 })();

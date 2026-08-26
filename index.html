@@ -8153,6 +8153,7 @@
              cell was, which is how the activity log ended up under the
              attention list. */
           .floop-col { display:flex; flex-direction:column; gap:20px; min-width:0; }
+          .fv-aiu { margin:2px 0 10px; }
 
           .fv-lead { display:flex; align-items:flex-start; gap:11px; flex-wrap:wrap; margin-bottom:10px; }
           .fv-num { font-size:30px; font-weight:800; line-height:1; letter-spacing:-0.02em; color:var(--warn); font-variant-numeric:tabular-nums; }
@@ -8421,6 +8422,14 @@
                     <span class="fv-cap">AI evaluations still unsent, across <b>6 agents</b>.<br />None has reached the agent yet.</span>
                     <span class="work-state ws-drafted" data-work-state="drafted"><span class="ws-dot"></span>Drafted</span>
                   </div>
+                  <!-- This card's whole claim is that AiMY drafted these, so
+                       it is the one place on the dashboard where AiMY not
+                       drafting changes what the number means (§6.7). The 19
+                       are unaffected — they were drafted before — and the
+                       line says only that, because a count of what has
+                       arrived undrafted since is not something this page
+                       knows and would be invented. -->
+                  <div class="inline-note warn fv-aiu" id="fvAiState" hidden></div>
                   <div class="act-item"><span><b class="fv-warn">10 are failures</b> — sending one is negative feedback</span></div>
                   <div class="act-item"><span><b>4 I could not score</b> — a bulk agree cannot touch those</span></div>
                   <div class="act-item"><span><b>Omar Abdallah</b> holds 6 of the 19 — a third, on one person</span></div>
@@ -13880,6 +13889,25 @@
       })();
     </script>
     <script src="assets/aimy-canvas.js?v=7"></script>
-    <script src="assets/aimy-rail.js?v=2"></script>
+    <script src="assets/aimy-rail.js?v=3"></script>
+    <script>
+      /* Reads the shared availability flag the rail script owns. Loaded
+         after it on purpose — the flag has to exist before this asks. */
+      (function () {
+        "use strict";
+        function paint() {
+          var el = document.getElementById("fvAiState");
+          if (!el) return;
+          var a = window.aimyAvailability ? window.aimyAvailability() : { state: "ok", since: "" };
+          if (a.state === "ok") { el.hidden = true; return; }
+          el.hidden = false;
+          el.innerHTML = '<span class="dot"></span><span><b>AiMY is not drafting right now</b>' +
+            (a.since ? ", and has not been since <b>" + String(a.since).replace(/</g, "&lt;") + "</b>" : "") +
+            ". These 19 were drafted before that. Anything arriving now reaches you unscored.</span>";
+        }
+        document.addEventListener("aimy:availability", paint);
+        paint();
+      })();
+    </script>
   </body>
 </html>
