@@ -5513,6 +5513,134 @@
          title — it is the only thing here that changes when a filter runs,
          so it says what was filtered rather than sitting under a static
          heading that cannot. */
+      /* ── The quarterly evaluation band ────────────────────────────
+         Two columns: the quarter on the left, the record behind it on the
+         right. The history is beside the draft rather than under it because
+         "is this quarter unusual" is the question you ask WHILE reading the
+         draft, not after. */
+      /* The wizard needs more width than a one-question modal: a goal row
+         carries a name, the arithmetic behind it and a four-option control,
+         and at 520px those wrap into three lines each. */
+      .fbmodal-wide { max-width: 720px; }
+
+      .qw-h { font-size: 13px; font-weight: 800; color: var(--d50); margin-bottom: 4px; }
+      .qw-s { font-size: 12px; line-height: 1.55; color: var(--d400); margin-bottom: 14px; }
+      .qw-s b { color: var(--d200); }
+
+      /* Coverage, step 1. Three numbers and what each one means for the
+         evaluation, because "47 interactions" alone does not tell a manager
+         whether this quarter can carry a rating. */
+      .qw-cov { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+      .qw-cov-c {
+        background: var(--card-bg-raised); border: 1px solid var(--wash-6);
+        border-radius: 12px; padding: 12px;
+      }
+      .qw-cov-n { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: var(--d50); line-height: 1; }
+      .qw-cov-n.warn { color: var(--warn); }
+      .qw-cov-k { font-size: 11px; color: var(--d400); margin-top: 5px; line-height: 1.45; }
+
+      /* A goal row. The count sits between the name and the control so the
+         rating is read against its evidence rather than beside it. */
+      .qw-goal {
+        display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 12px;
+        align-items: center; padding: 11px 12px; border-radius: 12px;
+        background: var(--card-bg-raised); border: 1px solid var(--wash-6); margin-bottom: 7px;
+      }
+      .qw-goal.is-edited { border-color: rgba(var(--accent-rgb), 0.45); }
+      .qw-g-n { font-size: 12.5px; font-weight: 700; color: var(--d100); }
+      .qw-g-m { font-size: 11px; color: var(--d500); margin-top: 3px; display: flex; gap: 7px; flex-wrap: wrap; align-items: center; }
+      .qw-g-m b { color: var(--d300); font-variant-numeric: tabular-nums; }
+      .qw-thin {
+        font-size: 9.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+        padding: 2px 6px; border-radius: 4px; background: var(--warn-bg); color: var(--warn);
+      }
+      .qw-changed { font-size: 11px; color: var(--accent); font-weight: 600; }
+      .qw-goals { max-height: 340px; overflow-y: auto; padding-right: 4px; }
+
+      /* Sign-off */
+      .qw-sum { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+      .qw-sum-n { font-size: 30px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+      .qw-sum-n.ok { color: var(--ok); } .qw-sum-n.warn { color: var(--warn); } .qw-sum-n.err { color: var(--err); }
+      .qw-narr { font-size: 12.5px; line-height: 1.65; color: var(--d300); margin: 0; }
+      /* The typed confirmation is a separate act from reading the
+         consequence above it, so it gets a rule and real air rather than
+         sitting 7px under a warning box. */
+      .qw-confirm {
+        display: block; margin-top: 22px; padding-top: 18px;
+        border-top: 1px solid var(--wash-5);
+      }
+      .qw-confirm-k { display: block; font-size: 12px; color: var(--d400); margin-bottom: 10px; line-height: 1.5; }
+      .qw-confirm-k b { color: var(--d100); }
+      .qw-confirm input {
+        width: 100%; font-family: var(--font-sans); font-size: 13px; font-weight: 600;
+        color: var(--d100); background: var(--card-bg-raised);
+        border: 1px solid var(--card-border); border-radius: var(--r-md); padding: 11px 13px;
+      }
+      .qw-confirm input:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+      .qp-wrap { margin-bottom: 18px; }
+      .qp {
+        display: grid; grid-template-columns: minmax(0,1fr) 250px; gap: 14px;
+        align-items: start;
+      }
+      @media (max-width: 1000px) { .qp { grid-template-columns: minmax(0,1fr); } }
+      .qp-card {
+        background: var(--card-bg); border: 1px solid var(--wash-6);
+        border-radius: 14px; padding: 15px 16px;
+      }
+      .qp-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+      .qp-q { font-size: 14px; font-weight: 800; color: var(--d50); letter-spacing: -0.01em; }
+      .qp-range { font-size: 11.5px; color: var(--d500); }
+      .qp-spacer { flex: 1; }
+      .qp-overall {
+        display: inline-flex; align-items: center; gap: 7px;
+        font-size: 12px; font-weight: 700; padding: 4px 11px; border-radius: 999px;
+      }
+      .qp-overall.ok   { background: var(--ok-bg);   color: var(--ok); }
+      .qp-overall.warn { background: var(--warn-bg); color: var(--warn); }
+      .qp-overall.err  { background: var(--err-bg);  color: var(--err); }
+      .qp-lead { font-size: 12.5px; line-height: 1.6; color: var(--d300); margin-bottom: 12px; }
+      .qp-lead b { color: var(--d100); font-weight: 700; }
+      .qp-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+      /* The coverage statement. A quarterly evaluation drawn from half the
+         quarter's interactions is a different claim from one drawn from all
+         of them, and the reader has to be told which they are looking at. */
+      .qp-cover {
+        display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+        font-size: 11.5px; color: var(--d400); margin-bottom: 12px;
+        padding-bottom: 12px; border-bottom: 1px solid var(--wash-5);
+      }
+      .qp-cover b { color: var(--d200); font-variant-numeric: tabular-nums; }
+
+      /* History */
+      .qp-hist { background: var(--card-bg); border: 1px solid var(--wash-6); border-radius: 14px; padding: 13px 14px; }
+      .qp-hist-h {
+        font-size: 10px; font-weight: 700; letter-spacing: 0.07em;
+        text-transform: uppercase; color: var(--d500); margin-bottom: 9px;
+      }
+      .qp-hrow {
+        display: flex; align-items: center; gap: 8px;
+        padding: 7px 0; border-bottom: 1px solid var(--wash-4); font-size: 12px;
+      }
+      .qp-hrow:last-of-type { border-bottom: none; }
+      .qp-hq { font-weight: 700; color: var(--d200); min-width: 56px; }
+      .qp-hr { font-size: 11px; font-weight: 700; }
+      .qp-hr.ok { color: var(--ok); } .qp-hr.warn { color: var(--warn); } .qp-hr.err { color: var(--err); }
+      .qp-hs { margin-left: auto; font-variant-numeric: tabular-nums; font-weight: 700; color: var(--d200); }
+      .qp-latest {
+        font-size: 9px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+        padding: 2px 6px; border-radius: 4px; background: var(--accent-dim); color: var(--accent);
+      }
+      .qp-acc {
+        margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--wash-5);
+        display: flex; align-items: baseline; gap: 8px;
+      }
+      .qp-acc-n { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+      .qp-acc-n.ok { color: var(--ok); } .qp-acc-n.warn { color: var(--warn); } .qp-acc-n.err { color: var(--err); }
+      .qp-acc-k { font-size: 11px; color: var(--d500); line-height: 1.4; }
+      .qp-empty { font-size: 11.5px; color: var(--d500); line-height: 1.5; }
+
       .atp-count { font-size: 12.5px; font-weight: 600; color: var(--d300); }
       .atp-count b { color: var(--d200); font-weight: 700; }
       .atp-empty {
@@ -10696,6 +10824,12 @@
             </div>
           </div>
 
+          <!-- The quarter. Above the interactions rather than below them,
+               because it is the conclusion drawn FROM them — and a manager
+               opening a person's page in review season is here for the
+               period, not for a list. -->
+          <div class="qp-wrap" id="agentPeriod"></div>
+
           <!-- Same toolbar component as the table, because it is the same
                job: a date range and an outcome filter. The section label
                that was here said "Tickets this week · Omar Abdallah",
@@ -15455,8 +15589,19 @@
              attribute on those is DOCUMENTARY. It records the classification
              so §3 can be checked mechanically, without this listener firing a
              second, competing action. The board tiles are the main case: they
-             already complete in place, which is exactly what `direct` means. */
-          if (el.hasAttribute('onclick')) return;
+             already complete in place, which is exactly what `direct` means.
+
+             `onclick` was the only test, and it was the only test that was
+             needed when every control on this page had one. §11 bans new
+             inline handlers, so everything built since uses a delegated
+             `data-*` hook — and to this guard those controls looked like
+             unhandled ones. It hijacked them into the canvas, which then
+             could not ground "Review and sign off" and answered that it had
+             no grounded answer. Two controls hit it before it was noticed.
+
+             `data-entry-local` is the same statement in the form new code can
+             make: the classification is documentary, the handler is mine. */
+          if (el.hasAttribute('onclick') || el.hasAttribute('data-entry-local')) return;
 
           const mode  = el.getAttribute('data-entry-mode');
           const topic = el.getAttribute('data-aimy-topic') || null;
@@ -19584,6 +19729,42 @@
       </div>
     </div>
 
+    <!-- ══ THE QUARTERLY EVALUATION ═══════════════════════════════
+         Ordered inputs, validation, and a record that outlives the thread —
+         §7.2's own test for a wizard over the canvas. On .fbmodal, the shell
+         New Feedback, Justify and the goal challenge already use.
+
+         Four steps, and the order is the argument: what the quarter WAS,
+         then what each goal EARNED, then what it MEANS, then signing it.
+         Putting the narrative before the ratings would be writing the
+         conclusion first. -->
+    <div class="fbmodal-overlay" id="periodModal">
+      <div class="fbmodal fbmodal-wide">
+        <div class="fbmodal-head">
+          <div>
+            <h3 id="qwTitle">Quarterly evaluation</h3>
+            <div class="sub" id="qwSub"></div>
+          </div>
+          <button class="fbmodal-x" type="button" data-qw-close aria-label="Close">×</button>
+        </div>
+        <div class="fbmodal-body">
+          <div class="nfw-steps">
+            <div class="nfw-step done" data-qw-step="0"></div>
+            <div class="nfw-step" data-qw-step="1"></div>
+            <div class="nfw-step" data-qw-step="2"></div>
+            <div class="nfw-step" data-qw-step="3"></div>
+          </div>
+          <div id="qwBody"></div>
+        </div>
+        <div class="fbmodal-foot">
+          <button class="fbm-btn ghost" type="button" data-qw-back hidden>Back</button>
+          <span class="spacer"></span>
+          <button class="fbm-btn ghost" type="button" data-qw-close>Cancel</button>
+          <button class="fbm-btn primary" type="button" data-qw-next id="qwNext">Continue</button>
+        </div>
+      </div>
+    </div>
+
     <div class="fbmodal-overlay" id="goalChallengeModal">
       <div class="fbmodal">
         <div class="fbmodal-head">
@@ -22211,38 +22392,49 @@
 
         /* verdict: awaiting | confirmed | overturned — the state the table
            had no column for, and the reason a manager opens it at all. */
+        /* `fails` is which goals AiMY marked against the agent on that
+           interaction. The quarterly evaluation is composed from these, so
+           without them its per-goal ratings would be authored numbers
+           sitting above rows that cannot support them.
+
+           Generated once from each row's own channel and score — a goal only
+           fails where it applies (a voice call has no ticket category) and
+           the count follows the score the row already carries — EXCEPT
+           ev-1042 and ev-1043, which have hand-authored detail pages and are
+           pinned to what those pages actually say. A summary that disagrees
+           with the page it summarises is the defect, not the shortcut. */
         var I = [
-          { id: "ev-1042", agent: "Omar Abdallah", d: "2026-05-07", ch: "voice",  score: 52, st: "fail",   conf: "high", sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Failed to confirm resolution before closing. Customer escalated." },
-          { id: "ev-1043", agent: "AiMY",          d: "2026-05-08", ch: "chat",   score: 58, st: "fail",   conf: "high", sent: "neg", verdict: "awaiting",   detail: "eval-detail-ai",    sum: "Cancellation confirmed but the timeline question went unanswered." },
-          { id: "ev-1044", agent: "Tariq Mansour", d: "2026-05-09", ch: "voice",  score: 61, st: "fail",   conf: "med",  sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Long hold without an update. Resolution correct but late." },
-          { id: "ev-1045", agent: "Sarah Reyes",   d: "2026-05-09", ch: "chat",   score: 96, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "Clean handling end to end. Survey promoted." },
-          { id: "ev-1046", agent: "Lina Haddad",   d: "2026-05-10", ch: "email",  score: 89, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "Thorough written resolution, next steps stated." },
-          { id: "ev-1047", agent: "Michael Chen",  d: "2026-05-10", ch: "ticket", score: 74, st: "border", conf: "low",  sent: "neu", verdict: "awaiting",   detail: "eval-detail-human", sum: "Category tags inconsistent with the described issue." },
-          { id: "ev-1048", agent: "Omar Abdallah", d: "2026-05-11", ch: "voice",  score: 67, st: "border", conf: "med",  sent: "neu", verdict: "awaiting",   detail: "eval-detail-human", sum: "Good empathy, missed the follow-up SOP." },
-          { id: "ev-1049", agent: "Omar Abdallah", d: "2026-05-12", ch: "email",  score: 71, st: "border", conf: "high", sent: "neu", verdict: "overturned", detail: "eval-detail-human", sum: "Within SLA, phrasing imprecise. Re-scored on review." },
-          { id: "ev-1050", agent: "Omar Abdallah", d: "2026-05-12", ch: "chat",   score: 48, st: "fail",   conf: "high", sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Frustration voiced twice with no de-escalation attempt." },
-          { id: "ev-1051", agent: "Tariq Mansour", d: "2026-05-13", ch: "ticket", score: 63, st: "fail",   conf: "med",  sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Closed without confirming the customer agreed it was resolved." },
-          { id: "ev-1052", agent: "Sarah Reyes",   d: "2026-05-13", ch: "voice",  score: 94, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "Identity verified, resolution confirmed, warm close." },
-          { id: "ev-1053", agent: "Lina Haddad",   d: "2026-05-14", ch: "voice",  score: 92, st: "pass",   conf: "med",  sent: "pos", verdict: "awaiting",   detail: "eval-detail-human", sum: "Steady tone through a difficult billing dispute." },
-          { id: "ev-1054", agent: "Michael Chen",  d: "2026-05-14", ch: "chat",   score: 81, st: "pass",   conf: "high", sent: "neu", verdict: "confirmed",  detail: "eval-detail-human", sum: "Correct SOP, slightly terse close." },
-          { id: "ev-1055", agent: "AiMY",          d: "2026-05-15", ch: "ticket", score: 88, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-ai",    sum: "Routed and resolved without escalation." },
-          { id: "ev-1056", agent: "Tariq Mansour", d: "2026-05-15", ch: "voice",  score: 58, st: "fail",   conf: "low",  sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Transcript cuts at 4:12 — partial evaluation only." },
-          { id: "ev-1057", agent: "Michael Chen",  d: "2026-05-16", ch: "email",  score: 77, st: "border", conf: "med",  sent: "neu", verdict: "awaiting",   detail: "eval-detail-human", sum: "Answer correct, three replies where one would have done." },
-          { id: "ev-1058", agent: "Lina Haddad",   d: "2026-05-16", ch: "ticket", score: 90, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "Categorised correctly, closed with the customer's agreement." },
-          { id: "ev-1059", agent: "Sarah Reyes",   d: "2026-05-17", ch: "email",  score: 97, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "Concise, complete, next steps and a timeline." },
-          { id: "ev-1060", agent: "Omar Abdallah", d: "2026-05-17", ch: "ticket", score: 55, st: "fail",   conf: "med",  sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Reopened twice — root cause never addressed." },
-          { id: "ev-1061", agent: "AiMY",          d: "2026-05-18", ch: "chat",   score: 69, st: "border", conf: "low",  sent: "neu", verdict: "awaiting",   detail: "eval-detail-ai",    sum: "Handed to a human late; the intent was clear by the second turn." },
-          { id: "ev-1062", agent: "Tariq Mansour", d: "2026-05-18", ch: "chat",   score: 72, st: "border", conf: "high", sent: "neu", verdict: "overturned", detail: "eval-detail-human", sum: "Scored down for tone; review found the customer was abusive." },
-          { id: "ev-1063", agent: "Michael Chen",  d: "2026-05-19", ch: "voice",  score: 84, st: "pass",   conf: "med",  sent: "pos", verdict: "awaiting",   detail: "eval-detail-human", sum: "Solid call, survey not offered at close." },
-          { id: "ev-1064", agent: "Lina Haddad",   d: "2026-05-19", ch: "chat",   score: 93, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "De-escalated a refund dispute without escalating it." },
-          { id: "ev-1065", agent: "Omar Abdallah", d: "2026-05-20", ch: "voice",  score: 60, st: "fail",   conf: "high", sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Identity not verified before account details were discussed." },
-          { id: "ev-1066", agent: "Sarah Reyes",   d: "2026-05-20", ch: "ticket", score: 95, st: "pass",   conf: "high", sent: "pos", verdict: "awaiting",   detail: "eval-detail-human", sum: "Clean triage and a first-touch resolution." },
-          { id: "ev-1067", agent: "Tariq Mansour", d: "2026-05-21", ch: "email",  score: 66, st: "fail",   conf: "med",  sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Missed the SLA by four hours with no holding reply." },
-          { id: "ev-1068", agent: "Michael Chen",  d: "2026-05-21", ch: "ticket", score: 80, st: "pass",   conf: "low",  sent: "neu", verdict: "awaiting",   detail: "eval-detail-human", sum: "Tags plausible but the resolution note is too thin to score." },
-          { id: "ev-1069", agent: "Lina Haddad",   d: "2026-05-22", ch: "voice",  score: 88, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "Careful identity check, resolution confirmed twice." },
-          { id: "ev-1070", agent: "AiMY",          d: "2026-05-22", ch: "email",  score: 81, st: "pass",   conf: "med",  sent: "neu", verdict: "awaiting",   detail: "eval-detail-ai",    sum: "Correct answer, tone flatter than the house voice." },
-          { id: "ev-1071", agent: "Omar Abdallah", d: "2026-05-23", ch: "chat",   score: 64, st: "fail",   conf: "high", sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Closed the chat while the customer was still typing." },
-          { id: "ev-1072", agent: "Sarah Reyes",   d: "2026-05-23", ch: "voice",  score: 99, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "Textbook handling of a billing escalation." }
+          { id: "ev-1042", fails: ["g-followup", "g-resolution"], agent: "Omar Abdallah", d: "2026-05-07", ch: "voice",  score: 52, st: "fail",   conf: "high", sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Failed to confirm resolution before closing. Customer escalated." },
+          { id: "ev-1043", fails: ["g-followup", "g-resolution", "g-survey"], agent: "AiMY",          d: "2026-05-08", ch: "chat",   score: 58, st: "fail",   conf: "high", sent: "neg", verdict: "awaiting",   detail: "eval-detail-ai",    sum: "Cancellation confirmed but the timeline question went unanswered." },
+          { id: "ev-1044", fails: ["g-survey", "g-empathy"], agent: "Tariq Mansour", d: "2026-05-09", ch: "voice",  score: 61, st: "fail",   conf: "med",  sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Long hold without an update. Resolution correct but late." },
+          { id: "ev-1045", fails: [], agent: "Sarah Reyes",   d: "2026-05-09", ch: "chat",   score: 96, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "Clean handling end to end. Survey promoted." },
+          { id: "ev-1046", fails: [], agent: "Lina Haddad",   d: "2026-05-10", ch: "email",  score: 89, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "Thorough written resolution, next steps stated." },
+          { id: "ev-1047", fails: ["g-categorise"], agent: "Michael Chen",  d: "2026-05-10", ch: "ticket", score: 74, st: "border", conf: "low",  sent: "neu", verdict: "awaiting",   detail: "eval-detail-human", sum: "Category tags inconsistent with the described issue." },
+          { id: "ev-1048", fails: ["g-identity", "g-resolution"], agent: "Omar Abdallah", d: "2026-05-11", ch: "voice",  score: 67, st: "border", conf: "med",  sent: "neu", verdict: "awaiting",   detail: "eval-detail-human", sum: "Good empathy, missed the follow-up SOP." },
+          { id: "ev-1049", fails: ["g-resolution"], agent: "Omar Abdallah", d: "2026-05-12", ch: "email",  score: 71, st: "border", conf: "high", sent: "neu", verdict: "overturned", detail: "eval-detail-human", sum: "Within SLA, phrasing imprecise. Re-scored on review." },
+          { id: "ev-1050", fails: ["g-followup", "g-identity", "g-resolution"], agent: "Omar Abdallah", d: "2026-05-12", ch: "chat",   score: 48, st: "fail",   conf: "high", sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Frustration voiced twice with no de-escalation attempt." },
+          { id: "ev-1051", fails: ["g-resolution", "g-survey"], agent: "Tariq Mansour", d: "2026-05-13", ch: "ticket", score: 63, st: "fail",   conf: "med",  sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Closed without confirming the customer agreed it was resolved." },
+          { id: "ev-1052", fails: [], agent: "Sarah Reyes",   d: "2026-05-13", ch: "voice",  score: 94, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "Identity verified, resolution confirmed, warm close." },
+          { id: "ev-1053", fails: [], agent: "Lina Haddad",   d: "2026-05-14", ch: "voice",  score: 92, st: "pass",   conf: "med",  sent: "pos", verdict: "awaiting",   detail: "eval-detail-human", sum: "Steady tone through a difficult billing dispute." },
+          { id: "ev-1054", fails: ["g-survey"], agent: "Michael Chen",  d: "2026-05-14", ch: "chat",   score: 81, st: "pass",   conf: "high", sent: "neu", verdict: "confirmed",  detail: "eval-detail-human", sum: "Correct SOP, slightly terse close." },
+          { id: "ev-1055", fails: [], agent: "AiMY",          d: "2026-05-15", ch: "ticket", score: 88, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-ai",    sum: "Routed and resolved without escalation." },
+          { id: "ev-1056", fails: ["g-resolution", "g-survey", "g-empathy"], agent: "Tariq Mansour", d: "2026-05-15", ch: "voice",  score: 58, st: "fail",   conf: "low",  sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Transcript cuts at 4:12 — partial evaluation only." },
+          { id: "ev-1057", fails: ["g-resolution"], agent: "Michael Chen",  d: "2026-05-16", ch: "email",  score: 77, st: "border", conf: "med",  sent: "neu", verdict: "awaiting",   detail: "eval-detail-human", sum: "Answer correct, three replies where one would have done." },
+          { id: "ev-1058", fails: [], agent: "Lina Haddad",   d: "2026-05-16", ch: "ticket", score: 90, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "Categorised correctly, closed with the customer's agreement." },
+          { id: "ev-1059", fails: [], agent: "Sarah Reyes",   d: "2026-05-17", ch: "email",  score: 97, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "Concise, complete, next steps and a timeline." },
+          { id: "ev-1060", fails: ["g-followup", "g-disposition", "g-resolution"], agent: "Omar Abdallah", d: "2026-05-17", ch: "ticket", score: 55, st: "fail",   conf: "med",  sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Reopened twice — root cause never addressed." },
+          { id: "ev-1061", fails: ["g-resolution", "g-survey"], agent: "AiMY",          d: "2026-05-18", ch: "chat",   score: 69, st: "border", conf: "low",  sent: "neu", verdict: "awaiting",   detail: "eval-detail-ai",    sum: "Handed to a human late; the intent was clear by the second turn." },
+          { id: "ev-1062", fails: ["g-empathy"], agent: "Tariq Mansour", d: "2026-05-18", ch: "chat",   score: 72, st: "border", conf: "high", sent: "neu", verdict: "overturned", detail: "eval-detail-human", sum: "Scored down for tone; review found the customer was abusive." },
+          { id: "ev-1063", fails: ["g-identity"], agent: "Michael Chen",  d: "2026-05-19", ch: "voice",  score: 84, st: "pass",   conf: "med",  sent: "pos", verdict: "awaiting",   detail: "eval-detail-human", sum: "Solid call, survey not offered at close." },
+          { id: "ev-1064", fails: [], agent: "Lina Haddad",   d: "2026-05-19", ch: "chat",   score: 93, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "De-escalated a refund dispute without escalating it." },
+          { id: "ev-1065", fails: ["g-followup", "g-identity"], agent: "Omar Abdallah", d: "2026-05-20", ch: "voice",  score: 60, st: "fail",   conf: "high", sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Identity not verified before account details were discussed." },
+          { id: "ev-1066", fails: [], agent: "Sarah Reyes",   d: "2026-05-20", ch: "ticket", score: 95, st: "pass",   conf: "high", sent: "pos", verdict: "awaiting",   detail: "eval-detail-human", sum: "Clean triage and a first-touch resolution." },
+          { id: "ev-1067", fails: ["g-survey", "g-categorise"], agent: "Tariq Mansour", d: "2026-05-21", ch: "email",  score: 66, st: "fail",   conf: "med",  sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Missed the SLA by four hours with no holding reply." },
+          { id: "ev-1068", fails: ["g-disposition"], agent: "Michael Chen",  d: "2026-05-21", ch: "ticket", score: 80, st: "pass",   conf: "low",  sent: "neu", verdict: "awaiting",   detail: "eval-detail-human", sum: "Tags plausible but the resolution note is too thin to score." },
+          { id: "ev-1069", fails: [], agent: "Lina Haddad",   d: "2026-05-22", ch: "voice",  score: 88, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "Careful identity check, resolution confirmed twice." },
+          { id: "ev-1070", fails: ["g-categorise"], agent: "AiMY",          d: "2026-05-22", ch: "email",  score: 81, st: "pass",   conf: "med",  sent: "neu", verdict: "awaiting",   detail: "eval-detail-ai",    sum: "Correct answer, tone flatter than the house voice." },
+          { id: "ev-1071", fails: ["g-resolution", "g-survey"], agent: "Omar Abdallah", d: "2026-05-23", ch: "chat",   score: 64, st: "fail",   conf: "high", sent: "neg", verdict: "awaiting",   detail: "eval-detail-human", sum: "Closed the chat while the customer was still typing." },
+          { id: "ev-1072", fails: [], agent: "Sarah Reyes",   d: "2026-05-23", ch: "voice",  score: 99, st: "pass",   conf: "high", sent: "pos", verdict: "confirmed",  detail: "eval-detail-human", sum: "Textbook handling of a billing escalation." }
         ];
 
         var CH_LABEL = { voice: "Voice", chat: "Chat", email: "Email", ticket: "Ticket" };
@@ -22811,7 +23003,7 @@
             (bits.length ? " · filtered to " + bits.join(", ") : " · no filters applied") + "</span>" +
             '<span class="ss-actions">' +
             (allSelected() ? "" : '<button class="ss-clear" type="button" data-sel-all>Select all ' + pageOf(rows()).length + " on this page</button>") +
-            '<button class="entry-action em-review" type="button" data-entry-mode="review" data-bulk-confirm>' +
+            '<button class="entry-action em-review" type="button" data-entry-mode="review" data-entry-local data-bulk-confirm>' +
             '<svg class="em-ico"><use href="#em-ico-review"/></svg>Send AiMY’s feedback on ' + act + "</button>" +
             '<button class="ss-clear" type="button" data-bulk-clear>Clear</button></span>' +
             '<div class="ss-preview" style="flex-basis:100%">' +
@@ -23000,6 +23192,231 @@
         if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
         else boot();
 
+        /* ══ THE QUARTERLY EVALUATION ═════════════════════════════
+           The other half of the original ask. Interactions are scored one at
+           a time; a person is evaluated over a period, and the period is the
+           thing that reaches HR, a review conversation and a coaching plan.
+
+           COMPOSED, NOT TYPED. AiMY drafts it from the quarter's interactions
+           — the same rows the table draws — so every rating has the count
+           behind it on screen and a manager can open any of them. The
+           alternative is a form where somebody types "Meets" next to seven
+           goals, which is what V1 did and what makes a quarterly review
+           impossible to argue with in either direction.
+
+           TWO SCALES, DELIBERATELY. An interaction is Pass / Fail /
+           Borderline because a single contact either met the criterion or did
+           not. A quarter against a target is ordinal — Exceeds / Meets /
+           Below / Fail — because "how did they do" is a position on a range,
+           not a boolean. V1's "To Be Evaluated" does not join them: that is a
+           work state, and treating it as a score value was a category error
+           worth not porting.
+
+           The rating AiMY proposes comes from the goal's pass rate over the
+           quarter, and the thresholds are stated on screen rather than
+           hidden in here, because a rating whose rule is invisible is a
+           number the agent cannot check. */
+        var Q_SCALE = [
+          { id: "exceeds", label: "Exceeds", min: 95, cls: "ok"   },
+          { id: "meets",   label: "Meets",   min: 80, cls: "ok"   },
+          { id: "below",   label: "Below",   min: 60, cls: "warn" },
+          { id: "fail",    label: "Fail",    min: 0,  cls: "err"  }
+        ];
+
+        var Q_GOALS = [
+          { id: "g-followup",    name: "Follow-up Confirmation" },
+          { id: "g-resolution",  name: "Issue Resolution" },
+          { id: "g-empathy",     name: "Empathy & Active Listening" },
+          { id: "g-identity",    name: "Identity Verification" },
+          { id: "g-categorise",  name: "Ticket categorisation" },
+          { id: "g-survey",      name: "Survey Promotion" },
+          { id: "g-disposition", name: "Disposition Coding" }
+        ];
+
+        var Q_APPLIES = {
+          voice:  ["g-followup", "g-resolution", "g-empathy", "g-identity", "g-survey"],
+          chat:   ["g-followup", "g-resolution", "g-empathy", "g-identity", "g-survey"],
+          email:  ["g-followup", "g-resolution", "g-categorise", "g-survey"],
+          ticket: ["g-followup", "g-resolution", "g-categorise", "g-disposition", "g-survey"]
+        };
+
+        /* The fixture runs to May 2026, so Q2 2026 is the open quarter. */
+        var Q_NOW = { id: "2026-Q2", label: "Q2 2026", from: "2026-04-01", to: "2026-06-30" };
+        var Q_PAST = [
+          { id: "2026-Q1", label: "Q1 2026", from: "2026-01-01", to: "2026-03-31" },
+          { id: "2025-Q4", label: "Q4 2025", from: "2025-10-01", to: "2025-12-31" }
+        ];
+
+        /* Signed-off history. Authored, because the fixture holds no
+           interactions before April — and a history panel with one row in it
+           cannot show what a history panel is for. Marked as carried over so
+           nobody reads these as composed from rows that do not exist. */
+        var Q_HISTORY = {
+          "Omar Abdallah":  [{ q: "2026-Q1", overall: "below",   score: 61, by: "Lina Haddad" },
+                             { q: "2025-Q4", overall: "meets",   score: 79, by: "Lina Haddad" }],
+          "Tariq Mansour":  [{ q: "2026-Q1", overall: "meets",   score: 74, by: "Lina Haddad" },
+                             { q: "2025-Q4", overall: "below",   score: 66, by: "Lina Haddad" }],
+          "Michael Chen":   [{ q: "2026-Q1", overall: "meets",   score: 81, by: "Lina Haddad" },
+                             { q: "2025-Q4", overall: "meets",   score: 83, by: "Lina Haddad" }],
+          "Lina Haddad":    [{ q: "2026-Q1", overall: "exceeds", score: 93, by: "Priya Raman" }],
+          "Sarah Reyes":    [{ q: "2026-Q1", overall: "exceeds", score: 97, by: "Lina Haddad" },
+                             { q: "2025-Q4", overall: "exceeds", score: 95, by: "Lina Haddad" }],
+          "AiMY":           []
+        };
+
+        /* Signed-off evaluations made in this session. */
+        var Q_SIGNED = {};
+        function qLoad() {
+          try { Q_SIGNED = JSON.parse(localStorage.getItem("aimy-qa-period-evals") || "{}"); }
+          catch (e) { Q_SIGNED = {}; }
+        }
+        function qSave() {
+          try { localStorage.setItem("aimy-qa-period-evals", JSON.stringify(Q_SIGNED)); } catch (e) {}
+        }
+        function qKey(agent, q) { return agent + "|" + q; }
+
+        function qInteractions(agent, per) {
+          return I.filter(function (x) {
+            return x.agent === agent && x.d >= per.from && x.d <= per.to;
+          });
+        }
+
+        function ratingFor(pct) {
+          for (var i = 0; i < Q_SCALE.length; i++) {
+            if (pct >= Q_SCALE[i].min) return Q_SCALE[i].id;
+          }
+          return "fail";
+        }
+        function scaleOf(id) {
+          return Q_SCALE.filter(function (r) { return r.id === id; })[0] || Q_SCALE[3];
+        }
+
+        /* AiMY's draft. Every goal it can speak to, with the arithmetic that
+           produced the rating carried alongside it. A goal the quarter never
+           tested is left out rather than rated — "Meets" on a goal nobody was
+           measured against is the kind of filler that makes a whole
+           evaluation unreadable. */
+        function qDraft(agent, per) {
+          var mine = qInteractions(agent, per);
+          var goals = [];
+          Q_GOALS.forEach(function (g) {
+            var applicable = mine.filter(function (x) {
+              return (Q_APPLIES[x.ch] || []).indexOf(g.id) >= 0;
+            });
+            if (!applicable.length) return;
+            var missed = applicable.filter(function (x) {
+              return (x.fails || []).indexOf(g.id) >= 0;
+            });
+            var pct = Math.round(((applicable.length - missed.length) / applicable.length) * 100);
+            goals.push({
+              id: g.id, name: g.name,
+              total: applicable.length, missed: missed.length, pct: pct,
+              /* A goal the quarter tested once is rated — AiMY has to say
+                 what it saw — but it is not evidence of a pattern, and a
+                 quarterly review that calls one interaction "the clearest
+                 gap" is how a person gets coached on a fluke. Marked, so the
+                 narrative can leave it out and the card can say why. */
+              thin: applicable.length < 3,
+              rating: ratingFor(pct), aiRating: ratingFor(pct),
+              evidence: missed.map(function (x) { return x.id; })
+            });
+          });
+
+          var confirmed = mine.filter(function (x) { return x.verdict !== "awaiting"; });
+          var avg = mine.length
+            ? Math.round(mine.reduce(function (a, x) { return a + x.score; }, 0) / mine.length)
+            : 0;
+
+          return {
+            agent: agent, q: per.id, label: per.label, from: per.from, to: per.to,
+            n: mine.length, confirmed: confirmed.length, score: avg,
+            goals: goals, overall: ratingFor(avg),
+            isAi: !!(AGENTS[agent] || {}).isAi,
+            narrative: qNarrative(agent, goals, avg, mine, !!(AGENTS[agent] || {}).isAi)
+          };
+        }
+
+        /* A drafted summary, not a template with the numbers slotted in.
+
+           THREE RULES it follows, and each exists because the first draft
+           broke it:
+           • A goal tested fewer than three times cannot be the finding.
+             Omar's first draft opened with "the clearest gap is disposition
+             coding — missed on 1 of 1", which is a single interaction
+             promoted to a quarterly conclusion.
+           • If nothing was missed, say that. Sarah's first draft ended
+             "coaching should start with follow-up confirmation" over a
+             quarter where she missed nothing — advice invented to fill a
+             sentence that was always going to be there.
+           • AiMY is not a person. Its period record is model accuracy, and
+             it does not get coached. */
+        function qNarrative(agent, goals, avg, mine, isAi) {
+          var who = isAi ? "AiMY" : agent.split(" ")[0];
+          var solid = goals.filter(function (g) { return !g.thin; });
+          var missedGoals = solid.filter(function (g) { return g.missed > 0; })
+                                 .sort(function (a, b) { return a.pct - b.pct; });
+          var clean = solid.filter(function (g) { return g.pct === 100; });
+          var fails = mine.filter(function (x) { return x.st === "fail"; }).length;
+
+          var out = who + (isAi ? " handled " : " handled ") + mine.length +
+            " interaction" + (mine.length === 1 ? "" : "s") + " this quarter, averaging " + avg + "%";
+          out += fails
+            ? ", " + fails + " of which scored as " + (fails === 1 ? "a failure. " : "failures. ")
+            : ", none of which failed. ";
+
+          if (missedGoals.length) {
+            var w = missedGoals[0];
+            out += "The clearest gap is " + w.name.toLowerCase() + " — missed on " +
+              w.missed + " of " + w.total + " applicable interactions (" + w.pct + "%). ";
+            if (missedGoals.length > 2) {
+              out += missedGoals.length + " goals fell below target in all. ";
+            }
+          } else {
+            out += "Nothing was missed" +
+              (solid.length ? " across the " + solid.length + " goal" + (solid.length === 1 ? "" : "s") +
+                " with enough interactions to judge" : "") + ". ";
+          }
+
+          if (clean.length >= 2) {
+            out += who + " was clean on " + clean.length + " goals including " +
+              clean[0].name.toLowerCase() + ". ";
+          }
+
+          var thin = goals.filter(function (g) { return g.thin; });
+          if (thin.length) {
+            out += thin.length + " goal" + (thin.length === 1 ? " was" : "s were") +
+              " tested fewer than three times and " +
+              (thin.length === 1 ? "is" : "are") + " rated on thin evidence. ";
+          }
+
+          out += missedGoals.length
+            ? (isAi
+                ? "Model accuracy work should start with " + missedGoals[0].name.toLowerCase() + "."
+                : "Coaching next quarter should start with " + missedGoals[0].name.toLowerCase() + ".")
+            : (isAi
+                ? "Nothing here needs a model change."
+                : "There is nothing here that needs a coaching plan.");
+          return out;
+        }
+
+        function qFor(agent) {
+          var key = qKey(agent, Q_NOW.id);
+          if (Q_SIGNED[key]) return Q_SIGNED[key];
+          return qDraft(agent, Q_NOW);
+        }
+
+        /* Accumulated score — V1 parity. Signed-off quarters only: averaging
+           a draft in would let a number nobody has agreed to move a figure
+           that goes on the record. */
+        function qAccumulated(agent) {
+          var rows = (Q_HISTORY[agent] || []).slice();
+          var signed = Q_SIGNED[qKey(agent, Q_NOW.id)];
+          if (signed) rows.unshift({ q: Q_NOW.id, overall: signed.overall, score: signed.score, by: signed.signedBy });
+          if (!rows.length) return null;
+          var avg = Math.round(rows.reduce(function (a, r) { return a + r.score; }, 0) / rows.length);
+          return { rows: rows, avg: avg, rating: ratingFor(avg) };
+        }
+
         /* ══ THE AGENT'S OWN PAGE ══════════════════════════════
            Opened from the Agents tab. It rendered AGENT_DATA — a second,
            hardcoded fixture of three or four "tickets this week" that
@@ -23128,10 +23545,371 @@
           }).join("");
         }
 
-        function apPaint() { apPaintFilters(); apPaintCards(); }
+        function qPaintBand() {
+          var host = document.getElementById("agentPeriod");
+          if (!host || !AP.name) return;
+          var e = qFor(AP.name);
+          var signed = !!e.signedBy;
+          var sc = scaleOf(e.overall);
+          var open = e.n - e.confirmed;
+
+          var hist = qAccumulated(AP.name);
+
+          host.innerHTML =
+            '<div class="qp">' +
+              '<div class="qp-card">' +
+                '<div class="qp-top">' +
+                  /* AiMY is not an agent being appraised. Same period and the
+                     same arithmetic, a different thing: its record is
+                     model accuracy, nobody is coached, and there is no
+                     person to send it to. */
+                  '<span class="qp-q">' + esc(e.label) + (e.isAi ? " accuracy" : " evaluation") + "</span>" +
+                  '<span class="qp-range">Apr 1 \u2013 Jun 30</span>' +
+                  '<span class="qp-spacer"></span>' +
+                  '<span class="qp-overall ' + sc.cls + '">' + esc(sc.label) + " \u00b7 " + e.score + "%</span>" +
+                  (signed
+                    ? '<span class="work-state ws-completed" data-work-state="completed"><span class="ws-dot"></span>Signed off</span>'
+                    : '<span class="work-state ws-drafted" data-work-state="drafted"><span class="ws-dot"></span>AiMY draft</span>') +
+                "</div>" +
+
+                /* Coverage before content. An evaluation drawn from half the
+                   quarter's interactions is a different claim from one drawn
+                   from all of them. */
+                '<div class="qp-cover">' +
+                  /* It said "composed from 2 of 7" while composing from all 7 —
+                     the confirmed count is not the sample, it is how much
+                     of the sample a person has stood behind. */
+                  "<span>Composed from all <b>" + e.n + "</b> this quarter \u00b7 <b>" +
+                    e.confirmed + "</b> confirmed by you</span>" +
+                  /* Only while it is a draft. Once it is signed the ratings
+                     are fixed — an unconfirmed interaction cannot move a
+                     number that is already on the record, and saying it could
+                     invites a manager to wait for something that will not
+                     happen. */
+                  (open && !signed
+                    ? '<span class="work-state ws-detected" data-work-state="detected"><span class="ws-dot"></span>' +
+                      open + " could still change these ratings</span>"
+                    : "") +
+                "</div>" +
+
+                '<p class="qp-lead">' + esc(e.narrative) + "</p>" +
+
+                '<div class="qp-actions">' +
+                  (signed
+                    ? '<span class="qp-range">Signed off by <b>' + esc(e.signedBy) + "</b> \u00b7 " + esc(e.signedAt) +
+                      (e.isAi ? " \u00b7 on AiMY’s accuracy record"
+                              : " \u00b7 sent to " + esc(AP.name.split(" ")[0])) + "</span>"
+                    : '<button class="entry-action em-review ea-sm" type="button" data-entry-mode="review" data-entry-local data-q-open>' +
+                        '<svg class="em-ico"><use href="#em-ico-review"/></svg>' +
+                        (e.isAi ? "Review model accuracy" : "Review and sign off") + "</button>") +
+                "</div>" +
+              "</div>" +
+
+              '<div class="qp-hist">' +
+                '<div class="qp-hist-h">Evaluation history</div>' +
+                (hist
+                  ? hist.rows.map(function (r, i) {
+                      var rs = scaleOf(r.overall);
+                      return '<div class="qp-hrow">' +
+                        '<span class="qp-hq">' + esc(r.q.replace("-", " ").replace(/^(\d{4}) (Q\d)$/, "$2 $1")) + "</span>" +
+                        '<span class="qp-hr ' + rs.cls + '">' + esc(rs.label) + "</span>" +
+                        (i === 0 ? '<span class="qp-latest">Latest</span>' : "") +
+                        '<span class="qp-hs">' + r.score + "%</span>" +
+                      "</div>";
+                    }).join("") +
+                    '<div class="qp-acc">' +
+                      '<span class="qp-acc-n ' + scaleOf(hist.rating).cls + '">' + hist.avg + "%</span>" +
+                      '<span class="qp-acc-k">Accumulated across ' + hist.rows.length +
+                        " signed-off quarter" + (hist.rows.length === 1 ? "" : "s") + "</span>" +
+                    "</div>"
+                  : '<div class="qp-empty">' +
+                    (e.isAi ? "No accuracy record yet. " : "No signed-off quarters yet. ") + esc(e.label) +
+                    " will be the first.</div>") +
+              "</div>" +
+            "</div>";
+        }
+
+        function apPaint() { qPaintBand(); apPaintFilters(); apPaintCards(); }
+
+        /* ══ THE SIGN-OFF WIZARD ═══════════════════════════════════
+           Four steps: what the quarter was, what each goal earned, what it
+           means, and signing it. The order is the argument — putting the
+           narrative before the ratings would be writing the conclusion
+           first, which is how a review becomes a story with numbers attached
+           rather than numbers with a story attached. */
+        var QW = null;
+
+        function qwOpen(agent) {
+          var base = qFor(agent);
+          if (base.signedBy) return;
+          QW = {
+            agent: agent, step: 0, confirm: "",
+            e: JSON.parse(JSON.stringify(base))
+          };
+          document.getElementById("periodModal").classList.add("open");
+          qwRender();
+        }
+
+        function qwClose() {
+          var m = document.getElementById("periodModal");
+          if (m) m.classList.remove("open");
+          QW = null;
+        }
+
+        /* Overall follows the ratings the manager actually left. Recomputed
+           rather than carried, so editing a goal down cannot leave a
+           headline saying Meets over a screen of Belows. */
+        function qwOverall() {
+          var w = { exceeds: 100, meets: 85, below: 68, fail: 45 };
+          var gs = QW.e.goals;
+          if (!gs.length) return QW.e.overall;
+          var avg = gs.reduce(function (a, g) { return a + w[g.rating]; }, 0) / gs.length;
+          return ratingFor(Math.round(avg));
+        }
+
+        function qwEdited() {
+          return QW.e.goals.filter(function (g) { return g.rating !== g.aiRating; });
+        }
+
+        function qwRender() {
+          var e = QW.e, first = e.isAi ? "AiMY" : QW.agent.split(" ")[0];
+          document.getElementById("qwTitle").textContent =
+            e.label + (e.isAi ? " accuracy" : " evaluation") + " \u00b7 " + QW.agent;
+          document.getElementById("qwSub").textContent =
+            ["The quarter", "Goal ratings", "The summary", "Sign off"][QW.step];
+
+          Array.prototype.forEach.call(document.querySelectorAll("[data-qw-step]"), function (d) {
+            d.classList.toggle("done", +d.dataset.qwStep <= QW.step);
+          });
+
+          var body = document.getElementById("qwBody"), html = "";
+
+          if (QW.step === 0) {
+            var open = e.n - e.confirmed;
+            html =
+              '<div class="qw-h">What this quarter holds</div>' +
+              '<p class="qw-s">Ratings are composed from these interactions. ' +
+              (open
+                ? "<b>" + open + "</b> of them still carry AiMY's reading rather than yours — " +
+                  "you can sign off anyway, and the evaluation records that."
+                : "All of them carry a verdict you have confirmed.") + "</p>" +
+              '<div class="qw-cov">' +
+                '<div class="qw-cov-c"><div class="qw-cov-n">' + e.n + "</div>" +
+                  '<div class="qw-cov-k">interactions, Apr 1 \u2013 Jun 30</div></div>' +
+                '<div class="qw-cov-c"><div class="qw-cov-n' + (open ? " warn" : "") + '">' + e.confirmed + "</div>" +
+                  '<div class="qw-cov-k">confirmed by you</div></div>' +
+                '<div class="qw-cov-c"><div class="qw-cov-n">' + e.score + "%</div>" +
+                  '<div class="qw-cov-k">average score across the quarter</div></div>' +
+              "</div>" +
+              '<div class="inline-note"><span class="dot"></span><span>' +
+                "A goal is rated on the interactions where it applied — a voice call has no ticket category — " +
+                "so the counts differ from goal to goal, and each one says its own." +
+              "</span></div>";
+          }
+
+          if (QW.step === 1) {
+            var ed = qwEdited().length;
+            html =
+              '<div class="qw-h">What each goal earned</div>' +
+              '<p class="qw-s">AiMY rated each from its pass rate: <b>95%+ Exceeds</b>, ' +
+              "<b>80%+ Meets</b>, <b>60%+ Below</b>, under that <b>Fail</b>. " +
+              "Change any of them — the rule is stated so the agent can check the ones you leave. " +
+              '<b class="qw-edn">' + (ed ? ed + " changed." : "") + "</b></p>" +
+              '<div class="qw-goals">' + e.goals.map(function (g) {
+                var changed = g.rating !== g.aiRating;
+                return '<div class="qw-goal' + (changed ? " is-edited" : "") + '">' +
+                  "<div><div class=\"qw-g-n\">" + esc(g.name) + "</div>" +
+                    '<div class="qw-g-m"><span>missed <b>' + g.missed + "</b> of <b>" + g.total +
+                      "</b> \u00b7 <b>" + g.pct + "%</b></span>" +
+                      (g.thin ? '<span class="qw-thin">thin evidence</span>' : "") +
+                      (changed ? '<span class="qw-changed">was ' + scaleOf(g.aiRating).label + "</span>" : "") +
+                    "</div></div>" +
+                  '<div class="verdict" role="radiogroup" aria-label="Rating for ' + esc(g.name) + '">' +
+                    Q_SCALE.map(function (r, i) {
+                      var on = g.rating === r.id;
+                      return '<button class="verdict-btn' + (on ? " active" : "") +
+                        '" type="button" role="radio" aria-checked="' + on + '"' +
+                        ' tabindex="' + (on ? "0" : "-1") + '"' +
+                        ' data-verdict="' + (r.id === "exceeds" || r.id === "meets" ? "pass" : r.id === "fail" ? "fail" : "na") + '"' +
+                        ' data-qw-rate="' + g.id + '" data-qw-val="' + r.id + '">' + r.label + "</button>";
+                    }).join("") +
+                  "</div>" +
+                "</div>";
+              }).join("") + "</div>";
+          }
+
+          if (QW.step === 2) {
+            html =
+              '<div class="qw-h">The summary ' + first + " reads</div>" +
+              '<p class="qw-s">Drafted from the ratings on the previous step. ' +
+              "It goes to " + (e.isAi ? "the accuracy record" : first) + " word for word, so edit it as such.</p>" +
+              '<textarea class="ds-textarea" data-qw-narr style="min-height:150px">' + esc(e.narrative) + "</textarea>";
+          }
+
+          if (QW.step === 3) {
+            var ov = scaleOf(qwOverall()), edn = qwEdited().length;
+            html =
+              '<div class="qw-h">Sign off</div>' +
+              '<div class="qw-sum">' +
+                '<span class="qw-sum-n ' + ov.cls + '">' + e.score + "%</span>" +
+                '<span class="qp-overall ' + ov.cls + '">' + ov.label + "</span>" +
+                '<span class="qp-range">' + e.goals.length + " goals \u00b7 " +
+                  (edn ? edn + " rating" + (edn === 1 ? "" : "s") + " you changed" : "all AiMY's ratings kept") +
+                "</span>" +
+              "</div>" +
+              '<p class="qw-narr">' + esc(e.narrative) + "</p>" +
+
+              /* Rung 4. Sign-off affects scoring and goes on a record the
+                 agent can dispute, so it is typed rather than clicked — and
+                 the consequence is stated before the field, not after it. */
+              '<div class="inline-note warn" style="margin-top:18px;align-items:flex-start"><span class="dot" style="margin-top:5px"></span><span>' +
+                (e.isAi
+                  ? "This becomes AiMY\u2019s accuracy record for " + esc(e.label) + ". No agent score moves."
+                  : "This becomes " + esc(first) + "\u2019s official " + esc(e.label) +
+                    " evaluation. It is sent to them, it enters the accumulated score, " +
+                    "and they can acknowledge or justify it. Reversing it needs a new evaluation, not an edit.") +
+              "</span></div>" +
+
+              '<label class="qw-confirm">' +
+                '<span class="qw-confirm-k">Type <b>' + esc(e.label) + "</b> to confirm</span>" +
+                '<input type="text" data-qw-confirm placeholder="' + esc(e.label) + '" ' +
+                  'value="' + esc(QW.confirm) + '" autocomplete="off" spellcheck="false" />' +
+              "</label>";
+          }
+
+          body.innerHTML = html;
+
+          document.querySelector("[data-qw-back]").hidden = QW.step === 0;
+          var next = document.getElementById("qwNext");
+          next.textContent = QW.step === 3 ? "Sign off and send" : "Continue";
+          next.disabled = QW.step === 3 && QW.confirm.trim() !== e.label;
+        }
+
+        function qwSign() {
+          var e = QW.e;
+          e.overall = qwOverall();
+          e.signedBy = "Lina Haddad";
+          e.signedAt = "just now";
+          Q_SIGNED[qKey(QW.agent, e.q)] = e;
+          qSave();
+
+          /* Delivered as a feedback item, so the agent's acknowledge-or-
+             justify lifecycle takes it unchanged. A period evaluation the
+             agent cannot answer is a memo, not feedback. */
+          try {
+            var out = JSON.parse(localStorage.getItem("aimy-qa-period-feedback") || "[]");
+            out = out.filter(function (r) { return !(r.agent === QW.agent && r.q === e.q); });
+            if (!e.isAi) {
+              out.unshift({
+                agent: QW.agent, q: e.q, label: e.label, score: e.score,
+                overall: e.overall, narrative: e.narrative, by: e.signedBy,
+                goals: e.goals.map(function (g) {
+                  return { name: g.name, rating: g.rating, missed: g.missed, total: g.total };
+                })
+              });
+            }
+            localStorage.setItem("aimy-qa-period-feedback", JSON.stringify(out));
+          } catch (err) {}
+
+          if (window.__evalAudit) {
+            window.__evalAudit({
+              tone: "ok", who: e.signedBy, kind: "human",
+              action: e.label + " evaluation signed off \u00b7 " + QW.agent + " \u00b7 " +
+                scaleOf(e.overall).label + " " + e.score + "%",
+              detail: qwEdited().length
+                ? qwEdited().length + " of AiMY\u2019s ratings changed before signing"
+                : "AiMY\u2019s ratings kept as drafted",
+              time: "\u2014", state: "Irreversible"
+            });
+          }
+
+          var name = QW.agent, label = e.label, isAi = e.isAi;
+          qwClose();
+          qPaintBand();
+          if (window.showToast) window.showToast({
+            title: label + " signed off \u00b7 " + scaleOf(e.overall).label,
+            sub: isAi ? "Recorded against AiMY\u2019s accuracy" : "Sent to " + name + " to acknowledge or justify"
+          });
+        }
+
+        document.addEventListener("click", function (ev) {
+          if (!ev.target.closest) return;
+          var t = ev.target;
+
+          if (t.closest("[data-q-open]")) { qwOpen(AP.name); return; }
+          if (!QW) return;
+          if (t.closest("[data-qw-close]")) { qwClose(); return; }
+
+          var rate = t.closest("[data-qw-rate]");
+          if (rate) {
+            var gid = rate.dataset.qwRate, g = null;
+            QW.e.goals.forEach(function (x) { if (x.id === gid) { x.rating = rate.dataset.qwVal; g = x; } });
+
+            /* The summary is drafted FROM the ratings, so a rating change has
+               to reach it — unless the manager has already rewritten it, in
+               which case theirs stands. */
+            if (!QW.narrEdited) {
+              QW.e.narrative = qNarrative(QW.agent, QW.e.goals, QW.e.score,
+                qInteractions(QW.agent, Q_NOW), QW.e.isAi);
+            }
+
+            /* Repaint this row and the header count, NOT the step. A full
+               re-render replaces the button that was just pressed, which is
+               invisible with a mouse and loses the place for anyone using
+               arrow keys — and this control is a radiogroup, so arrow keys
+               are how it is meant to be driven. Third time this trap has
+               come up: the search field, the raise modal, and here. */
+            var row = rate.closest(".qw-goal");
+            if (row && g) {
+              var changed = g.rating !== g.aiRating;
+              row.classList.toggle("is-edited", changed);
+              row.querySelectorAll("[data-qw-rate]").forEach(function (b) {
+                var on = b.dataset.qwVal === g.rating;
+                b.classList.toggle("active", on);
+                b.setAttribute("aria-checked", on ? "true" : "false");
+                b.tabIndex = on ? 0 : -1;
+              });
+              var was = row.querySelector(".qw-changed");
+              if (changed && !was) {
+                was = document.createElement("span");
+                was.className = "qw-changed";
+                row.querySelector(".qw-g-m").appendChild(was);
+              }
+              if (was) {
+                if (changed) was.textContent = "was " + scaleOf(g.aiRating).label;
+                else was.remove();
+              }
+            }
+            var head = document.querySelector("#qwBody .qw-s .qw-edn");
+            var n = qwEdited().length;
+            if (head) head.textContent = n ? n + " changed." : "";
+            return;
+          }
+
+          if (t.closest("[data-qw-back]")) { QW.step = Math.max(0, QW.step - 1); qwRender(); return; }
+          var nx = t.closest("[data-qw-next]");
+          if (nx && !nx.disabled) {
+            if (QW.step === 3) { qwSign(); return; }
+            QW.step++; qwRender();
+          }
+        });
+
+        document.addEventListener("input", function (ev) {
+          if (!QW || !ev.target.matches) return;
+          if (ev.target.matches("[data-qw-narr]")) { QW.e.narrative = ev.target.value; QW.narrEdited = true; }
+          if (ev.target.matches("[data-qw-confirm]")) {
+            QW.confirm = ev.target.value;
+            document.getElementById("qwNext").disabled = QW.confirm.trim() !== QW.e.label;
+          }
+        });
+
+        document.addEventListener("keydown", function (ev) {
+          if (ev.key === "Escape" && QW) qwClose();
+        });
 
         window.openAgentTickets = function (name) {
           if (!AGENTS[name]) return;
+          qLoad();
           AP = { name: name, from: "", to: "", st: "all" };
           var a = AGENTS[name], mine = apAll();
 

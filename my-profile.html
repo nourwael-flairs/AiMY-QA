@@ -710,6 +710,29 @@
       .fb-date { font-size: 11px; color: var(--d500); margin-left: auto; }
       .fb-goals { display: flex; flex-wrap: wrap; gap: 6px; }
       .fb-goal-chip { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--wash-4); color: var(--d200); border: 1px solid var(--card-border); }
+      /* A quarter's goals carry an ordinal rating, so the chip carries its
+         colour — four Belows in a row is the shape of the quarter, and a row
+         of identical grey chips hides it. */
+      .fb-goal-chip.fb-rate-exceeds,
+      .fb-goal-chip.fb-rate-meets { background: rgba(23,178,106,0.13); color: var(--ok); border-color: rgba(23,178,106,0.26); }
+      .fb-goal-chip.fb-rate-below { background: rgba(247,144,9,0.13); color: var(--warn); border-color: rgba(247,144,9,0.26); }
+      .fb-goal-chip.fb-rate-fail  { background: rgba(240,68,56,0.13); color: var(--err); border-color: rgba(240,68,56,0.26); }
+      .fb-chip-n { opacity: 0.72; font-weight: 600; }
+      /* Rated on one or two interactions. The manager saw this flagged in
+         the wizard; the agent has to see it too, or they read a Fail without
+         knowing how little it rests on — and that is the half of the
+         evaluation they would be justifying. Dashed, plus a title, never
+         colour alone. */
+      .fb-goal-chip.is-thin { border-style: dashed; }
+      .fb-goal-chip.is-thin::after {
+        content: "thin"; margin-left: 6px; font-size: 9px; font-weight: 800;
+        letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.8;
+      }
+      .fb-period {
+        font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
+        padding: 3px 9px; border-radius: 6px;
+        background: var(--accent-dim); color: var(--accent);
+      }
       .fb-goal-chip b { color: var(--d50); }
       .fb-insight { font-size: 12.5px; color: var(--d300); line-height: 1.55; display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; background: rgba(var(--qa-accent-rgb),0.06); border: 1px solid rgba(var(--qa-accent-rgb),0.16); border-radius: 10px; }
       .fb-insight .ai-ico { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; }
@@ -1801,9 +1824,17 @@
       }
 
       /* ── Render feedback inbox ── */
+      const RATING_LABEL = { exceeds: 'Exceeds', meets: 'Meets', below: 'Below', fail: 'Fail' };
+
       function renderFeedback() {
         document.getElementById('fbList').innerHTML = MY_FEEDBACK.map(f => {
-          const chips = f.goals.map(k => `<span class="fb-goal-chip">${k.name} <b>${k.current}%</b> ${k.prior != null ? `<span style="color:var(--d500)">(was ${k.prior}%)</span>` : ''}</span>`).join('');
+          /* A quarter's goals carry a rating, an interaction's carry a
+             percentage. Same chip, and it says whichever it actually has —
+             printing "64%" against a goal that was rated "Below" would be a
+             number the evaluation never produced. */
+          const chips = f.kind === 'period'
+            ? f.goals.map(k => `<span class="fb-goal-chip fb-rate-${k.rating}${k.total && k.total < 3 ? ' is-thin' : ''}" ${k.total && k.total < 3 ? `title="Rated on ${k.total} interaction${k.total === 1 ? '' : 's'} — thin evidence"` : ''}>${escapeHtml(k.name)} <b>${RATING_LABEL[k.rating] || k.rating}</b>${k.total ? ` <span class="fb-chip-n">${k.missed}/${k.total}</span>` : ''}</span>`).join('')
+            : f.goals.map(k => `<span class="fb-goal-chip">${k.name} <b>${k.current}%</b> ${k.prior != null ? `<span style="color:var(--d500)">(was ${k.prior}%)</span>` : ''}</span>`).join('');
           let actions = '';
           const reasonBlock = f.justifyReason ? `<div class="fb-justify-reason"><b>Your reason:</b> ${escapeHtml(f.justifyReason)}</div>` : '';
           /* And what came back. An objection answered somewhere the objector
@@ -1845,8 +1876,9 @@
           <div class="fb-card ${f.type} ${f.ack && f.ack !== 'pending' && f.id !== 'fb-204' ? 'is-resolved' : ''}" id="${f.id}">
             <div class="fb-top">
               <span class="fb-type ${f.type}">${f.type === 'positive' ? 'Positive' : 'Needs attention'}</span>
+              ${f.kind === 'period' ? `<span class="fb-period">Quarterly · ${escapeHtml(f.period)} · ${RATING_LABEL[f.overall]} ${f.score}%</span>` : ''}
               <span class="fb-from">${f.from}</span>
-              <span class="fb-date">${f.date}</span>
+              ${f.kind === 'period' ? '' : `<span class="fb-date">${f.date}</span>`}
             </div>
             <div class="fb-goals">${chips}</div>
             <div class="fb-insight">${AI}<span>${f.insight}</span></div>
@@ -1987,6 +2019,45 @@
          An objection that is answered somewhere the objector cannot see is
          not answered. Read on load, so the agent finds the outcome and the
          reason for it — including when it went against them. */
+      /* ══ THE QUARTER ARRIVES ══════════════════════════════════
+         A signed-off quarterly evaluation is delivered as a feedback item,
+         so the acknowledge-or-justify lifecycle takes it unchanged. That is
+         the point rather than a convenience: a period evaluation the agent
+         cannot answer is a memo, and the loop this product is built around
+         is that they can answer it.
+
+         It is `kind: "period"` so the card can say what it is — a quarter is
+         not a call, and reading "2 days ago · Lina Haddad" over three months
+         of work would be the surface lying about its own scope. */
+      (function readPeriodEvaluations() {
+        var list;
+        try { list = JSON.parse(localStorage.getItem('aimy-qa-period-feedback') || '[]'); }
+        catch (e) { return; }
+        list.filter(function (r) { return r.agent === 'Omar Abdallah'; }).forEach(function (r) {
+          var id = 'fb-' + r.q;
+          if (MY_FEEDBACK.some(function (x) { return x.id === id; })) return;
+          MY_FEEDBACK.unshift({
+            id: id,
+            kind: 'period',
+            period: r.label,
+            overall: r.overall,
+            score: r.score,
+            type: (r.overall === 'exceeds' || r.overall === 'meets') ? 'positive' : 'negative',
+            from: r.by + ' (Supervisor)',
+            date: r.label,
+            ack: (r.overall === 'exceeds' || r.overall === 'meets') ? null : 'pending',
+            /* Per-goal ratings, not per-goal percentages — the quarter is
+               scored on the ordinal scale and the card must not quietly
+               translate it back into a number the evaluation never gave. */
+            goals: r.goals.map(function (g) {
+              return { name: g.name, rating: g.rating, missed: g.missed, total: g.total };
+            }),
+            insight: r.narrative,
+            followUp: 'Your next quarterly evaluation covers Q3 2026.'
+          });
+        });
+      })();
+
       (function readJustifyDecisions() {
         var list;
         try { list = JSON.parse(localStorage.getItem('aimy-qa-justify-decisions') || '[]'); }
