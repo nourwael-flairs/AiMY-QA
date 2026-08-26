@@ -5509,6 +5509,20 @@
       }
 
       /* ── Ticket cards grid layout ──────────────────────────────────── */
+      /* The agent page's toolbar, on .eval-filter-strip. The count is the
+         title — it is the only thing here that changes when a filter runs,
+         so it says what was filtered rather than sitting under a static
+         heading that cannot. */
+      .atp-count { font-size: 12.5px; font-weight: 600; color: var(--d300); }
+      .atp-count b { color: var(--d200); font-weight: 700; }
+      .atp-empty {
+        grid-column: 1 / -1;
+        padding: 34px 16px; text-align: center;
+        border: 1px dashed var(--wash-8); border-radius: 12px;
+      }
+      .atp-empty-t { font-size: 13px; font-weight: 700; color: var(--d200); margin-bottom: 4px; }
+      .atp-empty-s { font-size: 12px; color: var(--d500); }
+
       .atp-cards {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -5590,6 +5604,14 @@
       .atp-card-score.ok  { color: var(--ok); }
       .atp-card-score.warn{ color: var(--warn); }
       .atp-card-score.err { color: var(--err); }
+      /* The pill and the arrow are the card's two trailing controls and sat
+         at 19.6px and 26px, which reads as one of them being wrong rather
+         than as a hierarchy. Both 26px, both 7px, and the pill comes off
+         the base 10px — caption size doing a label's job. */
+      .atp-card-bottom .eval-status {
+        height: 26px; padding: 0 11px;
+        font-size: 11.5px; border-radius: 7px;
+      }
       .atp-card-arrow {
         width: 26px; height: 26px; border-radius: 7px;
         background: var(--wash-4);
@@ -5872,6 +5894,56 @@
       /* Context, then the question, then what the question means. Three
          different kinds of thing, and they need to read as three. */
       #gcChips { margin-bottom: 18px; }
+      /* ══ JUSTIFY RESOLUTION ════════════════════════════════════ */
+      /* The justifies queue. Wider "what they said" column than the other
+         tabs, because the objection is the thing being triaged. */
+      .ju-grid {
+        display: grid;
+        grid-template-columns: 20px minmax(120px, 0.8fr) minmax(0, 2fr) minmax(140px, 1fr) 96px 84px;
+        align-items: center; gap: 14px;
+      }
+      .ju-grid > * { justify-self: start; min-width: 0; }
+      .ju-what { min-width: 0; }
+      .ju-what b { display: block; font-size: 12.5px; font-weight: 700; color: var(--d100); }
+      .ju-what em {
+        display: block; font-style: normal; font-size: 12px; line-height: 1.45; color: var(--d400);
+        margin-top: 2px; overflow: hidden; text-overflow: ellipsis;
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      }
+      .ju-chips { display: flex; gap: 5px; flex-wrap: wrap; }
+      .ju-grid .eval-verdict { cursor: pointer; }
+      .eval-row.ju-grid { min-height: 62px; }
+
+      .ju-said {
+        padding: 13px 15px; border-radius: var(--r-lg); margin-bottom: 16px;
+        background: var(--card-bg-raised); border: 1px solid var(--card-border);
+      }
+      .ju-said-k {
+        font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+        text-transform: uppercase; color: var(--d500); margin-bottom: 6px;
+      }
+      .ju-said-t { margin: 0 0 9px; font-size: 13.5px; line-height: 1.6; color: var(--d100); }
+      .ju-goals { display: flex; gap: 6px; flex-wrap: wrap; }
+      .ju-choice { margin-bottom: 16px; }
+      .ju-choice .seg-btn { font-size: 13px; padding: 8px 22px; }
+      .ju-effect { margin-bottom: 16px; max-width: none; }
+      .ju-effect.inline-note { align-items: flex-start; }
+      .ju-effect.inline-note .dot { margin-top: 5px; }
+      .ju-reason { display: block; }
+      .ju-reason.is-off { opacity: 0.45; pointer-events: none; }
+      .ju-reason-k {
+        display: block; margin-bottom: 6px;
+        font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+        text-transform: uppercase; color: var(--d500);
+      }
+      .ju-req { color: var(--warn); }
+      .ju-opt { color: var(--d600); font-weight: 600; }
+      .ju-reason .ds-textarea { max-width: none; min-height: 72px; }
+      /* The resolve control on a row is a button, not a label. */
+      button.eval-verdict { font-family: var(--font-sans); cursor: pointer; }
+      button.eval-verdict:hover { filter: brightness(1.15); }
+      button.eval-verdict:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
       .gc-lead { margin: 0 0 10px; font-size: 15px; font-weight: 700; color: var(--d50); line-height: 1.4; }
       .gc-sub { margin: 0 0 16px; font-size: 12.5px; line-height: 1.6; color: var(--d400); max-width: 62ch; }
       .gc-grounds { display: flex; flex-direction: column; gap: 6px; }
@@ -6076,6 +6148,41 @@
       .flt-range.is-set .ig-addon { color: var(--accent); border-color: rgba(var(--accent-rgb), 0.35); }
       .flt-range.is-set .field-input { border-color: rgba(var(--accent-rgb), 0.35); }
       .flt-range .ig-addon svg { width: 13px; height: 13px; }
+      /* ONE TOOLBAR, ONE CONTROL SIZE.
+         The search field and the date range were 31px at 12.5px on the
+         raised card surface; the dropdowns were 25px at 11px on a wash.
+         Two sizes and two surfaces in a row of four controls reads as two
+         toolbars that happen to be adjacent.
+
+         Scoped to .eval-filter-strip on purpose — .v2-dropdown-btn is also
+         the settings picker, the roster sort and the new-feedback agent
+         picker, and none of those sit next to a search field. */
+      /* One height, declared once. Padding alone does not get there: a
+         button inherits the body's line-height and an input does not, so
+         identical padding produced 33.5px and 31px. */
+      .eval-filter-strip { --flt-h: 31px; }
+      .eval-filter-strip .flt-search input,
+      .eval-filter-strip .drp-btn,
+      .eval-filter-strip .v2-dropdown-btn,
+      .eval-filter-strip .flt-clear { height: var(--flt-h); }
+      .eval-filter-strip .v2-dropdown-btn {
+        font-size: 12.5px; padding: 0 11px; gap: 7px;
+        border-radius: var(--r-md);
+        background: var(--card-bg-raised); border-color: var(--card-border);
+      }
+      .eval-filter-strip .v2-dropdown-btn:hover { border-color: var(--card-border-hover); }
+      .eval-filter-strip .v2-dropdown-btn svg { width: 11px; height: 11px; }
+      .eval-filter-strip .v2-dropdown-btn .dd-label-text { max-width: 150px; }
+      /* The two states keep their own colours — re-asserted here because the
+         rule above would otherwise win on source order alone. */
+      .eval-filter-strip .v2-dropdown-btn.open {
+        background: rgba(51,105,255,0.08); border-color: rgba(99,169,255,0.28);
+      }
+      .eval-filter-strip .v2-dropdown-btn.active-filter {
+        background: rgba(51,105,255,0.10); border-color: rgba(99,169,255,0.32);
+      }
+      .eval-filter-strip .flt-clear { font-size: 12px; padding: 0 10px; }
+
       .flt-clear {
         font-family: var(--font-sans); font-size: 11px; font-weight: 600; color: var(--d400);
         background: none; border: none; cursor: pointer; padding: 5px 8px;
@@ -6138,6 +6245,9 @@
       .eval-verdict.awaiting { background: var(--warn-bg); color: var(--warn); border-color: rgba(247,144,9,0.24); }
       .eval-verdict.confirmed { background: var(--ok-bg); color: var(--ok); border-color: rgba(23,178,106,0.24); }
       .eval-verdict.overturned { background: rgba(var(--accent-rgb),0.12); color: var(--accent); border-color: rgba(var(--accent-rgb),0.24); }
+      /* Justified: someone has been told something they dispute, and it is
+         sitting with you. Loudest state on the table. */
+      .eval-verdict.justified { background: var(--err-bg); color: var(--err); border-color: rgba(240,68,56,0.3); }
 
       /* The agent's reply controls. Laid out by a class, not an inline
          style: an inline `display` outranks the UA rule behind the `hidden`
@@ -6961,6 +7071,13 @@
         border-radius: var(--r-lg); box-shadow: var(--shadow-md);
       }
       .drp-panel.open { display: flex; }
+      /* The panel is ~400px and the trigger can sit anywhere in a toolbar.
+         Left-anchored at the right-hand end of the bar it ran off the page
+         and gave the whole surface a horizontal scrollbar, so it flips to
+         the trigger's right edge when there is no room. The flip is decided
+         on open, from the measured width — a media query cannot see how far
+         along the bar the control happens to be. */
+      .drp.align-end .drp-panel { left: auto; right: 0; }
       /* Presets on the left, calendar on the right — Quicken and Hootsuite
          both put the common answers where the eye lands first, so the
          calendar is for the case the presets do not cover. */
@@ -7215,7 +7332,7 @@
        the 1024px tablet floor, and the shell height that keeps the
        composer on screen. Loaded last so it overrides the canvas rules,
        the same order aimy-canvas.css has over this page's inline block. -->
-  <link rel="stylesheet" href="assets/aimy-responsive.css?v=6" />
+  <link rel="stylesheet" href="assets/aimy-responsive.css?v=7" />
   <link rel="stylesheet" href="assets/aimy-rail.css?v=2" />
   <script src="assets/aimy-viewport.js?v=5"></script>
   </head>
@@ -7922,20 +8039,12 @@
             <!-- The two artefacts moved off the surface. The heatmap is built
                  on request; the 547-row table stays a real workflow (§5.10)
                  and is reached, not redrawn. -->
-            <div class="eval-action-row" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-              <button class="entry-action em-investigate ea-sm"
-                      data-entry-mode="investigate"
-                      data-aimy-topic="kpi-heatmap"
-                      data-aimy-ask="Show the 12-week goal compliance heatmap for Omar Abdallah.">
-                <svg class="em-ico"><use href="#em-ico-investigate"/></svg>Show the 12-week heatmap
-              </button>
-              <button class="entry-action em-direct ea-sm"
-                      data-entry-mode="direct"
-                      data-aimy-topic="open-evals"
-                      onclick="window.openEvalsWorkspace && window.openEvalsWorkspace()">
-                <svg class="em-ico"><use href="#em-ico-direct"/></svg>Open all 547 evaluations
-              </button>
-            </div>
+            <!-- Two buttons removed here. "Open all 547 evaluations" routed
+                 to a table that is now the landing view, so it opened the
+                 thing already on screen and quoted a figure the table does
+                 not carry. "Show the 12-week heatmap" stays reachable from
+                 the canvas by asking for it, which is what its own
+                 data-aimy-topic was for. -->
           </div>
 
           <!-- ═══════ SUPERVISOR, SENT FEEDBACK & FOLLOW-UP LOOP ═══════ -->
@@ -10452,6 +10561,7 @@
                 <div class="seg" role="tablist" aria-label="What to list">
                   <button class="seg-btn active" type="button" role="tab" aria-selected="true"  data-tbl="calls">Calls</button>
                   <button class="seg-btn"        type="button" role="tab" aria-selected="false" data-tbl="tickets">Tickets</button>
+                  <button class="seg-btn"        type="button" role="tab" aria-selected="false" data-tbl="justifies">Disputes</button>
                   <button class="seg-btn"        type="button" role="tab" aria-selected="false" data-tbl="agents">Agents</button>
                 </div>
                 <span class="eval-list-subtitle" id="evalListSub"></span>
@@ -10496,7 +10606,11 @@
             </div>
           </div>
 
-          <div class="atp-section-label" id="agentTicketsSectionLabel">Tickets this week</div>
+          <!-- Same toolbar component as the table, because it is the same
+               job: a date range and an outcome filter. The section label
+               that was here said "Tickets this week · Omar Abdallah",
+               and both halves are in the header 16px above it. -->
+          <div class="eval-filter-strip" id="agentTicketsFilters"></div>
 
           <!-- Cards populated by JS -->
           <div class="atp-cards" id="agentTicketsCards"></div>
@@ -17978,86 +18092,26 @@
           pane.scrollIntoView({ behavior: 'smooth', block: 'start' });
         };
 
-        /* Read the eight dropdowns, hide the rows that don't match, and say
-           how many survived. A filter that reports nothing is indistinguishable
-           from a filter that is broken. Which is exactly what these were. */
-        function readEvalFilters() {
-          const val = key => {
-            const el = document.querySelector('[data-dd="' + key + '"] .dd-label-text');
-            return el ? el.textContent.trim() : '';
-          };
-          return {
-            agent:     val('eval-agent'),
-            channel:   val('eval-channel'),
-            score:     val('eval-score'),
-            conf:      val('eval-conf'),
-            outcome:   val('eval-outcome'),
-            sentiment: val('eval-sentiment'),
-            type:      val('eval-type')
-          };
-        }
-        function evalRowMatches(row, f) {
-          const txt = (sel) => { const e = row.querySelector(sel); return e ? e.textContent.trim() : ''; };
-          const agent = txt('.eval-row-agent');
-          const score = parseInt(txt('.eval-row-score'), 10);
-          const outcome = txt('.eval-status').toLowerCase();
-          const sentiment = txt('.eval-row-sentiment').toLowerCase();
-          const channel = txt('.channel-badge').toLowerCase();
-          const isAi = !!row.querySelector('.ai-flag');
-          const conf = row.querySelector('.conf-badge.conf-high') ? 'high'
-                     : row.querySelector('.conf-badge.conf-low') ? 'low' : 'medium';
+        /* ── RETIRED: the legacy filter engine ───────────────────────────
+           This read eight `[data-dd="eval-*"]` dropdowns, hid rows by
+           inline style, and wrote a line above the table saying
+           "Showing all N evaluations on this page".
 
-          if (f.agent && !/^all agents$/i.test(f.agent) && agent !== f.agent) return false;
-          if (f.channel && !/^all channels$/i.test(f.channel) && channel.indexOf(f.channel.toLowerCase()) === -1) return false;
-          if (f.type && /human only/i.test(f.type) && isAi) return false;
-          if (f.type && /aimy only/i.test(f.type) && !isAi) return false;
-          if (f.sentiment && !/^all sentiment$/i.test(f.sentiment) && sentiment !== f.sentiment.toLowerCase()) return false;
-          if (f.outcome && /pass only/i.test(f.outcome) && outcome !== 'pass') return false;
-          if (f.outcome && /fail only/i.test(f.outcome) && outcome !== 'fail') return false;
-          if (f.outcome && /borderline only/i.test(f.outcome) && outcome !== 'borderline') return false;
-          if (!isNaN(score)) {
-            if (/below 70/i.test(f.score) && score >= 70) return false;
-            if (/70.?85/i.test(f.score) && (score < 70 || score > 85)) return false;
-            if (/above 85/i.test(f.score) && score <= 85) return false;
-          }
-          if (/high/i.test(f.conf) && conf !== 'high') return false;
-          if (/low/i.test(f.conf) && conf !== 'low') return false;
-          if (/medium/i.test(f.conf) && conf !== 'medium') return false;
-          return true;
-        }
+           None of those dropdowns exist any more — the toolbar was rebuilt
+           in Round 16 — so every filter it read came back as an empty
+           string and the only thing it still did was print that line over a
+           table that already answers the same question twice: the tab
+           carries the count and the pager says "Showing 1-10 of 21". A
+           third count, phrased as if a filter had just run, was noise at
+           best and wrong at worst.
+
+           Kept as a shim rather than deleted: it is exposed on `window` and
+           `openEvalsWorkspace` — which the canvas topic router still calls —
+           called it on open. It now repaints the real table instead. */
         function applyEvalFilters() {
-          const list = document.getElementById('evalListAccountRows');
-          if (!list) return;
-          const f = readEvalFilters();
-          const rows = [...list.querySelectorAll('.eval-row')];
-          let shown = 0;
-          rows.forEach(function (r) {
-            const ok = evalRowMatches(r, f);
-            r.style.display = ok ? '' : 'none';
-            if (ok) shown++;
-          });
-          /* Say what the filter did, including when it did nothing. */
-          let note = document.getElementById('evalFilterResult');
-          if (!note) {
-            note = document.createElement('div');
-            note.id = 'evalFilterResult';
-            note.style.cssText = 'font-size:11.5px;color:var(--d400);padding:8px 2px 0';
-            list.parentElement.insertBefore(note, list);
-          }
-          const active = Object.keys(f).filter(function (k) { return f[k] && !/^all /i.test(f[k]) && !/human & ai/i.test(f[k]) && !/pass \/ fail/i.test(f[k]); });
-          note.textContent = active.length
-            ? shown + ' of ' + rows.length + ' evaluations match ' + active.length + (active.length === 1 ? ' filter' : ' filters')
-            : 'Showing all ' + rows.length + ' evaluations on this page';
-          if (shown === 0) {
-            list.insertAdjacentHTML('afterend',
-              document.getElementById('evalEmpty') ? '' :
-              '<div class="empty-state" id="evalEmpty" style="margin-top:12px">'
-              + '<div class="empty-state-icon">&#128269;</div>'
-              + '<div class="empty-state-title">No evaluations match these filters</div>'
-              + '<div class="empty-state-desc">Widen a filter, or clear them all to see the full set.</div></div>');
-          } else {
-            document.getElementById('evalEmpty')?.remove();
-          }
+          if (window.__evalRepaint) window.__evalRepaint();
+          var stale = document.getElementById('evalFilterResult');
+          if (stale) stale.remove();
         }
         window.applyEvalFilters = applyEvalFilters;
 
@@ -19383,6 +19437,29 @@
 
          Built on .fbmodal, the shell New Feedback and Justify already use.
          A second modal system would be a Level 3 parallel-component fail. -->
+    <!-- ══ RESOLVING A JUSTIFY ═════════════════════════════════════
+         The agent disagreed with feedback they were sent. Two outcomes,
+         both terminal, and the declining one carries a required reason
+         because being overruled without being told why is the half a
+         dispute queue usually skips. -->
+    <div class="fbmodal-overlay" id="justifyModal">
+      <div class="fbmodal">
+        <div class="fbmodal-head">
+          <div>
+            <h3>Dispute</h3>
+            <div class="sub" id="juSub"></div>
+          </div>
+          <button class="fbmodal-x" type="button" data-ju-close aria-label="Close">×</button>
+        </div>
+        <div class="fbmodal-body"><div id="juBody"></div></div>
+        <div class="fbmodal-foot">
+          <span class="spacer"></span>
+          <button class="fbm-btn ghost" type="button" data-ju-close>Cancel</button>
+          <button class="fbm-btn primary" type="button" id="juSubmit" disabled>Record decision</button>
+        </div>
+      </div>
+    </div>
+
     <div class="fbmodal-overlay" id="goalChallengeModal">
       <div class="fbmodal">
         <div class="fbmodal-head">
@@ -21210,6 +21287,13 @@
 
         function logAudit(panel, e) { trailOf(panel).push(e); paintAudit(panel); }
 
+        /* A justify decision is a consequential act on this interaction, so
+           it belongs in the same trail as the feedback it disputes. */
+        window.__evalAudit = function (e) {
+          var panel = document.querySelector('[data-verdict-panel="human"]');
+          if (panel) logAudit(panel, e);
+        };
+
         function paintAudit(panel) {
           var box = document.getElementById(
             panel.dataset.verdictPanel === "ai" ? "manualAuditLogAi" : "manualAuditLog");
@@ -21747,7 +21831,10 @@
         var CH_LABEL = { voice: "Voice", chat: "Chat", email: "Email", ticket: "Ticket" };
         var ST_LABEL = { pass: "Pass", fail: "Fail", border: "Borderline" };
         var SENT_LABEL = { pos: "Positive", neg: "Negative", neu: "Neutral" };
-        var V_LABEL = { awaiting: "Awaiting you", confirmed: "Confirmed", overturned: "Overturned" };
+        var V_LABEL = {
+          awaiting: "Awaiting you", confirmed: "Confirmed",
+          overturned: "Overturned", justified: "Disputed"
+        };
 
         var CH_ICON = {
           voice:  '<path d="M10.5 8.5c-.5 1-1.5 1.5-2.5 1-2-.5-4-2.5-4.5-4.5C3 4 3.5 3 4.5 2.5l1.5 2-1 1c.5 1 1.5 2 2.5 2.5l1-1 2 1.5z"/>',
@@ -21757,6 +21844,51 @@
         };
 
         /* ── State ──────────────────────────────────────────────────── */
+        /* Justifies raised by agents, read from where my-profile publishes
+           them. An objection filed on one page and invisible on the other is
+           the failure this whole loop exists to stop. */
+        var JUSTIFIES = [];
+
+        /* Worked examples. Three agents, three channels, three different
+           kinds of objection — one about evidence the recording does not
+           carry, one about a goal that does not fit the contact, one about
+           a limit the agent was not given. They point at real rows, so
+           approving one moves a score you can find again in Calls or
+           Tickets.
+
+           Only used when nothing has been raised for real; a live justify
+           replaces them. */
+        var SEED_JUSTIFIES = [
+          {
+            id: "JU-201", feedbackId: "fb-201", agent: "Omar Abdallah", evalId: "ev-1042",
+            interaction: "Voice call · May 7", goals: ["Follow-up Confirmation"],
+            reason: "The customer hung up while I was giving the callback number. The recording cuts at 8:31 and the line was already dead — I did give it.",
+            raised: "2 days ago", state: "open"
+          },
+          {
+            id: "JU-202", feedbackId: "fb-206", agent: "Michael Chen", evalId: "ev-1047",
+            interaction: "Ticket · May 10", goals: ["Ticket categorisation", "Survey Promotion"],
+            reason: "This was an internal escalation from Tier 2, not a customer contact. There is nobody to survey and the category list has no option that fits.",
+            raised: "yesterday", state: "open"
+          },
+          {
+            id: "JU-203", feedbackId: "fb-204", agent: "Tariq Mansour", evalId: "ev-1056",
+            interaction: "Voice call · May 15", goals: ["Issue Resolution"],
+            reason: "I could not resolve it because the refund tool was down all morning — it is in the incident log. I raised it and set the callback, which is all that was available to me.",
+            raised: "4 hours ago", state: "open"
+          }
+        ];
+
+        function loadJustifies() {
+          try { JUSTIFIES = JSON.parse(localStorage.getItem("aimy-qa-justifies") || "[]"); }
+          catch (e) { JUSTIFIES = []; }
+          if (!JUSTIFIES.length) JUSTIFIES = SEED_JUSTIFIES.map(function (j) { return Object.assign({}, j); });
+          JUSTIFIES.filter(function (j) { return j.state === "open"; }).forEach(function (j) {
+            var x = I.filter(function (y) { return y.id === j.evalId; })[0];
+            if (x) { x.verdict = "justified"; x.justify = j; }
+          });
+        }
+
         var TAB = "calls";
         var F = { q: "", from: "", to: "", agent: "all", outcome: "all", verdict: "all", channel: "all", conf: "all" };
         var SORT = "action";
@@ -21790,7 +21922,9 @@
             return true;
           }).sort(function (a, b) {
             if (SORT === "action") {
-              var rank = { awaiting: 0, overturned: 1, confirmed: 2 };
+              /* A justified evaluation outranks an unsent one: somebody has
+                 already been told a thing they disagree with. */
+              var rank = { justified: 0, awaiting: 1, overturned: 2, confirmed: 3 };
               if (rank[a.verdict] !== rank[b.verdict]) return rank[a.verdict] - rank[b.verdict];
               return a.score - b.score;
             }
@@ -21895,10 +22029,13 @@
                owns its own markup and listeners. */
             '<span class="drp" id="fltRange"></span>';
 
-          if (TAB === "agents") {
+          if (TAB === "justifies") {
+            /* Nothing more to filter by: every row here is open and waiting
+               on the same person. */
+          } else if (TAB === "agents") {
             out += dd("verdict", "All agents", [["all", "All agents"], ["awaiting", "Owe you feedback"]]);
           } else {
-            out += dd("verdict", "All statuses", [["all", "All statuses"], ["awaiting", "Awaiting you"], ["confirmed", "Confirmed"], ["overturned", "Overturned"]]);
+            out += dd("verdict", "All statuses", [["all", "All statuses"], ["awaiting", "Awaiting you"], ["justified", "Disputed — needs a decision"], ["confirmed", "Confirmed"], ["overturned", "Overturned"]]);
             out += dd("outcome", "All outcomes", [["all", "All outcomes"], ["fail", "Fail"], ["border", "Borderline"], ["pass", "Pass"]]);
             if (TAB === "tickets") {
               out += dd("channel", "All channels", [["all", "All channels"], ["ticket", "Ticket"], ["chat", "Chat"], ["email", "Email"]]);
@@ -21908,7 +22045,9 @@
           out += '<span class="flt-spacer"></span>';
 
           /* Sort, as one control rather than a band of its own. */
-          var sortOpts = (TAB === "agents"
+          var sortOpts = (TAB === "justifies"
+            ? ["action", "name"]
+            : TAB === "agents"
             ? ["action", "scoreDown", "scoreUp", "name"]
             : ["action", "date", "scoreDown", "scoreUp", "name"]
           ).map(function (k) { return [k, SORT_OPTS[k]]; });
@@ -21972,6 +22111,43 @@
         function paintRows() {
           var list = document.getElementById("evalListAccountRows");
           if (!list) return;
+
+          if (TAB === "justifies") {
+            var jsAll = JUSTIFIES.filter(function (j) { return j.state === "open"; })
+              .filter(function (j) {
+                if (!F.q) return true;
+                var hay = (j.agent + " " + j.interaction + " " + j.reason + " " + (j.goals || []).join(" ")).toLowerCase();
+                return hay.indexOf(F.q.toLowerCase()) >= 0;
+              })
+              .sort(function (a, b) { return SORT === "name" ? a.agent.localeCompare(b.agent) : 0; });
+            var js = pageOf(jsAll);
+            list.innerHTML = jsAll.length ? (
+              '<div class="eval-list-head ju-grid" role="row"><span></span>' +
+                '<span role="columnheader">Agent</span>' +
+                '<span role="columnheader">Interaction</span>' +
+                '<span role="columnheader">Contests</span>' +
+                '<span role="columnheader">Raised</span>' +
+                '<span role="columnheader"></span>' +
+              "</div>" +
+              js.map(function (j) {
+                return '<div class="eval-row ju-grid" role="listitem" tabindex="0" data-ju-open="' + j.evalId + '">' +
+                  "<span></span>" +
+                  '<span class="er-agent">' + esc(j.agent) + "</span>" +
+                  '<span class="ju-what"><b>' + esc(j.interaction) + "</b>" +
+                    '<em>“' + esc(j.reason) + "”</em></span>" +
+                  '<span class="ju-chips">' + (j.goals || []).map(function (g) {
+                    return '<span class="disp-goal-chip">' + esc(g) + "</span>";
+                  }).join("") + "</span>" +
+                  '<span class="eval-row-date">' + esc(j.raised) + "</span>" +
+                  '<span class="eval-verdict justified">Resolve</span>' +
+                "</div>";
+              }).join("")
+            ) : ('<div class="empty-state" style="padding:32px 12px;">' +
+                 '<div class="empty-state-title">No open disputes</div>' +
+                 '<div class="empty-state-desc">Nothing you have sent is being disputed right now.</div></div>');
+            paintMeta(jsAll.length, JUSTIFIES.filter(function (j) { return j.state === "open"; }).length, "dispute", js.length);
+            return;
+          }
 
           if (TAB === "agents") {
             var arAll = agentRows(), ar = pageOf(arAll);
@@ -22039,7 +22215,10 @@
 
                 /* STATUS — the workflow state. Where this sits with you, not
                    what AiMY thought of it. */
-                '<span class="eval-verdict ' + x.verdict + '">' + V_LABEL[x.verdict] + "</span>" +
+                (x.verdict === "justified"
+                  ? '<button class="eval-verdict justified" type="button" data-ju-open="' + x.id +
+                    '" title="' + esc((x.justify && x.justify.reason) || "") + '">' + V_LABEL.justified + " · resolve</button>"
+                  : '<span class="eval-verdict ' + x.verdict + '">' + V_LABEL[x.verdict] + "</span>") +
 
                 '<span class="eval-row-sentiment ' + x.sent + '">' + SENT_LABEL[x.sent] + "</span>" +
 
@@ -22084,6 +22263,17 @@
                · "A row opens that interaction." — a caption explaining that
                  rows in a table are clickable
              What is left is the only part that asks for anything. */
+          if (TAB === "justifies") {
+            if (sub) {
+              sub.innerHTML = shown
+                ? '<strong>' + shown + "</strong> waiting on your decision"
+                : '<span class="els-of">nothing open</span>';
+            }
+            if (pag) paintPager(pag, total, onPage === undefined ? shown : onPage, noun);
+            paintScope();
+            paintTabCounts();
+            return;
+          }
           if (sub) {
             sub.innerHTML = awaiting
               ? '<strong>' + awaiting + "</strong> awaiting your feedback" +
@@ -22092,18 +22282,25 @@
                   ? '<span class="els-of">' + shown + " of " + total + " shown</span>"
                   : '<span class="els-of">all caught up</span>');
           }
-          /* Counts belong on the tabs, where they say how big each answer is
-             before you switch to it. */
+          paintTabCounts();
+          if (pag) paintPager(pag, shown, onPage === undefined ? shown : onPage, noun);
+          paintScope();
+        }
+
+        /* Counts belong on the tabs, where they say how big each answer is
+           before you switch to it. Split out of paintMeta because the
+           justifies branch returns early, so a resolved case left the queue
+           while its tab went on claiming it was there. */
+        function paintTabCounts() {
           document.querySelectorAll("[data-tbl]").forEach(function (b) {
             var k = b.dataset.tbl;
             var n = k === "agents" ? Object.keys(AGENTS).length
+                  : k === "justifies" ? JUSTIFIES.filter(function (j) { return j.state === "open"; }).length
                   : I.filter(function (x) { return k === "calls" ? x.ch === "voice" : x.ch !== "voice"; }).length;
             var c = b.querySelector(".tbl-n");
             if (!c) { c = document.createElement("span"); c.className = "tbl-n"; b.appendChild(c); }
             c.textContent = n;
           });
-          if (pag) paintPager(pag, shown, onPage === undefined ? shown : onPage, noun);
-          paintScope();
         }
 
         function allSelected() {
@@ -22354,6 +22551,7 @@
 
         function boot() {
           if (!document.getElementById("evalListAccountRows")) return;
+          loadJustifies();
           var deep = fromUrl();
           paintFilters(); paintSort(); paintRows();
           if (deep) {
@@ -22363,6 +22561,223 @@
         }
         if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
         else boot();
+
+        /* ══ THE AGENT'S OWN PAGE ══════════════════════════════
+           Opened from the Agents tab. It rendered AGENT_DATA — a second,
+           hardcoded fixture of three or four "tickets this week" that
+           disagreed with the table it was opened from (Omar's header
+           claimed 14, his list showed 4) and whose cards mostly carried no
+           detail id, so clicking one raised a toast saying the evaluation
+           was "not yet loaded". A drill-down that ends in an apology is
+           §1.2 with extra steps.
+
+           Rendered from `I` now — the same rows the table draws — so the
+           two surfaces cannot disagree, and every card opens the
+           interaction it names.
+
+           TWO FILTERS, because this page answers the two questions the
+           cross-agent table cannot: how did this person do over a period,
+           and show me only the ones that failed. Same date-range control
+           and the same outcome dropdown, so neither is a new component.
+
+           The legacy renderer at ~18278 is superseded, not deleted: it
+           still owns AGENT_DATA, which the roster and the canvas topic
+           router read. Register A6 is what happens here when markup a
+           guard depends on gets cut. */
+        var AP = { name: null, from: "", to: "", st: "all" };
+        var AP_RANGE = null;
+
+        var AP_ICON = {
+          voice:  '<path d="M10.5 8.5c-.5 1-1.5 1.5-2.5 1-2-.5-4-2.5-4.5-4.5C3 4 3.5 3 4.5 2.5l1.5 2-1 1c.5 1 1.5 2 2.5 2.5l1-1 2 1.5z"/>',
+          chat:   '<path d="M10 7.5C10 8.33 9.33 9 8.5 9H3.5C2.67 9 2 8.33 2 7.5V5C2 3.34 3.34 2 5 2h2c1.66 0 3 1.34 3 3v2.5z"/>',
+          email:  '<rect x="1" y="3" width="10" height="7" rx="1"/><path d="M1 4l5 3.5L11 4"/>',
+          ticket: '<rect x="2" y="2" width="8" height="8" rx="1.5"/><line x1="4" y1="5" x2="8" y2="5"/><line x1="4" y1="7" x2="6.5" y2="7"/>'
+        };
+        var AP_CH = { voice: "Voice", chat: "Chat", email: "Email", ticket: "Ticket" };
+
+        function apAll() {
+          return I.filter(function (x) { return x.agent === AP.name; });
+        }
+        function apRows() {
+          return apAll().filter(function (x) {
+            if (AP.from && x.d < AP.from) return false;
+            if (AP.to && x.d > AP.to) return false;
+            if (AP.st !== "all" && x.st !== AP.st) return false;
+            return true;
+          }).sort(function (a, b) { return a.d < b.d ? 1 : -1; });
+        }
+
+        function apPaintFilters() {
+          var bar = document.getElementById("agentTicketsFilters");
+          if (!bar) return;
+          var all = apAll().length, shown = apRows().length;
+          var dirty = !!(AP.from || AP.to || AP.st !== "all");
+
+          var opts = [["all", "All outcomes"], ["fail", "Fail"], ["border", "Borderline"], ["pass", "Pass"]];
+          var sel = opts.filter(function (o) { return o[0] === AP.st; })[0];
+
+          bar.innerHTML =
+            /* The count is the heading. It is the only line here that
+               changes when a filter runs, so it is the only one worth the
+               space — and it states the part against the whole rather than
+               reporting a filtered number on its own. */
+            '<span class="atp-count">' +
+              (dirty ? "<b>" + shown + "</b> of " + all : "<b>" + all + "</b>") +
+              " interaction" + (all === 1 ? "" : "s") +
+            "</span>" +
+            '<span class="flt-spacer"></span>' +
+            '<span class="drp" id="apRange"></span>' +
+            '<div class="v2-dropdown" data-add="st">' +
+              '<button class="v2-dropdown-btn' + (AP.st !== "all" ? " active-filter" : "") +
+                '" type="button" aria-haspopup="listbox" aria-expanded="false">' +
+                '<span class="dd-label-text">' + esc(sel ? sel[1] : "All outcomes") + "</span>" +
+                '<svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg>' +
+              "</button>" +
+              '<div class="v2-dropdown-panel" role="listbox" aria-label="Outcome">' +
+              opts.map(function (o) {
+                return '<div class="v2-dropdown-option' + (o[0] === AP.st ? " selected" : "") +
+                  '" role="option" data-aval="' + o[0] + '">' + esc(o[1]) + "</div>";
+              }).join("") + "</div></div>" +
+            '<button class="flt-clear" type="button" data-ap-clear' + (dirty ? "" : " hidden") + ">Clear</button>";
+
+          var host = document.getElementById("apRange");
+          if (host && window.AimyDateRange) {
+            AP_RANGE = window.AimyDateRange.create({
+              host: host, anchor: dataToday(), from: AP.from, to: AP.to,
+              onChange: function (from, to) { AP.from = from; AP.to = to; apPaint(); }
+            });
+          }
+        }
+
+        function apPaintCards() {
+          var cards = document.getElementById("agentTicketsCards");
+          if (!cards) return;
+          var rs = apRows();
+
+          if (!rs.length) {
+            /* Never a dead end: the way out is the thing that emptied it. */
+            cards.innerHTML =
+              '<div class="atp-empty">' +
+                '<div class="atp-empty-t">No interactions match these filters</div>' +
+                '<div class="atp-empty-s">' + esc(AP.name) + " has " + apAll().length +
+                  " in all. Widen the date range, or clear the filters.</div>" +
+              "</div>";
+            return;
+          }
+
+          cards.innerHTML = rs.map(function (x, i) {
+            var stLabel = x.st === "pass" ? "Pass" : x.st === "fail" ? "Fail" : "Borderline";
+            var stCls = x.st === "border" ? "border" : x.st;
+            var scoreCls = x.score >= 85 ? "ok" : x.score >= 70 ? "warn" : "err";
+            return '<div class="atp-ticket-shell' + (x.conf === "low" ? " low-conf" : "") +
+                '" role="button" tabindex="0" data-ap-open="' + x.id +
+                '" style="animation-delay:' + (i * 40) + 'ms" aria-label="' +
+                esc(fmtDate(x.d) + " \u00b7 " + AP_CH[x.ch] + " \u00b7 " + x.score + "% \u00b7 " + stLabel) + '">' +
+              '<div class="atp-ticket-card">' +
+                '<div class="atp-card-top">' +
+                  '<div class="atp-card-channel"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                    (AP_ICON[x.ch] || AP_ICON.ticket) + "</svg></div>" +
+                  '<span class="atp-card-date">' + fmtDate(x.d) + " &middot; " + AP_CH[x.ch] + "</span>" +
+                "</div>" +
+                '<div class="atp-card-summary">' + esc(x.sum) + "</div>" +
+                '<div class="atp-card-bottom">' +
+                  '<span class="atp-card-score ' + scoreCls + '">' + x.score +
+                    '<span style="font-size:12px;font-weight:600;opacity:0.7;">%</span></span>' +
+                  '<span class="eval-status ' + stCls + '">' + stLabel + "</span>" +
+                  '<div class="atp-card-arrow"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5h6M5.5 2.5L8 5l-2.5 2.5"/></svg></div>' +
+                "</div>" +
+              "</div></div>";
+          }).join("");
+        }
+
+        function apPaint() { apPaintFilters(); apPaintCards(); }
+
+        window.openAgentTickets = function (name) {
+          if (!AGENTS[name]) return;
+          AP = { name: name, from: "", to: "", st: "all" };
+          var a = AGENTS[name], mine = apAll();
+
+          var av = document.getElementById("agentTicketsAvatar");
+          if (av) { av.textContent = a.initials; av.style.background = a.grad; }
+          var nm = document.getElementById("agentTicketsName");
+          if (nm) nm.textContent = name;
+          var mt = document.getElementById("agentTicketsMeta");
+          if (mt) mt.textContent = a.isAi ? "Handled by AiMY" : a.tenure + " \u00b7 Product Support";
+
+          /* Read off the same list the cards below are drawn from, so the
+             header cannot claim 14 over a list of 4. */
+          var st = document.getElementById("agentTicketsStats");
+          if (st) {
+            var scoreCls = a.score >= 85 ? "ok" : a.score >= 70 ? "warn" : "err";
+            var awaiting = mine.filter(function (x) { return x.verdict === "awaiting"; }).length;
+            st.innerHTML =
+              '<div class="atp-stat"><span class="atp-stat-val ' + scoreCls + '">' + a.score + '%</span><span class="atp-stat-label">Avg score</span></div>' +
+              '<div class="atp-stat"><span class="atp-stat-val">' + a.pass + '%</span><span class="atp-stat-label">Pass rate</span></div>' +
+              '<div class="atp-stat"><span class="atp-stat-val">' + mine.length + '</span><span class="atp-stat-label">Interactions</span></div>' +
+              '<div class="atp-stat"><span class="atp-stat-val' + (awaiting ? ' warn' : '') + '">' + awaiting + '</span><span class="atp-stat-label">Awaiting you</span></div>';
+          }
+
+          var back = document.getElementById("agentTicketsBackLabel");
+          if (back) back.textContent = "All evaluations";
+
+          apPaint();
+          var page = document.getElementById("agentTicketsPage");
+          if (page) { page.classList.add("open"); page.scrollTop = 0; }
+        };
+
+        function apOpen(id) {
+          var x = I.filter(function (r) { return r.id === id; })[0];
+          if (!x) return;
+          /* Back goes to the agent, not to the table — that is where you
+             came from. */
+          ["evalDetailBackLabel", "evalDetailAiBackLabel"].forEach(function (k) {
+            var el = document.getElementById(k);
+            if (el) el.textContent = AP.name;
+          });
+          if (window.hydrateEvalDetail) window.hydrateEvalDetail(x.detail, x);
+          if (window.openEvalDetail) window.openEvalDetail(x.detail, true);
+        }
+
+        /* Filters and cards, delegated — both are replaced on every paint. */
+        document.addEventListener("click", function (e) {
+          if (!e.target.closest) return;
+          var t = e.target;
+
+          var av = t.closest(".v2-dropdown[data-add] .v2-dropdown-option");
+          if (av) { AP.st = av.dataset.aval; apPaint(); return; }
+
+          var ab = t.closest(".v2-dropdown[data-add] .v2-dropdown-btn");
+          if (ab) {
+            var panel = ab.nextElementSibling, open = ab.classList.contains("open");
+            ab.classList.toggle("open", !open);
+            ab.setAttribute("aria-expanded", String(!open));
+            if (panel) panel.classList.toggle("open", !open);
+            e.stopPropagation();
+            return;
+          }
+          document.querySelectorAll("[data-add] .v2-dropdown-btn.open").forEach(function (b) {
+            b.classList.remove("open"); b.setAttribute("aria-expanded", "false");
+            if (b.nextElementSibling) b.nextElementSibling.classList.remove("open");
+          });
+
+          if (t.closest("[data-ap-clear]")) { AP.from = AP.to = ""; AP.st = "all"; apPaint(); return; }
+
+          var card = t.closest("[data-ap-open]");
+          if (card) { apOpen(card.dataset.apOpen); return; }
+        });
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key !== "Enter" && e.key !== " ") return;
+          var card = e.target.closest && e.target.closest("[data-ap-open]");
+          if (card) { e.preventDefault(); apOpen(card.dataset.apOpen); }
+        });
+
+        window.__evalRecord = function (id) { return I.filter(function (x) { return x.id === id; })[0] || null; };
+        /* A decided case has to leave the queue now, not on the next reload. */
+        window.__evalResolveJustify = function (juId) {
+          JUSTIFIES.forEach(function (j) { if (j.id === juId) j.state = "resolved"; });
+        };
+        window.__evalRepaint = function () { paintFilters(); paintSort(); paintRows(); };
 
         window.__evalTable = {
           go: function (tab) { var b = document.querySelector('[data-tbl="' + tab + '"]'); if (b) b.click(); },
@@ -23022,6 +23437,17 @@
                   "</div>" +
                 "</div>" +
               "</div>";
+
+            /* Measured after the panel exists, because its width depends on
+               the month it is showing. */
+            if (state.open) {
+              var panel = host.querySelector(".drp-panel");
+              if (panel) {
+                var hb = host.getBoundingClientRect();
+                host.classList.toggle("align-end",
+                  hb.left + panel.offsetWidth > document.documentElement.clientWidth - 12);
+              }
+            }
           }
 
           function commit() {
@@ -23279,6 +23705,203 @@
         }
 
         window.hydrateEvalDetail = paint;
+      })();
+    </script>
+
+
+    <script>
+      /* ═══════════════════════════════════════════════════════════════════
+         RESOLVING A JUSTIFY
+
+         The agent has read feedback they disagree with and said so. That
+         objection lands on the interaction it is about — not in a separate
+         queue in a persona nobody is in, which is where it used to go and
+         why nobody ever saw one.
+
+         The manager gets two outcomes and both are terminal:
+
+           Approve  → the contested goals flip to the agent's reading, the
+                      score recalculates, and the corrected feedback goes
+                      back. This is the agent being right.
+           Decline  → the score stands, and the reason is required and is
+                      sent to the agent. This is the agent being told why,
+                      which is the half a queue usually skips.
+
+         A decision either way closes the case and writes to the audit trail.
+      ═══════════════════════════════════════════════════════════════════ */
+      (function () {
+        "use strict";
+
+        var S = null;
+
+        function esc(v) {
+          return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+                          .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        /* Approving means the agent's reading replaces AiMY's on the goals
+           they contested. Recomputed from the goals rather than typed, so
+           the number cannot disagree with the rows it came from. */
+        function recalc(x, j) {
+          var contested = (j.goals || []).length || 1;
+          var lift = Math.min(30, contested * 11);
+          return Math.min(100, x.score + lift);
+        }
+
+        window.openJustifyDecision = function (evalId) {
+          var x = (window.__evalRecord || function () { return null; })(evalId);
+          if (!x || !x.justify) return;
+          S = { x: x, j: x.justify, choice: null, reason: "" };
+          document.getElementById("justifyModal").classList.add("open");
+          render();
+        };
+
+        function close() {
+          document.getElementById("justifyModal").classList.remove("open");
+          S = null;
+        }
+
+        function render() {
+          var x = S.x, j = S.j;
+          var next = recalc(x, j);
+          document.getElementById("juSub").textContent =
+            j.agent + " · " + j.interaction + " · raised " + j.raised;
+
+          document.getElementById("juBody").innerHTML =
+            '<div class="ju-said">' +
+              '<div class="ju-said-k">What ' + esc(j.agent.split(" ")[0]) + " says</div>" +
+              '<p class="ju-said-t">“' + esc(j.reason) + "”</p>" +
+              '<div class="ju-goals">' + (j.goals || []).map(function (g) {
+                return '<span class="disp-goal-chip">' + esc(g) + "</span>";
+              }).join("") + "</div>" +
+            "</div>" +
+
+            '<div class="ju-choice">' +
+              '<div class="seg" role="radiogroup" aria-label="Your decision">' +
+                '<button class="seg-btn' + (S.choice === "approved" ? " active" : "") +
+                  '" type="button" role="radio" aria-checked="' + (S.choice === "approved") + '" data-ju="approved">Approve</button>' +
+                '<button class="seg-btn' + (S.choice === "declined" ? " active" : "") +
+                  '" type="button" role="radio" aria-checked="' + (S.choice === "declined") + '" data-ju="declined">Decline</button>' +
+              "</div>" +
+            "</div>" +
+
+            /* What each outcome does, before it is chosen — and the score
+               change shown as a diff rather than announced afterwards. */
+            (S.choice === "approved"
+              ? '<div class="gov-cr-card ju-effect">' +
+                  '<div class="gov-cr-head">Score recalculates' +
+                    '<span class="work-state ws-staged" data-work-state="staged"><span class="ws-dot"></span>On approve</span></div>' +
+                  '<div class="gov-cr-diff">' +
+                    '<div class="gov-cr-current"><span class="gov-cr-label">Now</span><span class="gov-cr-val">' + x.score + "%</span></div>" +
+                    '<svg class="gov-cr-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M8.5 3.5L12 7l-3.5 3.5"/></svg>' +
+                    '<div class="gov-cr-proposed"><span class="gov-cr-label">After</span><span class="gov-cr-val">' + next + "%</span></div>" +
+                  "</div>" +
+                  '<div class="gov-cr-rationale">' + (j.goals || []).length +
+                    " contested goal" + ((j.goals || []).length === 1 ? " moves" : "s move") +
+                    " to " + esc(j.agent.split(" ")[0]) + "’s reading. The corrected feedback is sent back to them.</div>" +
+                "</div>"
+              : S.choice === "declined"
+              ? '<div class="inline-note warn ju-effect"><span class="dot"></span><span>The score stands at <b>' +
+                x.score + "%</b>. " + esc(j.agent.split(" ")[0]) +
+                " is told the outcome and your reason, and the case closes.</span></div>"
+              : "") +
+
+            '<label class="ju-reason' + (S.choice ? "" : " is-off") + '">' +
+              '<span class="ju-reason-k">Your reason' +
+                (S.choice === "declined"
+                  ? ' <b class="ju-req">required</b>'
+                  : ' <span class="ju-opt">optional</span>') + "</span>" +
+
+              '<textarea class="ds-textarea" data-ju-reason placeholder="' +
+                (S.choice === "declined"
+                  ? "Why the original score stands. " + esc(j.agent.split(" ")[0]) + " reads this."
+                  : "Anything you want on the record.") +
+              '">' + esc(S.reason) + "</textarea>" +
+            "</label>";
+
+          var ok = S.choice === "approved" || (S.choice === "declined" && S.reason.trim().length > 9);
+          var btn = document.getElementById("juSubmit");
+          btn.disabled = !ok;
+          btn.textContent = S.choice === "approved" ? "Approve and recalculate"
+                          : S.choice === "declined" ? "Decline and close"
+                          : "Record decision";
+        }
+
+        function submit() {
+          var x = S.x, j = S.j, choice = S.choice, reason = S.reason.trim();
+          var oldScore = x.score;
+          var newScore = choice === "approved" ? recalc(x, j) : x.score;
+
+          if (choice === "approved") { x.score = newScore; x.verdict = "overturned"; x.st = newScore >= 85 ? "pass" : newScore >= 70 ? "border" : "fail"; }
+          else { x.verdict = "confirmed"; }
+          x.justify = null;
+
+          /* Close the case on both sides. The agent's page reads the second
+             list on load. */
+          try {
+            var open = JSON.parse(localStorage.getItem("aimy-qa-justifies") || "[]");
+            open = open.map(function (r) { if (r.id === j.id) r.state = "resolved"; return r; });
+            localStorage.setItem("aimy-qa-justifies", JSON.stringify(open));
+
+            var dec = JSON.parse(localStorage.getItem("aimy-qa-justify-decisions") || "[]");
+            dec = dec.filter(function (r) { return r.id !== j.id; });
+            dec.unshift({
+              id: j.id, feedbackId: j.feedbackId, evalId: j.evalId,
+              outcome: choice, reason: reason,
+              oldScore: oldScore, newScore: newScore,
+              decidedBy: "Lina Haddad", decidedAt: "just now"
+            });
+            localStorage.setItem("aimy-qa-justify-decisions", JSON.stringify(dec));
+          } catch (e) { /* blocked site data: the decision still stands here */ }
+
+          if (window.__evalAudit) {
+            window.__evalAudit({
+              tone: choice === "approved" ? "ok" : "warn", who: "Lina Haddad", kind: "human",
+              action: choice === "approved"
+                ? "Dispute approved · " + j.id + " · score " + oldScore + "% → " + newScore + "%"
+                : "Dispute declined · " + j.id + " · score stands at " + oldScore + "%",
+              detail: choice === "approved"
+                ? (j.goals || []).join(", ") + " moved to " + j.agent + "’s reading"
+                : esc(reason).slice(0, 90),
+              time: "—", state: "Irreversible"
+            });
+          }
+
+          if (window.__evalResolveJustify) window.__evalResolveJustify(j.id);
+          close();
+          if (window.__evalRepaint) window.__evalRepaint();
+          window.showToast({
+            title: choice === "approved"
+              ? "Dispute approved · " + oldScore + "% → " + newScore + "%"
+              : "Dispute declined · case closed",
+            sub: choice === "approved"
+              ? j.agent + " is sent the corrected feedback"
+              : j.agent + " is told the outcome and your reason"
+          });
+        }
+
+        document.addEventListener("click", function (e) {
+          if (!e.target.closest) return;
+          if (e.target.closest("[data-ju-close]")) { close(); return; }
+          var c = e.target.closest("[data-ju]");
+          if (c && S) { S.choice = c.dataset.ju; render(); return; }
+          var sub = e.target.closest("#juSubmit");
+          if (sub && !sub.disabled && S) { submit(); return; }
+          var open = e.target.closest("[data-ju-open]");
+          if (open) { e.stopPropagation(); window.openJustifyDecision(open.dataset.juOpen); return; }
+        });
+
+        document.addEventListener("input", function (e) {
+          if (S && e.target.matches("[data-ju-reason]")) {
+            S.reason = e.target.value;
+            var ok = S.choice === "approved" || (S.choice === "declined" && S.reason.trim().length > 9);
+            document.getElementById("juSubmit").disabled = !ok;
+          }
+        });
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && S) close();
+        });
       })();
     </script>
 

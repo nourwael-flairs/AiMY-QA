@@ -327,3 +327,40 @@
 @media (max-width: 768.98px) {
   :root .app-sidebar { display: flex; }
 }
+
+/* ── 9. ONE SCROLLBAR, EVERYWHERE ─────────────────────────────────────────
+   The product's scrollbar was declared per component — .gps-list, .ntf-panel,
+   .eval-detail-page, .dashboard-scroll, .overlay-thread, .roster-list, and so
+   on — which meant every NEW scrolling surface shipped with the platform
+   default until someone noticed and added a tenth copy of the same five
+   rules. The agent page was the latest one to notice.
+
+   Declared once here instead, so a surface gets the product's scrollbar by
+   existing rather than by being remembered. Components that want something
+   different still override it: this is the floor, not a ceiling.
+
+   COLOURED WITH TOKENS, so it follows the theme without a light-mode twin —
+   --wash-6 and --card-border are both defined in each page's :root and again
+   under :root[data-theme="light"].
+
+   :root PREFIX IS LOAD-BEARING — see the header of this file. Five of the six
+   pages carry a <style> block inside <body>, so a bare ::-webkit-scrollbar
+   would lose to any inline rule at equal specificity. */
+:root, :root * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--wash-6, rgba(255,255,255,0.09)) transparent;
+}
+:root ::-webkit-scrollbar,
+:root::-webkit-scrollbar { width: 6px; height: 6px; }
+:root ::-webkit-scrollbar-track,
+:root::-webkit-scrollbar-track { background: transparent; }
+:root ::-webkit-scrollbar-thumb,
+:root::-webkit-scrollbar-thumb {
+  background: var(--wash-6, rgba(255,255,255,0.09));
+  border-radius: 4px;
+}
+:root ::-webkit-scrollbar-thumb:hover,
+:root::-webkit-scrollbar-thumb:hover {
+  background: var(--card-border, rgba(255,255,255,0.14));
+}
+:root ::-webkit-scrollbar-corner { background: transparent; }

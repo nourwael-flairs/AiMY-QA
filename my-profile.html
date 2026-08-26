@@ -1259,7 +1259,7 @@
        the 1024px tablet floor, and the shell height that keeps the
        composer on screen. Loaded last so it overrides the canvas rules,
        the same order aimy-canvas.css has over this page's inline block. -->
-  <link rel="stylesheet" href="assets/aimy-responsive.css?v=6" />
+  <link rel="stylesheet" href="assets/aimy-responsive.css?v=7" />
   <link rel="stylesheet" href="assets/aimy-rail.css?v=2" />
   <script src="assets/aimy-viewport.js?v=5"></script>
   </head>
@@ -1610,6 +1610,16 @@
 
     <!-- justify reason modal. The agent must state why before submitting -->
     <style>
+      .fb-decision {
+        margin-top: 8px; padding: 9px 12px; border-radius: 8px;
+        font-size: 12.5px; line-height: 1.6; color: var(--d300);
+        background: var(--wash-3); border: 1px solid var(--wash-5);
+      }
+      .fb-decision b { color: var(--d100); font-weight: 700; }
+      /* Outcome carried by the border colour and the wording, not a stripe.
+         §11 bans decorative border-left stripes and I had added two. */
+      .fb-decision.is-upheld { border-color: rgba(23,178,106,0.3); }
+      .fb-decision.is-declined { border-color: rgba(247,144,9,0.3); }
       .fb-justify-reason { width:100%; font-size:12px; color:var(--d400); margin-top:6px; padding:8px 11px; background:var(--wash-2); border:1px solid var(--card-border); border-radius:9px; line-height:1.45; }
       .fb-justify-reason b { color:var(--d200); }
       .dr-overlay { position:fixed; inset:0; z-index:400; background:rgba(6,9,13,0.6); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:none; align-items:center; justify-content:center; padding:32px; }
@@ -1796,6 +1806,14 @@
           const chips = f.goals.map(k => `<span class="fb-goal-chip">${k.name} <b>${k.current}%</b> ${k.prior != null ? `<span style="color:var(--d500)">(was ${k.prior}%)</span>` : ''}</span>`).join('');
           let actions = '';
           const reasonBlock = f.justifyReason ? `<div class="fb-justify-reason"><b>Your reason:</b> ${escapeHtml(f.justifyReason)}</div>` : '';
+          /* And what came back. An objection answered somewhere the objector
+             cannot see is not answered. */
+          const decisionBlock = f.decisionReason
+            ? `<div class="fb-decision ${f.resolution === 'upheld' ? 'is-upheld' : 'is-declined'}">
+                 <b>${escapeHtml(f.decidedBy || 'Your manager')} ${f.resolution === 'upheld' ? 'agreed' : 'disagreed'}:</b>
+                 ${escapeHtml(f.decisionReason)}
+               </div>`
+            : '';
           if (f.type === 'negative') {
             if (f.ack === 'pending') {
               actions = `
@@ -1812,13 +1830,13 @@
                 <button class="fb-btn ack" onclick="acknowledgeFeedback('${f.id}')">${CHECK} Acknowledge now</button>
                 <button class="fb-btn review" data-entry-mode="investigate" data-aimy-topic="goal-script" data-aimy-ask="Why was my Script Adherence feedback escalated to the Feedback Manager, and what do I do now?">Read why it escalated</button>`;
             } else if (f.ack === 'justifyd' && f.resolution === 'upheld') {
-              actions = `<span class="loop-state upheld">${CHECK} justify upheld · re-scored ${f.adjustFrom}% → ${f.adjustTo}%</span>
-                <button class="fb-btn review" data-entry-mode="investigate" data-aimy-topic="goal-follow-up" data-aimy-ask="Show me how my disputed Follow-up Confirmation score was re-evaluated and adjusted.">See the re-scored result</button>${reasonBlock}`;
+              actions = `<span class="loop-state upheld">${CHECK} Justify approved · re-scored ${f.adjustFrom}% → ${f.adjustTo}%</span>
+                <button class="fb-btn review" data-entry-mode="investigate" data-aimy-topic="goal-follow-up" data-aimy-ask="Show me how my disputed Follow-up Confirmation score was re-evaluated and adjusted.">See the re-scored result</button>${reasonBlock}${decisionBlock}`;
             } else if (f.ack === 'justifyd' && f.resolution === 'declined') {
-              actions = `<span class="loop-state declined"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> justify declined · score stands</span>
-                <button class="fb-btn review" data-entry-mode="investigate" data-aimy-topic="goal-survey" data-aimy-ask="Why was my Survey Promotion dispute declined, and how do I recover the score?">Read why it was declined</button>${reasonBlock}`;
+              actions = `<span class="loop-state declined"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> Justify declined · score stands</span>
+                <button class="fb-btn review" data-entry-mode="investigate" data-aimy-topic="goal-survey" data-aimy-ask="Why was my Survey Promotion dispute declined, and how do I recover the score?">Read why it was declined</button>${reasonBlock}${decisionBlock}`;
             } else if (f.ack === 'justifyd') {
-              actions = `<span class="loop-state justifyd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg> justifyd · under review</span>${reasonBlock}`;
+              actions = `<span class="loop-state justifyd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg> justifyd · under review</span>${reasonBlock}${decisionBlock}`;
             }
           }
           const followup = f.followUp ? `<div class="fb-followup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>${f.followUp}</div>` : '';
@@ -1922,13 +1940,71 @@
       }
       function closejustifyReason() { document.getElementById('justifyReasonModal').classList.remove('open'); drCurrentId = null; }
       function drValidate() { document.getElementById('drSubmit').disabled = document.getElementById('drReason').value.trim().length < 10; }
+      /* ══ RAISING A JUSTIFY ═══════════════════════════════════════
+         This used to end here: it set ack='justifyd' on an in-memory record
+         and toasted "a reviewer will assess it". No reviewer ever saw it,
+         because nothing left this page. The agent was told their objection
+         had been filed and it had not.
+
+         It is published now, and Reviews reads it. localStorage because two
+         static pages have no server between them; in a real build this is
+         one POST. */
       function submitjustifyReason() {
         const v = document.getElementById('drReason').value.trim();
         if (v.length < 10) return;
         const f = MY_FEEDBACK.find(x => x.id === drCurrentId);
-        if (f) { f.ack = 'justifyd'; f.justifyReason = v; renderFeedback(); showToast('justify submitted with your reason. A reviewer will assess it'); }
+        if (f) {
+          f.ack = 'justifyd';
+          f.justifyReason = v;
+          publishJustify(f, v);
+          renderFeedback();
+          showToast('Justify sent to Lina Haddad. You’ll see the decision here.');
+        }
         closejustifyReason();
       }
+
+      function publishJustify(f, reason) {
+        try {
+          var key = 'aimy-qa-justifies';
+          var list = JSON.parse(localStorage.getItem(key) || '[]');
+          list = list.filter(function (j) { return j.feedbackId !== f.id; });
+          list.unshift({
+            id: 'JU-' + String(101 + list.length),
+            feedbackId: f.id,
+            agent: 'Omar Abdallah',
+            evalId: f.evalId || 'ev-1042',
+            interaction: f.interaction || 'Voice call · May 7',
+            goals: (f.goals || []).map(function (g) { return g.name; }),
+            reason: reason,
+            raised: 'just now',
+            state: 'open'
+          });
+          localStorage.setItem(key, JSON.stringify(list));
+        } catch (e) { /* blocked site data: the agent still sees it locally */ }
+      }
+
+      /* ══ THE DECISION COMING BACK ═════════════════════════════════
+         An objection that is answered somewhere the objector cannot see is
+         not answered. Read on load, so the agent finds the outcome and the
+         reason for it — including when it went against them. */
+      (function readJustifyDecisions() {
+        var list;
+        try { list = JSON.parse(localStorage.getItem('aimy-qa-justify-decisions') || '[]'); }
+        catch (e) { return; }
+        if (!list.length) return;
+        list.forEach(function (d) {
+          var f = MY_FEEDBACK.find(function (x) { return x.id === d.feedbackId; });
+          if (!f) return;
+          f.ack = 'justifyd';
+          f.resolution = d.outcome === 'approved' ? 'upheld' : 'declined';
+          f.decisionReason = d.reason;
+          f.decidedBy = d.decidedBy;
+          if (d.outcome === 'approved' && d.newScore != null) {
+            f.adjustFrom = d.oldScore;
+            f.adjustTo = d.newScore;
+          }
+        });
+      })();
       document.addEventListener('keydown', e => { if (e.key === 'Escape') closejustifyReason(); });
 
       /* ── Toast ── */
