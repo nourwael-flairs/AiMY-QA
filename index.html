@@ -8146,6 +8146,20 @@
           .fn-chip.warn { color:var(--warn); background:rgba(247,144,9,0.08); border-color:transparent; }
           .fn-chip.err { color:var(--err); background:rgba(240,68,56,0.08); border-color:transparent; }
           .floop-side { display:flex; flex-direction:column; gap:16px; }
+          /* Feedback waiting. Same card as its neighbours; the only new
+             thing is the count, which has to be the first thing read. */
+          /* The right column is a stack of two cards, not two cells in the
+             flow. Auto-placement put the third card wherever the next free
+             cell was, which is how the activity log ended up under the
+             attention list. */
+          .floop-col { display:flex; flex-direction:column; gap:20px; min-width:0; }
+
+          .fv-lead { display:flex; align-items:flex-start; gap:11px; flex-wrap:wrap; margin-bottom:10px; }
+          .fv-num { font-size:30px; font-weight:800; line-height:1; letter-spacing:-0.02em; color:var(--warn); font-variant-numeric:tabular-nums; }
+          .fv-cap { font-size:11.5px; line-height:1.5; color:var(--d400); }
+          .fv-cap b { color:var(--d200); font-weight:700; }
+          .fv-warn { color:var(--warn); font-weight:700; }
+
           .floop-sub-h { font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--d500); font-weight:700; margin-bottom:8px; }
           .attn-row { display:flex; gap:11px; align-items:flex-start; padding:9px 0; border-bottom:1px solid var(--wash-4); cursor:pointer; transition:opacity 150ms cubic-bezier(0.4,0,0.2,1); }
           .attn-row:last-child { border-bottom:none; }
@@ -8365,26 +8379,76 @@
               </div>
             </div>
 
-            <!-- Recent activity is a separate column, not a tail on the
-                 attention list. They answer different questions. "what needs
-                 me" vs "what moved", and stacking them made one card twice as
-                 tall as the other, which is what left the void beside it. -->
-            <div class="floop-card floop-side">
-              <div>
-                <div class="floop-sub-h">Recent loop activity</div>
-                <div class="act-item"><span>Aisha acknowledged feedback on Empathy</span><span class="at">2h</span></div>
-                <div class="act-item"><span>justify overturned &middot; Michael &middot; Script Adherence</span><span class="at">5h</span></div>
-                <div class="act-item"><span>Omar's coaching plan reached 60%</span><span class="at">1d</span></div>
+            <!-- ══ THE RIGHT COLUMN ════════════════════════════════════
+                 Two cards, stacked, and the nesting is what says so. Left
+                 to auto-placement the third card took the next free cell,
+                 which was under "Needs attention" — so the log of what the
+                 loop did ended up reading as a tail on the attention list
+                 instead of sitting under the stage it reports on.
+
+                 Verdicts on top: that is where the loop is stopped. Recent
+                 activity underneath: that is what it managed anyway. -->
+            <div class="floop-col">
+
+              <!-- ══ VERDICTS WAITING ════════════════════════════════
+                   One door, to the table filtered to what is waiting.
+
+                   THE THREE LINES ARE FINDINGS, NOT DESCRIPTIONS. The first
+                   draft said "AiMY pre-filled all 19 from the transcripts"
+                   and "nothing reaches an agent until you confirm it" — both
+                   true, both true every day, and a line that never changes
+                   is a line nobody reads twice. The rule moved into the
+                   caption where it belongs; what is left is what is
+                   different about today's nineteen:
+
+                     what confirming actually costs   · 10 of them are failures
+                     what only a person can settle    · 4 AiMY could not score
+                     where it is concentrated         · a third sit on Omar
+
+                   EVERY FIGURE IS READ OFF THE SURFACE IT DESCRIBES.
+                   agent-scorecards.html renders 19 awaiting across 6 agents:
+                   10 fail / 4 borderline / 5 pass, 4 at low confidence,
+                   Omar 6 · Tariq 4 · Michael 4 · AiMY 3 · Lina 1 · Sarah 1.
+                   Constants here because the two pages hold separate
+                   fixtures; in a real build this is a lookup, not a
+                   rewrite. An earlier draft said 23 and the table said 19,
+                   which is register item A0.3. -->
+              <div class="floop-card floop-side">
+                <div>
+                  <div class="floop-sub-h">Feedback waiting on you</div>
+                  <div class="fv-lead">
+                    <span class="fv-num">19</span>
+                    <span class="fv-cap">AI evaluations still unsent, across <b>6 agents</b>.<br />None has reached the agent yet.</span>
+                    <span class="work-state ws-drafted" data-work-state="drafted"><span class="ws-dot"></span>Drafted</span>
+                  </div>
+                  <div class="act-item"><span><b class="fv-warn">10 are failures</b> — sending one is negative feedback</span></div>
+                  <div class="act-item"><span><b>4 I could not score</b> — a bulk agree cannot touch those</span></div>
+                  <div class="act-item"><span><b>Omar Abdallah</b> holds 6 of the 19 — a third, on one person</span></div>
+                </div>
+                <a class="floop-ask entry-action em-review" href="agent-scorecards.html?tbl=calls&amp;verdict=awaiting"
+                   data-entry-mode="review">
+                  <svg class="em-ico"><use href="#em-ico-review" /></svg>
+                  Review 19 evaluations
+                </a>
               </div>
-              <button class="floop-ask entry-action em-prompt" type="button"
-                      data-entry-mode="prompt"
-                      data-aimy-topic="feedback-loop"
-                      data-aimy-ask="Summarise the feedback loop health and what needs my attention today.">
-                <svg class="em-ico"><use href="#aimy-logo-small" /></svg>
-                Ask about the loop
-              </button>
+
+              <div class="floop-card floop-side">
+                <div>
+                  <div class="floop-sub-h">Recent loop activity</div>
+                  <div class="act-item"><span>Aisha acknowledged feedback on Empathy</span><span class="at">2h</span></div>
+                  <div class="act-item"><span>justify overturned &middot; Michael &middot; Script Adherence</span><span class="at">5h</span></div>
+                  <div class="act-item"><span>Omar's coaching plan reached 60%</span><span class="at">1d</span></div>
+                </div>
+                <button class="floop-ask entry-action em-prompt" type="button"
+                        data-entry-mode="prompt"
+                        data-aimy-topic="feedback-loop"
+                        data-aimy-ask="Summarise the feedback loop health and what needs my attention today.">
+                  <svg class="em-ico"><use href="#aimy-logo-small" /></svg>
+                  Ask about the loop
+                </button>
+              </div>
+
             </div>
-          </div>
         </section>
 
         <div class="tier-1-grid">

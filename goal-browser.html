@@ -8120,6 +8120,26 @@
         margin-left: auto;
         white-space: nowrap;
       }
+      /* Where a change request came from. Only requests raised out of
+         another surface carry it. */
+      /* What saving this definition will actually do. */
+      .cr-edit-note {
+        margin: 0 0 14px; padding: 10px 12px; border-radius: 8px;
+        background: rgba(247,144,9,0.10); border: 1px solid rgba(247,144,9,0.24);
+        font-size: 11.5px; line-height: 1.6; color: var(--d300);
+      }
+      .cr-edit-note b { color: var(--d100); font-weight: 700; }
+
+      .cr-origin {
+        display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+        margin: 8px 0 2px; padding: 5px 9px; border-radius: 7px;
+        background: rgba(var(--qa-accent-rgb), 0.09);
+        border: 1px solid rgba(var(--qa-accent-rgb), 0.2);
+        font-size: 10.5px; color: var(--d400);
+      }
+      .cr-origin svg { color: var(--qa-accent); flex-shrink: 0; }
+      .cr-origin strong { color: var(--d200); font-weight: 700; }
+
       .cr-desc {
         font-size: 11px;
         color: var(--d400);
@@ -10105,6 +10125,52 @@
           affectedTemplates:3,affectedEvals:2100,affectedClients:['Heliox Financial'],decision:'Rejected. AiMY Connect timestamps are more accurate for voice channels.'},
       ];
 
+      /* ══ CHANGE REQUESTS RAISED FROM REVIEWS ═══════════════════════
+         A manager reviewing an interaction can decide the problem is not
+         the agent's handling but the goal itself. That is a governance
+         change, and this is the queue it belongs in — so the two surfaces
+         have to be connected, not just consistent.
+
+         localStorage because this is a static prototype with two separate
+         pages and no server between them; the canvas already carries its
+         sessions the same way. In a real build this is one API call.
+
+         Prepended rather than merged by id: a request from Reviews is new
+         by construction, and the queue is newest-first. */
+      (function ingestReviewCRs() {
+        var raw;
+        try { raw = JSON.parse(localStorage.getItem("aimy-qa-goal-crs") || "[]"); }
+        catch (e) { return; }                      /* blocked site data — the
+                                                      queue still works, it
+                                                      just has nothing extra */
+        if (!Array.isArray(raw) || !raw.length) return;
+
+        raw.forEach(function (c) {
+          if (CHANGE_REQUESTS.some(function (x) { return x.id === c.id; })) return;
+          var b = c.blast || {};
+          CHANGE_REQUESTS.unshift({
+            id: c.id,
+            metric: c.metric,
+            status: c.status || "Pending Review",
+            proposer: c.proposer || "Nour Wael",
+            proposerInitials: c.proposerInitials || "NW",
+            date: "Today",
+            desc: c.rationale || c.grounds,
+            before: String(c.current || ""),
+            after: String(c.proposed || ""),
+            affectedTemplates: b.templates || 0,
+            affectedEvals: b.evals || 0,
+            affectedClients: [],
+            decision: "",
+            /* Provenance. A request that cannot say which interaction
+               produced it is an opinion; one that can is evidence. */
+            origin: c.origin || "Reviews",
+            originRef: c.originRef || "",
+            grounds: c.grounds || ""
+          });
+        });
+      })();
+
       const AUDIT_LOG = [
         {ts:'Today 11:34',actor:'Nour Wael',action:'Modified',metric:'Empathy Score',summary:'Proposed upgrade to tone model v3 (CR-041)',reqId:'CR-041'},
         {ts:'Yesterday 09:12',actor:'Ahmed Mahfouz',action:'Modified',metric:'CSAT Proxy',summary:'Submitted for approval to change status Draft → Active',reqId:'CR-040'},
@@ -11375,6 +11441,7 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
           const actions = isPending
             ? `<div style="display:flex;gap:6px">
                  <button class="tpl-ai-btn ghost" style="border-color:rgba(240,68,56,0.25);color:var(--err)" onclick="event.stopPropagation();openCRRejectModal('${cr.id}')">Reject</button>
+                 <button class="tpl-ai-btn ghost" onclick="event.stopPropagation();openCRForEdit('${cr.id}')">Edit goal</button>
                  <button class="tpl-ai-btn primary" style="background:rgba(23,178,106,0.12);color:var(--ok);border-color:rgba(23,178,106,0.25)" onclick="event.stopPropagation();openCRApproveModal('${cr.id}')">Approve</button>
                </div>`
             : isApproved
@@ -11386,6 +11453,10 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
               <span class="cr-metric-name">${cr.metric}</span>
               <span class="cr-meta">${cr.date}</span>
             </div>
+            ${cr.origin ? `<div class="cr-origin">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="11" height="11"><path d="M2 6h8M7 3l3 3-3 3"/></svg>
+              Raised from <strong>${cr.origin}</strong>${cr.originRef ? ` &middot; ${cr.originRef}` : ''}${cr.grounds ? ` &middot; ${cr.grounds.toLowerCase()}` : ''}
+            </div>` : ''}
             <p class="cr-desc">${cr.desc}</p>
             <div class="cr-diff-row">
               <span class="cr-diff-before">${cr.before}</span>
@@ -11715,6 +11786,17 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         }
         const statusMap = {approve:'Approved', reject:'Rejected', deploy:'Deployed'};
         cr.status = statusMap[type];
+
+        /* Reject and Deploy are decisions the manager who raised this is
+           waiting on, so they publish back the same way an edit does.
+           Approve deliberately does not: approved is not applied — it still
+           needs Deploy — and telling Reviews the goal had changed while it
+           had not would be the queue's own "Approved means done" bug,
+           forwarded to another surface. */
+        if (type === 'reject' || type === 'deploy') {
+          publishCrResolution(id, type === 'reject' ? 'rejected' : 'approved', cr.decision || '');
+        }
+
         closeCRDetail();
         renderChangeRequests();
         const toastMap = {approve:'Change request approved', reject:'Change request rejected', deploy:'Change deployed'};
@@ -11859,6 +11941,60 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         setTimeout(() => nameEl && nameEl.focus(), 100);
       }
       // A4: "Propose change" pre-fills the form with existing metric data
+      /* ══ EDIT A CHANGE REQUEST ════════════════════════════════════
+         Opens the goal's own definition, pre-filled with what the request
+         proposes. Editing a change request is not editing a document about
+         a goal — it is changing what every future evaluation is scored
+         against, so the surface it opens is the definition itself.
+
+         The admin can accept the proposal as drafted, adjust it, or write
+         something else entirely; saving applies it and resolves the request
+         in one act, because a definition that changed while its request
+         stayed "pending" would be two versions of the truth. */
+      window.openCRForEdit = function (crId) {
+        var cr = CHANGE_REQUESTS.find(function (c) { return c.id === crId; });
+        if (!cr) return;
+
+        var modal = document.getElementById('metricFormModal');
+        var backdrop = document.getElementById('metricFormBackdrop');
+        if (!modal || !backdrop) return;
+
+        var m = METRICS.find(function (x) { return x.name === cr.metric; });
+
+        var titleEl = document.getElementById('metricFormTitle');
+        if (titleEl) titleEl.textContent = 'Edit goal · ' + cr.metric;
+
+        var set = function (id, v) { var el = document.getElementById(id); if (el) el.value = v || ''; };
+        set('mfName', cr.metric);
+        set('mfType', (m && m.type) || 'Compliance');
+        set('mfSource', (m && m.source) || 'AiMY QA Engine');
+        set('mfCalc', (m && m.formula) || '');
+        /* The proposal lands in the field it proposes to change. */
+        set('mfDesc', cr.after || (m && m.desc) || '');
+        set('mfOwner', (m && m.owner) || 'QA Team');
+
+        /* Say what saving will do, and to how much. An admin editing a
+           definition is changing the yardstick for everything it touches. */
+        var note = document.getElementById('crEditNote');
+        if (!note) {
+          note = document.createElement('div');
+          note.id = 'crEditNote';
+          note.className = 'cr-edit-note';
+          var body = modal.querySelector('.goal-modal-body') || modal;
+          body.insertBefore(note, body.firstChild);
+        }
+        note.innerHTML =
+          '<b>' + cr.id + '</b> proposes: ' + (cr.grounds ? cr.grounds.toLowerCase() + '. ' : '') +
+          (cr.originRef ? 'Raised from ' + cr.originRef + '. ' : '') +
+          'Saving applies this to <b>' + (cr.affectedTemplates || 0) + ' template' +
+          ((cr.affectedTemplates === 1) ? '' : 's') + '</b> and future evaluations only — ' +
+          'historical scores are never recalculated — and resolves ' + cr.id + '.';
+
+        modal.dataset.crId = crId;
+        backdrop.classList.add('open');
+        modal.classList.add('open');
+      };
+
       function openMetricFormForEdit(id) {
         const m = METRICS.find(x=>x.id===id);
         if (!m) return;
@@ -11897,6 +12033,42 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         document.getElementById('metricFormBackdrop')?.classList.remove('open');
         document.getElementById('metricFormModal')?.classList.remove('open');
       }
+      /* ══ THE WRITE-BACK ════════════════════════════════════════
+         A decision that lands in this queue and stops is the same dead end
+         the challenge was raised to escape, one surface further along. The
+         interaction that produced the request is still carrying an excluded
+         goal and a manager still waiting to hear whether they were right.
+
+         So a resolution is published back, and Reviews reads it: the
+         exclusion lifts, the goal is re-scored against whatever the
+         definition now says, and the manager is told which it was. */
+      function publishCrResolution(crId, outcome, detail) {
+        var cr = CHANGE_REQUESTS.find(function (c) { return c.id === crId; });
+        if (!cr) return;
+        var rec = {
+          id: crId, goalId: cr.goalId || null, metric: cr.metric,
+          outcome: outcome, detail: detail || '',
+          newValue: cr.after || '', decidedBy: 'Ahmed Mahfouz', decidedAt: 'just now'
+        };
+        try {
+          var key = 'aimy-qa-goal-cr-decisions';
+          var list = JSON.parse(localStorage.getItem(key) || '[]');
+          list = list.filter(function (r) { return r.id !== crId; });
+          list.unshift(rec);
+          localStorage.setItem(key, JSON.stringify(list));
+
+          /* Resolve the open request too, or Reviews would keep showing the
+             goal as challenged on the next visit. */
+          var open = JSON.parse(localStorage.getItem('aimy-qa-goal-crs') || '[]');
+          open = open.map(function (c) {
+            if (c.id === crId) { c.status = outcome === 'rejected' ? 'Rejected' : 'Deployed'; }
+            return c;
+          });
+          localStorage.setItem('aimy-qa-goal-crs', JSON.stringify(open));
+        } catch (e) { /* blocked site data: the decision still stands here */ }
+      }
+      window.publishCrResolution = publishCrResolution;
+
       function saveMetricDraft() {
         const name = document.getElementById('mfName')?.value?.trim();
         if (!name) { const e=document.getElementById('mfNameError'); if(e){ e.style.display='block'; e.textContent='Name is required'; } return; }
@@ -11908,6 +12080,33 @@ ${isApprove ? `• <strong>Next step:</strong> Deploy the change from the Govern
         // Check if updating existing
         const titleEl = document.getElementById('metricFormTitle');
         const isEdit  = titleEl && titleEl.textContent.startsWith('Propose change to ');
+
+        /* Opened from a change request: applying the definition IS the
+           decision, so the request resolves in the same act. */
+        const modalEl = document.getElementById('metricFormModal');
+        const crId = modalEl && modalEl.dataset.crId;
+        if (crId) {
+          const cr = CHANGE_REQUESTS.find(c => c.id === crId);
+          if (cr) {
+            const edited = desc !== cr.after;
+            cr.after = desc;
+            cr.status = 'Deployed';
+            cr.decision = edited
+              ? 'Approved with edits by Ahmed Mahfouz. Applied to future evaluations.'
+              : 'Approved as proposed. Applied to future evaluations.';
+            publishCrResolution(crId, edited ? 'edited' : 'approved', cr.decision);
+            if (typeof AUDIT_LOG !== 'undefined') {
+              AUDIT_LOG.unshift({
+                ts: 'Just now', actor: 'Ahmed Mahfouz', action: 'Modified',
+                metric: cr.metric, summary: cr.decision, reqId: crId
+              });
+            }
+          }
+          delete modalEl.dataset.crId;
+          const note = document.getElementById('crEditNote'); if (note) note.remove();
+          if (typeof renderChangeRequests === 'function') renderChangeRequests();
+          if (typeof renderAuditLog === 'function') renderAuditLog();
+        }
         const existing = METRICS.find(m => m.name === name);
         if (existing) {
           // Update in place as draft
